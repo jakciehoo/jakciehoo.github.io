@@ -721,242 +721,6 @@ wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ git push origin master
 
 
   
-    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
-  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
-<h2 id="创建spec文件"><a href="#创建spec文件" class="headerlink" title="创建spec文件"></a>创建spec文件</h2><p>将代码克隆到本地,如果本地已经存在,直接跳过这一步.<br>创建.podspec文件,切换到项目根目录,创建spec文件:</p>
-<pre><code>//切换到项目根目录
-
-cd SGExtenion
-
-//创建spec文件
-
-pod spec create SGExtension
-</code></pre><p>用xcode打开 SGExtension.podspec,里面有英文注释,我这里直接给简单模板,其实就是去掉了注释,详细的设置看这里</p>
-<pre><code>Pod::Spec.new do |spec|
-
-spec.name                  = &apos;SGExtension&apos;
-
-spec.version               = &apos;1.0.2&apos;
-
-spec.ios.deployment_target = &apos;8.0&apos;
-
-spec.license               = &apos;MIT&apos;
-
-spec.homepage              = &apos;https://github.com/iOSSinger&apos;
-
-spec.author                = { &quot;iOSSinger&quot; =&gt; &quot;747616044@qq.com&quot; }
-
-spec.summary               = &apos;各种工具的合集&apos;
-
-spec.source                = { :git =&gt; &apos;https://github.com/iOSSinger/SGExtension.git&apos;, :tag =&gt; spec.version }
-
-spec.source_files          = &quot;SGExtension/**/{*.h,*.m}&quot;
-
-spec.resources             = &quot;SGExtension/source.bundle&quot;
-
-spec.frameworks            = &apos;UIKit&apos;
-
-spec.library               = &apos;z&apos;
-
-spec.requires_arc          = true
-
-end
-</code></pre><p>解释下每行的意思:</p>
-<ul>
-<li><p>spec.name</p>
-<p>  名字，pod search 搜索的关键词,注意这里一定要和.podspec的名称一样,否则报错</p>
-</li>
-<li><p>spec.version</p>
-<p>  版本号</p>
-</li>
-<li><p>spec.ios.deployment_target</p>
-<p>  支持的ios最低版本</p>
-</li>
-<li><p>spec.license</p>
-<p>  许可证,一般MIT,这里提醒一下,根目录下必须要有LICENSE这个文件,可以直接把我项目中的copy一份,改下作者名字即可.一般github创建仓库的时候可以选择许可为MIT,会自动帮你生成该文件.</p>
-</li>
-<li><p>spec.homepage</p>
-<p>  项目主页地址,要求必须能访问</p>
-</li>
-<li><p>spec.author</p>
-<p>  作者信息</p>
-</li>
-<li><p>spec.summary</p>
-<p>  项目简介</p>
-</li>
-<li><p>spec.source</p>
-<p>  项目的地址,填上项目的github地址,tag =&gt; spec.version表示git项目的tag值与上面的spec的版本一致,这里是  1.0.2 .</p>
-</li>
-<li><p>spec.source_files</p>
-<p>  项目源文件,主要是.h和.m文件,</p>
-<p>  *表示匹配所有文件<br>  {.h,.m} 表示匹配所有以.h和.m结尾的文件<br>  ** 表示匹配所有子目录,以及递归子目录</p>
-</li>
-<li><p>spec.resources</p>
-<p>  项目所需的资源文件,比如图片</p>
-</li>
-<li><p>spec.frameworks</p>
-<p>  项目的依赖框架,比如UIKit,不需要后缀名</p>
-</li>
-<li><p>spec.library</p>
-<p>  项目依赖的库文件(这个是系统的库文件),不需要后缀名,比如sqlite,libz等.以lib开头的需要省略掉lib这三个字母.例如:libz需要简写为z否则报错.</p>
-</li>
-<li><p>spec.requires_arc</p>
-<p>  是否是arc,一般true</p>
-</li>
-</ul>
-<p>如果你的项目依赖了别的pod项目,可以这样写:</p>
-<pre><code>spec.dependency = &apos;AFNetworking&apos;
-</code></pre><p>提交代码,并打上tag</p>
-<pre><code>//提交代码
-git push
-
-//打tag
-git tag 1.0.2
-
-//将tag推送到远端
-git push origin --tags
-</code></pre><h2 id="验证podspec文件"><a href="#验证podspec文件" class="headerlink" title="验证podspec文件"></a>验证podspec文件</h2><pre><code>pod spec lint SGExtemnsion.podspec
-</code></pre><p>这一步如果报错,根据错误自行修改,根据大致意思能看出来个大概,终端会给出哪一行出错了.一般就是语法错误,资源找不到,git地址不对或者不能访问.指定的文件如{.h,.m}找不到,一般再检查检查基本没问题.</p>
-<h2 id="注册trunk-并提交spec文件cocoapods仓库"><a href="#注册trunk-并提交spec文件cocoapods仓库" class="headerlink" title="注册trunk,并提交spec文件cocoapods仓库"></a>注册trunk,并提交spec文件cocoapods仓库</h2><ul>
-<li><p>注册chunk,查看是否注册过</p>
-<pre><code>pod trunk me
-</code></pre></li>
-<li><p>如果没有注册,那么注册:</p>
-<pre><code>pod trunk register 747616044@qq.com &quot;iOSSinger&quot;
-</code></pre></li>
-</ul>
-<p>填上邮箱 和 用户名就可以了.注册完成之后会给你的邮箱发个邮件,进入邮箱邮件里面有个链接,需要点击确认一下.然后再查看下是否注册成功:</p>
-<pre><code>pod trunk me
-</code></pre><ul>
-<li><p>提交spec文件到 CocoaPods 中心仓库</p>
-<pre><code>pod trunk push SGExtension.podspec
-</code></pre></li>
-</ul>
-<p>如果前面都没问题,这一步基本也没啥问题.不过网速比较慢可能要等很久,这一步建议翻墙,不然有可能真的很慢.</p>
-<p>然后验证一下,是否可以查到</p>
-<pre><code>pod search SGExtension
-</code></pre><p>如果能够查到,恭喜你 !,如果查不到,往下看</p>
-<ul>
-<li>解决方案:</li>
-</ul>
-<pre><code>* 查看上一步(提交到代码仓库)是否成功,再次执行提交:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk push SGExtension.podspec</span><br></pre></td></tr></table></figure>
-
-如果出现如下信息:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Unable to accept duplicate entry for: SGExtension (1.0.2)</span><br></pre></td></tr></table></figure>
-
-那么说明已经提交到cocoapods仓库成功,那么有可能就是本地仓库没有更新.更新本地仓库:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo update</span><br></pre></td></tr></table></figure>
-</code></pre><ul>
-<li><p>再次执行 pod search SGExtension 命令,如果还搜索不到,继续往下看:</p>
-<pre><code>rm ~/Library/Caches/CocoaPods/search_index.json
-</code></pre><p>这句话是移除已经生成的搜索目录缓存文件,移除之后,执行pod search会重新生成一份最新的缓存列表,基本到这里就差不多了.</p>
-</li>
-<li><p>如果还有问题,那就需要终极大招,但是不推荐用,时间很长,除非翻墙.</p>
-<pre><code>pod repo remove master  
-pod setup
-</code></pre><p>或者</p>
-<pre><code>sudo rm -fr ~/.cocoapods/repos/master
-pod setup
-</code></pre><p>这两种写法的意思都是移除本地cocoapods仓库,重新从官网拉取一遍.可能时间比较长,所以不建议用,如果网速度快可以考虑使用,也可以翻墙.整个仓库打下大约500M+(截止当前时间).</p>
-</li>
-</ul>
-<h2 id="集成到项目中试试"><a href="#集成到项目中试试" class="headerlink" title="集成到项目中试试"></a>集成到项目中试试</h2><pre><code>target &apos;项目名&apos; do
-pod &apos;SGExtension&apos;
-end
-</code></pre><h2 id="多人共同维护你的开源项目"><a href="#多人共同维护你的开源项目" class="headerlink" title="多人共同维护你的开源项目"></a>多人共同维护你的开源项目</h2><p>如果需要多个人维护一个库,每个人都应该有权限push提交spec文件;第一个push的人可以被认为是管理员,可以再添加子管理员,这样子管理员就有权限push了</p>
-<pre><code>pod trunk add-owner 邮箱地址
-</code></pre><p>移除某个管理员</p>
-<pre><code>pod trunk remove-owner 邮箱地址
-</code></pre><h2 id="pod-lib-lint-和-pod-spec-lint-有什么区别"><a href="#pod-lib-lint-和-pod-spec-lint-有什么区别" class="headerlink" title="pod lib lint 和 pod spec lint 有什么区别"></a>pod lib lint 和 pod spec lint 有什么区别</h2><ul>
-<li>pod lib lint 不需要联网</li>
-<li>pod spec lint 会联网检查sepc repo,并且关联tag</li>
-</ul>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="http://www.jianshu.com/p/1f70f1176727" target="_blank" rel="noopener">cocoapods系列教程—让自己的开源框架支持cocoapods</a></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>参考:<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank" rel="noopener">http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1190,6 +954,242 @@ end
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
+  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
+<h2 id="创建spec文件"><a href="#创建spec文件" class="headerlink" title="创建spec文件"></a>创建spec文件</h2><p>将代码克隆到本地,如果本地已经存在,直接跳过这一步.<br>创建.podspec文件,切换到项目根目录,创建spec文件:</p>
+<pre><code>//切换到项目根目录
+
+cd SGExtenion
+
+//创建spec文件
+
+pod spec create SGExtension
+</code></pre><p>用xcode打开 SGExtension.podspec,里面有英文注释,我这里直接给简单模板,其实就是去掉了注释,详细的设置看这里</p>
+<pre><code>Pod::Spec.new do |spec|
+
+spec.name                  = &apos;SGExtension&apos;
+
+spec.version               = &apos;1.0.2&apos;
+
+spec.ios.deployment_target = &apos;8.0&apos;
+
+spec.license               = &apos;MIT&apos;
+
+spec.homepage              = &apos;https://github.com/iOSSinger&apos;
+
+spec.author                = { &quot;iOSSinger&quot; =&gt; &quot;747616044@qq.com&quot; }
+
+spec.summary               = &apos;各种工具的合集&apos;
+
+spec.source                = { :git =&gt; &apos;https://github.com/iOSSinger/SGExtension.git&apos;, :tag =&gt; spec.version }
+
+spec.source_files          = &quot;SGExtension/**/{*.h,*.m}&quot;
+
+spec.resources             = &quot;SGExtension/source.bundle&quot;
+
+spec.frameworks            = &apos;UIKit&apos;
+
+spec.library               = &apos;z&apos;
+
+spec.requires_arc          = true
+
+end
+</code></pre><p>解释下每行的意思:</p>
+<ul>
+<li><p>spec.name</p>
+<p>  名字，pod search 搜索的关键词,注意这里一定要和.podspec的名称一样,否则报错</p>
+</li>
+<li><p>spec.version</p>
+<p>  版本号</p>
+</li>
+<li><p>spec.ios.deployment_target</p>
+<p>  支持的ios最低版本</p>
+</li>
+<li><p>spec.license</p>
+<p>  许可证,一般MIT,这里提醒一下,根目录下必须要有LICENSE这个文件,可以直接把我项目中的copy一份,改下作者名字即可.一般github创建仓库的时候可以选择许可为MIT,会自动帮你生成该文件.</p>
+</li>
+<li><p>spec.homepage</p>
+<p>  项目主页地址,要求必须能访问</p>
+</li>
+<li><p>spec.author</p>
+<p>  作者信息</p>
+</li>
+<li><p>spec.summary</p>
+<p>  项目简介</p>
+</li>
+<li><p>spec.source</p>
+<p>  项目的地址,填上项目的github地址,tag =&gt; spec.version表示git项目的tag值与上面的spec的版本一致,这里是  1.0.2 .</p>
+</li>
+<li><p>spec.source_files</p>
+<p>  项目源文件,主要是.h和.m文件,</p>
+<p>  *表示匹配所有文件<br>  {.h,.m} 表示匹配所有以.h和.m结尾的文件<br>  ** 表示匹配所有子目录,以及递归子目录</p>
+</li>
+<li><p>spec.resources</p>
+<p>  项目所需的资源文件,比如图片</p>
+</li>
+<li><p>spec.frameworks</p>
+<p>  项目的依赖框架,比如UIKit,不需要后缀名</p>
+</li>
+<li><p>spec.library</p>
+<p>  项目依赖的库文件(这个是系统的库文件),不需要后缀名,比如sqlite,libz等.以lib开头的需要省略掉lib这三个字母.例如:libz需要简写为z否则报错.</p>
+</li>
+<li><p>spec.requires_arc</p>
+<p>  是否是arc,一般true</p>
+</li>
+</ul>
+<p>如果你的项目依赖了别的pod项目,可以这样写:</p>
+<pre><code>spec.dependency = &apos;AFNetworking&apos;
+</code></pre><p>提交代码,并打上tag</p>
+<pre><code>//提交代码
+git push
+
+//打tag
+git tag 1.0.2
+
+//将tag推送到远端
+git push origin --tags
+</code></pre><h2 id="验证podspec文件"><a href="#验证podspec文件" class="headerlink" title="验证podspec文件"></a>验证podspec文件</h2><pre><code>pod spec lint SGExtemnsion.podspec
+</code></pre><p>这一步如果报错,根据错误自行修改,根据大致意思能看出来个大概,终端会给出哪一行出错了.一般就是语法错误,资源找不到,git地址不对或者不能访问.指定的文件如{.h,.m}找不到,一般再检查检查基本没问题.</p>
+<h2 id="注册trunk-并提交spec文件cocoapods仓库"><a href="#注册trunk-并提交spec文件cocoapods仓库" class="headerlink" title="注册trunk,并提交spec文件cocoapods仓库"></a>注册trunk,并提交spec文件cocoapods仓库</h2><ul>
+<li><p>注册chunk,查看是否注册过</p>
+<pre><code>pod trunk me
+</code></pre></li>
+<li><p>如果没有注册,那么注册:</p>
+<pre><code>pod trunk register 747616044@qq.com &quot;iOSSinger&quot;
+</code></pre></li>
+</ul>
+<p>填上邮箱 和 用户名就可以了.注册完成之后会给你的邮箱发个邮件,进入邮箱邮件里面有个链接,需要点击确认一下.然后再查看下是否注册成功:</p>
+<pre><code>pod trunk me
+</code></pre><ul>
+<li><p>提交spec文件到 CocoaPods 中心仓库</p>
+<pre><code>pod trunk push SGExtension.podspec
+</code></pre></li>
+</ul>
+<p>如果前面都没问题,这一步基本也没啥问题.不过网速比较慢可能要等很久,这一步建议翻墙,不然有可能真的很慢.</p>
+<p>然后验证一下,是否可以查到</p>
+<pre><code>pod search SGExtension
+</code></pre><p>如果能够查到,恭喜你 !,如果查不到,往下看</p>
+<ul>
+<li>解决方案:</li>
+</ul>
+<pre><code>* 查看上一步(提交到代码仓库)是否成功,再次执行提交:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk push SGExtension.podspec</span><br></pre></td></tr></table></figure>
+
+如果出现如下信息:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Unable to accept duplicate entry for: SGExtension (1.0.2)</span><br></pre></td></tr></table></figure>
+
+那么说明已经提交到cocoapods仓库成功,那么有可能就是本地仓库没有更新.更新本地仓库:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo update</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>再次执行 pod search SGExtension 命令,如果还搜索不到,继续往下看:</p>
+<pre><code>rm ~/Library/Caches/CocoaPods/search_index.json
+</code></pre><p>这句话是移除已经生成的搜索目录缓存文件,移除之后,执行pod search会重新生成一份最新的缓存列表,基本到这里就差不多了.</p>
+</li>
+<li><p>如果还有问题,那就需要终极大招,但是不推荐用,时间很长,除非翻墙.</p>
+<pre><code>pod repo remove master  
+pod setup
+</code></pre><p>或者</p>
+<pre><code>sudo rm -fr ~/.cocoapods/repos/master
+pod setup
+</code></pre><p>这两种写法的意思都是移除本地cocoapods仓库,重新从官网拉取一遍.可能时间比较长,所以不建议用,如果网速度快可以考虑使用,也可以翻墙.整个仓库打下大约500M+(截止当前时间).</p>
+</li>
+</ul>
+<h2 id="集成到项目中试试"><a href="#集成到项目中试试" class="headerlink" title="集成到项目中试试"></a>集成到项目中试试</h2><pre><code>target &apos;项目名&apos; do
+pod &apos;SGExtension&apos;
+end
+</code></pre><h2 id="多人共同维护你的开源项目"><a href="#多人共同维护你的开源项目" class="headerlink" title="多人共同维护你的开源项目"></a>多人共同维护你的开源项目</h2><p>如果需要多个人维护一个库,每个人都应该有权限push提交spec文件;第一个push的人可以被认为是管理员,可以再添加子管理员,这样子管理员就有权限push了</p>
+<pre><code>pod trunk add-owner 邮箱地址
+</code></pre><p>移除某个管理员</p>
+<pre><code>pod trunk remove-owner 邮箱地址
+</code></pre><h2 id="pod-lib-lint-和-pod-spec-lint-有什么区别"><a href="#pod-lib-lint-和-pod-spec-lint-有什么区别" class="headerlink" title="pod lib lint 和 pod spec lint 有什么区别"></a>pod lib lint 和 pod spec lint 有什么区别</h2><ul>
+<li>pod lib lint 不需要联网</li>
+<li>pod spec lint 会联网检查sepc repo,并且关联tag</li>
+</ul>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="http://www.jianshu.com/p/1f70f1176727" target="_blank" rel="noopener">cocoapods系列教程—让自己的开源框架支持cocoapods</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>参考:<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank" rel="noopener">http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
         </p>
       
 
@@ -1632,11 +1632,11 @@ git clean -df
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1782,11 +1782,11 @@ Author: John Smith
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1830,19 +1830,19 @@ Author: John Smith
 
 
   
-    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-why-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-why-git/">【译文】为什么要选择Git</a>
     </h1>
   
 
         
-        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
+        <a href="/2017/04/02/2017-04-02-why-git/" class="archive-article-date">
   	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
@@ -1850,28 +1850,58 @@ Author: John Smith
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
-<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
-<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
-<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
-<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
-<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
-<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
-<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
-<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
-<ol>
-<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:dbdec37b-f619-456e-aca4-a1689a08b5f3/hero.svg?cdnVersion=dt" alt=""></p>
+<p>从集中版本控制系统切换到Git会改变开发团队开发软件的方式。而且，如果您是依赖其关键任务应用的软件的公司，更改开发流将影响整个业务。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fe39ef08-ff6a-4603-adc6-fcfc78035a50/01.svg?cdnVersion=dt" alt="组织发展"></p>
+<p>在本文中，我们将讨论Git如何在各个方面为公司组织带来益处，从您的开发团队到您的营销团队，及其他。在本文结尾，应该很清楚，Git不仅仅适合<a href="https://www.atlassian.com/agile/developer" target="_blank" rel="noopener">敏捷软件开发</a> - 它适合用于敏捷业务。</p>
+<h2 id="Git可以为开发者带来什么"><a href="#Git可以为开发者带来什么" class="headerlink" title="Git可以为开发者带来什么"></a>Git可以为开发者带来什么</h2><h3 id="功能分支工作流"><a href="#功能分支工作流" class="headerlink" title="功能分支工作流"></a>功能分支工作流</h3><p>Git的最大优点之一是其分支功能。与集中版本控制系统不同，Git分支使用容易而且易于合并。这有助于功能分支工作流再许多Git用户中流行。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fcad863b-e0da-4a55-92ee-7caf4988e34e/02.svg?cdnVersion=dt" alt="功能分支工作流程"></p>
+<p>功能分支为您的代码库的每个更改提供了一个孤立的环境。当开发人员想要开始工作时，无论大小还是小，都可以创建一个新的分支。这样可以确保主分支始终是产品级质量代码。</p>
+<p>使用功能分支不仅比直接编辑生产代码更可靠，而且还提供结构化的优点。他们让您可以和您的<a href="https://www.atlassian.com/agile/backlogs" target="_blank" rel="noopener">敏捷待办事项</a>使用相同的粒度来代表开发工作。例如，您可以实施一个策略，其中每个<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>票证可以在自己的功能分支中找到。</p>
+<h3 id="分布式开发"><a href="#分布式开发" class="headerlink" title="分布式开发"></a>分布式开发</h3><p>在SVN中，每个开发人员都获得一个指向一个中央仓库的工作副本。然而，Git是分布式版本控制系统。每个开发人员不用工作副本，而是获取自己的本地仓库，并具有完整的提交历史记录。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:9d51f0ee-5946-4be2-886c-ff040ef8c1a1/03.svg?cdnVersion=dt" alt="分布式开发"></p>
+<p>拥有完整的本地历史使Git更快，因为这意味着您不需要网络连接就能创建提交，检查文件的先前版本，或者在提交之间执行差异。</p>
+<p>分布式开发还可以让你更轻松地扩展您的工程团队。如果有人破坏了SVN的生产分支，其他开发人员在修复问题之前就无法检查它们的更改。使用Git，这种阻塞就不会存在。每个人都可以继续在自己的本地仓库中进行开发。</p>
+<p>而且，与功能分支类似，分布式开发创造了一个更可靠的环境。即使一个开发人员删除了自己的仓库，他们也可以简单地克隆别人，重新开始。</p>
+<h3 id="合并申请"><a href="#合并申请" class="headerlink" title="合并申请"></a>合并申请</h3><p>许多源代码管理工具，比如<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>，可以通过合并申请增强核心的Git功能。合并申请用来要求另一开发人员将您的一个分支合并到其仓库中的一种方式。这不仅使项目管理者能够更轻松地跟踪变更情况，还可以让开发人员在将其与其他代码集成在一起之前展开讨论。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:92c7f92c-cafb-4254-ab40-0b91821d3fd0/04.svg?cdnVersion=dt" alt="合并申请"></p>
+<p>由于它们本质上是附加到功能分支的注释，所以合并申请有很多作用。当开发者遇到困难的问题时，他们可以打开一个合并申请，要求其他团队的帮助。或者，初级开发人员可以放心，通过将合并申请视为正式代码审查，他们不会破坏整个项目。</p>
+<h3 id="社区支持"><a href="#社区支持" class="headerlink" title="社区支持"></a>社区支持</h3><p>在许多方面，Git已经成为新项目的版本控制系统的标配。如果您的团队正在使用Git，您可能无需在工作流程上培训新员工，因为他们已经熟悉分布式开发。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:60fb4158-0c3e-4f1b-a932-fb4e8a660ee4/05.svg?cdnVersion=dt" alt="Git社区"></p>
+<p>另外，Git在开源项目中非常受欢迎。这意味着轻松利用第三方库的优势，并鼓励其他人分享自己的开源代码。</p>
+<h3 id="更快的释放周期"><a href="#更快的释放周期" class="headerlink" title="更快的释放周期"></a>更快的释放周期</h3><p>功能分支，分布式开发，合并申请和稳定社区带来的最终结果是项目更快的发布周期。这些功能有助于<a href="https://www.atlassian.com/agile/workflow" target="_blank" rel="noopener">敏捷开发工作流</a>，鼓励开发人员更频繁地分享更小的更改。相应地，相比集中式版本控制系统，修改可以更快地发布。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:4263b82f-e177-47d4-a587-dab97a20334d/06.svg?cdnVersion=dt" alt="更快的释放周期"></p>
+<p>正如您所期望的那样，Git在持续集成和持续交付环境中工作得很好。Git钩子允许您在仓库内部发生某些事件时运行脚本，从而使您可以自动部署到您核心内容。您甚至可以将代码从特定的分支部署到不同的服务器。</p>
+<p>例如，您可能希望配置Git，以便每当任何人将pull请求合并到其中时，将最新的提交从开发分支部署到测试服务器。将这种构建自动化与同行审查相结合，意味着您可以对代码从开发转移到生产发布准备阶段，可以有很高信任度。</p>
+<h2 id="Git可以为市场营销带来什么"><a href="#Git可以为市场营销带来什么" class="headerlink" title="Git可以为市场营销带来什么"></a>Git可以为市场营销带来什么</h2><p>要了解切换到Git会如何影响您公司的市场营销活动，请假设您的开发团队预计在未来几周内完成三个重要的修改：</p>
+<ul>
+<li><p>整个团队正在完成他们在过去6个月中一直在努力的重大的功能。</p>
 </li>
-<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
+<li><p>玛丽正在实施一个更小，不相关的功能，只会影响现有客户。</p>
 </li>
-</ol>
-<ol start="3">
-<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
-<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
+<li><p>Rick正在对用户界面进行一些非常需要的更新。</p>
+</li>
+</ul>
+<p>如果您使用集中式VCS这种传统开发工作流程，则所有这些更改都可能会包含在单个版本中。市场营销部门只能发布那个重大功能的公告，其他两个更新的作用就会被忽略掉。</p>
+<p>Git非常适用于更短的开发周期，这使得我们可以将它们轻易地分成多个发布版本。这让市场营销人员可以有更多和更频繁的宣传机会。在上述情况下，市场营销可以构建围绕每个功能，针对特定的细分市场，推出三个活动。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:452591fb-9c9d-4a94-a262-671e146fe869/07.svg?cdnVersion=dt" alt="Git营销"></p>
+<p>例如，他们可能为重大功能准备一个大型的PR推送，为玛丽开发的功能写一篇公司博客文章和简报，以及一些关于Rick的底层UX理论的文章发送到外部设计博客上。所有这些活动可以与单独的版本同步发布。</p>
+<h2 id="Git可以为产品管理带来什么"><a href="#Git可以为产品管理带来什么" class="headerlink" title="Git可以为产品管理带来什么"></a>Git可以为产品管理带来什么</h2><p>Git对产品管理的好处与营销大致相同。更频繁的发布意味着更频繁的客户反馈和更快的更新反馈。您可以在开发人员编写完代码之后尽快将解决方案推送给客户，而不是等待8周之后的下一个版本。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1c1cc48f-324a-4aaa-9a54-58ab93a7d219/08.svg?cdnVersion=dt" alt="优先管理git工作流程"></p>
+<p>当优先级更改时，功能分支工作流还提供了足够的灵活性。例如，如果您在发布周期中途，并且想要推迟一个功能，而代替加入另一个时间紧迫的功能，那没有问题。这个推迟的功能可以保留在自己的分支中，直到工程需要它的时候再用。</p>
+<p>同样的功能使得管理创新项目，版本测试项目和快速原型作为独立代码库变得容易。</p>
+<h2 id="Git可以为设计师带来什么"><a href="#Git可以为设计师带来什么" class="headerlink" title="Git可以为设计师带来什么"></a>Git可以为设计师带来什么</h2><p>功能分支可以快速响应设计原型。无论您的UX / UI设计人员想要实现一个完整的用户流程还是简单地替换一些图标，切换到一个新的分支可以让他们在独立地沙箱环境中进行。这样，设计人员可以在产品的真实工作副本中看到他们修改的变化，而这不会破坏现有的功能。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6521263d-9cd5-4705-89d7-769f0d286fa4/09.svg?cdnVersion=dt" alt="Git非破坏性版本"></p>
+<p>封装这样的用户界面更改可以容易地向其他利益相关者提供更新。例如，如果工程总监想看看设计团队做了什么，他们所要做的就是告诉主管切换到相应的分支。</p>
+<p>合并申请进一步带来好处，为有兴趣的各方讨论新界面提供正式的地方。设计师可以进行任何必要的更改，生成的提交将显示在合并申请中，这可以让大家参与迭代过程。</p>
+<p>也许为原型提供不同分支最大的好处就是将变更合并到生产中就像将其抛弃一样容易，这没有任何压力。这鼓励设计师和UI开发人员进行实验，同时确保只有最好的想法才能提供给客户。</p>
+<h2 id="Git为客户支持带来什么"><a href="#Git为客户支持带来什么" class="headerlink" title="Git为客户支持带来什么"></a>Git为客户支持带来什么</h2><p>客户支持和客户成功往往与产品经理不同。当客户打电话时，他们通常会遇到某种问题。如果这个问题是由您公司的软件造成的，那么需要尽快推出一个错误修复。</p>
+<p>Git流线型开发周期避免了耽误错误修复，而不用等到下一次大型版本。开发人员可以修补问题并将其直接推送到生产。更快的修复问题意味着让客户更容易满足和更少的重复问题。而不是左右为难，“对不起，我们正在处理”，现在您的客户支持团队可以开始回应“我们已经解决了！“</p>
+<h2 id="Git为人力资源带来什么"><a href="#Git为人力资源带来什么" class="headerlink" title="Git为人力资源带来什么"></a>Git为人力资源带来什么</h2><p>在一定程度上，您的软件开发工作流程决定了您雇用的人员。我们要聘请熟悉您的技术和工作流程的工程师，但使用Git也提供了其他优势。</p>
+<p>员工被吸引到提供职业发展机会的公司，这个公司熟悉如何在大型和小型组织中利用Git的优势，这对任何程序员都是一种福音。通过选择Git作为您的版本控制系统，这个决定可以帮助你吸引具有前瞻性的优秀开发人员。</p>
+<h2 id="Git为管理预算带来什么"><a href="#Git为管理预算带来什么" class="headerlink" title="Git为管理预算带来什么"></a>Git为管理预算带来什么</h2><p>Git提升效率。对于开发人员来说，它消除了在集中版本控制系统中，在网络上传输提交到合并修改浪费的时间。它甚至通过给初级开发者一个安全的独立工作环境而让项目更安全，这一切都会影响你的工程部门的底线。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:c5db1ef6-ae40-46cc-8408-c0f9e0b53a84/10.svg?cdnVersion=dt" alt="Git分布式团队"></p>
+<p>但是，不要忘记，这些效率也在开发团队之外。它避免市场营销对不受欢迎的功能投入人力。他们让设计师先于实际产品测试新的界面。他们让你的团队立即对客户的投诉做出响应。</p>
+<p>敏捷意味着尽可能找到有效的工作，放大带来成功的努力，消除那些不成功的工作。通过确保每个部门都能更有效地开展工作，Git成为公司所有业务活动的倍增效益的因素。</p>
 
       
 
@@ -1885,11 +1915,11 @@ Author: John Smith
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1903,7 +1933,7 @@ Author: John Smith
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-why-git/">展开全文 >></a>
         </p>
       
 
@@ -2017,11 +2047,11 @@ git commit
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -2198,14 +2228,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -2222,6 +2244,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
@@ -2231,30 +2261,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2270,6 +2276,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
@@ -2278,19 +2296,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2303,6 +2325,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2322,22 +2352,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
@@ -2346,7 +2360,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2374,6 +2404,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
@@ -2391,14 +2429,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2438,26 +2468,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
@@ -2470,6 +2480,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
               </li>
              
@@ -2478,15 +2508,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2526,15 +2556,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2542,7 +2572,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2558,19 +2588,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">中国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
              
               <li class="article-tag-list-item">
