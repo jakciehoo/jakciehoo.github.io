@@ -400,522 +400,6 @@
 
 
   
-    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/">CocoaPods从入门到精通(一)：CocoaPods基础</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/" class="archive-article-date">
-  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="CocoaPods入门"><a href="#CocoaPods入门" class="headerlink" title="CocoaPods入门"></a>CocoaPods入门</h2><h3 id="CocoaPods是什么"><a href="#CocoaPods是什么" class="headerlink" title="CocoaPods是什么"></a>CocoaPods是什么</h3><p>CocoaPods是一个用来管理Xcode项目依赖库的工具。</p>
-<p>你的项目依赖库需要被详细列在一个叫Profile的文件中。CocoaPods将帮我们解决libraries之间的依赖关系、获取目标库的源码、并将它链接到Xcode workspace中来构建你的项目。<br>最终目标是通过建立一个查找效率更高、更规范的第三方开源库生态系统。</p>
-<h4 id="安装CocoaPods"><a href="#安装CocoaPods" class="headerlink" title="安装CocoaPods"></a>安装CocoaPods</h4><p>CocoaPods是基于Ruby开发的，通过OS X 默认可用的Ruby安装。</p>
-<pre><code>$ sudo gem install cocoapods
-</code></pre><p>在安装过程中遇到任何问题，请查看<a href="https://guides.cocoapods.org/using/troubleshooting#installing-cocoapods" target="_blank" rel="noopener">此处</a>。</p>
-<h4 id="升级CocoaPods"><a href="#升级CocoaPods" class="headerlink" title="升级CocoaPods"></a>升级CocoaPods</h4><p>只要再执行安装gem命令就可以升级你的CocoaPods</p>
-<pre><code>$ [sudo] gem install cocoapods // 正式发布版本
-</code></pre><p>可以使用如下命令来更新到预发布版本，如果预发布版本存在的话</p>
-<pre><code>$ [sudo] gem install cocoapods --pre // 预发布版本
-</code></pre><p>如果你在安装时使用了sudo，那你应该再次使用这个命令。</p>
-<p>之后，在你使用Cocoapods安装依赖库的时候，如果有新版CocoaPods时，你就会收到通知告知你CocoaPods X.X.X已经用了，请更新的信息。</p>
-<h2 id="使用CocoaPods"><a href="#使用CocoaPods" class="headerlink" title="使用CocoaPods"></a>使用CocoaPods</h2><h3 id="在已有项目中使用CocoaPods"><a href="#在已有项目中使用CocoaPods" class="headerlink" title="在已有项目中使用CocoaPods"></a>在已有项目中使用CocoaPods</h3><h5 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h5><ol>
-<li>已经安装CocoaPods</li>
-<li>通过Specs仓库或cocoapods.org确定将要被引用的资源是可用的</li>
-</ol>
-<p>第一步、创建Podfile文件，并添加依赖库。</p>
-<pre><code>target &apos;MyApp&apos; do
-      pod &apos;AFNetworking&apos;, &apos;~&gt; 3.0&apos;
-
-      pod &apos;FBSDKCoreKit&apos;, &apos;~&gt; 4.9&apos;
-end
-</code></pre><p>第二步、终端进入Podfile文件所在目录，运行pod install</p>
-<pre><code>pod install
-</code></pre><p>第三步、打开新生成的**.xcworkspace文件，继续开发。</p>
-<h3 id="使用CocoaPods创建一个新项目"><a href="#使用CocoaPods创建一个新项目" class="headerlink" title="使用CocoaPods创建一个新项目"></a>使用CocoaPods创建一个新项目</h3><p>使用CocoaPods创建一个新项目，步骤如下：</p>
-<p>第一步、正常创建一个项目</p>
-<p>第二步、通过终端进入项目目录。 </p>
-<pre><code>$ cd your project directory
-</code></pre><p>第三步、创建Podfile。</p>
-<pre><code>$ pod init
-</code></pre><p>第四步、创建Podfile，可以通过<strong>pod init</strong>命令创建。</p>
-<pre><code>$ pod init
-</code></pre><ul>
-<li><p>首先 输入平台及版本，如：platform :ios, ‘9.0’</p>
-</li>
-<li><p>其次 指定项目。以target ‘$TARGET_NAME’ do开始，以end结束。</p>
-</li>
-<li>而后 添加依赖资源。<strong>pod ‘$PODNAME’</strong></li>
-</ul>
-<pre><code>target &apos;MyApp&apos; do
-
-      pod &apos;ObjectiveSugar&apos;
-
-end
-</code></pre><p>第五步、保存Podfile，终端运行 </p>
-<pre><code>$ pod install
-</code></pre><p>第六步、打开新创建的 MyApp.xcworkspace文件，以后每次打开项目都是这种方式。</p>
-<h3 id="在已有workspace中使用CocoaPods"><a href="#在已有workspace中使用CocoaPods" class="headerlink" title="在已有workspace中使用CocoaPods"></a>在已有workspace中使用CocoaPods</h3><p>在Podfile文件中加入一行信息，指定workspace。</p>
-<pre><code>workspace &apos;MyWorkspace&apos;
-</code></pre><h2 id="什么时候使用pod-install-什么时候使用pod-update？"><a href="#什么时候使用pod-install-什么时候使用pod-update？" class="headerlink" title="什么时候使用pod install 什么时候使用pod update？"></a>什么时候使用<em>pod install</em> 什么时候使用<em>pod update</em>？</h2><p>很多人对于什么时候使用<em>pod install</em> 什么时候使用<em>pod update</em>有困惑，尤其当本该使用<em>pod install</em>的时候他们却使用了<em>pod update</em>。</p>
-<p>你可以在<a href="https://guides.cocoapods.org/using/pod-install-vs-update.html" target="_blank" rel="noopener">这篇专题文章</a>中找到具体解释何时使用他们，并且使用他们的目的。</p>
-<h3 id="是否需要将Pods目录加入代码版本管理？"><a href="#是否需要将Pods目录加入代码版本管理？" class="headerlink" title="是否需要将Pods目录加入代码版本管理？"></a>是否需要将Pods目录加入代码版本管理？</h3><p>是否将你的Pods文件夹加入版本管理取决于你，因为每个项目的工作流是不同的。我们建议你将Pods目录进行版本控制，不要把它加入到.gitignore文件中，但是最终这取决于你。</p>
-<h4 id="将Pods目录加入版本管理的好处"><a href="#将Pods目录加入版本管理的好处" class="headerlink" title="将Pods目录加入版本管理的好处"></a>将Pods目录加入版本管理的好处</h4><ul>
-<li><p>在科隆仓库后，项目可以立即被构建和运行，甚至不需要在本机上安装CocoaPods。不需要运行pod install，也不需要网络。</p>
-</li>
-<li><p>pod里的工具（代码和库）都是可用的，即便一个pod的源连接不上。</p>
-</li>
-<li><p>在科隆后可以确保Pod里的工具跟执行过pod install的人的一模一样。</p>
-</li>
-</ul>
-<h3 id="忽略Pods目录的好处"><a href="#忽略Pods目录的好处" class="headerlink" title="忽略Pods目录的好处"></a>忽略Pods目录的好处</h3><ul>
-<li><p>版本控制仓库占用的磁盘空间更少更小。</p>
-</li>
-<li><p>当所有的pods可以使用时，CocoaPods将可以再次创建相同的安装。（技术上当在Podfile中不使用提交SHA值的时候不能确保执行pod install命令将获取或者重新创建一样的工具）</p>
-</li>
-<li><p>当执行版本控制操作时不会有任何冲突，比如在不同pod版本中执行合并分支。</p>
-</li>
-</ul>
-<p>无论是否加入版本管理，Podfile和Podfile.lock都应当加入版本控制。</p>
-<h2 id="What-is-Podfile-lock"><a href="#What-is-Podfile-lock" class="headerlink" title="What is Podfile.lock?"></a>What is Podfile.lock?</h2><p>当第一次执行pod install的时候会生成这个文件，它会跟踪已经安装的每个pod，比如，下面的依赖列在Podfile里：</p>
-<pre><code>pod &apos;RestKit&apos;
-</code></pre><p>执行pod install命令将安装当前版本的RestKit，并生成Podfile.lock并列出确切安装的版本（比如 RestKit 0.10.3）。多亏podifle.lock,这样我们随后在其他机器上执行pod install会安装 RestKit 0.10.3，即便有其他的新版本可以使用。CocoaPods将会在Podfile.lock中标记Pod版本，除非在podfile里更新了依赖或者执行了pod update命令（它将生成的新的Podfile.lock）。通过这个方式CocoaPods避免了意外的依赖更改导致的问题。</p>
-<h2 id="使用CocoaPods时，背后究竟发生了什么"><a href="#使用CocoaPods时，背后究竟发生了什么" class="headerlink" title="使用CocoaPods时，背后究竟发生了什么"></a>使用CocoaPods时，背后究竟发生了什么</h2><p>在Xcode中，直接可以引用ruby源，它将:</p>
-<ol>
-<li>创建并更新一个workspace.</li>
-<li>如果需要的话将你的项目加入到workspace。</li>
-<li>如果需要将CocoaPods静态库项目加入到workspace。</li>
-<li>将libPods.a添加到库的<em>targets =&gt; build phases =&gt; link</em>。</li>
-<li>将CocoaPods的Xcode配置添加到你的app’s项目中。</li>
-<li>修改你APP项目的target配置为基于CocoaPod的。</li>
-<li>将你安装的到你APP项目的所有的pod中的资源文件拷贝添加到build phase。比如其他<em>build phase</em>后的<em>‘Script build phase’</em>，如下：<ul>
-<li>Shell: /bin/sh</li>
-<li>Script: ${SRCROOT}/Pods/PodsResources.sh</li>
-</ul>
-</li>
-</ol>
-<p>Note that steps 3 onwards are skipped if the CocoaPods static library is already in your project. This is largely based on Jonah Williams’ work on Static Libraries.</p>
-<p>注意上面的步骤3将会被跳过，如果CocoaPods静态库已经在你的项目的话，这很大一部分是由Jonah Williams处理<a href="http://blog.carbonfive.com/2011/04/04/using-open-source-static-libraries-in-xcode-4/" target="_blank" rel="noopener">静态库</a>的方式导致。</p>
-<h2 id="从子模块迁移到Pods"><a href="#从子模块迁移到Pods" class="headerlink" title="从子模块迁移到Pods"></a>从子模块迁移到Pods</h2><p>CocoaPods和git 子模块都是为了解决相似的问题。他们都致力于简化第三方库代码的处理流程。子模块指向某个项目的特定提交，然而CocoaPods则和版本了的开发者发布版关联在一起。</p>
-<h3 id="从子模块切换到CocoaPods"><a href="#从子模块切换到CocoaPods" class="headerlink" title="从子模块切换到CocoaPods"></a>从子模块切换到CocoaPods</h3><p>在你决定是否完全切换到CocoaPods时，确保你当前使用的库可用。记录你当前使用的库的版本想法的对的。这样你可以使用一样的库来初始化CocoaPods。最好逐步使用他们，通过一个依赖一个依赖去做而不是一个大的改变。</p>
-<ol>
-<li>如果你没有安装CocoaPods的话先安装一下。</li>
-<li>创建Podfile文件。</li>
-<li>移除子模块的引用。</li>
-<li>在Podfile中添加删除库的引用</li>
-<li>执行<em>pod install</em></li>
-</ol>
-<h2 id="Podfile文件精讲"><a href="#Podfile文件精讲" class="headerlink" title="Podfile文件精讲"></a>Podfile文件精讲</h2><p>Podfile文件是描述一个或者多个Xcode项目target的依赖的详细说明。这个文件必须命名为Podfile。下文和之前的的例子是基于CocoaPods 1.0版本。</p>
-<h4 id="一个简单的podfile文件"><a href="#一个简单的podfile文件" class="headerlink" title="一个简单的podfile文件"></a>一个简单的podfile文件</h4><pre><code>target &apos;MyApp&apos; do
-  pod &apos;AFNetworking&apos;, &apos;~&gt; 3.0&apos;
-end
-</code></pre><h4 id="一个复杂的podfile文件管理一个APP和他一个测试工程-bundle"><a href="#一个复杂的podfile文件管理一个APP和他一个测试工程-bundle" class="headerlink" title="一个复杂的podfile文件管理一个APP和他一个测试工程(bundle)"></a>一个复杂的podfile文件管理一个APP和他一个测试工程(bundle)</h4><pre><code>source &apos;https://github.com/CocoaPods/Specs.git&apos;
-source &apos;https://github.com/Artsy/Specs.git&apos;
-
-platform :ios, &apos;9.0&apos;
-inhibit_all_warnings!
-
-target &apos;MyApp&apos; do
-  pod &apos;GoogleAnalytics&apos;, &apos;~&gt; 3.1&apos;
-
-  # Has it&apos;s own copy of OCMock
-  # and has access to GoogleAnalytics via the app
-  # that hosts the test target
-
-  target &apos;MyAppTests&apos; do
-    inherit! :search_paths
-    pod &apos;OCMock&apos;, &apos;~&gt; 2.0.1&apos;
-  end
-end
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    puts target.name
-  end
-end
-</code></pre><h4 id="如果你希望使用多个target来分享同一个pods，可以使用abstract-target。"><a href="#如果你希望使用多个target来分享同一个pods，可以使用abstract-target。" class="headerlink" title="如果你希望使用多个target来分享同一个pods，可以使用abstract_target。"></a>如果你希望使用多个target来分享同一个pods，可以使用abstract_target。</h4><pre><code>使用abstract_target
-# There are no targets called &quot;Shows&quot; in any Xcode projects
-abstract_target &apos;Shows&apos; do
-  pod &apos;ShowsKit&apos;
-  pod &apos;Fabric&apos;
-
-  # Has it&apos;s own copy of ShowsKit + ShowWebAuth
-  target &apos;ShowsiOS&apos; do
-    pod &apos;ShowWebAuth&apos;
-  end
-
-  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
-  target &apos;ShowsTV&apos; do
-    pod &apos;ShowTVAuth&apos;
-  end
-end
-</code></pre><h4 id="在Podfile根下包含一个抽象的target，因此你也可以这样写："><a href="#在Podfile根下包含一个抽象的target，因此你也可以这样写：" class="headerlink" title="在Podfile根下包含一个抽象的target，因此你也可以这样写："></a>在Podfile根下包含一个抽象的target，因此你也可以这样写：</h4><pre><code>pod &apos;ShowsKit&apos;
-pod &apos;Fabric&apos;
-
-# Has it&apos;s own copy of ShowsKit + ShowWebAuth
-target &apos;ShowsiOS&apos; do
-  pod &apos;ShowWebAuth&apos;
-end
-
-# Has it&apos;s own copy of ShowsKit + ShowTVAuth
-target &apos;ShowsTV&apos; do
-  pod &apos;ShowTVAuth&apos;
-end
-</code></pre><h4 id="从0-x到1-0的迁移"><a href="#从0-x到1-0的迁移" class="headerlink" title="从0.x到1.0的迁移"></a>从0.x到1.0的迁移</h4><p>另外一篇<a href="http://blog.cocoapods.org/CocoaPods-1.0/" target="_blank" rel="noopener">文章</a>深度讲解这个。</p>
-<h4 id="具体给出pod版本"><a href="#具体给出pod版本" class="headerlink" title="具体给出pod版本"></a>具体给出pod版本</h4><pre><code>pod &apos;Objection&apos;, &apos;0.9&apos;
-</code></pre><ul>
-<li>‘&gt; 0.1’ 大于0.1的版本，不包括0.1版本</li>
-<li>‘&gt;= 0.1’ 大于等于0.1的版本</li>
-<li>‘&lt; 0.1’ 小于0.1的版本，不包括0.1版本</li>
-<li>‘&lt;= 0.1’ 小于等于0.1的版本</li>
-<li>‘~&gt; 0.1.2’ 相当于’&gt;= 0.1.2 且 ‘&lt; 0.2.0’</li>
-<li>‘~&gt; 0.1’ 相当于’&gt;= 0.1 且 ‘&lt; 1.0’</li>
-<li>‘~&gt; 0’ 相当于不写，即最新版本</li>
-</ul>
-<h4 id="使用本地路径下的文件"><a href="#使用本地路径下的文件" class="headerlink" title="使用本地路径下的文件"></a>使用本地路径下的文件</h4><pre><code>pod &apos;AFNetworking&apos;, :path =&gt; &apos;~/Documents/AFNetworking&apos;
-</code></pre><h4 id="使用库所在仓库根路径下的podspec"><a href="#使用库所在仓库根路径下的podspec" class="headerlink" title="使用库所在仓库根路径下的podspec"></a>使用库所在仓库根路径下的podspec</h4><pre><code>// 使用master分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;
-// 使用指定分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :branch =&gt; &apos;dev&apos;
-// 使用指定tag
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :tag =&gt; &apos;0.7.0&apos;
-// 使用某一次提交
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :commit =&gt; &apos;082f8319a
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">CocoaPods从入门到精通(二)：Podfile语法精讲</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/" class="archive-article-date">
-  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一个简单的Podfile"><a href="#一个简单的Podfile" class="headerlink" title="一个简单的Podfile"></a>一个简单的Podfile</h2><pre><code>target &apos;MyApp&apos;
-pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
-</code></pre><h2 id="一个复杂的Podfile"><a href="#一个复杂的Podfile" class="headerlink" title="一个复杂的Podfile"></a>一个复杂的Podfile</h2><pre><code>platform :ios, &apos;9.0&apos;
-inhibit_all_warnings!
-
-target &quot;MyApp&quot; do
-  pod &apos;ObjectiveSugar&apos;, &apos;~&gt; 0.5&apos;
-
-  target &quot;MyAppTests&quot; do
-    inherit! :search_paths
-    pod &apos;OCMock&apos;, &apos;~&gt; 2.0.1&apos;
-  end
-end
-
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    puts &quot;#{target.name}&quot;
-  end
-end
-</code></pre><h2 id="根节点配置项"><a href="#根节点配置项" class="headerlink" title="根节点配置项"></a>根节点配置项</h2><h4 id="install"><a href="#install" class="headerlink" title="install!"></a>install!</h4><p>pod install执行时的一些设置。<br>示例：</p>
-<pre><code>install! &apos;cocoapods&apos;,
-:deterministic_uuids =&gt; false,
-:integrate_targets =&gt; false
-</code></pre><p>支持关键字：<br>    :clean<br>    :deduplicate_targets<br>    :deterministic_uuids<br>    :integrate_targets<br>    :lock_pod_sources</p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><h4 id="pod"><a href="#pod" class="headerlink" title="pod"></a>pod</h4><pre><code>// 使用最新版本
-pod &apos;SSZipArchive&apos;
-// 使用指定版本
-pod &apos;Objection&apos;, &apos;0.9&apos;
-‘&gt; 0.1’ 大于0.1的版本，不包括0.1版本
-‘&gt;= 0.1’ 大于等于0.1的版本
-‘&lt; 0.1’ 小于0.1的版本，不包括0.1版本
-‘&lt;= 0.1’ 小于等于0.1的版本
-‘~&gt; 0.1.2’ 相当于&apos;&gt;= 0.1.2 且 ‘&lt; 0.2.0’
-‘~&gt; 0.1’ 相当于&apos;&gt;= 0.1 且 ‘&lt; 1.0’
-‘~&gt; 0’ 相当于不写，即最新版本
-</code></pre><p>编译配置</p>
-<pre><code>// 在Release和App Store模式引用该库
-pod &apos;PonyDebugger&apos;, :configurations =&gt; [&apos;Release&apos;, &apos;App Store&apos;]
-// 在Release模式引用该库
-pod &apos;PonyDebugger&apos;, :configuration =&gt; [&apos;Release&apos;]
-</code></pre><p>Subspecs<br>在使用开源库时，只是用该库的一部分，可是使用如下写法。前提是当前库是支持Subspecs的。</p>
-<pre><code>// 只引用QueryKit的Attribute子库，不包含其它子库
-pod &apos;QueryKit/Attribute&apos;
-// 只引用QueryKit的Attribute和QuerySet子库，不包含其它子库
-pod &apos;QueryKit&apos;, :subspecs =&gt; [&apos;Attribute&apos;, &apos;QuerySet&apos;]
-</code></pre><p>使用本地路径下的文件</p>
-<pre><code>pod &apos;AFNetworking&apos;, :path =&gt; &apos;~/Documents/AFNetworking&apos;
-</code></pre><p>使用已通过认证的repo</p>
-<pre><code>// 使用master分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;
-// 使用指定分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :branch =&gt; &apos;dev&apos;
-// 使用指定tag
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :tag =&gt; &apos;0.7.0&apos;
-// 使用某一次提交
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :commit =&gt; &apos;082f8319af&apos;
-</code></pre><p>指定podspec文件<br>    pod ‘JSONKit’, :podspec =&gt; ‘<a href="https://example.com/JSONKit.podspec&#39;" target="_blank" rel="noopener">https://example.com/JSONKit.podspec&#39;</a></p>
-<h4 id="podspec"><a href="#podspec" class="headerlink" title="podspec"></a>podspec</h4><p>指定需要加载的podspec</p>
-<pre><code>podspec
-podspec :name =&gt; &apos;QuickDialog&apos;
-podspec :path =&gt; &apos;/Documents/PrettyKit/PrettyKit.podspec&apos;
-</code></pre><h4 id="target"><a href="#target" class="headerlink" title="target"></a>target</h4><p>定义一个依赖库与target（Xcode project）的关系。每个target应该对应一个Xcode target。默认情况下，子target的依赖关系是包含父target的，除非指定非继承父target。<br>定义一个target</p>
-<pre><code>target &quot;ZipApp&quot; do
-  pod &apos;SSZipArchive&apos;
-end
-</code></pre><p>在父target中定义SSZipArchive pod，仅支持父target</p>
-<pre><code>target &quot;ZipApp&quot; do
-  pod &apos;SSZipArchive&apos;
-
-  target &quot;ZipAppTests&quot; do
-    inherit! :search_paths
-    pod &apos;Nimble&apos;
-  end
-end
-</code></pre><p>通过在父target中定义target应用Pods支持多个targets</p>
-<pre><code>target &quot;ShowsApp&quot; do
-  pod &apos;ShowsKit&apos;
-
-  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
-  target &quot;ShowsTV&quot; do
-    pod &quot;ShowTVAuth&quot;
-  end
-
-  # Has it&apos;s own copy of Specta + Expecta
-  # and has access to ShowsKit via the app
-  # that the test target is bundled into
-
-  target &quot;ShowsTests&quot; do
-    inherit! :search_paths
-    pod &apos;Specta&apos;
-    pod &apos;Expecta&apos;
-  end
-end
-</code></pre><h4 id="abstract-target"><a href="#abstract-target" class="headerlink" title="abstract_target"></a>abstract_target</h4><p>定义一个abstract_target，方便被所有继承target使用。<br>定义abstract_target</p>
-<pre><code>abstract_target &apos;Networking&apos; do
-  pod &apos;AlamoFire&apos;
-
-  target &apos;Networking App 1&apos;
-  target &apos;Networking App 2&apos;
-end
-</code></pre><p>定义一个abstract_target包含多个targets</p>
-<pre><code># There are no targets called &quot;Shows&quot; in any Xcode projects
-abstract_target &quot;Shows&quot; do
-  pod &apos;ShowsKit&apos;
-
-  # Has it&apos;s own copy of ShowsKit + ShowWebAuth
-  target &quot;ShowsiOS&quot; do
-    pod &quot;ShowWebAuth&quot;
-  end
-
-  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
-  target &quot;ShowsTV&quot; do
-    pod &quot;ShowTVAuth&quot;
-  end
-
-  # Has it&apos;s own copy of Specta + Expecta
-  # and has access to ShowsKit via the app
-  # that the test target is bundled into
-
-  target &quot;ShowsTests&quot; do
-    inherit! :search_paths
-    pod &apos;Specta&apos;
-    pod &apos;Expecta&apos;
-  end
-end
-</code></pre><p>abstract!<br>表示当前target是抽象的，不会与真正的Xcode target挂钩。</p>
-<p>inherit!<br>设置当前target的继承模式。</p>
-<pre><code>// Inheriting only search paths
-target &apos;App&apos; do
-  target &apos;AppTests&apos; do
-    inherit! :search_paths
-  end
-end
-</code></pre><h2 id="Target配置"><a href="#Target配置" class="headerlink" title="Target配置"></a>Target配置</h2><p>这些设置是控制被生成project的CocoaPods。包括指定编译platform、指定链接的xcodeproj。</p>
-<h4 id="platform"><a href="#platform" class="headerlink" title="platform"></a>platform</h4><p>如果不指定，CocosPods将是默认值，当前默认值是：<br>4.3 for iOS, 10.6 for OS X, 9.0 for tvOS and 2.0 for watchOS.<br>如果对系统有要求（iOS &lt; 4.3）,armv6 框架将添加至ARCHS.<br>    platform :ios, “4.0”<br>    platform :ios</p>
-<h4 id="project"><a href="#project" class="headerlink" title="project"></a>project</h4><p>指定当前target链接的project。若未指定，表示target链接与同路径（与podfile文件同路径）下target同名的project。<br>指定用户project</p>
-<pre><code># This Target can be found in a Xcode project called `FastGPS`
-target &quot;MyGPSApp&quot; do
-  project &apos;FastGPS&apos;
-  ...
-end
-
-# Same Podfile, multiple Xcodeprojects
-target &quot;MyNotesApp&quot; do
-  project &apos;FastNotes&apos;
-  ...
-end
-</code></pre><p>有户自定义编译设置</p>
-<pre><code>project &apos;TestProject&apos;, &apos;Mac App Store&apos; =&gt; :release, &apos;Test&apos; =&gt; :debug
-</code></pre><h4 id="xcodeproj"><a href="#xcodeproj" class="headerlink" title="xcodeproj"></a>xcodeproj</h4><p>xcodeproj已在1.0中弃用，并已重命名project。对于1.0版之前的版本xcodeproj。</p>
-<h4 id="link-with"><a href="#link-with" class="headerlink" title="link_with"></a>link_with</h4><p>link_with在1.0中被弃用，使用abstract_target和target继承替代。</p>
-<h4 id="inhibit-all-warnings"><a href="#inhibit-all-warnings" class="headerlink" title="inhibit_all_warnings!"></a>inhibit_all_warnings!</h4><p>禁止CocoaPods库的所有警告。该属性会被子target继承。</p>
-<pre><code>pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true
-pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; false
-</code></pre><h4 id="use-frameworks"><a href="#use-frameworks" class="headerlink" title="use_frameworks!"></a>use_frameworks!</h4><p>用frameworks 替代Pods静态库。该属性被子target继承。</p>
-<h2 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h2><h4 id="workspace"><a href="#workspace" class="headerlink" title="workspace"></a>workspace</h4><p>指定workspace。若未指定，表示是与podfile同路径下，且与target同名的workspace文件。例如：</p>
-<pre><code>workspace &apos;MyWorkspace&apos;
-</code></pre><h4 id="generate-bridge-support"><a href="#generate-bridge-support" class="headerlink" title="generate_bridge_support!"></a>generate_bridge_support!</h4><p>指定应从所有安装的Pod的头文件中生成一个BridgeSupport元数据文档。<br>这是用于脚本语言，如MacRuby， Nu和 JSCocoa，它用于桥接类型，功能等。</p>
-<h4 id="set-arc-compatibility-flag"><a href="#set-arc-compatibility-flag" class="headerlink" title="set_arc_compatibility_flag!"></a>set_arc_compatibility_flag!</h4><p>已经被CocoaPods 1.0放弃。</p>
-<h2 id="Source"><a href="#Source" class="headerlink" title="Source"></a>Source</h2><p>指定资源位置。</p>
-<pre><code>source &apos;https://github.com/artsy/Specs.git&apos;
-source &apos;https://github.com/CocoaPods/Specs.git&apos;
-</code></pre><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><p>Podfile提供在安装期间执行的hooks,hooks是全局的，不存在为单个target定义hook。</p>
-<h4 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h4><p>指定安装期间需要的插件。</p>
-<pre><code>plugin &apos;cocoapods-keys&apos;, :keyring =&gt; &apos;Eidolon&apos;
-plugin &apos;slather&apos;
-</code></pre><h4 id="pre-install"><a href="#pre-install" class="headerlink" title="pre_install"></a>pre_install</h4><p>Hook允许用户在Pods下载完成，但还未安装前对Pods做一些修改。<br>它接受 Pod::Installer 作为唯一的参数.</p>
-<p>在Podfile定义pre-install hook</p>
-<pre><code>pre_install do |installer|
-  # Do something fancy!
-end
-</code></pre><h4 id="post-install"><a href="#post-install" class="headerlink" title="post_install"></a>post_install</h4><p>Hook允许用户在被写入硬盘、或者任何你想做的其它任务之前，对生成的Xcode project做最后的改变。<br>它接受 Pod::Installer 作为唯一的参数.<br>例如：</p>
-<pre><code>Customising the build settings of all targets
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings[&apos;GCC_ENABLE_OBJC_GC&apos;] = &apos;supported&apos;
-    end
-  end
-end
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1473,6 +957,522 @@ end
 
 
   
+    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">CocoaPods从入门到精通(二)：Podfile语法精讲</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/" class="archive-article-date">
+  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="一个简单的Podfile"><a href="#一个简单的Podfile" class="headerlink" title="一个简单的Podfile"></a>一个简单的Podfile</h2><pre><code>target &apos;MyApp&apos;
+pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
+</code></pre><h2 id="一个复杂的Podfile"><a href="#一个复杂的Podfile" class="headerlink" title="一个复杂的Podfile"></a>一个复杂的Podfile</h2><pre><code>platform :ios, &apos;9.0&apos;
+inhibit_all_warnings!
+
+target &quot;MyApp&quot; do
+  pod &apos;ObjectiveSugar&apos;, &apos;~&gt; 0.5&apos;
+
+  target &quot;MyAppTests&quot; do
+    inherit! :search_paths
+    pod &apos;OCMock&apos;, &apos;~&gt; 2.0.1&apos;
+  end
+end
+
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    puts &quot;#{target.name}&quot;
+  end
+end
+</code></pre><h2 id="根节点配置项"><a href="#根节点配置项" class="headerlink" title="根节点配置项"></a>根节点配置项</h2><h4 id="install"><a href="#install" class="headerlink" title="install!"></a>install!</h4><p>pod install执行时的一些设置。<br>示例：</p>
+<pre><code>install! &apos;cocoapods&apos;,
+:deterministic_uuids =&gt; false,
+:integrate_targets =&gt; false
+</code></pre><p>支持关键字：<br>    :clean<br>    :deduplicate_targets<br>    :deterministic_uuids<br>    :integrate_targets<br>    :lock_pod_sources</p>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><h4 id="pod"><a href="#pod" class="headerlink" title="pod"></a>pod</h4><pre><code>// 使用最新版本
+pod &apos;SSZipArchive&apos;
+// 使用指定版本
+pod &apos;Objection&apos;, &apos;0.9&apos;
+‘&gt; 0.1’ 大于0.1的版本，不包括0.1版本
+‘&gt;= 0.1’ 大于等于0.1的版本
+‘&lt; 0.1’ 小于0.1的版本，不包括0.1版本
+‘&lt;= 0.1’ 小于等于0.1的版本
+‘~&gt; 0.1.2’ 相当于&apos;&gt;= 0.1.2 且 ‘&lt; 0.2.0’
+‘~&gt; 0.1’ 相当于&apos;&gt;= 0.1 且 ‘&lt; 1.0’
+‘~&gt; 0’ 相当于不写，即最新版本
+</code></pre><p>编译配置</p>
+<pre><code>// 在Release和App Store模式引用该库
+pod &apos;PonyDebugger&apos;, :configurations =&gt; [&apos;Release&apos;, &apos;App Store&apos;]
+// 在Release模式引用该库
+pod &apos;PonyDebugger&apos;, :configuration =&gt; [&apos;Release&apos;]
+</code></pre><p>Subspecs<br>在使用开源库时，只是用该库的一部分，可是使用如下写法。前提是当前库是支持Subspecs的。</p>
+<pre><code>// 只引用QueryKit的Attribute子库，不包含其它子库
+pod &apos;QueryKit/Attribute&apos;
+// 只引用QueryKit的Attribute和QuerySet子库，不包含其它子库
+pod &apos;QueryKit&apos;, :subspecs =&gt; [&apos;Attribute&apos;, &apos;QuerySet&apos;]
+</code></pre><p>使用本地路径下的文件</p>
+<pre><code>pod &apos;AFNetworking&apos;, :path =&gt; &apos;~/Documents/AFNetworking&apos;
+</code></pre><p>使用已通过认证的repo</p>
+<pre><code>// 使用master分支
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;
+// 使用指定分支
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :branch =&gt; &apos;dev&apos;
+// 使用指定tag
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :tag =&gt; &apos;0.7.0&apos;
+// 使用某一次提交
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :commit =&gt; &apos;082f8319af&apos;
+</code></pre><p>指定podspec文件<br>    pod ‘JSONKit’, :podspec =&gt; ‘<a href="https://example.com/JSONKit.podspec&#39;" target="_blank" rel="noopener">https://example.com/JSONKit.podspec&#39;</a></p>
+<h4 id="podspec"><a href="#podspec" class="headerlink" title="podspec"></a>podspec</h4><p>指定需要加载的podspec</p>
+<pre><code>podspec
+podspec :name =&gt; &apos;QuickDialog&apos;
+podspec :path =&gt; &apos;/Documents/PrettyKit/PrettyKit.podspec&apos;
+</code></pre><h4 id="target"><a href="#target" class="headerlink" title="target"></a>target</h4><p>定义一个依赖库与target（Xcode project）的关系。每个target应该对应一个Xcode target。默认情况下，子target的依赖关系是包含父target的，除非指定非继承父target。<br>定义一个target</p>
+<pre><code>target &quot;ZipApp&quot; do
+  pod &apos;SSZipArchive&apos;
+end
+</code></pre><p>在父target中定义SSZipArchive pod，仅支持父target</p>
+<pre><code>target &quot;ZipApp&quot; do
+  pod &apos;SSZipArchive&apos;
+
+  target &quot;ZipAppTests&quot; do
+    inherit! :search_paths
+    pod &apos;Nimble&apos;
+  end
+end
+</code></pre><p>通过在父target中定义target应用Pods支持多个targets</p>
+<pre><code>target &quot;ShowsApp&quot; do
+  pod &apos;ShowsKit&apos;
+
+  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
+  target &quot;ShowsTV&quot; do
+    pod &quot;ShowTVAuth&quot;
+  end
+
+  # Has it&apos;s own copy of Specta + Expecta
+  # and has access to ShowsKit via the app
+  # that the test target is bundled into
+
+  target &quot;ShowsTests&quot; do
+    inherit! :search_paths
+    pod &apos;Specta&apos;
+    pod &apos;Expecta&apos;
+  end
+end
+</code></pre><h4 id="abstract-target"><a href="#abstract-target" class="headerlink" title="abstract_target"></a>abstract_target</h4><p>定义一个abstract_target，方便被所有继承target使用。<br>定义abstract_target</p>
+<pre><code>abstract_target &apos;Networking&apos; do
+  pod &apos;AlamoFire&apos;
+
+  target &apos;Networking App 1&apos;
+  target &apos;Networking App 2&apos;
+end
+</code></pre><p>定义一个abstract_target包含多个targets</p>
+<pre><code># There are no targets called &quot;Shows&quot; in any Xcode projects
+abstract_target &quot;Shows&quot; do
+  pod &apos;ShowsKit&apos;
+
+  # Has it&apos;s own copy of ShowsKit + ShowWebAuth
+  target &quot;ShowsiOS&quot; do
+    pod &quot;ShowWebAuth&quot;
+  end
+
+  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
+  target &quot;ShowsTV&quot; do
+    pod &quot;ShowTVAuth&quot;
+  end
+
+  # Has it&apos;s own copy of Specta + Expecta
+  # and has access to ShowsKit via the app
+  # that the test target is bundled into
+
+  target &quot;ShowsTests&quot; do
+    inherit! :search_paths
+    pod &apos;Specta&apos;
+    pod &apos;Expecta&apos;
+  end
+end
+</code></pre><p>abstract!<br>表示当前target是抽象的，不会与真正的Xcode target挂钩。</p>
+<p>inherit!<br>设置当前target的继承模式。</p>
+<pre><code>// Inheriting only search paths
+target &apos;App&apos; do
+  target &apos;AppTests&apos; do
+    inherit! :search_paths
+  end
+end
+</code></pre><h2 id="Target配置"><a href="#Target配置" class="headerlink" title="Target配置"></a>Target配置</h2><p>这些设置是控制被生成project的CocoaPods。包括指定编译platform、指定链接的xcodeproj。</p>
+<h4 id="platform"><a href="#platform" class="headerlink" title="platform"></a>platform</h4><p>如果不指定，CocosPods将是默认值，当前默认值是：<br>4.3 for iOS, 10.6 for OS X, 9.0 for tvOS and 2.0 for watchOS.<br>如果对系统有要求（iOS &lt; 4.3）,armv6 框架将添加至ARCHS.<br>    platform :ios, “4.0”<br>    platform :ios</p>
+<h4 id="project"><a href="#project" class="headerlink" title="project"></a>project</h4><p>指定当前target链接的project。若未指定，表示target链接与同路径（与podfile文件同路径）下target同名的project。<br>指定用户project</p>
+<pre><code># This Target can be found in a Xcode project called `FastGPS`
+target &quot;MyGPSApp&quot; do
+  project &apos;FastGPS&apos;
+  ...
+end
+
+# Same Podfile, multiple Xcodeprojects
+target &quot;MyNotesApp&quot; do
+  project &apos;FastNotes&apos;
+  ...
+end
+</code></pre><p>有户自定义编译设置</p>
+<pre><code>project &apos;TestProject&apos;, &apos;Mac App Store&apos; =&gt; :release, &apos;Test&apos; =&gt; :debug
+</code></pre><h4 id="xcodeproj"><a href="#xcodeproj" class="headerlink" title="xcodeproj"></a>xcodeproj</h4><p>xcodeproj已在1.0中弃用，并已重命名project。对于1.0版之前的版本xcodeproj。</p>
+<h4 id="link-with"><a href="#link-with" class="headerlink" title="link_with"></a>link_with</h4><p>link_with在1.0中被弃用，使用abstract_target和target继承替代。</p>
+<h4 id="inhibit-all-warnings"><a href="#inhibit-all-warnings" class="headerlink" title="inhibit_all_warnings!"></a>inhibit_all_warnings!</h4><p>禁止CocoaPods库的所有警告。该属性会被子target继承。</p>
+<pre><code>pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true
+pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; false
+</code></pre><h4 id="use-frameworks"><a href="#use-frameworks" class="headerlink" title="use_frameworks!"></a>use_frameworks!</h4><p>用frameworks 替代Pods静态库。该属性被子target继承。</p>
+<h2 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h2><h4 id="workspace"><a href="#workspace" class="headerlink" title="workspace"></a>workspace</h4><p>指定workspace。若未指定，表示是与podfile同路径下，且与target同名的workspace文件。例如：</p>
+<pre><code>workspace &apos;MyWorkspace&apos;
+</code></pre><h4 id="generate-bridge-support"><a href="#generate-bridge-support" class="headerlink" title="generate_bridge_support!"></a>generate_bridge_support!</h4><p>指定应从所有安装的Pod的头文件中生成一个BridgeSupport元数据文档。<br>这是用于脚本语言，如MacRuby， Nu和 JSCocoa，它用于桥接类型，功能等。</p>
+<h4 id="set-arc-compatibility-flag"><a href="#set-arc-compatibility-flag" class="headerlink" title="set_arc_compatibility_flag!"></a>set_arc_compatibility_flag!</h4><p>已经被CocoaPods 1.0放弃。</p>
+<h2 id="Source"><a href="#Source" class="headerlink" title="Source"></a>Source</h2><p>指定资源位置。</p>
+<pre><code>source &apos;https://github.com/artsy/Specs.git&apos;
+source &apos;https://github.com/CocoaPods/Specs.git&apos;
+</code></pre><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><p>Podfile提供在安装期间执行的hooks,hooks是全局的，不存在为单个target定义hook。</p>
+<h4 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h4><p>指定安装期间需要的插件。</p>
+<pre><code>plugin &apos;cocoapods-keys&apos;, :keyring =&gt; &apos;Eidolon&apos;
+plugin &apos;slather&apos;
+</code></pre><h4 id="pre-install"><a href="#pre-install" class="headerlink" title="pre_install"></a>pre_install</h4><p>Hook允许用户在Pods下载完成，但还未安装前对Pods做一些修改。<br>它接受 Pod::Installer 作为唯一的参数.</p>
+<p>在Podfile定义pre-install hook</p>
+<pre><code>pre_install do |installer|
+  # Do something fancy!
+end
+</code></pre><h4 id="post-install"><a href="#post-install" class="headerlink" title="post_install"></a>post_install</h4><p>Hook允许用户在被写入硬盘、或者任何你想做的其它任务之前，对生成的Xcode project做最后的改变。<br>它接受 Pod::Installer 作为唯一的参数.<br>例如：</p>
+<pre><code>Customising the build settings of all targets
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings[&apos;GCC_ENABLE_OBJC_GC&apos;] = &apos;supported&apos;
+    end
+  end
+end
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/">CocoaPods从入门到精通(一)：CocoaPods基础</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/" class="archive-article-date">
+  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="CocoaPods入门"><a href="#CocoaPods入门" class="headerlink" title="CocoaPods入门"></a>CocoaPods入门</h2><h3 id="CocoaPods是什么"><a href="#CocoaPods是什么" class="headerlink" title="CocoaPods是什么"></a>CocoaPods是什么</h3><p>CocoaPods是一个用来管理Xcode项目依赖库的工具。</p>
+<p>你的项目依赖库需要被详细列在一个叫Profile的文件中。CocoaPods将帮我们解决libraries之间的依赖关系、获取目标库的源码、并将它链接到Xcode workspace中来构建你的项目。<br>最终目标是通过建立一个查找效率更高、更规范的第三方开源库生态系统。</p>
+<h4 id="安装CocoaPods"><a href="#安装CocoaPods" class="headerlink" title="安装CocoaPods"></a>安装CocoaPods</h4><p>CocoaPods是基于Ruby开发的，通过OS X 默认可用的Ruby安装。</p>
+<pre><code>$ sudo gem install cocoapods
+</code></pre><p>在安装过程中遇到任何问题，请查看<a href="https://guides.cocoapods.org/using/troubleshooting#installing-cocoapods" target="_blank" rel="noopener">此处</a>。</p>
+<h4 id="升级CocoaPods"><a href="#升级CocoaPods" class="headerlink" title="升级CocoaPods"></a>升级CocoaPods</h4><p>只要再执行安装gem命令就可以升级你的CocoaPods</p>
+<pre><code>$ [sudo] gem install cocoapods // 正式发布版本
+</code></pre><p>可以使用如下命令来更新到预发布版本，如果预发布版本存在的话</p>
+<pre><code>$ [sudo] gem install cocoapods --pre // 预发布版本
+</code></pre><p>如果你在安装时使用了sudo，那你应该再次使用这个命令。</p>
+<p>之后，在你使用Cocoapods安装依赖库的时候，如果有新版CocoaPods时，你就会收到通知告知你CocoaPods X.X.X已经用了，请更新的信息。</p>
+<h2 id="使用CocoaPods"><a href="#使用CocoaPods" class="headerlink" title="使用CocoaPods"></a>使用CocoaPods</h2><h3 id="在已有项目中使用CocoaPods"><a href="#在已有项目中使用CocoaPods" class="headerlink" title="在已有项目中使用CocoaPods"></a>在已有项目中使用CocoaPods</h3><h5 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h5><ol>
+<li>已经安装CocoaPods</li>
+<li>通过Specs仓库或cocoapods.org确定将要被引用的资源是可用的</li>
+</ol>
+<p>第一步、创建Podfile文件，并添加依赖库。</p>
+<pre><code>target &apos;MyApp&apos; do
+      pod &apos;AFNetworking&apos;, &apos;~&gt; 3.0&apos;
+
+      pod &apos;FBSDKCoreKit&apos;, &apos;~&gt; 4.9&apos;
+end
+</code></pre><p>第二步、终端进入Podfile文件所在目录，运行pod install</p>
+<pre><code>pod install
+</code></pre><p>第三步、打开新生成的**.xcworkspace文件，继续开发。</p>
+<h3 id="使用CocoaPods创建一个新项目"><a href="#使用CocoaPods创建一个新项目" class="headerlink" title="使用CocoaPods创建一个新项目"></a>使用CocoaPods创建一个新项目</h3><p>使用CocoaPods创建一个新项目，步骤如下：</p>
+<p>第一步、正常创建一个项目</p>
+<p>第二步、通过终端进入项目目录。 </p>
+<pre><code>$ cd your project directory
+</code></pre><p>第三步、创建Podfile。</p>
+<pre><code>$ pod init
+</code></pre><p>第四步、创建Podfile，可以通过<strong>pod init</strong>命令创建。</p>
+<pre><code>$ pod init
+</code></pre><ul>
+<li><p>首先 输入平台及版本，如：platform :ios, ‘9.0’</p>
+</li>
+<li><p>其次 指定项目。以target ‘$TARGET_NAME’ do开始，以end结束。</p>
+</li>
+<li>而后 添加依赖资源。<strong>pod ‘$PODNAME’</strong></li>
+</ul>
+<pre><code>target &apos;MyApp&apos; do
+
+      pod &apos;ObjectiveSugar&apos;
+
+end
+</code></pre><p>第五步、保存Podfile，终端运行 </p>
+<pre><code>$ pod install
+</code></pre><p>第六步、打开新创建的 MyApp.xcworkspace文件，以后每次打开项目都是这种方式。</p>
+<h3 id="在已有workspace中使用CocoaPods"><a href="#在已有workspace中使用CocoaPods" class="headerlink" title="在已有workspace中使用CocoaPods"></a>在已有workspace中使用CocoaPods</h3><p>在Podfile文件中加入一行信息，指定workspace。</p>
+<pre><code>workspace &apos;MyWorkspace&apos;
+</code></pre><h2 id="什么时候使用pod-install-什么时候使用pod-update？"><a href="#什么时候使用pod-install-什么时候使用pod-update？" class="headerlink" title="什么时候使用pod install 什么时候使用pod update？"></a>什么时候使用<em>pod install</em> 什么时候使用<em>pod update</em>？</h2><p>很多人对于什么时候使用<em>pod install</em> 什么时候使用<em>pod update</em>有困惑，尤其当本该使用<em>pod install</em>的时候他们却使用了<em>pod update</em>。</p>
+<p>你可以在<a href="https://guides.cocoapods.org/using/pod-install-vs-update.html" target="_blank" rel="noopener">这篇专题文章</a>中找到具体解释何时使用他们，并且使用他们的目的。</p>
+<h3 id="是否需要将Pods目录加入代码版本管理？"><a href="#是否需要将Pods目录加入代码版本管理？" class="headerlink" title="是否需要将Pods目录加入代码版本管理？"></a>是否需要将Pods目录加入代码版本管理？</h3><p>是否将你的Pods文件夹加入版本管理取决于你，因为每个项目的工作流是不同的。我们建议你将Pods目录进行版本控制，不要把它加入到.gitignore文件中，但是最终这取决于你。</p>
+<h4 id="将Pods目录加入版本管理的好处"><a href="#将Pods目录加入版本管理的好处" class="headerlink" title="将Pods目录加入版本管理的好处"></a>将Pods目录加入版本管理的好处</h4><ul>
+<li><p>在科隆仓库后，项目可以立即被构建和运行，甚至不需要在本机上安装CocoaPods。不需要运行pod install，也不需要网络。</p>
+</li>
+<li><p>pod里的工具（代码和库）都是可用的，即便一个pod的源连接不上。</p>
+</li>
+<li><p>在科隆后可以确保Pod里的工具跟执行过pod install的人的一模一样。</p>
+</li>
+</ul>
+<h3 id="忽略Pods目录的好处"><a href="#忽略Pods目录的好处" class="headerlink" title="忽略Pods目录的好处"></a>忽略Pods目录的好处</h3><ul>
+<li><p>版本控制仓库占用的磁盘空间更少更小。</p>
+</li>
+<li><p>当所有的pods可以使用时，CocoaPods将可以再次创建相同的安装。（技术上当在Podfile中不使用提交SHA值的时候不能确保执行pod install命令将获取或者重新创建一样的工具）</p>
+</li>
+<li><p>当执行版本控制操作时不会有任何冲突，比如在不同pod版本中执行合并分支。</p>
+</li>
+</ul>
+<p>无论是否加入版本管理，Podfile和Podfile.lock都应当加入版本控制。</p>
+<h2 id="What-is-Podfile-lock"><a href="#What-is-Podfile-lock" class="headerlink" title="What is Podfile.lock?"></a>What is Podfile.lock?</h2><p>当第一次执行pod install的时候会生成这个文件，它会跟踪已经安装的每个pod，比如，下面的依赖列在Podfile里：</p>
+<pre><code>pod &apos;RestKit&apos;
+</code></pre><p>执行pod install命令将安装当前版本的RestKit，并生成Podfile.lock并列出确切安装的版本（比如 RestKit 0.10.3）。多亏podifle.lock,这样我们随后在其他机器上执行pod install会安装 RestKit 0.10.3，即便有其他的新版本可以使用。CocoaPods将会在Podfile.lock中标记Pod版本，除非在podfile里更新了依赖或者执行了pod update命令（它将生成的新的Podfile.lock）。通过这个方式CocoaPods避免了意外的依赖更改导致的问题。</p>
+<h2 id="使用CocoaPods时，背后究竟发生了什么"><a href="#使用CocoaPods时，背后究竟发生了什么" class="headerlink" title="使用CocoaPods时，背后究竟发生了什么"></a>使用CocoaPods时，背后究竟发生了什么</h2><p>在Xcode中，直接可以引用ruby源，它将:</p>
+<ol>
+<li>创建并更新一个workspace.</li>
+<li>如果需要的话将你的项目加入到workspace。</li>
+<li>如果需要将CocoaPods静态库项目加入到workspace。</li>
+<li>将libPods.a添加到库的<em>targets =&gt; build phases =&gt; link</em>。</li>
+<li>将CocoaPods的Xcode配置添加到你的app’s项目中。</li>
+<li>修改你APP项目的target配置为基于CocoaPod的。</li>
+<li>将你安装的到你APP项目的所有的pod中的资源文件拷贝添加到build phase。比如其他<em>build phase</em>后的<em>‘Script build phase’</em>，如下：<ul>
+<li>Shell: /bin/sh</li>
+<li>Script: ${SRCROOT}/Pods/PodsResources.sh</li>
+</ul>
+</li>
+</ol>
+<p>Note that steps 3 onwards are skipped if the CocoaPods static library is already in your project. This is largely based on Jonah Williams’ work on Static Libraries.</p>
+<p>注意上面的步骤3将会被跳过，如果CocoaPods静态库已经在你的项目的话，这很大一部分是由Jonah Williams处理<a href="http://blog.carbonfive.com/2011/04/04/using-open-source-static-libraries-in-xcode-4/" target="_blank" rel="noopener">静态库</a>的方式导致。</p>
+<h2 id="从子模块迁移到Pods"><a href="#从子模块迁移到Pods" class="headerlink" title="从子模块迁移到Pods"></a>从子模块迁移到Pods</h2><p>CocoaPods和git 子模块都是为了解决相似的问题。他们都致力于简化第三方库代码的处理流程。子模块指向某个项目的特定提交，然而CocoaPods则和版本了的开发者发布版关联在一起。</p>
+<h3 id="从子模块切换到CocoaPods"><a href="#从子模块切换到CocoaPods" class="headerlink" title="从子模块切换到CocoaPods"></a>从子模块切换到CocoaPods</h3><p>在你决定是否完全切换到CocoaPods时，确保你当前使用的库可用。记录你当前使用的库的版本想法的对的。这样你可以使用一样的库来初始化CocoaPods。最好逐步使用他们，通过一个依赖一个依赖去做而不是一个大的改变。</p>
+<ol>
+<li>如果你没有安装CocoaPods的话先安装一下。</li>
+<li>创建Podfile文件。</li>
+<li>移除子模块的引用。</li>
+<li>在Podfile中添加删除库的引用</li>
+<li>执行<em>pod install</em></li>
+</ol>
+<h2 id="Podfile文件精讲"><a href="#Podfile文件精讲" class="headerlink" title="Podfile文件精讲"></a>Podfile文件精讲</h2><p>Podfile文件是描述一个或者多个Xcode项目target的依赖的详细说明。这个文件必须命名为Podfile。下文和之前的的例子是基于CocoaPods 1.0版本。</p>
+<h4 id="一个简单的podfile文件"><a href="#一个简单的podfile文件" class="headerlink" title="一个简单的podfile文件"></a>一个简单的podfile文件</h4><pre><code>target &apos;MyApp&apos; do
+  pod &apos;AFNetworking&apos;, &apos;~&gt; 3.0&apos;
+end
+</code></pre><h4 id="一个复杂的podfile文件管理一个APP和他一个测试工程-bundle"><a href="#一个复杂的podfile文件管理一个APP和他一个测试工程-bundle" class="headerlink" title="一个复杂的podfile文件管理一个APP和他一个测试工程(bundle)"></a>一个复杂的podfile文件管理一个APP和他一个测试工程(bundle)</h4><pre><code>source &apos;https://github.com/CocoaPods/Specs.git&apos;
+source &apos;https://github.com/Artsy/Specs.git&apos;
+
+platform :ios, &apos;9.0&apos;
+inhibit_all_warnings!
+
+target &apos;MyApp&apos; do
+  pod &apos;GoogleAnalytics&apos;, &apos;~&gt; 3.1&apos;
+
+  # Has it&apos;s own copy of OCMock
+  # and has access to GoogleAnalytics via the app
+  # that hosts the test target
+
+  target &apos;MyAppTests&apos; do
+    inherit! :search_paths
+    pod &apos;OCMock&apos;, &apos;~&gt; 2.0.1&apos;
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    puts target.name
+  end
+end
+</code></pre><h4 id="如果你希望使用多个target来分享同一个pods，可以使用abstract-target。"><a href="#如果你希望使用多个target来分享同一个pods，可以使用abstract-target。" class="headerlink" title="如果你希望使用多个target来分享同一个pods，可以使用abstract_target。"></a>如果你希望使用多个target来分享同一个pods，可以使用abstract_target。</h4><pre><code>使用abstract_target
+# There are no targets called &quot;Shows&quot; in any Xcode projects
+abstract_target &apos;Shows&apos; do
+  pod &apos;ShowsKit&apos;
+  pod &apos;Fabric&apos;
+
+  # Has it&apos;s own copy of ShowsKit + ShowWebAuth
+  target &apos;ShowsiOS&apos; do
+    pod &apos;ShowWebAuth&apos;
+  end
+
+  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
+  target &apos;ShowsTV&apos; do
+    pod &apos;ShowTVAuth&apos;
+  end
+end
+</code></pre><h4 id="在Podfile根下包含一个抽象的target，因此你也可以这样写："><a href="#在Podfile根下包含一个抽象的target，因此你也可以这样写：" class="headerlink" title="在Podfile根下包含一个抽象的target，因此你也可以这样写："></a>在Podfile根下包含一个抽象的target，因此你也可以这样写：</h4><pre><code>pod &apos;ShowsKit&apos;
+pod &apos;Fabric&apos;
+
+# Has it&apos;s own copy of ShowsKit + ShowWebAuth
+target &apos;ShowsiOS&apos; do
+  pod &apos;ShowWebAuth&apos;
+end
+
+# Has it&apos;s own copy of ShowsKit + ShowTVAuth
+target &apos;ShowsTV&apos; do
+  pod &apos;ShowTVAuth&apos;
+end
+</code></pre><h4 id="从0-x到1-0的迁移"><a href="#从0-x到1-0的迁移" class="headerlink" title="从0.x到1.0的迁移"></a>从0.x到1.0的迁移</h4><p>另外一篇<a href="http://blog.cocoapods.org/CocoaPods-1.0/" target="_blank" rel="noopener">文章</a>深度讲解这个。</p>
+<h4 id="具体给出pod版本"><a href="#具体给出pod版本" class="headerlink" title="具体给出pod版本"></a>具体给出pod版本</h4><pre><code>pod &apos;Objection&apos;, &apos;0.9&apos;
+</code></pre><ul>
+<li>‘&gt; 0.1’ 大于0.1的版本，不包括0.1版本</li>
+<li>‘&gt;= 0.1’ 大于等于0.1的版本</li>
+<li>‘&lt; 0.1’ 小于0.1的版本，不包括0.1版本</li>
+<li>‘&lt;= 0.1’ 小于等于0.1的版本</li>
+<li>‘~&gt; 0.1.2’ 相当于’&gt;= 0.1.2 且 ‘&lt; 0.2.0’</li>
+<li>‘~&gt; 0.1’ 相当于’&gt;= 0.1 且 ‘&lt; 1.0’</li>
+<li>‘~&gt; 0’ 相当于不写，即最新版本</li>
+</ul>
+<h4 id="使用本地路径下的文件"><a href="#使用本地路径下的文件" class="headerlink" title="使用本地路径下的文件"></a>使用本地路径下的文件</h4><pre><code>pod &apos;AFNetworking&apos;, :path =&gt; &apos;~/Documents/AFNetworking&apos;
+</code></pre><h4 id="使用库所在仓库根路径下的podspec"><a href="#使用库所在仓库根路径下的podspec" class="headerlink" title="使用库所在仓库根路径下的podspec"></a>使用库所在仓库根路径下的podspec</h4><pre><code>// 使用master分支
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;
+// 使用指定分支
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :branch =&gt; &apos;dev&apos;
+// 使用指定tag
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :tag =&gt; &apos;0.7.0&apos;
+// 使用某一次提交
+pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :commit =&gt; &apos;082f8319a
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-04-05-undoing-changes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1632,11 +1632,11 @@ git clean -df
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1782,11 +1782,11 @@ Author: John Smith
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1801,6 +1801,109 @@ Author: John Smith
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/04/05/2017-04-05-inspecting-a-repository/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
+<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
+<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
+<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
+<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
+<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
+<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
+<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
+<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
+<ol>
+<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
+</li>
+<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
+</li>
+</ol>
+<ol start="3">
+<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
+<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
         </p>
       
 
@@ -1914,11 +2017,11 @@ git commit
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1933,103 +2036,6 @@ git commit
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/04/02/2017-04-02-saving-changes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-04-02-Migrate-to-Git-from-SVN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">【译文】从SVN到Git：迁移到Git</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/" class="archive-article-date">
-  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://www.atlassian.com/dam/jcr:003ac8ad-493e-4a16-8096-95e7b4a4a9af/hero.svg" alt="Migrate to Git"></p>
-<p>我们将SVN迁移到Git的步骤拆解成5个简单的步骤：</p>
-<ol>
-<li>准备迁移的环境。</li>
-<li>将SVN仓库转换成本地Git仓库。 </li>
-<li>当SVN仓库发生变化时同步到本地Git仓库。</li>
-<li>通过Git服务器共享你的Git仓库给其他开发者。</li>
-<li>将你的开发工作从SVN迁移到Git仓库里。</li>
-</ol>
-<p>准备、转变、同步步骤需要一个SVN提交历史并将它转至Git仓库。操作这三部的最好方式是指定一个人做为迁移负责人（如果你读了这篇文章可能就是你了）。所有这三步应当在迁移负责人的本地电脑上执行。</p>
-<p><img src="https://www.atlassian.com/dam/jcr:620e114f-077f-416b-aeb4-ecdb4b6c64c6/01.svg" alt="Git Migration: Prepare, clone, sync"></p>
-<p>在同步阶段完成后，迁移负责人可以很轻易的保持本地Git仓库和SVN仓库同步更新，为了共享他的Git仓库，迁移负责人需要将他的本地Git仓库推送到一个Git宿主服务器，比如Gitlab、GitHub、Bitbucket等。</p>
-<p><img src="https://www.atlassian.com/dam/jcr:adce07b0-ef2a-4ab4-b08b-72a02d0a61fb/02.svg" alt="Git Migration: Share the git repo via bitbucket"><br>如果服务器是在Bitbucket上，其他开发者可以克隆Git仓库将代码转移至本地，使用Git命令查看历史，将该服务器用于构建代码流程中。然而我们提倡，在你们团队准备好一个纯净的Git工作流的时候，采取一步到位的方式来迁移SVN到Git。这意味着团队每个人对这个服务器是只读的，他们依旧将代码提交到SVN仓库。将这些修改的操作应当交给迁移负责人来同步、推送这些修改到Bitbucket。</p>
-<p>这让你团队在明确切换这段时间内可以熟悉Git开发工作流，而不用中断基于SVN的工作流。一旦你确信所有开发者已经准备好切换到Git，那最后的一步就是冻结你的SVN仓库，让大家开始使用Git提交代码。</p>
-<p><img src="https://www.atlassian.com/dam/jcr:a202d2e1-bb9a-4c25-92ed-91a16a63ccde/03.svg" alt="Git migration: Migrate Active Development to Git"><br>这个切换应该是一个非常自然的过程。整个Git工作流已经开始运转，并且开发者有大把的时间去熟悉它。从这刻起，你已经成功地将你的项目从SVN迁移到Git上了。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/migrating-overview" target="_blank" rel="noopener">Migrate to Git from SVN</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SVN到Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">迁移</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">展开全文 >></a>
         </p>
       
 
@@ -2156,14 +2162,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -2172,11 +2170,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2228,6 +2234,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
               </li>
              
@@ -2252,18 +2270,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
@@ -2272,11 +2278,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2304,31 +2318,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2340,7 +2330,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2349,26 +2355,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2385,6 +2371,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2408,14 +2414,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
@@ -2432,15 +2430,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2461,14 +2475,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2544,6 +2550,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
@@ -2560,11 +2574,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2585,22 +2607,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
               </li>
              
               <li class="article-tag-list-item">
