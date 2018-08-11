@@ -257,6 +257,171 @@
 
 
   
+    <article id="post-2017-04-02-setting-up-a-repository" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-setting-up-a-repository/">【译文】Git基础命令：初始化一个Git仓库</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-setting-up-a-repository/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:064b3f9e-39d1-44f2-9fd1-c4dac0f9d42e/hero.svg?cdnVersion=dt" alt="设置一个仓库"></p>
+<p>本教程将简要介绍最重要的Git命令。首先，设置仓库部分将介绍启动新版本控制项目所需的所有工具。然后，其余部分介绍您的日常Git命令。</p>
+<p>在本章结束后，您应该能够创建一个Git仓库，记录您的项目的快照以进行保管，并查看项目的历史记录。</p>
+<h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>git init命令创建一个新的Git仓库。它可以用于将已经存在、未版本化的项目转换为Git仓库或初​​始化新的空仓库。大多数其他Git命令在初始化的仓库之外不可用，因此通常这是您将在新项目中运行的第一个命令。</p>
+<p>在项目根目录中执行git init命令会创建一个.git子目录，其中包含repo所需的所有必要元数据。除了.git目录之外，现有的项目保持不变（与SVN不同，Git不需要每个子目录都有.git文件夹）。</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git init
+</code></pre><p>将当前目录转换为Git仓库。这将添加一个.git文件夹到当前目录，并可以开始记录项目的修订版本。</p>
+<pre><code>git init &lt;directory&gt;
+</code></pre><p>在指定的目录中创建一个空的Git仓库。运行此命令将创建一个新文件夹&lt;directory，该文件夹仅包含.git子目录。</p>
+<pre><code>git init --bare &lt;directory&gt;
+</code></pre><p>初始化一个空的Git仓库，但省略工作目录。应始终使用–bare标志创建共享的仓库（参见下面的讨论）。传统做法，用–bare标志初始化的仓库以.git作为结束名。例如，叫做my-project仓库的裸版本应该存储在一个名为的目录中my-project.git。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>与SVN相比，git init命令是创建新版本控制项目的一个非常简单的方法。Git不要求您创建一个仓库，导入文件和检出工作副本。所有你需要做的是cd进入你的项目文件夹并运行git init，你将有一个完全功能的Git仓库。</p>
+<p>然而，对于大多数项目，git init只需要在创建中央仓库时执行一次即可 - 开发人员通常不使用git init来创建其本地仓库。相反，它们通常用于git clone将现有仓库复制到其本地计算机上。</p>
+<h3 id="裸仓库"><a href="#裸仓库" class="headerlink" title="裸仓库"></a>裸仓库</h3><p>该–bare标志创建一个没有工作目录的仓库，使得无法在该仓库中编辑文件并提交更改。中央仓库应始终创建为裸仓库，因为将分支推送到非裸仓库有可能覆盖更改。可以将–bare将仓库标记为存储设备，与开发环境相反。这意味着对于几乎所有Git工作流程，中央仓库是裸仓库，开发人员本地仓库是非裸的。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:88f08a3d-f34e-4c8e-974c-a01f25b2eca1/01.svg?cdnVersion=dt" alt="Git教程：裸仓库"></p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>由于git clone是创建项目的本地副本的更方便的方法，最常见的用例git init是创建一个中央仓库：</p>
+<pre><code>ssh &lt;user&gt;@&lt;host&gt;
+cd path/above/repo
+git init --bare my-project.git
+</code></pre><p>首先，您将SSH插入将包含您的中央仓库的服务器。然后，您导航到要存储项目的任何地方。最后，您使用–bare标志来创建中央仓库。然后<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository#git-clone" target="_blank" rel="noopener">克隆</a> my-project.git，开发人员将在其开发机器上创建本地副本。</p>
+<h2 id="git克隆"><a href="#git克隆" class="headerlink" title="git克隆"></a>git克隆</h2><p>git clone命令复制现有的Git仓库。这是一种类似的东西svn checkout，除了“工作副本”是一个完整的Git仓库 - 它有自己的历史，管理自己的文件，对原始仓库来说是一个完全孤立的环境。</p>
+<p>为方便起见，克隆会自动创建一个名为origin的远程连接，指向原始仓库。这使得它非常容易与中央仓库进行交互。</p>
+<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git clone &lt;repo&gt;
+</code></pre><p>克隆位于<repo>的仓库到本地机器上当前文件夹。原始仓库可以位于本地文件系统或通过HTTP或SSH可访问的远程计算机上。</repo></p>
+<pre><code>git clone &lt;repo&gt; &lt;directory&gt;
+</code></pre><p>克隆位于<repo>的仓库到本地机器上的<directory>的文件夹中。</directory></repo></p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>如果项目已经在中央仓库中设置，则git clone命令是用户获取开发副本的最常见方式。像<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-init" target="_blank" rel="noopener">git init
+</a>克隆通常是一次性操作 - 一旦开发人员获得了工作副本，所有的版本控制操作和协作都是通过本地仓库管理的。</p>
+<h3 id="仓库与仓库间协作"><a href="#仓库与仓库间协作" class="headerlink" title="仓库与仓库间协作"></a>仓库与仓库间协作</h3><p>了解Git对“工作副本”的概念与通过从SVN信息库中检出代码所获得的工作副本的区别很重要。与SVN不同，Git不区分工作副本和中央仓库 - 它们都是完整的Git仓库。</p>
+<p>这与Git中仓库协作与SVN几乎不同。SVN依赖于中央仓库和工作副本之间的关系，而Git的协作模型基于仓库与仓库的交互。在Git中不是像SVN一样在SVN的中央资料库检入检出到本地的工作拷贝，你<a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">推</a>或<a href="https://www.atlassian.com/git/tutorials/syncing/git-pull" target="_blank" rel="noopener">拉</a>一个仓库的提交到另一个。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e5228129-76b1-4b2c-8f10-af789f2ea6c0/03.svg?cdnVersion=dt" alt="Git教程：复制到工作副本协作"><img src="https://wac-cdn.atlassian.com/dam/jcr:5d68ce55-59a7-4840-a896-eb2014a9f17b/02.svg?cdnVersion=dt" alt="Git教程：Repo到Repo协作"></p>
+<p>当然，没有什么阻止你给予某些Git repos的特殊意义。例如，通过简单地将一个Git repo指定为“中央”仓库，可以使用Git复用<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流</a>。关键点是，这是通过约定而不是硬连线到VCS本身来实现。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>下面的示例演示了如何获取存储在example.com服务器的中央仓库，使用SSH username john访问的服务器上:</p>
+<pre><code>git clone ssh://john@example.com/path/to/my-project.git
+cd my-project
+# Start working on the project
+</code></pre><p>第一个命令在my-project本地计算机上的文件夹中初始化一个新的Git仓库，并使用中央仓库的内容进行填充。然后，您可以cd进入项目并开始编辑文件，提交快照以及与其他仓库进行交互。还要注意，<br>克隆的仓库中省略了.git扩展名。这反映了本地副本的非裸体状态。</p>
+<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><p>git config命令允许您从命令行配置Git安装（或单个仓库）。此命令可以定义从用户信息到首选项到仓库行为的所有内容。下面列出了几个常见的配置选项。</p>
+<h3 id="用法-2"><a href="#用法-2" class="headerlink" title="用法"></a>用法</h3><pre><code>git config user.name &lt;name&gt;
+</code></pre><p>定义要用于当前仓库中的所有提交的作者名称。通常，您需要使用该–global标志为当前用户设置配置选项。</p>
+<pre><code>git config --global user.name &lt;name&gt;
+</code></pre><p>定义当前用户所有提交的作者姓名。</p>
+<pre><code>git config --global user.email &lt;email&gt;
+</code></pre><p>定义作者电子邮件用于当前用户的所有提交。</p>
+<pre><code>git config --global alias.&lt;alias-name&gt; &lt;git-command&gt;
+</code></pre><p>为Git命令创建快捷方式。</p>
+<pre><code>git config --system core.editor &lt;editor&gt;
+</code></pre><p>定义当前机器上所有用户命令（如git commit）所使用的文本编辑器。<editor>参数应该是启动所需编辑器的命令（例如vi）。</editor></p>
+<pre><code>git config --global --edit
+</code></pre><p>在文本编辑器中打开全局配置文件进行手动编辑。</p>
+<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>所有配置选项存储在明文文件中，因此该git config命令实际上只是一个方便的命令行界面。通常，您首次在新开发机器上开始工作时，您只需要配置Git安装，对于几乎所有的情况，您都需要使用–global标志。<br>Git将配置选项存储在三个单独的文件中，可以将选项范围分配到各个仓库，用户或整个系统：</p>
+<ul>
+<li><p><repo>/.git/config - 仓库特定的设置。</repo></p>
+</li>
+<li><p>~/.gitconfig - 用户特定的设置。这是–global存储使用标志设置的选项。</p>
+</li>
+<li>$(prefix)/etc/gitconfig - 系统范围的设置。</li>
+</ul>
+<p>当这些文件中的选项发生冲突时，本地设置将覆盖用户设置，用户设置覆盖系统范围配置。如果您打开任何这些文件，您将看到如下所示：</p>
+<pre><code>[user]name = John Smith
+email = john@example.com
+[alias]st = status
+co = checkout
+br = branch
+up = rebase
+ci = commit
+[core]editor = vim
+</code></pre><p>您可以手动编辑这些值与完全相同的效果git config。</p>
+<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><p>安装Git之后，首先要做的就是告诉你你的名字/电子邮件，并自定义一些默认设置。典型的初始配置可能如下所示：</p>
+<pre><code># Tell Git who you are
+git config --global user.name &quot;John Smith&quot;git config --global user.email john@example.com
+
+# Select your favorite text editor
+git config --global core.editor vim
+
+
+# Add some SVN-like aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.up rebase
+git config --global alias.ci commit
+</code></pre><p>这将产生~/.gitconfig上一节中的文件。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository" target="_blank" rel="noopener">Setting up a repository</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-setting-up-a-repository/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-04-02-SVN-To-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -545,6 +710,138 @@
 
 
   
+    <article id="post-2017-04-02-saving-changes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-saving-changes/">【译文】Git命令基础：保存更改</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-saving-changes/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:75f75cb6-a6ab-4f0b-ab29-e366914f513c/hero.svg?cdnVersion=dt" alt="保存更改"></p>
+<h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>git add命令将工作目录中的更改添加到暂存区。它告诉Git你想在下一个提交中包含特定文件的更新。但是，git add并不会以任何重大的方式影响仓库 - 在运行<a href="https://www.atlassian.com/git/tutorials/saving-changes/git-commit" target="_blank" rel="noopener">git commit
+</a>之前，实际上并不会记录更改。</p>
+<p>这些命令，您还结合需要<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status</a>命令查看工作目录和暂存区的状态。</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git add &lt;file&gt; 
+</code></pre><p>为下一次提交暂存<file>下的所有修改。</file></p>
+<pre><code>git add &lt;directory&gt;
+</code></pre><p>对下一次提交暂存<directory>目录下的所有更改。</directory></p>
+<pre><code>git add -p
+</code></pre><p>开始交互式登台会话，让您选择要添加需要暂存到下一个提交的文件哪些部分。这将提供一系列修改块，并提示您进行命令。使用y暂存这个修改块，使用n来忽略该块，使用s将其拆分成较小的块，e手动编辑该块，然后q退出。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>命令git add和git commit命令组成了基本的Git工作流程。这些是每个Git用户需要了解的两个命令，不管他们的团队合作模式如何。它们是将项目的版本记录到仓库历史记录中的方法。</p>
+<p>开发项目基本围绕编辑/暂存/提交模式。首先，在工作目录中编辑文件。当您准备保存项目当前状态的副本时，您可以使用git add暂存更改。在您对暂存的快照感到满意之后，您就可以使用git commit将其提交到项目历史记录中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:0f27e004-f2f5-4890-921d-65fa77ba2774/01.svg?cdnVersion=dt" alt="Git教程：git add Snapshot"></p>
+<p>git add命令不应该被混淆svn add，svn add将文件添加到仓库。相反，git add在修改的更抽象的层面上工作。这意味着git add每次更改文件时都需要调用，而svn add只需要为每个文件调用一次。这可能听起来是冗余的，但是这个工作流使得项目的组织变得更加容易。</p>
+<h3 id="暂存区"><a href="#暂存区" class="headerlink" title="暂存区"></a>暂存区</h3><p>暂存区是Git更独特的功能之一，如果您有来自SVN（甚至Mercurial）背景，可能需要一些时间才能将其理解。可以将其视为工作目录和项目历史记录之间的缓冲区。</p>
+<p>不提交自上次提交以来所做的所有更改，您可以在提交到项目历史记录之前，选择相关的更改暂存到高度聚焦的快照中。这意味着您可以对不相关的文件进行各种编辑，然后返回并将其分解为逻辑提交，再将相关更改添加到暂存区中并逐个提交。与任何版本控制系统一样，重要的是创建原子提交，以便轻松地跟踪错误并恢复更改，同时对项目的其余部分影响最小。</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>当您开始一个新项目时，git add具有与svn import相同的功能。要创建当前目录的初始提交，请使用以下两个命令：</p>
+<pre><code>git add .
+git commit
+</code></pre><p>一旦你的项目运行正常，可以通过将路径传递给git add：</p>
+<pre><code>git add hello.py
+git commit
+</code></pre><p>上述命令也可用于记录对现有文件的更改。再次强调，Git并不区分新文件中的暂存更改与已经添加到仓库的文件的更改。</p>
+<h2 id="git提交"><a href="#git提交" class="headerlink" title="git提交"></a>git提交</h2><p>git commit命令将暂存的快照提交到项目历史记录。提交的快照可以被认为是项目的“安全”版本 - 除非你明确地要求，否则Git永远不会改变它们。结合git add，这是最重要的Git命令之一。<br>虽然他们共享相同的名字，但这个命令并不是什么svn commit。快照将致力于本地仓库，并且这绝对不需要与其他Git仓库进行交互。</p>
+<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git commit
+</code></pre><p>提交暂存快照。这将启动一个文本编辑器，提示您提交提交消息。输入消息后，保存文件并关闭编辑器以创建实际提交。</p>
+<pre><code>git commit -m &quot;&lt;message&gt;&quot;
+</code></pre><p>提交暂存快照，而不是启动文本编辑器，<message>用作提交消息。</message></p>
+<pre><code>git commit -a
+</code></pre><p>提交工作目录中所有更改的快照。这仅包括对跟踪文件的修改（git add在历史记录中的某个时刻添加的文件）。</p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>快照一直是在<em>本地</em>仓库。这与SVN基本不同，其中工作副本被提交到中央仓库。相比之下，Git不会强制您在准备好之前与中央仓库进行交互。正如暂存区是工作目录和项目历史记录之间的缓冲区一样，每个开发人员的本地仓库都是它们的贡献和中央仓库之间的缓冲区。</p>
+<p>这改变了Git用户的基本开发模式。Git开发者不用改变，直接将其直接交给中央仓库，而是有机会在本地仓库中累积提交。与SVN风格的协作相比，它具有许多优点：它可以将功能分解为原子提交，将相关的提交分组在一起，并在发布到中央仓库之前清理本地历史记录。它还使开发人员在孤立的环境中工作，推迟合并，直到它们处于方便的时候。</p>
+<h3 id="快照，而不是差异"><a href="#快照，而不是差异" class="headerlink" title="快照，而不是差异"></a>快照，而不是差异</h3><p>除了SVN和Git之间的实际区别之外，它们的基本实现也遵循完全不同的设计理念。而SVN跟踪文件的<em>差异</em>，Git的版本控制模型基于<em>快照</em>。例如，SVN提交包含与添加到仓库的原始文件相比较的diff。另一方面，Git 在每个提交中记录每个文件的<em>全部内容</em>。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:7406fe56-d36d-44cf-92e3-b28e4bae36f8/02.svg?cdnVersion=dt" alt="Git教程：快照，而不是差异"></p>
+<p>这使得许多Git操作比SVN快得多，因为特定版本的文件不需要从其diffs“组装” - 每个文件的完整版本可以立即从Git的内部数据库获得。</p>
+<p>Git的快照模型对其版本控制模型的几乎每个方面都有深远的影响，影响了从分支和合并工具到协作工作流程的所有内容。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>以下示例假设您已在一个文件中编辑了一些内容，hello.py并准备将其提交给项目历史记录。首先，您需要对文件进行git add暂存，然后可以提交暂存快照。</p>
+<pre><code>git add hello.py
+git commit
+</code></pre><p>这将打开一个文本编辑器（可自定义通过git config）请求提交消息，以及正在提交的内容的列表：</p>
+<pre><code># Please enter the commit message for your changes. Lines starting
+# with &apos;#&apos; will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+# (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+#
+#modified: hello.py
+</code></pre><p>Git不需要提交消息来遵循任何特定的格式化约束，但是规范格式是以不超过50个字符的方式总结第一行上的整个提交，留下空行，然后详细说明已更改的内容。例如：</p>
+<pre><code>Change the message displayed by hello.py
+- Update the sayHello() function to output the user&apos;s name
+- Change the sayGoodbye() function to a friendlier message
+</code></pre><p>请注意，许多开发人员也喜欢在其提交消息中使用现在时态。这使得它们更像是在仓库中的操作，这使得许多历史重写操作更加直观。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-saving-changes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-04-02-why-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -649,171 +946,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/04/02/2017-04-02-why-git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-04-02-setting-up-a-repository" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-setting-up-a-repository/">【译文】Git基础命令：初始化一个Git仓库</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/02/2017-04-02-setting-up-a-repository/" class="archive-article-date">
-  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:064b3f9e-39d1-44f2-9fd1-c4dac0f9d42e/hero.svg?cdnVersion=dt" alt="设置一个仓库"></p>
-<p>本教程将简要介绍最重要的Git命令。首先，设置仓库部分将介绍启动新版本控制项目所需的所有工具。然后，其余部分介绍您的日常Git命令。</p>
-<p>在本章结束后，您应该能够创建一个Git仓库，记录您的项目的快照以进行保管，并查看项目的历史记录。</p>
-<h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>git init命令创建一个新的Git仓库。它可以用于将已经存在、未版本化的项目转换为Git仓库或初​​始化新的空仓库。大多数其他Git命令在初始化的仓库之外不可用，因此通常这是您将在新项目中运行的第一个命令。</p>
-<p>在项目根目录中执行git init命令会创建一个.git子目录，其中包含repo所需的所有必要元数据。除了.git目录之外，现有的项目保持不变（与SVN不同，Git不需要每个子目录都有.git文件夹）。</p>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git init
-</code></pre><p>将当前目录转换为Git仓库。这将添加一个.git文件夹到当前目录，并可以开始记录项目的修订版本。</p>
-<pre><code>git init &lt;directory&gt;
-</code></pre><p>在指定的目录中创建一个空的Git仓库。运行此命令将创建一个新文件夹&lt;directory，该文件夹仅包含.git子目录。</p>
-<pre><code>git init --bare &lt;directory&gt;
-</code></pre><p>初始化一个空的Git仓库，但省略工作目录。应始终使用–bare标志创建共享的仓库（参见下面的讨论）。传统做法，用–bare标志初始化的仓库以.git作为结束名。例如，叫做my-project仓库的裸版本应该存储在一个名为的目录中my-project.git。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>与SVN相比，git init命令是创建新版本控制项目的一个非常简单的方法。Git不要求您创建一个仓库，导入文件和检出工作副本。所有你需要做的是cd进入你的项目文件夹并运行git init，你将有一个完全功能的Git仓库。</p>
-<p>然而，对于大多数项目，git init只需要在创建中央仓库时执行一次即可 - 开发人员通常不使用git init来创建其本地仓库。相反，它们通常用于git clone将现有仓库复制到其本地计算机上。</p>
-<h3 id="裸仓库"><a href="#裸仓库" class="headerlink" title="裸仓库"></a>裸仓库</h3><p>该–bare标志创建一个没有工作目录的仓库，使得无法在该仓库中编辑文件并提交更改。中央仓库应始终创建为裸仓库，因为将分支推送到非裸仓库有可能覆盖更改。可以将–bare将仓库标记为存储设备，与开发环境相反。这意味着对于几乎所有Git工作流程，中央仓库是裸仓库，开发人员本地仓库是非裸的。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:88f08a3d-f34e-4c8e-974c-a01f25b2eca1/01.svg?cdnVersion=dt" alt="Git教程：裸仓库"></p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>由于git clone是创建项目的本地副本的更方便的方法，最常见的用例git init是创建一个中央仓库：</p>
-<pre><code>ssh &lt;user&gt;@&lt;host&gt;
-cd path/above/repo
-git init --bare my-project.git
-</code></pre><p>首先，您将SSH插入将包含您的中央仓库的服务器。然后，您导航到要存储项目的任何地方。最后，您使用–bare标志来创建中央仓库。然后<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository#git-clone" target="_blank" rel="noopener">克隆</a> my-project.git，开发人员将在其开发机器上创建本地副本。</p>
-<h2 id="git克隆"><a href="#git克隆" class="headerlink" title="git克隆"></a>git克隆</h2><p>git clone命令复制现有的Git仓库。这是一种类似的东西svn checkout，除了“工作副本”是一个完整的Git仓库 - 它有自己的历史，管理自己的文件，对原始仓库来说是一个完全孤立的环境。</p>
-<p>为方便起见，克隆会自动创建一个名为origin的远程连接，指向原始仓库。这使得它非常容易与中央仓库进行交互。</p>
-<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git clone &lt;repo&gt;
-</code></pre><p>克隆位于<repo>的仓库到本地机器上当前文件夹。原始仓库可以位于本地文件系统或通过HTTP或SSH可访问的远程计算机上。</repo></p>
-<pre><code>git clone &lt;repo&gt; &lt;directory&gt;
-</code></pre><p>克隆位于<repo>的仓库到本地机器上的<directory>的文件夹中。</directory></repo></p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>如果项目已经在中央仓库中设置，则git clone命令是用户获取开发副本的最常见方式。像<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-init" target="_blank" rel="noopener">git init
-</a>克隆通常是一次性操作 - 一旦开发人员获得了工作副本，所有的版本控制操作和协作都是通过本地仓库管理的。</p>
-<h3 id="仓库与仓库间协作"><a href="#仓库与仓库间协作" class="headerlink" title="仓库与仓库间协作"></a>仓库与仓库间协作</h3><p>了解Git对“工作副本”的概念与通过从SVN信息库中检出代码所获得的工作副本的区别很重要。与SVN不同，Git不区分工作副本和中央仓库 - 它们都是完整的Git仓库。</p>
-<p>这与Git中仓库协作与SVN几乎不同。SVN依赖于中央仓库和工作副本之间的关系，而Git的协作模型基于仓库与仓库的交互。在Git中不是像SVN一样在SVN的中央资料库检入检出到本地的工作拷贝，你<a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">推</a>或<a href="https://www.atlassian.com/git/tutorials/syncing/git-pull" target="_blank" rel="noopener">拉</a>一个仓库的提交到另一个。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e5228129-76b1-4b2c-8f10-af789f2ea6c0/03.svg?cdnVersion=dt" alt="Git教程：复制到工作副本协作"><img src="https://wac-cdn.atlassian.com/dam/jcr:5d68ce55-59a7-4840-a896-eb2014a9f17b/02.svg?cdnVersion=dt" alt="Git教程：Repo到Repo协作"></p>
-<p>当然，没有什么阻止你给予某些Git repos的特殊意义。例如，通过简单地将一个Git repo指定为“中央”仓库，可以使用Git复用<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流</a>。关键点是，这是通过约定而不是硬连线到VCS本身来实现。</p>
-<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>下面的示例演示了如何获取存储在example.com服务器的中央仓库，使用SSH username john访问的服务器上:</p>
-<pre><code>git clone ssh://john@example.com/path/to/my-project.git
-cd my-project
-# Start working on the project
-</code></pre><p>第一个命令在my-project本地计算机上的文件夹中初始化一个新的Git仓库，并使用中央仓库的内容进行填充。然后，您可以cd进入项目并开始编辑文件，提交快照以及与其他仓库进行交互。还要注意，<br>克隆的仓库中省略了.git扩展名。这反映了本地副本的非裸体状态。</p>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><p>git config命令允许您从命令行配置Git安装（或单个仓库）。此命令可以定义从用户信息到首选项到仓库行为的所有内容。下面列出了几个常见的配置选项。</p>
-<h3 id="用法-2"><a href="#用法-2" class="headerlink" title="用法"></a>用法</h3><pre><code>git config user.name &lt;name&gt;
-</code></pre><p>定义要用于当前仓库中的所有提交的作者名称。通常，您需要使用该–global标志为当前用户设置配置选项。</p>
-<pre><code>git config --global user.name &lt;name&gt;
-</code></pre><p>定义当前用户所有提交的作者姓名。</p>
-<pre><code>git config --global user.email &lt;email&gt;
-</code></pre><p>定义作者电子邮件用于当前用户的所有提交。</p>
-<pre><code>git config --global alias.&lt;alias-name&gt; &lt;git-command&gt;
-</code></pre><p>为Git命令创建快捷方式。</p>
-<pre><code>git config --system core.editor &lt;editor&gt;
-</code></pre><p>定义当前机器上所有用户命令（如git commit）所使用的文本编辑器。<editor>参数应该是启动所需编辑器的命令（例如vi）。</editor></p>
-<pre><code>git config --global --edit
-</code></pre><p>在文本编辑器中打开全局配置文件进行手动编辑。</p>
-<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>所有配置选项存储在明文文件中，因此该git config命令实际上只是一个方便的命令行界面。通常，您首次在新开发机器上开始工作时，您只需要配置Git安装，对于几乎所有的情况，您都需要使用–global标志。<br>Git将配置选项存储在三个单独的文件中，可以将选项范围分配到各个仓库，用户或整个系统：</p>
-<ul>
-<li><p><repo>/.git/config - 仓库特定的设置。</repo></p>
-</li>
-<li><p>~/.gitconfig - 用户特定的设置。这是–global存储使用标志设置的选项。</p>
-</li>
-<li>$(prefix)/etc/gitconfig - 系统范围的设置。</li>
-</ul>
-<p>当这些文件中的选项发生冲突时，本地设置将覆盖用户设置，用户设置覆盖系统范围配置。如果您打开任何这些文件，您将看到如下所示：</p>
-<pre><code>[user]name = John Smith
-email = john@example.com
-[alias]st = status
-co = checkout
-br = branch
-up = rebase
-ci = commit
-[core]editor = vim
-</code></pre><p>您可以手动编辑这些值与完全相同的效果git config。</p>
-<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><p>安装Git之后，首先要做的就是告诉你你的名字/电子邮件，并自定义一些默认设置。典型的初始配置可能如下所示：</p>
-<pre><code># Tell Git who you are
-git config --global user.name &quot;John Smith&quot;git config --global user.email john@example.com
-
-# Select your favorite text editor
-git config --global core.editor vim
-
-
-# Add some SVN-like aliases
-git config --global alias.st status
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.up rebase
-git config --global alias.ci commit
-</code></pre><p>这将产生~/.gitconfig上一节中的文件。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository" target="_blank" rel="noopener">Setting up a repository</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-setting-up-a-repository/">展开全文 >></a>
         </p>
       
 
@@ -1994,200 +2126,6 @@ print &quot;Moving &apos;%s&apos; from %s to %s&quot; % (branch, old_commit, new
 
 
   
-    <article id="post-2017-02-11-Advance-Git-log" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/11/2017-02-11-Advance-Git-log/">【译文】Git log使用进阶</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/11/2017-02-11-Advance-Git-log/" class="archive-article-date">
-  	<time datetime="2017-02-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:613277ed-3b4b-4c45-8657-869f9bc3d23e/hero.svg?cdnVersion=db" alt="Detecting a fork in the history using ranges"></p>
-<p>版本控制的目的就是为了记录代码的修改历史。这让你可以查看别人写了什么代码，什么时候bug出现，回滚有问题的修改。如果你不知道在通过git浏览所有的修改历史，那他们就毫无价值，<code>git log</code>命令的作用就在于此。</p>
-<p>到目前为止，你应该已经知道<code>git log</code>命令可以用来查看提交历史了。其实你还可以通过不同的参数传给<code>git log</code> 来改变打印输出。</p>
-<p>git log进阶特性可以划分成两分类：格式化每个提交的展示、过滤输出的提交。结合者两个特性技巧你可以从项目中查看任何你需要的信息。</p>
-<h2 id="格式化日志输出"><a href="#格式化日志输出" class="headerlink" title="格式化日志输出"></a>格式化日志输出</h2><p>首先，这篇文章将会介绍许多格式化<code>git log</code>输出的方法。大部分介绍的参数标志用来展示比git log本本更多或者更少的信息。</p>
-<p>如果你不喜欢git log默认的格式，你可以使用git config的别名功能为任何即将介绍的格式化选项设置快捷方式。请查看<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository#git-config" target="_blank" rel="noopener">git config 命令介绍</a>查看如何设置别名。</p>
-<h3 id="Oneline"><a href="#Oneline" class="headerlink" title="Oneline"></a>Oneline</h3><p><strong>–oneline</strong>参数将提交日志精减为一行，它默认仅仅展示提交ID和第一行提交信息。通常<code>git log --oneline</code>输出就像这个样子：<br>        0e25143 Merge branch ‘feature’<br>        ad8621a Fix a bug in the feature<br>        16b36c6 Add a new feature<br>        23ad9ad Add the initial code base</p>
-<p>这个参数对于查看项目主要概况非常有用。</p>
-<h3 id="Decorating"><a href="#Decorating" class="headerlink" title="Decorating"></a>Decorating</h3><p>很多时候如果能查看每个提交相关的分支或标签信息非常有用。<strong>–decorate</strong>参数让<code>git log</code>可以展示指向提交的所有的相关信息（例如：分支，标签信息等）。</p>
-<p>它可以和其他参数一起使用。比如，执行<code>git log --oneline --decorate</code>将会输出像下面这样的格式化提交历史：</p>
-<pre><code>0e25143 (HEAD, master) Merge branch &apos;feature&apos; 
-ad8621a (feature) Fix a bug in the feature 
-16b36c6 Add a new feature 
-23ad9ad (tag: v0.9) Add the initial code base
-</code></pre><p>我们可以看到最顶上的提交是被checkout 过来的（注意HEAD），并且在master分枝上。第二个提交有另外一个叫做feature的分支指向它。第四个提交被标记为v0.9。</p>
-<p>分支、标签、头（HEAD）以及提交历史是Git仓库包含几乎所有的信息。因此这让你能够完整的查看仓库的逻辑结构。</p>
-<h3 id="Diffs"><a href="#Diffs" class="headerlink" title="Diffs"></a>Diffs</h3><p>git log包含查看每个提交不同的参数选项。通常使用的选项有 <strong><code>--stat</code></strong> 和 <strong><code>-p</code></strong>。</p>
-<p><strong><code>--stat</code></strong>选项展示每个文件被提交被每个提交插入和删除的数量（注意修改一行被看作为插入一行或者删除一行）。这对于想查看每个条修改一个文件的概述非常有用。例如下面的提交被添加67行和删除了38行到hello.by文件中:</p>
-<pre><code>commit f2a238924e89ca1d4947662928218a06d39068c3 
-Author: John &lt;john@example.com&gt; 
-Date: Fri Jun 25 17:30:28 2014 -0500 
-Add a new feature hello.py | 105 ++++++++++++++++++++++++----------------- 
-1 file changed, 67 insertion(+), 38 deletions(-)
-</code></pre><p>+号和-号的数量展示该提交修改的每个文件的相关修改数量。这可以让你对找到每个提交的修改有个思路。如果你知道每个提交的真实修改。你可以传入<strong><code>-p</code></strong>参数给<code>git log</code>。这将输出该提交的所有修补：</p>
-<pre><code>commit 16b36c697eb2d24302f89aa22d9170dfe609855b 
-Author: Mary &lt;mary@example.com&gt; 
-Date: Fri Jun 25 17:31:57 2014 -0500 
-
-    Fix a bug in the feature 
-    diff --git a/hello.py b/hello.py 
-    index 18ca709..c673b40 100644 
-    --- a/hello.py 
-    +++ b/hello.py 
-    @@ -13,14 +13,14 
-    @@ B -print(&quot;Hello, World!&quot;) +print(&quot;Hello, Git!&quot;)
-</code></pre><p>对于改动很多的提交来说，这个输出会变得又长又繁琐。一般来说，当你输出所有修补的时候，你可能想要查找某一具体的改动，这时你就要用到<strong><code>pickaxe</code></strong> 选项。</p>
-<h3 id="短日志（Shortlog）"><a href="#短日志（Shortlog）" class="headerlink" title="短日志（Shortlog）"></a>短日志（Shortlog）</h3><p>git shortlog是一种特殊的git log ，它是为创建发布声明设计的。它把每个提交按作者分类，显示提交信息的第一行。这样可以容易地看到谁做了什么。</p>
-<p>比如说，两个开发者为项目贡献了5个提交，那么git shortlog 输出会是这样的：</p>
-<pre><code>Mary (2): 
-    Fix a bug in the feature 
-    Fix a serious security hole in our framework 
-
-John (3): 
-    Add the initial code base 
-    Add a new feature 
-    Merge branch &apos;feature&apos;
-</code></pre><p>默认情况下，git shortlog把输出按作者名字排序，但你可以传入-n选项来按每个作者提交数量排序。</p>
-<h3 id="图表格式（Graphs）"><a href="#图表格式（Graphs）" class="headerlink" title="图表格式（Graphs）"></a>图表格式（Graphs）</h3><p> –graph 选项绘制一个ASCII图像来展示提交历史的分支结构。它经常和 –oneline和 –decorate两个选项一起使用，这样会更容易查看哪个提交属于哪个分支:</p>
-<pre><code>git log --graph --oneline --decorate
-</code></pre><p>对于一个只有两个分支的仓库来说，这个命令将输出如下结果：</p>
-<pre><code>*   0e25143 (HEAD, master) Merge branch &apos;feature&apos;
-|\  
-| * 16b36c6 Fix a bug in the new feature
-| * 23ad9ad Start a new feature
-* | ad8621a Fix a critical security issue
-|/  
-* 400e4b7 Fix typos in the documentation
-* 160e224 Add the initial code base
-</code></pre><p>星号表明这个提交所在的分支，所以上图的意思是23ad9ad和16b36c6这两个提交在feature分支上，其余的在master分支上。</p>
-<p>虽然这对简单的项目来说是个很好用的选择，但你可能会更喜欢<code>gitk</code>或<a href="https://www.atlassian.com/software/sourcetree/overview" target="_blank" rel="noopener"><code>SourceTree</code></a>这些更强大的可视化工具来分析大型项目。</p>
-<h3 id="自定义格式"><a href="#自定义格式" class="headerlink" title="自定义格式"></a>自定义格式</h3><p>对于其他的git log格式需求，你都可以使用<strong><code>--pretty=format:&quot;&lt;string&gt;&quot;</code></strong>选项。它允许你使用像printf一样的占位符来输出提交。<br>比如，下面命令中的%cn、%h 和%cd这三种占位符会被分别替换为作者名字、缩略标识和提交日期。</p>
-<pre><code>git log --pretty=format:&quot;%cn committed %h on %cd&quot;
-</code></pre><p>This results in the following format for each commit:<br>每个提交日志输出格式如下：</p>
-<pre><code>John committed 400e4b7 on Fri Jun 24 12:30:04 2014 -0500
-John committed 89ab2cf on Thu Jun 23 17:09:42 2014 -0500
-Mary committed 180e223 on Wed Jun 22 17:21:19 2014 -0500
-John committed f12ca28 on Wed Jun 22 13:50:31 2014 -0500
-</code></pre><p>完整的占位符清单可以在git log 操作文档（manual page）<a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html#_pretty_formats" target="_blank" rel="noopener">Pretty Formats</a> 片段找到.</p>
-<p>除了让你只看到关注的信息，这个–pretty=format:”<string>“ 选项在你想要在另一个命令中使用日志内容是尤为有用的。</string></p>
-<h2 id="过滤提交历史"><a href="#过滤提交历史" class="headerlink" title="过滤提交历史"></a>过滤提交历史</h2><p>Formatting how each commit gets displayed is only half the battle of learning git log<br>. The other half is understanding how to navigate the commit history. The rest of this article introduces some of the advanced ways to pick out specific commits in your project history using git log<br>. All of these can be combined with any of the formatting options discussed above.<br>格式化提交输出只是学习git log一半任务。另一半是理解如何浏览整个提交历史。接下来的文章会介绍如何用git log选择项目历史中的特定提交。所有的用法都可以和上面讨论过的格式化选项结合起来。</p>
-<h3 id="按数量"><a href="#按数量" class="headerlink" title="按数量"></a>按数量</h3><p>git log最基础的过滤选项是限制显示的提交数量。当你只对最近几次提交感兴趣时，它可以节省你一页一页查看的时间。</p>
-<p>你可以在后面加上-<n>选项。比如说，下面这个命令会显示最新的3次提交：</n></p>
-<pre><code>git log -3
-</code></pre><h3 id="按日期"><a href="#按日期" class="headerlink" title="按日期"></a>按日期</h3><p>如果你想要查看某一特定时间段内的提交，你可以使用<strong><code>--after</code></strong> 或 <strong><code>--before</code></strong> 标记来按日期筛选。它们都接受好几种日期格式作为参数。比如说，下面的命令会显示2014年7月1日后（含）的提交：</p>
-<pre><code>git log --after=&quot;2014-7-1&quot;
-</code></pre><p>你也可以传入相对的日期，比如一周前（”1 week ago”）或者昨天（”yesterday”）：</p>
-<pre><code>git log --after=&quot;yesterday&quot;
-</code></pre><p>你可以同时提供–before 和 –after 来检索两个日期之间的提交。比如，为了显示2014年7月1日到2014年7月4日之间的提交，你可以这么写：</p>
-<pre><code>git log --after=&quot;2014-7-1&quot; --before=&quot;2014-7-4&quot;
-</code></pre><p>注意<strong><code>--since</code></strong> 、<strong><code>--until</code></strong> 标记和<strong><code>--after</code></strong> 、<strong><code>--before</code></strong>标记的作用分别是相似的。</p>
-<h3 id="按作者"><a href="#按作者" class="headerlink" title="按作者"></a>按作者</h3><p>当你只想看某一特定作者的提交的时候，你可以使用<strong><code>--author</code></strong>标记。它接受正则表达式，返回所有作者名字满足这个规则的提交。如果你知道那个作者的确切名字你可以直接传入文本字符串：</p>
-<pre><code>git log --author=&quot;John&quot;
-</code></pre><p>它会显示所有作者叫John的提交。作者名不一定是全匹配，只要包含那个子串就会匹配。</p>
-<p>你也可以用正则表达式来创建更复杂的检索。比如，下面这个命令检索名叫Mary或John的作者的提交。</p>
-<pre><code>git log --author=&quot;John\|Mary&quot;
-</code></pre><p>注意作者的邮箱地址也算作是作者的名字，所以你也可以用这个选项来按邮箱检索。</p>
-<p>如果你的工作流区分提交者和作者，<code>--committer</code>也能以相同的方式使用。</p>
-<h3 id="按提交日志信息"><a href="#按提交日志信息" class="headerlink" title="按提交日志信息"></a>按提交日志信息</h3><p>按提交信息来过滤提交，你可以使用–grep标记。它和上面的–author标记差不多，只不过它搜索的是提交信息而不是作者。</p>
-<p>比如说，你的团队规范要求在提交信息中包括相关的issue编号，你可以用下面这个命令来显示这个issue相关的所有提交：</p>
-<pre><code>git log --grep=&quot;JRA-224:&quot;
-</code></pre><p>你也可以传入<strong><code>-i</code></strong>参数来忽略大小写匹配。</p>
-<h3 id="按文件"><a href="#按文件" class="headerlink" title="按文件"></a>按文件</h3><p>很多时候，你只对某个特定文件的更改感兴趣。为了显示某个特定文件的历史，你只需要传入文件路径。比如说，下面这个命令返回所有和foo.py和bar.py文件相关的提交：</p>
-<pre><code>git log -- foo.py bar.py
-</code></pre><p>–告诉git log接下来的参数是文件路径而不是分支名。如果分支名和文件名不可能冲突，你可以省略–。</p>
-<h3 id="按文件内容"><a href="#按文件内容" class="headerlink" title="按文件内容"></a>按文件内容</h3><p>我们还可以根据源代码中某一行的增加和删除来搜索提交。这被称为pickaxe，它接受形如-S”<string>“的参数。比如说，当你想要知道Hello, World!字符串是什么时候加到项目中哪个文件中去的，你可以使用下面这个命令：</string></p>
-<pre><code>git log -S &quot;Hello, World!&quot;
-</code></pre><p>如果你想用正则表达式而不是字符串来搜索，你可以使用-G “<regex>“标记。</regex></p>
-<p>这是一个非常强大的调试工具，它能让你定位到所有影响代码中特定一行的提交。它甚至可以让你看到某一行是什么时候复制或者移动到另一个文件中去的。</p>
-<h3 id="按范围"><a href="#按范围" class="headerlink" title="按范围"></a>按范围</h3><p>你可以传入范围来筛选提交。这个范围由下面这样的格式指定，其中<since>和<until>是提交的引用：</until></since></p>
-<pre><code>git log &lt;since&gt;..&lt;until&gt;
-</code></pre><p>这个命令在你使用分支引用作为参数时特别有用。这是显示两个分支之间区别最简单的方式。看看下面这个命令：</p>
-<pre><code>git log master..feature
-</code></pre><p>其中的master..feature范围包含了在feature分支而不在master分支中所有的提交。换句话说，这个命令可以看出从master分支fork到feature分支后发生了哪些变化。它可以这样可视化：</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:b443a307-2df4-4080-948b-f5b9a1f8fd40/01.svg?cdnVersion=db" alt="Detecting a fork in the history using ranges"><br>注意如果你更改范围的前后顺序(feature..master)，你会获取到master分支而非feature分支上的所有提交。如果git log输出了全部两个分支的提交，这说明你的提交历史已经分叉了。</p>
-<h2 id="过滤合并提交"><a href="#过滤合并提交" class="headerlink" title="过滤合并提交"></a>过滤合并提交</h2><p>git log输出时默认包括合并提交。但是，如果你的团队采用强制合并策略（意思是merge你修改的上游分支而不是将你的分支rebase到上游分支），你的项目历史中会有很多外来的提交。</p>
-<p>你可以通过<strong><code>--no-merges</code></strong>标记来排除这些提交：</p>
-<pre><code>git log --no-merges
-</code></pre><p>另一方面，如果你只对合并提交感兴趣，你可以使用<strong><code>--merges</code></strong>标记：</p>
-<pre><code>git log --merges
-</code></pre><p>它会返回所有包含两个父节点的提交。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>你现在应该对使用git log来格式化输出和选择你要显示的提交的用法比较熟悉了。它允许你查看你项目历史中任何需要的内容。</p>
-<p>这些技巧是你Git工具箱中重要的部分，不过注意git log往往和其他Git命令连着使用。当你找到了你要的提交，你把它传给<code>git checkout</code> 、<code>git revert</code> 或是其他控制提交历史的工具。所以，请继续坚持Git高级用法的学习。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/git-log" target="_blank" rel="noopener">Advanced Git log</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git log</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git 日志打印</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/11/2017-02-11-Advance-Git-log/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -2285,14 +2223,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -2301,15 +2231,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2333,22 +2287,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
               </li>
              
@@ -2361,6 +2299,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
@@ -2370,26 +2316,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2413,19 +2339,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2438,6 +2356,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2461,6 +2399,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
               </li>
              
@@ -2470,18 +2416,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2501,14 +2435,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
@@ -2525,6 +2451,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -2534,6 +2464,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2550,6 +2488,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2570,18 +2520,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2649,7 +2587,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2661,23 +2619,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2721,6 +2667,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -2730,10 +2680,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2750,14 +2696,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">区块链, 通证经济</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
             
             <div class="clearfix"></div>
