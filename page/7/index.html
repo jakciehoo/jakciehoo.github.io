@@ -160,6 +160,169 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-08-06-ios-app-network-architect-design-thinking" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/">iOS架构师之路：大型APP应用网络层架构思考</a>
+    </h1>
+  
+
+        
+        <a href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/" class="archive-article-date">
+  	<time datetime="2016-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>我们平安健康的App项目的整体架构是我做的。我把我最近学习的网络架构知识结合以前的项目经验，设计了《平安健康》App项目网络架构。现在把这些知识和实践经验总结出来，希望加深网络架构的思考，并和同仁共同学习进步。</p>
+</blockquote>
+<h2 id="认识网络架构"><a href="#认识网络架构" class="headerlink" title="认识网络架构"></a>认识网络架构</h2><p>对于网络层的架构，在APP端是不太受到工程师们重视的，在这个APP圈钱的时代，boss们关心的更多是这个APP是否能够工作,然后赚钱，对于APP内部代码设计是否合理,技术应用和代码实现是否可维护可扩展，他们是不care的，老板们多半非技术出身，也关心不到这些，全仰仗工程师们的良知了。等到APP的维护性和扩展性出现问题的时候，可能工程师就已经跳槽了，然后负责填坑的工程师们就要骂娘了，完全不敢接手就跑了。我之前由于知识的局限，考虑不到那么全面。因为看到很多APP，包括以前做的项目都是简单对AFNetworking做一个封装，想当然的以为网络架构就是那么回事。</p>
+<p>这半年一直在关注的casa大神的架构系列文章。实在干货太多，所以这半年费了N多脑细胞去琢磨他的几篇文章，比如《iOS应用架构谈 网络层设计方案》。在读这系列文章时，宝宝内心是崩溃的，那感觉就像星爷在电影《九品芝麻官》拿半个饼换了尚书大人两大盘饼，本来星爷很得意认了个亲，还赚了两大盘烧饼，但是尚书那奸臣却要星爷当场啃完那几十个大烧饼…想想我就要吐了吐了……。我因为是一个好学上进的有志青年，所以看到这么好的系列文章，也是恨不得赶紧吸收为己所用，即使吐也要一边吃一边*。</p>
+<p>相比普通工程师而言，优秀工程师他们更加关注细节，他们会为了提升一点点团队效率，提升一点项目质量，提升一点点技术手段而绞尽脑汁的去学习然后解决问题。在点点滴滴的总结中提炼出优秀的项目开发和架构方案。</p>
+<p>App端的架构和服务器端的侧重点不同，App端技术的架构相比服务器端而言，对性能的关注度不如对用户体验的关注度，因为前端是用户直接使用的端，能从架构层面帮助业务开发解决部分用户体验问题也是很重要的(这个在后面会讲到从网络架构层面可以帮助解决哪些用户体验的问题)；服务器端更看中健壮性和承压能力（性能），而由于前端面对产品的需求变化比服务器端也大，因此架构上对可扩展性、可维护性、可读性的关注度也相比后端更关注一些，假设业务之间耦合性太大，动一些业务代码都导致整个项目难以为继，那这得是多么失败的架构啊。如果能从顶层引导业务开发工程师的代码更规范，那是一件对架构师多有成就感的事情呢。</p>
+<h2 id="App网络架构设计的两个关注点"><a href="#App网络架构设计的两个关注点" class="headerlink" title="App网络架构设计的两个关注点"></a>App网络架构设计的两个关注点</h2><p>在APP中，网络层属于项目的顶层了。网络层负责直接和server端通信获取或者修改数据，将返回结果交付给业务层去处理，或者业务层将数据传递给网络层去跟server端通信。网络层对接的是sever端和APP项目的业务层，架构师在做网络架构时就需要考虑网络层和这两个层对接设计。</p>
+<blockquote>
+<ul>
+<li>1.网络层架构如何设计能更合理地对接server端。</li>
+<li>2.网络层架构如何设计能更合理地对接业务开发。</li>
+</ul>
+</blockquote>
+<p>casa在的系列开篇中提到架构设计是自顶向下去设计，然后自下向上去实现，反向去验证架构的合理性。我同意这个观点。所以本文的思路就从顶向下去思考的网络层架构的。先从整体思考以前项目中缺陷，从全局层面去思考如何架构能够解决网络层架构存在的问题，然后抽丝剥茧去一个一个找到方案去解决问题。</p>
+<p>架构师需要根据自己过去项目的经验，去预演设想项目发展过程中可能遇到的网络架构需要解决的技术坑、同server端对接遇到的坑、和业务层开发工程师对接遇到的坑。</p>
+<h2 id="关注点1：如何设计网络架构能更合理地对接server端"><a href="#关注点1：如何设计网络架构能更合理地对接server端" class="headerlink" title="关注点1：如何设计网络架构能更合理地对接server端"></a>关注点1：如何设计网络架构能更合理地对接server端</h2><p><strong>1.安全问题</strong></p>
+<blockquote>
+<ul>
+<li>1）网络通信的数据安全如何解决？</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>2）如何防止中间人攻击，比如运营商的广告插入？</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>3）如何确保网络请求由开发的App发出，防止其他人爬API请求获取返回数据?</li>
+</ul>
+</blockquote>
+<p><strong>解决方案：</strong></p>
+<p>关于第一条、第二条的解决方案如果能和server端协商改成HTTPS就用HTTPS。事实上现在苹果要求的请求必须是HTTPS，从iOS9之后非https的请求的App是无法审核通过的，必须要提出特殊APP使用HTTP的申请。HTTPS可以防止中间人攻击（比如运营商在返回数据里插入广告），也可以保障数据的安全。如果server端就是不支持HTTPS，除了鄙视他们，你能做的就是和他们协商对请求返回的数据做加密处理。</p>
+<p>关于第三条安全的解决方案通常做法是使用签名，对请求参数加盐做hash算法，然后在服务端去用彼此协商好的加密解密规则去解这个hash值，如果最后的结果一致，说明该请求是由自家的APP发出，反之则可能是有其他人截获请求后发出的，server端需要把这中非自家的请求给quit掉。服务器端和APP端可以协商一个相对复杂的加密算法，这样不容易被黑客猜测到。APP端最好不要将加密的规则写到本地文件中，而是直接写在代码里，这样不容被攻击者获取到加密规则。</p>
+<p><strong>2.性能优化</strong></p>
+<blockquote>
+<ul>
+<li>1)如何减少不必要的网络请求，减小server端的压力？</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>2)如何提高用户请求的相应速度？</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>3）如何降低用户请求流量消耗和耗电？</li>
+</ul>
+</blockquote>
+<p><strong>解决方案：</strong></p>
+<p>   <em><code>1.必要的API请求的缓存，可以优化上面所有的点。</code></em></p>
+<p>   如果一个请求的返回数据几分钟甚至几小时内不容易有变化，比如产品详情页面的数据一般几个小时内是不怎么会变化的，我们可对请求的返回数据做内存缓存；如果一个请求的返回数据可能几天甚至几个月都不会变化，比如推送的文章数据，我们可以对请求的返回数据做内存和磁盘的二级缓存，当然有变化如何处理，这个可以参考我的文章《iOS架构师之路：数据持久化方案》；关于磁盘缓存，如果数据要求精确度较高，我们可以用数据库精确到字段去存储数据，比如用户信息，城市信息；如果数据只是要求整存整取的非核心数据，我们可以用数据库也可以文件存取。<br>   现在的AFNetworking已经提供CachePolicy这个字段让我们做请求的缓存，但是如果请求头Header加入了区分请求的字段，那用CachePolicy就不好使了，因此在做架构的时候，就需要自定义请求缓存类了。</p>
+<p>   <em><code>2.请求状态的记录、暂停、取消。</code></em></p>
+<p>   用户的行为无法预知，比如点击某个按钮发起请求后可能再次点击触发请求，这时候我们最好在网络架构的时候考虑这个问题，有一个机制记录请求是否在请求中，如果在请求中，我们可以暂停发起过的请求的或者暂停即将发起的请求。比如下拉列表，发起请求后，如果用户再次下拉，最好不要再次请求，因为两次的请求数据相同，不需要重复发送请求；如果是用户筛选的请求，那最好取消之前发起的请求，再发起新的请求，因为之前的请求对用户已经没有任何意义了，新请求才可能是用户期望的行为。因此在做网络架构的时候，就需要网络层给业务开发提供记录状态、取消请求的接口。</p>
+<p>   <em><code>避免DNS解析，直接IP请求可以稍微提高一写网络请求的速度。</code></em></p>
+<p>域名解析多少是需要一个解析过程的，APP端因为无需像浏览器一样，需要给用户一个比APP更容易记住的域名输入需求，所以没必要发起请求使用域名，完全可以使用IP地址。</p>
+<p>   <em><code>本地IP表，可以解决中国南电信和北联通运营商之间的PING延时差。</code></em></p>
+<p>   用户的手机使用网络环境不可预知，经常出差的同事可能会在多种网络环境下使用手机APP。如果服务器端有多个IP地址，有联通的，用电信的，或者其他运营商的。我们最好能在APP端有一份IP地址列表，把服务器端的所有IP列入，当APP启动时候，针对这个列表的IP地址做ping延时时间，取延时最小的IP作为这段时间应用的服务器IP地址。    </p>
+<p><strong>3 .如果server端的接口设计的规范和数据结构五花八门，网络层如何为业务开发解决这部分困扰？</strong></p>
+<p>我们的服务器端的团队可能是多个团队，也可能是外部团队，甚至是第三方，比如谷歌地图，比如天气服务。这时候我们最好能在网络架构的时候充分考虑到这些。让业务开发可以使用相似的接口，尽可能少的调整就能使用不同接口设计规范提供的API。</p>
+<p>在团队中可能多个业务模块由不同的后端团队去做，比如我之前公司《亚程旅游》APP的酒店业务有城市列表，机票业务也有城市列表，但是这两个城市列表的后端来自不同团队，服务器端返回给APP端的数据字段个数不同，字段命名不同。这时候我们可以在网络层提供一个洗数据的功能，让业务端拿到相同字段数字段名的数据。</p>
+<p>还有我们的后端有开发、测试、和生产环境。网络架构的时候做好开关功能，而不是切换环境需要手段去更改IP，虽然看起来这并不费工夫，但在实际团队开发的合作开发过程中，我们负责打包的工程师可能会忘记修改IP地址，这时候打包给测试或者上架，那时间成本和代价就不是十分钟二十分钟的事情了。所以能自动化解决的一定要自动化。</p>
+<p><strong>4 .当server端没有提前交付真实接口时，在网络层如何通过mock数据，让业务开发顺利进展？</strong></p>
+<p>团队作战的能力真的是千差万别，只有更神奇没有最神奇。有些时候，sever端的开发严重滞后前端开发，前端拿不到真实数据，根本不好调试界面和界面逻辑，因此影响前端的开发进度。如果在业务层写很多的假数据，或者硬编码假数据，这又在对接真实数据时需要删除整理，而且让mock假数据的工作变得非常繁杂和沉重，让业务开发感到非常的沮丧。所以架构师需要注意到这些，架构师的存在一个重要理由，就是为业务工程师服务的。<br>    所以在网络层，可以设计一个mock数据的开关，业务开发可以按照接口文档示例，mock一个本地json/xml数据文件，以一个约定方式命名这个json文件。这时候业务开发就可以像调用接口一样调用mock数据里，让开发能够顺利进行。</p>
+<h2 id="关注点2：网络架构如何设计能更合理地对接业务开发"><a href="#关注点2：网络架构如何设计能更合理地对接业务开发" class="headerlink" title="关注点2：网络架构如何设计能更合理地对接业务开发"></a>关注点2：网络架构如何设计能更合理地对接业务开发</h2><p><strong>1.以哪种方式交付数据给业务层</strong></p>
+<p>casa在他的文章中提到一个观点：架构师在该灵活的时候要灵活，该限制的要限制。当然何时灵活合适限制是需要架构师的经验的。网络层交付返回数据给业务层的方式主要有notification、delegate、block.由于AFNetworking使用的是代理的方式，所以多数APP为了偷懒，在网络层都是沿用了AFNetworking的方式，使用了block。而block虽然让代码紧凑，但是在一段代码里，包含我们请求时的参数组装、参数的判断、请求发起、返回数据校验、各种判断的弹出提示、对返回数据进行处理，这些会让请求这段代码变得非常臃肿。业务开发工程师如果勤快一点，可能会为block块单独开一个方法去处理返回结果，但是这样可能导致各个业务处理的方法名不一致，可读性差，因此还不如在网络层架构的时候，就直接使用代理的方式给到业务开发，这样就把请求和返回分离了，代码结构也更清晰，方法命名也更统一。</p>
+<p><strong>2.交付什么数据给业务层</strong></p>
+<p>我认为这部分就是该灵活的时候了，我看过一些APP直接在网络层返回model给开发，或者是未序列的responseData的原数据给业务开发，这两种方式都不太合理。后者就不必多说，网络层没必要偷这个懒，直接序列化之后给业务开发，就不用每个API业务开发都需要先序列化一下，何乐而不为？而前者直接返回model的话，我认为就对业务开发限制太死了，我认为这部分是网络架构可以该灵活的时候了。可能一个页面只需要这个model的一个两个字段，这样带一个model过去不太合适，太重了，而且也有可能这个页面的数据是多个model的数据某些字段组合而成的，那这时候就会让业务开发很蛋疼了，这个页面可能需要定义一个新的model，或者这个页面需要多个model的数据，那可能需要带入多个model，这样做都很难看。所以我建议网络层返回一个序列化后的数据就好。在casa的文章中还提到了reformmer机制，可以洗数据用，让每个页面取得需要的数据。你可以这么做，也可以直接用字典搞定，或者转化为model，建议最好把处理交给业务层。</p>
+<p><strong>3.传递什么类型的参数给网络层</strong></p>
+<p>我见过一些项目，可以传model作为参数给网络层，可以传字典到网络层，也可以传key,value的方式给网络层。我认为没必要，直接传递字典就好，这部分完全没必要灵活。因为无论是model，还是字典，还是key value，极可能在发起请求前是需要组装参数的，传入model的话，可能传参前需要转化成model，到网络层可能还需要转字典一下，浪费这个性能和时间成本完全没必要。key,value的方式或许好点，没有多少转化成本，但是为了可读性和规范性，还是觉得没必要。因此我任务传参统一用字典就好，让传参行为标准化，对代码可维护和可读性也是有好处的。</p>
+<p><strong>4.给业务层封装共用和不必要的参数传入</strong></p>
+<p>这部分不必多说，多数网络层都会做这个事情，但是如果结合综合前文中和server端对接提到的多种服务的情况，最好封装共用参数是和服务绑定的。而不是直接写死，否则网络层应对服务端接口变化时候，可能服务变了，需要不断的改这部分代码。</p>
+<p><strong>5.请求状态的记录、取消、暂停的接口开放给业务层。</strong></p>
+<p>这部分其实不少APP架构的忽略了这部分设计。这类APP是不关心用户流量的，可能还会给用户非期望的结果。优秀的APP还是尽量多的为用户考虑下吧，所以该设计的要设计，因为业务开发的能力可能还考虑不到这些。</p>
+<p><strong>6.请求参数的校验</strong></p>
+<p>我们的请求参数，可能是依赖其他API的返回值，或者依赖其他页面，而这个请求的参数的值可能有要求，比如不能为空，或者只能是枚举值中的几个值，这时候如果我们能对参数做校验，在架构成眠为业务提供校验参数的接口，我们业务开发就能根据参数校验情况，决定要不要发起这次请求，直接给用用一个提示；或者让他们根据业务决定要不要给参数一个默认值，有些业务有默认返回结果可能比没有结果更好。所以架构的时候考虑了做这个接口，这样给业务开发工程师一个可以校验的参数的接口，在必要的时候业务开发是喜欢用的。</p>
+<p><strong>7.返回值的必要校验</strong></p>
+<p>这部分和请求参数的校验类似，因为某些字段服务器返回的不稳定，比如返回”NULL”字符串，就挺让用户崩溃的，这时候如果能够对某些关键的不稳定的字段做一些校验，业务开发肯定期望有这么一个接口，如果网络架构考虑到这些，他一定会对感激涕零的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章主要是我对平安健康APP架构的实践的思考，主要的思想来自casa大神，同时也加入了自己的经验。网络架构由于是项目的顶层，如果设计不好，比如该开发的接口没有开发，该限制的地方没限制，该灵活的地方没有灵活，会影响整个项目的进度和业务开发的代码性能和质量。这篇文章主要是谈网络架构的关注的两个点：和服务器对接以及和业务层对接。以及围绕这两个点，架构师需要前瞻到可能会踩到的坑，能在网络层解决的就要提前设计好，然后找到解决方案去解决。这篇文章偏重于设计，由于篇幅太长，周期太长，所以写的时候状态也不一，所以可能写的有点乱，我会在后续的时间慢慢整理。后续有时间我也会把自己的架构设计方案的代码搬上来。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://casatwy.com/iosying-yong-jia-gou-tan-wang-luo-ceng-she-ji-fang-an.html" target="_blank" rel="noopener">《iOS应用架构谈 网络层设计方案》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">network architect design</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-07-31-Hoo-Circle-Progress-View" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1207,14 +1370,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1223,11 +1378,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1243,14 +1406,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -1259,11 +1414,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1287,15 +1446,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1311,7 +1466,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1320,26 +1483,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1359,27 +1502,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1391,6 +1522,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
@@ -1399,31 +1554,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2016</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2017</a>
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1443,6 +1582,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
               </li>
              
@@ -1456,6 +1607,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2017</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1495,14 +1658,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -1523,7 +1678,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1532,6 +1691,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1563,19 +1726,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">比特币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1592,6 +1747,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">新时代</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1619,22 +1782,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
               </li>
              
@@ -1648,6 +1795,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
               </li>
              
               <li class="article-tag-list-item">
