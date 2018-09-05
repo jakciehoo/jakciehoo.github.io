@@ -555,7 +555,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小目标1000万</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -563,7 +563,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小目标1000万</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -648,6 +648,10 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">1000万</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
         		</li>
       		 
@@ -657,10 +661,6 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">daily block</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">1000万</a>
         		</li>
       		
 		</ul>
@@ -867,268 +867,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/03/25/2018-03-25-we-all-need-bitcoin/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">CocoaPods从入门到精通(二)：Podfile语法精讲</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/" class="archive-article-date">
-  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一个简单的Podfile"><a href="#一个简单的Podfile" class="headerlink" title="一个简单的Podfile"></a>一个简单的Podfile</h2><pre><code>target &apos;MyApp&apos;
-pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
-</code></pre><h2 id="一个复杂的Podfile"><a href="#一个复杂的Podfile" class="headerlink" title="一个复杂的Podfile"></a>一个复杂的Podfile</h2><pre><code>platform :ios, &apos;9.0&apos;
-inhibit_all_warnings!
-
-target &quot;MyApp&quot; do
-  pod &apos;ObjectiveSugar&apos;, &apos;~&gt; 0.5&apos;
-
-  target &quot;MyAppTests&quot; do
-    inherit! :search_paths
-    pod &apos;OCMock&apos;, &apos;~&gt; 2.0.1&apos;
-  end
-end
-
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    puts &quot;#{target.name}&quot;
-  end
-end
-</code></pre><h2 id="根节点配置项"><a href="#根节点配置项" class="headerlink" title="根节点配置项"></a>根节点配置项</h2><h4 id="install"><a href="#install" class="headerlink" title="install!"></a>install!</h4><p>pod install执行时的一些设置。<br>示例：</p>
-<pre><code>install! &apos;cocoapods&apos;,
-:deterministic_uuids =&gt; false,
-:integrate_targets =&gt; false
-</code></pre><p>支持关键字：<br>    :clean<br>    :deduplicate_targets<br>    :deterministic_uuids<br>    :integrate_targets<br>    :lock_pod_sources</p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><h4 id="pod"><a href="#pod" class="headerlink" title="pod"></a>pod</h4><pre><code>// 使用最新版本
-pod &apos;SSZipArchive&apos;
-// 使用指定版本
-pod &apos;Objection&apos;, &apos;0.9&apos;
-‘&gt; 0.1’ 大于0.1的版本，不包括0.1版本
-‘&gt;= 0.1’ 大于等于0.1的版本
-‘&lt; 0.1’ 小于0.1的版本，不包括0.1版本
-‘&lt;= 0.1’ 小于等于0.1的版本
-‘~&gt; 0.1.2’ 相当于&apos;&gt;= 0.1.2 且 ‘&lt; 0.2.0’
-‘~&gt; 0.1’ 相当于&apos;&gt;= 0.1 且 ‘&lt; 1.0’
-‘~&gt; 0’ 相当于不写，即最新版本
-</code></pre><p>编译配置</p>
-<pre><code>// 在Release和App Store模式引用该库
-pod &apos;PonyDebugger&apos;, :configurations =&gt; [&apos;Release&apos;, &apos;App Store&apos;]
-// 在Release模式引用该库
-pod &apos;PonyDebugger&apos;, :configuration =&gt; [&apos;Release&apos;]
-</code></pre><p>Subspecs<br>在使用开源库时，只是用该库的一部分，可是使用如下写法。前提是当前库是支持Subspecs的。</p>
-<pre><code>// 只引用QueryKit的Attribute子库，不包含其它子库
-pod &apos;QueryKit/Attribute&apos;
-// 只引用QueryKit的Attribute和QuerySet子库，不包含其它子库
-pod &apos;QueryKit&apos;, :subspecs =&gt; [&apos;Attribute&apos;, &apos;QuerySet&apos;]
-</code></pre><p>使用本地路径下的文件</p>
-<pre><code>pod &apos;AFNetworking&apos;, :path =&gt; &apos;~/Documents/AFNetworking&apos;
-</code></pre><p>使用已通过认证的repo</p>
-<pre><code>// 使用master分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;
-// 使用指定分支
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :branch =&gt; &apos;dev&apos;
-// 使用指定tag
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :tag =&gt; &apos;0.7.0&apos;
-// 使用某一次提交
-pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetworking.git&apos;, :commit =&gt; &apos;082f8319af&apos;
-</code></pre><p>指定podspec文件<br>    pod ‘JSONKit’, :podspec =&gt; ‘<a href="https://example.com/JSONKit.podspec&#39;" target="_blank" rel="noopener">https://example.com/JSONKit.podspec&#39;</a></p>
-<h4 id="podspec"><a href="#podspec" class="headerlink" title="podspec"></a>podspec</h4><p>指定需要加载的podspec</p>
-<pre><code>podspec
-podspec :name =&gt; &apos;QuickDialog&apos;
-podspec :path =&gt; &apos;/Documents/PrettyKit/PrettyKit.podspec&apos;
-</code></pre><h4 id="target"><a href="#target" class="headerlink" title="target"></a>target</h4><p>定义一个依赖库与target（Xcode project）的关系。每个target应该对应一个Xcode target。默认情况下，子target的依赖关系是包含父target的，除非指定非继承父target。<br>定义一个target</p>
-<pre><code>target &quot;ZipApp&quot; do
-  pod &apos;SSZipArchive&apos;
-end
-</code></pre><p>在父target中定义SSZipArchive pod，仅支持父target</p>
-<pre><code>target &quot;ZipApp&quot; do
-  pod &apos;SSZipArchive&apos;
-
-  target &quot;ZipAppTests&quot; do
-    inherit! :search_paths
-    pod &apos;Nimble&apos;
-  end
-end
-</code></pre><p>通过在父target中定义target应用Pods支持多个targets</p>
-<pre><code>target &quot;ShowsApp&quot; do
-  pod &apos;ShowsKit&apos;
-
-  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
-  target &quot;ShowsTV&quot; do
-    pod &quot;ShowTVAuth&quot;
-  end
-
-  # Has it&apos;s own copy of Specta + Expecta
-  # and has access to ShowsKit via the app
-  # that the test target is bundled into
-
-  target &quot;ShowsTests&quot; do
-    inherit! :search_paths
-    pod &apos;Specta&apos;
-    pod &apos;Expecta&apos;
-  end
-end
-</code></pre><h4 id="abstract-target"><a href="#abstract-target" class="headerlink" title="abstract_target"></a>abstract_target</h4><p>定义一个abstract_target，方便被所有继承target使用。<br>定义abstract_target</p>
-<pre><code>abstract_target &apos;Networking&apos; do
-  pod &apos;AlamoFire&apos;
-
-  target &apos;Networking App 1&apos;
-  target &apos;Networking App 2&apos;
-end
-</code></pre><p>定义一个abstract_target包含多个targets</p>
-<pre><code># There are no targets called &quot;Shows&quot; in any Xcode projects
-abstract_target &quot;Shows&quot; do
-  pod &apos;ShowsKit&apos;
-
-  # Has it&apos;s own copy of ShowsKit + ShowWebAuth
-  target &quot;ShowsiOS&quot; do
-    pod &quot;ShowWebAuth&quot;
-  end
-
-  # Has it&apos;s own copy of ShowsKit + ShowTVAuth
-  target &quot;ShowsTV&quot; do
-    pod &quot;ShowTVAuth&quot;
-  end
-
-  # Has it&apos;s own copy of Specta + Expecta
-  # and has access to ShowsKit via the app
-  # that the test target is bundled into
-
-  target &quot;ShowsTests&quot; do
-    inherit! :search_paths
-    pod &apos;Specta&apos;
-    pod &apos;Expecta&apos;
-  end
-end
-</code></pre><p>abstract!<br>表示当前target是抽象的，不会与真正的Xcode target挂钩。</p>
-<p>inherit!<br>设置当前target的继承模式。</p>
-<pre><code>// Inheriting only search paths
-target &apos;App&apos; do
-  target &apos;AppTests&apos; do
-    inherit! :search_paths
-  end
-end
-</code></pre><h2 id="Target配置"><a href="#Target配置" class="headerlink" title="Target配置"></a>Target配置</h2><p>这些设置是控制被生成project的CocoaPods。包括指定编译platform、指定链接的xcodeproj。</p>
-<h4 id="platform"><a href="#platform" class="headerlink" title="platform"></a>platform</h4><p>如果不指定，CocosPods将是默认值，当前默认值是：<br>4.3 for iOS, 10.6 for OS X, 9.0 for tvOS and 2.0 for watchOS.<br>如果对系统有要求（iOS &lt; 4.3）,armv6 框架将添加至ARCHS.<br>    platform :ios, “4.0”<br>    platform :ios</p>
-<h4 id="project"><a href="#project" class="headerlink" title="project"></a>project</h4><p>指定当前target链接的project。若未指定，表示target链接与同路径（与podfile文件同路径）下target同名的project。<br>指定用户project</p>
-<pre><code># This Target can be found in a Xcode project called `FastGPS`
-target &quot;MyGPSApp&quot; do
-  project &apos;FastGPS&apos;
-  ...
-end
-
-# Same Podfile, multiple Xcodeprojects
-target &quot;MyNotesApp&quot; do
-  project &apos;FastNotes&apos;
-  ...
-end
-</code></pre><p>有户自定义编译设置</p>
-<pre><code>project &apos;TestProject&apos;, &apos;Mac App Store&apos; =&gt; :release, &apos;Test&apos; =&gt; :debug
-</code></pre><h4 id="xcodeproj"><a href="#xcodeproj" class="headerlink" title="xcodeproj"></a>xcodeproj</h4><p>xcodeproj已在1.0中弃用，并已重命名project。对于1.0版之前的版本xcodeproj。</p>
-<h4 id="link-with"><a href="#link-with" class="headerlink" title="link_with"></a>link_with</h4><p>link_with在1.0中被弃用，使用abstract_target和target继承替代。</p>
-<h4 id="inhibit-all-warnings"><a href="#inhibit-all-warnings" class="headerlink" title="inhibit_all_warnings!"></a>inhibit_all_warnings!</h4><p>禁止CocoaPods库的所有警告。该属性会被子target继承。</p>
-<pre><code>pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true
-pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; false
-</code></pre><h4 id="use-frameworks"><a href="#use-frameworks" class="headerlink" title="use_frameworks!"></a>use_frameworks!</h4><p>用frameworks 替代Pods静态库。该属性被子target继承。</p>
-<h2 id="Workspace"><a href="#Workspace" class="headerlink" title="Workspace"></a>Workspace</h2><h4 id="workspace"><a href="#workspace" class="headerlink" title="workspace"></a>workspace</h4><p>指定workspace。若未指定，表示是与podfile同路径下，且与target同名的workspace文件。例如：</p>
-<pre><code>workspace &apos;MyWorkspace&apos;
-</code></pre><h4 id="generate-bridge-support"><a href="#generate-bridge-support" class="headerlink" title="generate_bridge_support!"></a>generate_bridge_support!</h4><p>指定应从所有安装的Pod的头文件中生成一个BridgeSupport元数据文档。<br>这是用于脚本语言，如MacRuby， Nu和 JSCocoa，它用于桥接类型，功能等。</p>
-<h4 id="set-arc-compatibility-flag"><a href="#set-arc-compatibility-flag" class="headerlink" title="set_arc_compatibility_flag!"></a>set_arc_compatibility_flag!</h4><p>已经被CocoaPods 1.0放弃。</p>
-<h2 id="Source"><a href="#Source" class="headerlink" title="Source"></a>Source</h2><p>指定资源位置。</p>
-<pre><code>source &apos;https://github.com/artsy/Specs.git&apos;
-source &apos;https://github.com/CocoaPods/Specs.git&apos;
-</code></pre><h2 id="Hooks"><a href="#Hooks" class="headerlink" title="Hooks"></a>Hooks</h2><p>Podfile提供在安装期间执行的hooks,hooks是全局的，不存在为单个target定义hook。</p>
-<h4 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h4><p>指定安装期间需要的插件。</p>
-<pre><code>plugin &apos;cocoapods-keys&apos;, :keyring =&gt; &apos;Eidolon&apos;
-plugin &apos;slather&apos;
-</code></pre><h4 id="pre-install"><a href="#pre-install" class="headerlink" title="pre_install"></a>pre_install</h4><p>Hook允许用户在Pods下载完成，但还未安装前对Pods做一些修改。<br>它接受 Pod::Installer 作为唯一的参数.</p>
-<p>在Podfile定义pre-install hook</p>
-<pre><code>pre_install do |installer|
-  # Do something fancy!
-end
-</code></pre><h4 id="post-install"><a href="#post-install" class="headerlink" title="post_install"></a>post_install</h4><p>Hook允许用户在被写入硬盘、或者任何你想做的其它任务之前，对生成的Xcode project做最后的改变。<br>它接受 Pod::Installer 作为唯一的参数.<br>例如：</p>
-<pre><code>Customising the build settings of all targets
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings[&apos;GCC_ENABLE_OBJC_GC&apos;] = &apos;supported&apos;
-    end
-  end
-end
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">展开全文 >></a>
         </p>
       
 
@@ -1479,6 +1217,242 @@ wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ git push origin master
 
 
   
+    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
+  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
+<h2 id="创建spec文件"><a href="#创建spec文件" class="headerlink" title="创建spec文件"></a>创建spec文件</h2><p>将代码克隆到本地,如果本地已经存在,直接跳过这一步.<br>创建.podspec文件,切换到项目根目录,创建spec文件:</p>
+<pre><code>//切换到项目根目录
+
+cd SGExtenion
+
+//创建spec文件
+
+pod spec create SGExtension
+</code></pre><p>用xcode打开 SGExtension.podspec,里面有英文注释,我这里直接给简单模板,其实就是去掉了注释,详细的设置看这里</p>
+<pre><code>Pod::Spec.new do |spec|
+
+spec.name                  = &apos;SGExtension&apos;
+
+spec.version               = &apos;1.0.2&apos;
+
+spec.ios.deployment_target = &apos;8.0&apos;
+
+spec.license               = &apos;MIT&apos;
+
+spec.homepage              = &apos;https://github.com/iOSSinger&apos;
+
+spec.author                = { &quot;iOSSinger&quot; =&gt; &quot;747616044@qq.com&quot; }
+
+spec.summary               = &apos;各种工具的合集&apos;
+
+spec.source                = { :git =&gt; &apos;https://github.com/iOSSinger/SGExtension.git&apos;, :tag =&gt; spec.version }
+
+spec.source_files          = &quot;SGExtension/**/{*.h,*.m}&quot;
+
+spec.resources             = &quot;SGExtension/source.bundle&quot;
+
+spec.frameworks            = &apos;UIKit&apos;
+
+spec.library               = &apos;z&apos;
+
+spec.requires_arc          = true
+
+end
+</code></pre><p>解释下每行的意思:</p>
+<ul>
+<li><p>spec.name</p>
+<p>  名字，pod search 搜索的关键词,注意这里一定要和.podspec的名称一样,否则报错</p>
+</li>
+<li><p>spec.version</p>
+<p>  版本号</p>
+</li>
+<li><p>spec.ios.deployment_target</p>
+<p>  支持的ios最低版本</p>
+</li>
+<li><p>spec.license</p>
+<p>  许可证,一般MIT,这里提醒一下,根目录下必须要有LICENSE这个文件,可以直接把我项目中的copy一份,改下作者名字即可.一般github创建仓库的时候可以选择许可为MIT,会自动帮你生成该文件.</p>
+</li>
+<li><p>spec.homepage</p>
+<p>  项目主页地址,要求必须能访问</p>
+</li>
+<li><p>spec.author</p>
+<p>  作者信息</p>
+</li>
+<li><p>spec.summary</p>
+<p>  项目简介</p>
+</li>
+<li><p>spec.source</p>
+<p>  项目的地址,填上项目的github地址,tag =&gt; spec.version表示git项目的tag值与上面的spec的版本一致,这里是  1.0.2 .</p>
+</li>
+<li><p>spec.source_files</p>
+<p>  项目源文件,主要是.h和.m文件,</p>
+<p>  *表示匹配所有文件<br>  {.h,.m} 表示匹配所有以.h和.m结尾的文件<br>  ** 表示匹配所有子目录,以及递归子目录</p>
+</li>
+<li><p>spec.resources</p>
+<p>  项目所需的资源文件,比如图片</p>
+</li>
+<li><p>spec.frameworks</p>
+<p>  项目的依赖框架,比如UIKit,不需要后缀名</p>
+</li>
+<li><p>spec.library</p>
+<p>  项目依赖的库文件(这个是系统的库文件),不需要后缀名,比如sqlite,libz等.以lib开头的需要省略掉lib这三个字母.例如:libz需要简写为z否则报错.</p>
+</li>
+<li><p>spec.requires_arc</p>
+<p>  是否是arc,一般true</p>
+</li>
+</ul>
+<p>如果你的项目依赖了别的pod项目,可以这样写:</p>
+<pre><code>spec.dependency = &apos;AFNetworking&apos;
+</code></pre><p>提交代码,并打上tag</p>
+<pre><code>//提交代码
+git push
+
+//打tag
+git tag 1.0.2
+
+//将tag推送到远端
+git push origin --tags
+</code></pre><h2 id="验证podspec文件"><a href="#验证podspec文件" class="headerlink" title="验证podspec文件"></a>验证podspec文件</h2><pre><code>pod spec lint SGExtemnsion.podspec
+</code></pre><p>这一步如果报错,根据错误自行修改,根据大致意思能看出来个大概,终端会给出哪一行出错了.一般就是语法错误,资源找不到,git地址不对或者不能访问.指定的文件如{.h,.m}找不到,一般再检查检查基本没问题.</p>
+<h2 id="注册trunk-并提交spec文件cocoapods仓库"><a href="#注册trunk-并提交spec文件cocoapods仓库" class="headerlink" title="注册trunk,并提交spec文件cocoapods仓库"></a>注册trunk,并提交spec文件cocoapods仓库</h2><ul>
+<li><p>注册chunk,查看是否注册过</p>
+<pre><code>pod trunk me
+</code></pre></li>
+<li><p>如果没有注册,那么注册:</p>
+<pre><code>pod trunk register 747616044@qq.com &quot;iOSSinger&quot;
+</code></pre></li>
+</ul>
+<p>填上邮箱 和 用户名就可以了.注册完成之后会给你的邮箱发个邮件,进入邮箱邮件里面有个链接,需要点击确认一下.然后再查看下是否注册成功:</p>
+<pre><code>pod trunk me
+</code></pre><ul>
+<li><p>提交spec文件到 CocoaPods 中心仓库</p>
+<pre><code>pod trunk push SGExtension.podspec
+</code></pre></li>
+</ul>
+<p>如果前面都没问题,这一步基本也没啥问题.不过网速比较慢可能要等很久,这一步建议翻墙,不然有可能真的很慢.</p>
+<p>然后验证一下,是否可以查到</p>
+<pre><code>pod search SGExtension
+</code></pre><p>如果能够查到,恭喜你 !,如果查不到,往下看</p>
+<ul>
+<li>解决方案:</li>
+</ul>
+<pre><code>* 查看上一步(提交到代码仓库)是否成功,再次执行提交:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk push SGExtension.podspec</span><br></pre></td></tr></table></figure>
+
+如果出现如下信息:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Unable to accept duplicate entry for: SGExtension (1.0.2)</span><br></pre></td></tr></table></figure>
+
+那么说明已经提交到cocoapods仓库成功,那么有可能就是本地仓库没有更新.更新本地仓库:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo update</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>再次执行 pod search SGExtension 命令,如果还搜索不到,继续往下看:</p>
+<pre><code>rm ~/Library/Caches/CocoaPods/search_index.json
+</code></pre><p>这句话是移除已经生成的搜索目录缓存文件,移除之后,执行pod search会重新生成一份最新的缓存列表,基本到这里就差不多了.</p>
+</li>
+<li><p>如果还有问题,那就需要终极大招,但是不推荐用,时间很长,除非翻墙.</p>
+<pre><code>pod repo remove master  
+pod setup
+</code></pre><p>或者</p>
+<pre><code>sudo rm -fr ~/.cocoapods/repos/master
+pod setup
+</code></pre><p>这两种写法的意思都是移除本地cocoapods仓库,重新从官网拉取一遍.可能时间比较长,所以不建议用,如果网速度快可以考虑使用,也可以翻墙.整个仓库打下大约500M+(截止当前时间).</p>
+</li>
+</ul>
+<h2 id="集成到项目中试试"><a href="#集成到项目中试试" class="headerlink" title="集成到项目中试试"></a>集成到项目中试试</h2><pre><code>target &apos;项目名&apos; do
+pod &apos;SGExtension&apos;
+end
+</code></pre><h2 id="多人共同维护你的开源项目"><a href="#多人共同维护你的开源项目" class="headerlink" title="多人共同维护你的开源项目"></a>多人共同维护你的开源项目</h2><p>如果需要多个人维护一个库,每个人都应该有权限push提交spec文件;第一个push的人可以被认为是管理员,可以再添加子管理员,这样子管理员就有权限push了</p>
+<pre><code>pod trunk add-owner 邮箱地址
+</code></pre><p>移除某个管理员</p>
+<pre><code>pod trunk remove-owner 邮箱地址
+</code></pre><h2 id="pod-lib-lint-和-pod-spec-lint-有什么区别"><a href="#pod-lib-lint-和-pod-spec-lint-有什么区别" class="headerlink" title="pod lib lint 和 pod spec lint 有什么区别"></a>pod lib lint 和 pod spec lint 有什么区别</h2><ul>
+<li>pod lib lint 不需要联网</li>
+<li>pod spec lint 会联网检查sepc repo,并且关联tag</li>
+</ul>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="http://www.jianshu.com/p/1f70f1176727" target="_blank" rel="noopener">cocoapods系列教程—让自己的开源框架支持cocoapods</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>参考:<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank" rel="noopener">http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1584,7 +1558,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1596,15 +1570,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1617,6 +1583,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1636,39 +1610,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1684,6 +1634,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
@@ -1692,19 +1654,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1720,6 +1686,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
@@ -1732,19 +1706,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1753,6 +1715,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1768,35 +1734,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1816,6 +1754,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -1825,30 +1791,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1868,11 +1810,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1884,11 +1850,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1897,6 +1863,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1940,23 +1914,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1968,15 +1938,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1985,22 +1959,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2020,6 +1978,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -2029,10 +2007,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
