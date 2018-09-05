@@ -160,6 +160,139 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-04-02-why-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-why-git/">【译文】为什么要选择Git</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-why-git/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:dbdec37b-f619-456e-aca4-a1689a08b5f3/hero.svg?cdnVersion=dt" alt=""></p>
+<p>从集中版本控制系统切换到Git会改变开发团队开发软件的方式。而且，如果您是依赖其关键任务应用的软件的公司，更改开发流将影响整个业务。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fe39ef08-ff6a-4603-adc6-fcfc78035a50/01.svg?cdnVersion=dt" alt="组织发展"></p>
+<p>在本文中，我们将讨论Git如何在各个方面为公司组织带来益处，从您的开发团队到您的营销团队，及其他。在本文结尾，应该很清楚，Git不仅仅适合<a href="https://www.atlassian.com/agile/developer" target="_blank" rel="noopener">敏捷软件开发</a> - 它适合用于敏捷业务。</p>
+<h2 id="Git可以为开发者带来什么"><a href="#Git可以为开发者带来什么" class="headerlink" title="Git可以为开发者带来什么"></a>Git可以为开发者带来什么</h2><h3 id="功能分支工作流"><a href="#功能分支工作流" class="headerlink" title="功能分支工作流"></a>功能分支工作流</h3><p>Git的最大优点之一是其分支功能。与集中版本控制系统不同，Git分支使用容易而且易于合并。这有助于功能分支工作流再许多Git用户中流行。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fcad863b-e0da-4a55-92ee-7caf4988e34e/02.svg?cdnVersion=dt" alt="功能分支工作流程"></p>
+<p>功能分支为您的代码库的每个更改提供了一个孤立的环境。当开发人员想要开始工作时，无论大小还是小，都可以创建一个新的分支。这样可以确保主分支始终是产品级质量代码。</p>
+<p>使用功能分支不仅比直接编辑生产代码更可靠，而且还提供结构化的优点。他们让您可以和您的<a href="https://www.atlassian.com/agile/backlogs" target="_blank" rel="noopener">敏捷待办事项</a>使用相同的粒度来代表开发工作。例如，您可以实施一个策略，其中每个<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>票证可以在自己的功能分支中找到。</p>
+<h3 id="分布式开发"><a href="#分布式开发" class="headerlink" title="分布式开发"></a>分布式开发</h3><p>在SVN中，每个开发人员都获得一个指向一个中央仓库的工作副本。然而，Git是分布式版本控制系统。每个开发人员不用工作副本，而是获取自己的本地仓库，并具有完整的提交历史记录。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:9d51f0ee-5946-4be2-886c-ff040ef8c1a1/03.svg?cdnVersion=dt" alt="分布式开发"></p>
+<p>拥有完整的本地历史使Git更快，因为这意味着您不需要网络连接就能创建提交，检查文件的先前版本，或者在提交之间执行差异。</p>
+<p>分布式开发还可以让你更轻松地扩展您的工程团队。如果有人破坏了SVN的生产分支，其他开发人员在修复问题之前就无法检查它们的更改。使用Git，这种阻塞就不会存在。每个人都可以继续在自己的本地仓库中进行开发。</p>
+<p>而且，与功能分支类似，分布式开发创造了一个更可靠的环境。即使一个开发人员删除了自己的仓库，他们也可以简单地克隆别人，重新开始。</p>
+<h3 id="合并申请"><a href="#合并申请" class="headerlink" title="合并申请"></a>合并申请</h3><p>许多源代码管理工具，比如<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>，可以通过合并申请增强核心的Git功能。合并申请用来要求另一开发人员将您的一个分支合并到其仓库中的一种方式。这不仅使项目管理者能够更轻松地跟踪变更情况，还可以让开发人员在将其与其他代码集成在一起之前展开讨论。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:92c7f92c-cafb-4254-ab40-0b91821d3fd0/04.svg?cdnVersion=dt" alt="合并申请"></p>
+<p>由于它们本质上是附加到功能分支的注释，所以合并申请有很多作用。当开发者遇到困难的问题时，他们可以打开一个合并申请，要求其他团队的帮助。或者，初级开发人员可以放心，通过将合并申请视为正式代码审查，他们不会破坏整个项目。</p>
+<h3 id="社区支持"><a href="#社区支持" class="headerlink" title="社区支持"></a>社区支持</h3><p>在许多方面，Git已经成为新项目的版本控制系统的标配。如果您的团队正在使用Git，您可能无需在工作流程上培训新员工，因为他们已经熟悉分布式开发。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:60fb4158-0c3e-4f1b-a932-fb4e8a660ee4/05.svg?cdnVersion=dt" alt="Git社区"></p>
+<p>另外，Git在开源项目中非常受欢迎。这意味着轻松利用第三方库的优势，并鼓励其他人分享自己的开源代码。</p>
+<h3 id="更快的释放周期"><a href="#更快的释放周期" class="headerlink" title="更快的释放周期"></a>更快的释放周期</h3><p>功能分支，分布式开发，合并申请和稳定社区带来的最终结果是项目更快的发布周期。这些功能有助于<a href="https://www.atlassian.com/agile/workflow" target="_blank" rel="noopener">敏捷开发工作流</a>，鼓励开发人员更频繁地分享更小的更改。相应地，相比集中式版本控制系统，修改可以更快地发布。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:4263b82f-e177-47d4-a587-dab97a20334d/06.svg?cdnVersion=dt" alt="更快的释放周期"></p>
+<p>正如您所期望的那样，Git在持续集成和持续交付环境中工作得很好。Git钩子允许您在仓库内部发生某些事件时运行脚本，从而使您可以自动部署到您核心内容。您甚至可以将代码从特定的分支部署到不同的服务器。</p>
+<p>例如，您可能希望配置Git，以便每当任何人将pull请求合并到其中时，将最新的提交从开发分支部署到测试服务器。将这种构建自动化与同行审查相结合，意味着您可以对代码从开发转移到生产发布准备阶段，可以有很高信任度。</p>
+<h2 id="Git可以为市场营销带来什么"><a href="#Git可以为市场营销带来什么" class="headerlink" title="Git可以为市场营销带来什么"></a>Git可以为市场营销带来什么</h2><p>要了解切换到Git会如何影响您公司的市场营销活动，请假设您的开发团队预计在未来几周内完成三个重要的修改：</p>
+<ul>
+<li><p>整个团队正在完成他们在过去6个月中一直在努力的重大的功能。</p>
+</li>
+<li><p>玛丽正在实施一个更小，不相关的功能，只会影响现有客户。</p>
+</li>
+<li><p>Rick正在对用户界面进行一些非常需要的更新。</p>
+</li>
+</ul>
+<p>如果您使用集中式VCS这种传统开发工作流程，则所有这些更改都可能会包含在单个版本中。市场营销部门只能发布那个重大功能的公告，其他两个更新的作用就会被忽略掉。</p>
+<p>Git非常适用于更短的开发周期，这使得我们可以将它们轻易地分成多个发布版本。这让市场营销人员可以有更多和更频繁的宣传机会。在上述情况下，市场营销可以构建围绕每个功能，针对特定的细分市场，推出三个活动。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:452591fb-9c9d-4a94-a262-671e146fe869/07.svg?cdnVersion=dt" alt="Git营销"></p>
+<p>例如，他们可能为重大功能准备一个大型的PR推送，为玛丽开发的功能写一篇公司博客文章和简报，以及一些关于Rick的底层UX理论的文章发送到外部设计博客上。所有这些活动可以与单独的版本同步发布。</p>
+<h2 id="Git可以为产品管理带来什么"><a href="#Git可以为产品管理带来什么" class="headerlink" title="Git可以为产品管理带来什么"></a>Git可以为产品管理带来什么</h2><p>Git对产品管理的好处与营销大致相同。更频繁的发布意味着更频繁的客户反馈和更快的更新反馈。您可以在开发人员编写完代码之后尽快将解决方案推送给客户，而不是等待8周之后的下一个版本。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1c1cc48f-324a-4aaa-9a54-58ab93a7d219/08.svg?cdnVersion=dt" alt="优先管理git工作流程"></p>
+<p>当优先级更改时，功能分支工作流还提供了足够的灵活性。例如，如果您在发布周期中途，并且想要推迟一个功能，而代替加入另一个时间紧迫的功能，那没有问题。这个推迟的功能可以保留在自己的分支中，直到工程需要它的时候再用。</p>
+<p>同样的功能使得管理创新项目，版本测试项目和快速原型作为独立代码库变得容易。</p>
+<h2 id="Git可以为设计师带来什么"><a href="#Git可以为设计师带来什么" class="headerlink" title="Git可以为设计师带来什么"></a>Git可以为设计师带来什么</h2><p>功能分支可以快速响应设计原型。无论您的UX / UI设计人员想要实现一个完整的用户流程还是简单地替换一些图标，切换到一个新的分支可以让他们在独立地沙箱环境中进行。这样，设计人员可以在产品的真实工作副本中看到他们修改的变化，而这不会破坏现有的功能。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6521263d-9cd5-4705-89d7-769f0d286fa4/09.svg?cdnVersion=dt" alt="Git非破坏性版本"></p>
+<p>封装这样的用户界面更改可以容易地向其他利益相关者提供更新。例如，如果工程总监想看看设计团队做了什么，他们所要做的就是告诉主管切换到相应的分支。</p>
+<p>合并申请进一步带来好处，为有兴趣的各方讨论新界面提供正式的地方。设计师可以进行任何必要的更改，生成的提交将显示在合并申请中，这可以让大家参与迭代过程。</p>
+<p>也许为原型提供不同分支最大的好处就是将变更合并到生产中就像将其抛弃一样容易，这没有任何压力。这鼓励设计师和UI开发人员进行实验，同时确保只有最好的想法才能提供给客户。</p>
+<h2 id="Git为客户支持带来什么"><a href="#Git为客户支持带来什么" class="headerlink" title="Git为客户支持带来什么"></a>Git为客户支持带来什么</h2><p>客户支持和客户成功往往与产品经理不同。当客户打电话时，他们通常会遇到某种问题。如果这个问题是由您公司的软件造成的，那么需要尽快推出一个错误修复。</p>
+<p>Git流线型开发周期避免了耽误错误修复，而不用等到下一次大型版本。开发人员可以修补问题并将其直接推送到生产。更快的修复问题意味着让客户更容易满足和更少的重复问题。而不是左右为难，“对不起，我们正在处理”，现在您的客户支持团队可以开始回应“我们已经解决了！“</p>
+<h2 id="Git为人力资源带来什么"><a href="#Git为人力资源带来什么" class="headerlink" title="Git为人力资源带来什么"></a>Git为人力资源带来什么</h2><p>在一定程度上，您的软件开发工作流程决定了您雇用的人员。我们要聘请熟悉您的技术和工作流程的工程师，但使用Git也提供了其他优势。</p>
+<p>员工被吸引到提供职业发展机会的公司，这个公司熟悉如何在大型和小型组织中利用Git的优势，这对任何程序员都是一种福音。通过选择Git作为您的版本控制系统，这个决定可以帮助你吸引具有前瞻性的优秀开发人员。</p>
+<h2 id="Git为管理预算带来什么"><a href="#Git为管理预算带来什么" class="headerlink" title="Git为管理预算带来什么"></a>Git为管理预算带来什么</h2><p>Git提升效率。对于开发人员来说，它消除了在集中版本控制系统中，在网络上传输提交到合并修改浪费的时间。它甚至通过给初级开发者一个安全的独立工作环境而让项目更安全，这一切都会影响你的工程部门的底线。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:c5db1ef6-ae40-46cc-8408-c0f9e0b53a84/10.svg?cdnVersion=dt" alt="Git分布式团队"></p>
+<p>但是，不要忘记，这些效率也在开发团队之外。它避免市场营销对不受欢迎的功能投入人力。他们让设计师先于实际产品测试新的界面。他们让你的团队立即对客户的投诉做出响应。</p>
+<p>敏捷意味着尽可能找到有效的工作，放大带来成功的努力，消除那些不成功的工作。通过确保每个部门都能更有效地开展工作，Git成为公司所有业务活动的倍增效益的因素。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-why-git/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-03-18-Git-LFS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -2034,177 +2167,6 @@ git branch -d new-feature
 
 
   
-    <article id="post-2016-11-29-Syncing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/28/2016-11-29-Syncing/">【译文】Git同步（Syncing）</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/28/2016-11-29-Syncing/" class="archive-article-date">
-  	<time datetime="2016-11-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/hero.svg" alt=""></p>
-<h1 id="Git同步（Syncing）"><a href="#Git同步（Syncing）" class="headerlink" title="Git同步（Syncing）"></a>Git同步（Syncing）</h1><p>在SVN中开发者使用一个中央仓库来合作开发。大家通过将代码在工作区和中央仓库之间传输来合作开发。这跟git的合作模式完全不同，git中开发者拥有仓库的完整拷贝，提交历史、分支结构都是完整的。用户通常提交一系列本地提交而不是单一的修改到服务器。git可以让你在不同仓库间分享所有分支。<br>下面的命令用来管理所有仓库连接。通过push分支到中央仓库来提交修改，通过pull远程仓库到本地仓库来查看其他人的修改。</p>
-<h2 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h2><p>git remote 命令让你可以创建、查看和删除同其他仓库的连接。远程连接类似浏览器中的标签（bookmark）而不是直接链接其他仓库。git为了方便大家使用别名代替URL<br>。例如，下面的表格向你展示连接至中央仓库和其他开发者仓库的两个连接，他们在git命令中传入origin和john而不是完整的URL。<br><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/01.svg" alt="Git Tutorial: git remote"></p>
-<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git remote
-</code></pre><p>列出你本地所有其他仓库的连接</p>
-<pre><code>git remote -v
-</code></pre><p>和之前的命令类似，不过这个命令执行结果包含每个连接的URL。</p>
-<pre><code>git remote add &lt;name&gt; &lt;url&gt;
-</code></pre><p>创建一个远程仓库的连接。在添加完连接后，你可以在其他命令中使用<name>代替URL。</name></p>
-<pre><code>git remote rm &lt;name&gt;
-</code></pre><p>删除一个叫<name>的远程连接。</name></p>
-<pre><code>git remote rename &lt;old-name&gt; &lt;new-name&gt;
-</code></pre><p>重命名一个远程连接。使用新名字代替旧名。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>Git的设计让开发者拥有完全独立的开发环境。这意味着信息不会自动在仓库之间传输。而需要开发者手动拉取上游的提交到本地仓库，或者推送回本地提交到中央仓库。git remote命令是传递URL给分享（sharing）命令的更容易的方式。</p>
-<h3 id="The-origin-Remote"><a href="#The-origin-Remote" class="headerlink" title="The origin Remote"></a>The origin Remote</h3><p>当你使用clone命令clone一个仓库时，它自动回创建一个叫做origin指向被克隆的远程仓库。这个对开发者在创建一个远程仓库拷贝非常有用，因为它为开发者提供了很容易的方式来拉取上游改变或者发布本地提交。这也是为什么大多数采取git管理源代码的远程仓库被称作origin。</p>
-<h3 id="Repository-URLs"><a href="#Repository-URLs" class="headerlink" title="Repository URLs"></a>Repository URLs</h3><p>Git支持许多连接远程仓库的方式。两个最简单的连接远程仓库的方式是通过http和ssh协议。http可以很容易的允许匿名访问，只读访问一个仓库，比如：</p>
-<pre><code>http://host/path/to/repo.git
-</code></pre><p>但是，它通常不太容易推送提交到http地址（通常我们不希望允许匿名推送）。为了拥有读写访问，你应当使用ssh协议替代：</p>
-<pre><code>ssh://user@host/path/to/repo.git
-</code></pre><p>你将需要在主机上有一个有效的ssh账号，git支持通过ssh授权访问。</p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>在origin之外，也很容易添加你队友的仓库连接。比如，如果你的同事小明，维护一个对外发布的可访问仓库dev.example.com/john.git，你可以通过下面这条命令添加一个连接：</p>
-<p>git remote add john <a href="http://dev.example.com/john.git" target="_blank" rel="noopener">http://dev.example.com/john.git</a></p>
-<p>可以添加某个开发者的仓库，让git可以在中央仓库之外进行合作。这对小团队在大型项目中合作非常有用。</p>
-<h2 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a>git fetch</h2><p>git fetch命令会从远程仓库倒入提交到本地仓库。最终提交结果存储在远程分支而不是一般的本地工作分支。这让你有机会在将修改集成到你的项目拷贝前评审（review）代码。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><pre><code>git fetch &lt;remote&gt;
-</code></pre><p>获取远程仓库所有分支。这个命令同时会下载这个仓库的所有需要下载的提交和文件。</p>
-<pre><code>git fetch &lt;remote&gt; &lt;branch&gt;
-</code></pre><p>可前面的命令类似，但是它只获取指定的分支。</p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>获取(fetching)可以让你知道其他同事写了哪些代码。因为获取的内容存储在一个远程分支上。它不会影响你本地开发工作。获取可以让你将代码集成到本地仓库之前安全地评审（review）修改。这个和<em>svn update</em>类似，可以让你知道中央仓库的提交历史的进度，但是它并不强制合并这些修改到你的仓库。</p>
-<h3 id="Remote-Branches"><a href="#Remote-Branches" class="headerlink" title="Remote Branches"></a>Remote Branches</h3><p>远程仓库就像本地仓库一样，除了他们代表其他人仓库的提交。你可以像本地仓库一样 <code>检出（checkout）</code>一个远程仓库。但是这让你进入<code>分离头（detached HEAD）</code>状态（类似检出到一个以前的提交一样）。你可以把远程分支看成不可修改的分支。你可以在<code>git branch</code>命令中加上<code>-r</code>参数来查看原称分支。查看到的远程分支会在前面加上他们所属的远程仓库，这样你就不会将他们和本地分支混淆。例如，下面的命令块展示了在执行fetch命令后所有origin下的分支。</p>
-<pre><code>git branch -r
-#origin/master
-#origin/develop
-#origin/some-feature
-</code></pre><p>再说一次，你可以使用<code>git checkout</code> 和<code>git log</code>命令来查看分支内容。如果你觉得远程分支的修改没有问题，你可以使用<code>git merge</code>命令把他们合并进本地分支了。因此和SVN不同，git同步你的本地仓库和远程仓库需要两步过程：获取和合并。<code>git pull</code>命令是这两步骤的结合，让这两步变成一步。</p>
-<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>这个例子展示一个典型的工作流中是如何同步你的本地仓库和你中央仓库的master分支。</p>
-<pre><code>git fetch origin
-</code></pre><p>这个命令会展示下载的分支。</p>
-<pre><code>a1e8fb5..45e66a4 master -&gt; origin/master
-a1e8fb5..9e8ab1c develop -&gt; origin/develop
-* [new branch] some-feature -&gt; origin/some-feature
-</code></pre><p>下方表格中的方框代表远程分支的提交，如图所示，<code>git fetch</code>让你拥有访问其他仓库整个分支结构的权限。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/02.svg" alt="Git Tutorial: git fetch"></p>
-<p>为了查看上游的master分支增加哪些提交，你可以使用<code>git log</code> ，并使用<code>origin/master</code>作为条件。</p>
-<pre><code>git log --oneline master..origin/master
-</code></pre><p>为了通过修改并合并他们到你本地的master，你可以使用如下命令：</p>
-<pre><code>git checkout master
-git log origin/master
-</code></pre><p>然后我们能够使用<code>git merge origin/master</code></p>
-<pre><code>git merge origin/master
-</code></pre><p>这样<code>origin/master</code>分支和<code>master</code>分支就指向了同意个提交，并完成了和上游开发的同步了。</p>
-<h2 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a>git pull</h2><p>本地仓库和上游修改合并是git合作开发流的常见任务。我们已经知道了如何使用<code>git fetch</code> 加上 <code>git merge</code>来完成这项工作。但是git pull 一条命令就可以搞定。</p>
-<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><pre><code>git pull &lt;remote&gt;
-</code></pre><p>获取指定远程仓库的当前分支同名的拷贝，并立即和当前分支合并。这和<code>git fetch &lt;remote&gt;</code> 加上<code>git merge origin/&lt;current-branch&gt;</code>作用等同。</p>
-<pre><code>git pull --rebase &lt;remote&gt;
-</code></pre><p>和上面的命令类似。但是它使用<code>git rebase</code>代替<code>git merge</code>来集成合并远程分支。</p>
-<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>你可以把<code>git pull</code>看作git版的<code>svn update</code>，它让同步本地仓库和上游修改变的很容易。下图的表格展示了合并每一步的进行过程。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/03.svg" alt="Git Tutorial: git pull"></p>
-<p>刚开始你的仓库是同步的，但是在你<code>git fetch</code>之后<code>origin</code>指向的仓库跟你上一次检查已经有了新的内容。然后你使用<code>git merge</code>立即将远程<code>master</code>集成合并到本地<code>master</code>。</p>
-<h3 id="Pulling-和-Rebase对比"><a href="#Pulling-和-Rebase对比" class="headerlink" title="Pulling 和 Rebase对比"></a>Pulling 和 Rebase对比</h3><p><code>--rebase</code>能够确保线性分支历史，没有不必要的合并提交。许多开发者喜欢rebasing代替merging。因为它就好比告诉你：“我想让我的修改保持在其他人修改的上方”。从这个角度讲，使用 <code>git pull</code> 加上<code>--rebase</code>标志相比简单的<code>git pull</code>更像<code>svn update</code></p>
-<p>事实上，使用<code>--rebase</code>进行拉取非常普遍，以至于有一个它的专门的配置项：</p>
-<pre><code>git config --global branch.autosetuprebase always
-</code></pre><p>执行这个命令之后，所有的<code>git pull</code>命令将会使用git rebase命令代替<code>git merge</code>。</p>
-<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>下面这个命令展示如何和中央仓库的master分支进行同步：</p>
-<pre><code>git checkout master
-git pull --rebase origin
-</code></pre><p>这个命令会将你本地的修改追加到其他同事修改的上面。</p>
-<h2 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h2><p>推送（push）用于把本地仓库提交传输到远程仓库。它和<code>git fetch</code>作用相反。但是鉴于获取导入远程提交到本地分支，推送输出提交到远程分支，它有可能会覆盖修改，因此你需要小心的使用它。下面我们来讨论这些问题。</p>
-<h3 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h3><pre><code>git push &lt;remote&gt; &lt;branch&gt;
-</code></pre><p>推送必要的的提交和内部对象到远程指定分支。这个将在目标仓库创建一个本地分支。为了阻止重写提交，当你推送会导致远程仓库出现non-fast-forward合并，git会阻止这样的推送。</p>
-<pre><code>git push &lt;remote&gt; --force
-</code></pre><p>和上面的命令类似，但是不管是否会导致non-fast-forward合并它会强制推送。不要使用–force标志，除非你绝对清楚你这样做没有问题。</p>
-<pre><code>git push &lt;remote&gt; --all
-</code></pre><p>推送所有的本地分支到指定远程仓库。</p>
-<pre><code>git push &lt;remote&gt; --tags
-</code></pre><p>当你推送分支时标签（tags）不会自动推送，除非你使用了–tags选项。–tags将会发送所有的本地标签到远程。</p>
-<h3 id="讨论-3"><a href="#讨论-3" class="headerlink" title="讨论"></a>讨论</h3><p>git push通常用来将本地修改发布到远程中央仓库。当你在本地积累了几个提交之后并打算把他们发布出去，以便其他团队成员可以使用。你可以使用可交互的rebase精简提交，然后再推送到远程分支。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/04.svg" alt="Git Tutorial: git push"></p>
-<p>上图展示了你本地和远程master的差异。然后你通过<code>git push origin master</code>命令推送修改。注意<code>git push</code>的本质是在远程仓库内部执行了<code>git merge master</code>。</p>
-<h3 id="强制推送-Force-Pushing"><a href="#强制推送-Force-Pushing" class="headerlink" title="强制推送(Force Pushing)"></a>强制推送(Force Pushing)</h3><p>当使用git push会导致non-fast-forword合并时，git为了防止复写中央仓库提交，会拒绝推送。因此，如果远程提交历史和你的本地提交历史不同，你需要拉取远程分支，合并到到本地分支，然后才能再次尝试推送。这跟SVN类似，你需要通过<code>svn update</code>和中央仓库同步，然后才能提交修改。</p>
-<p>使用<code>--force</code>参数可以代替上面的步骤，让远程分支和本地分支匹配。在你上次推送之后，删除任何上游分支的修改有可能发生。只有当你知道你的提交有问题，然后你在本地用一个<code>git commit --amend</code>命令做了修改或者一个可交互的<code>rebase</code>之后，你可以使用强制推送（force push）。你必须确定在你使用<code>--force</code>选项之前没有其他同事拉取那些你提交的有问题的提交。</p>
-<h3 id="只推送到裸仓库"><a href="#只推送到裸仓库" class="headerlink" title="只推送到裸仓库"></a>只推送到裸仓库</h3><p>额外补充，你应当仅仅推送到使用<code>--bare</code>标志创建的仓库。因为推送会搞乱远程分支的结构。不用推送到另外一个开发者的仓库这一点很重要。但是裸仓库不包含任何工作目录，所以不太可能打断其他人的开发。</p>
-<h3 id="举例-2"><a href="#举例-2" class="headerlink" title="举例"></a>举例</h3><p>下面的例子描述一个标准的发布本地代码到中央仓库的方法。首先，通过拉取中央仓库拷贝确保你本地分支最新，然后通过<code>reabse</code>合并你的修改到分支提交历史最上面。使用交互式合并（interactive rebase)也是在对外公开你的代码前清理提交的一个好机会。然后，<code>git push</code>命令将你所有本地仓库的提交发送到远程仓库。</p>
-<pre><code>git checkout master
-git fetch origin master
-git rebase -i origin/master
-# Squash commits, fix up commit messages etc.
-git push origin master
-</code></pre><p>因为你已经确保了本地master分支是最新的，所以结果是<code>fast-forward</code>合并，<code>git push</code>不会报出任何我们之前讨论的<code>non-fast-forward</code>问题。</p>
-<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">《Syncing》</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 同步</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Syncing</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/28/2016-11-29-Syncing/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
@@ -2302,18 +2264,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">view层架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
@@ -2322,19 +2272,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">view层架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2346,10 +2300,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -2358,11 +2308,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2371,6 +2325,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2383,66 +2345,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2470,15 +2372,119 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码review</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">合并申请</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2494,31 +2500,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+                <a href="javascript:void(0)" class="js-tag color5">Git Reset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git Revert</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2554,22 +2548,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git Reset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Revert</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -2595,38 +2573,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码review</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">合并申请</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2666,6 +2612,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
               </li>
              
@@ -2682,11 +2636,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2698,14 +2652,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
               </li>
              
@@ -2714,11 +2660,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+                <a href="javascript:void(0)" class="js-tag color3">成长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">时间</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2738,6 +2708,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -2747,18 +2721,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">成长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">时间</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
