@@ -160,6 +160,382 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-03-18-Git-LFS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/18/2017-03-18-Git-LFS/">【译文】Git大文件处理系统（Git LFS）</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/18/2017-03-18-Git-LFS/" class="archive-article-date">
+  	<time datetime="2017-03-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Git-LFS是什么呢？"><a href="#Git-LFS是什么呢？" class="headerlink" title="Git LFS是什么呢？"></a><strong>Git LFS</strong>是什么呢？</h2><p>Git是分布式版本控制系统，这意味着在克隆过程中会将仓库的所有历史传输到客户端。对于包涵大文件的项目，尤其是经常被修改的大文件，这意味初始化克隆需要大量时间，因为所有的文件都需要下载到客户端。<strong>Git LFS</strong>是由Atlassian, GitHub以及其他开源贡献者开发的Git的一个扩展，它通过“惰性”地下载相关的大文件的版本来有效降低大文件的影响，尤其在大文件通过checkout下载而不是克隆和获取期间。</p>
+<p><strong>Git LFS</strong>通过用小型指针（pointer）文件，来取代仓库中的大文件。在正常使用中，你将不会看见这些指针文件，因为它们是通过<strong>Git LFS</strong>来自动处理的：</p>
+<p>当你向仓库添加一个文件，<strong>Git LFS</strong>使用一个指针来代替它的内容，并且把文件内容存储在<strong>Git LFS</strong>的缓存中。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:9abf0939-a978-4867-a751-28bd1ca318de/01.svg" alt="**Git LFS** - git add"></p>
+<p>当你推送提交到服务器时，被推送的新提交相关的<strong>Git LFS</strong>文件就会从<strong>Git LFS</strong>缓存中推送到远程的绑定你的仓库的<strong>Git LFS</strong>储备库。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:cb729dbe-3c28-4775-821d-0e2518668d8b/02.svg" alt="**Git LFS** - git push"></p>
+<p>当你切换一个包含<strong>Git LFS</strong> 指针的提交时，他们会被本地的<strong>Git LFS</strong>缓存文件取代，或者从远程<strong>Git LFS</strong>储备库下载。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:7e70a242-db91-4093-b178-c1281fe3ddbb/03.svg" alt="**Git LFS** - git checkout"></p>
+<p><strong>Git LFS</strong>对使用者是无感知的：在工作区，你总是能看到真实文件的内容，这意味着你不需要更改存在的Git 工作流就可以使用<strong>Git LFS</strong>。你可以像之前一样简单的切换、编辑、添加和提交。克隆和拉取将会非常的迅速，因为你仅仅下载你检出的提交相关的大文件，而不是该文件的所有已经存在的版本。</p>
+<p>为了使用<strong>Git LFS</strong>，你将需要一个支持<strong>Git LFS</strong>的服务器，比如<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket Cloud</a> 或者 <a href="https://www.atlassian.com/software/bitbucket/server" target="_blank" rel="noopener">Bitbucket Server</a>。仓库使用者将需要安装<a href="https://www.atlassian.com/git/tutorials/git-lfs#installing-git-lfs" target="_blank" rel="noopener"><strong>Git LFS</strong> command-line client installed</a>，或者支持<strong>Git LFS</strong>的图形化客户端，比如<a href="https://www.sourcetreeapp.com/" target="_blank" rel="noopener">SourceTree</a>。有趣的事实：Atlassian 公司的开发者Steve Streeting开发了SourceTree，他也是<strong>Git LFS</strong>项目的主要贡献者，因此<strong>SourceTree</strong>对<strong>Git LFS</strong>支持非常的棒。</p>
+<h2 id="安装-Git-LFS"><a href="#安装-Git-LFS" class="headerlink" title="安装 Git LFS"></a>安装 <strong>Git LFS</strong></h2><p>安装Git LFS的方式有三种：</p>
+<p>a.使用你最喜欢的安装包管理器，使用Homebrew，MacPorts，dnf，packagecloud都可以安装git-lfs安装包。</p>
+<p>b.从项目的的官网上下载和安装Git LFS。</p>
+<p>c.安装SourceTree,它是免费的Git图形化客户端，自带了Git LFS。</p>
+<p>一旦git-lfs已经在你你的电脑上，你可以执行<strong>git lfs install</strong>初始化<strong>Git LFS</strong>（你如果你安装了SourceTree可以跳过这步）。</p>
+<pre><code>$ git lfs install
+Git LFS initialized.
+</code></pre><p>你只需要执行一次<strong>git lfs install</strong>命令，一旦你初始化了你的仓库，<strong>Git LFS</strong>将在你执行克隆包含<strong>Git LFS</strong>的内容时仓库自动引导启用。</p>
+<h2 id="创建一个新的-Git-LFS仓库"><a href="#创建一个新的-Git-LFS仓库" class="headerlink" title="创建一个新的 Git LFS仓库"></a>创建一个新的 Git LFS仓库</h2><p>为了创建一个Git LFS支持的仓库，你需要在创建仓库之后执行<strong>git lfs install</strong>命令：</p>
+<pre><code># initialize Git
+$ mkdir Atlasteroids
+$ cd Atlasteroids
+$ git init
+Initialized empty Git repository in /Users/tpettersen/Atlasteroids/.git/
+
+# initialize Git LFS
+$ git lfs install
+Updated pre-push hook.
+Git LFS initialized.
+</code></pre><p>这个命令会你安装<strong>推送前hook（pre-push Git hook）</strong>，它们将在你执行git push命令时传输<strong>Git LFS</strong>文件。</p>
+<p>Git LFS对于所有的Bitbucket Cloud 仓库自动可用，对Bitbucket Server，你需要在你的仓库设置中启用Git LFS：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:2d4bd71b-5205-4297-aec9-f0c91bfb6ad2/05.png?cdnVersion=dj" alt="Bitbucket Server **Git LFS**"></p>
+<p>一旦<strong>Git LFS</strong>在你的仓库中被初始化后，你可以指定哪些文件使用<a href="https://www.atlassian.com/git/tutorials/git-lfs#tracking-files" target="_blank" rel="noopener"><strong>Git LFS</strong> track
+</a>追踪。</p>
+<h2 id="克隆一个已经包含Git-LFS的仓库"><a href="#克隆一个已经包含Git-LFS的仓库" class="headerlink" title="克隆一个已经包含Git LFS的仓库"></a>克隆一个已经包含<strong>Git LFS</strong>的仓库</h2><p>在<strong>Git LFS</strong>安装后，你可以像往常一样使用<strong>git clone</strong>命令克隆<strong>Git LFS</strong>仓库。在克隆过程的最后，Git会自动切换到默认的分支（通常是master),完成这次切换过程需要的所有<strong>Git LFS</strong>文件都会被下载下来，比如：</p>
+<pre><code>$ git clone git@bitbucket.org:tpettersen/Atlasteroids.gitCloning into &apos;Atlasteroids&apos;...
+remote: Counting objects: 156, done.
+remote: Compressing objects: 100% (154/154), done.
+remote: Total 156 (delta 87), reused 0 (delta 0)Receiving objects: 100% (156/156), 54.04 KiB | 31.00 KiB/s, done.
+Resolving deltas: 100% (87/87), done.
+Checking connectivity... done.
+Downloading Assets/Sprites/projectiles-spritesheet.png (21.14 KB)
+Downloading Assets/Sprites/productlogos_cmyk-spritesheet.png (301.96 KB)Downloading Assets/Sprites/shuttle2.png (1.62 KB)
+Downloading Assets/Sprites/space1.png (1.11 MB)Checking out files: 100% (81/81), done.
+</code></pre><p>仓库里的有四个PNG文件被<strong>Git LFS</strong>追踪，当执行git clone时，<strong>Git LFS</strong>文件一个一个被下载下来，因为指向他们的指针文件已经被切换到你的仓库了。</p>
+<h2 id="加快克隆速度"><a href="#加快克隆速度" class="headerlink" title="加快克隆速度"></a>加快克隆速度</h2><p>如果你正在克隆包含大量LFS文件的仓库，明确表明你在使用<strong>Git LFS</strong>命令可以提高响应能力： </p>
+<pre><code>$ git lfs clone git@bitbucket.org:tpettersen/Atlasteroids.gitCloning into &apos;Atlasteroids&apos;...
+remote: Counting objects: 156, done.
+remote: Compressing objects: 100% (154/154), done.
+remote: Total 156 (delta 87), reused 0 (delta 0)
+Receiving objects: 100% (156/156), 54.04 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (87/87), done.
+Checking connectivity... done.**
+Git LFS**: (4 of 4 files) 1.14 MB / 1.15 MB
+</code></pre><p>相比<strong>Git LFS</strong>逐个下载，<strong>git lfs clone</strong>等待切换完成，然后把必需的<strong>Git LFS</strong>文件打包下载，这利用并行下载的优势，明显减少了HTTP请求的数量和进程的陡增（这尤其在Windows中作用明显）。</p>
+<h2 id="拉取以及切换（Pulling-and-checking-out）"><a href="#拉取以及切换（Pulling-and-checking-out）" class="headerlink" title="拉取以及切换（Pulling and checking out）"></a>拉取以及切换（Pulling and checking out）</h2><p>像克隆一样，你可以正常使用git pull拉取<strong>Git LFS</strong> 仓库，在pull完成后，自动执行切换过程时，任何需要的<strong>Git LFS</strong>文件会被下载。</p>
+<pre><code>$ git pull
+Updating 4784e9d..7039f0a
+Downloading Assets/Sprites/powerup.png (21.14 KB)
+Fast-forwardAssets/Sprites/powerup.png | 3 +
+Assets/Sprites/powerup.png.meta | 4133 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++2 files changed, 4136 insertions(+)
+create mode 100644 Assets/Sprites/projectiles-spritesheet.png
+create mode 100644 Assets/Sprites/projectiles-spritesheet.png.meta
+</code></pre><p>不需要明确的命令来检索<strong>Git LFS</strong>内容，然后如果切换因为未知的原因失败，你可以使用<strong>git lfs pull</strong>为当前的提交下载所有丢失的<strong>Git LFS</strong>内容：</p>
+<pre><code>$ git lfs pull
+Git LFS: (4 of 4 files) 1.14 MB / 1.15 MB
+</code></pre><h2 id="加快拉取速度"><a href="#加快拉取速度" class="headerlink" title="加快拉取速度"></a>加快拉取速度</h2><p>像<strong>git lfs clone</strong>类似，<strong>git lfs pull</strong>可以将<strong>Git LFS</strong> 文件打包下载，如果你明确知道自从上次拉取，已经有大量文件被修改了，你可能希望在切换过程中关闭自动Git LFS自动下载，然后使用<strong>git lfs pull</strong>命令将Git LFS内容打包下载。在你调用<strong>git pull</strong>时可以通过重写带<strong>-c</strong>参数的Git config来实现：</p>
+<pre><code>$ git -c filter.lfs.smudge= -c filter.lfs.required=false pull &amp;&amp; git lfs pull
+</code></pre><p>因为这条命令太长，你可能希望使用Git别名来快速运用 <strong>Git LFS pull</strong>命令：</p>
+<pre><code>$ git config --global alias.plfs &quot;\!git -c filter.lfs.smudge= -c filter.lfs.required=false pull &amp;&amp; git lfs pull&quot;
+
+$ git plfs
+</code></pre><p>当需要下载大量Git LFS 文件时，这会大大提高响应能力（再重申一遍，尤其在Window上）。</p>
+<h2 id="使用Git-LFS跟踪文件"><a href="#使用Git-LFS跟踪文件" class="headerlink" title="使用Git LFS跟踪文件"></a>使用<strong>Git LFS</strong>跟踪文件</h2><p>当你在仓库中添加一个大文件时，你需要告诉<strong>Git LFS</strong>追踪它，可以通过<strong>git lfs track</strong>命令实现：</p>
+<pre><code>$ git lfs track &quot;*.ogg&quot;
+Tracking *.ogg
+</code></pre><p>注意”*.ogg”的双引号非常重要，如果遗漏了会导致你shell的未知问题发生，在你当前仓库将会为每个.ogg文件创建单独的入口：</p>
+<pre><code># probably not what you want
+$ git lfs track *.ogg
+Tracking explode.ogg
+Tracking music.ogg
+Tracking phaser.ogg
+</code></pre><p><strong>Git LFS</strong>支持的模型和<a href="https://www.atlassian.com/git/tutorials/gitignore" target="_blank" rel="noopener">.gitignore
+</a>一模一样，比如：</p>
+<pre><code># track all .ogg files in any directory
+$ git lfs track &quot;*.ogg&quot;
+
+# track files named music.ogg in any directory
+$ git lfs track &quot;music.ogg&quot;
+
+# track all files in the Assets directory and all subdirectories
+$ git lfs track &quot;Assets/&quot;
+
+# track all files in the Assets directory but *not* subdirectories
+$ git lfs track &quot;Assets/*&quot;
+
+# track all ogg files in Assets/Audio
+$ git lfs track &quot;Assets/Audio/*.ogg&quot;
+
+# track all ogg files in any directory named Music
+$ git lfs track &quot;**/Music/*.ogg&quot;
+
+# track png files containing &quot;xxhdpi&quot; in their name, in any directory
+$ git lfs track &quot;*xxhdpi*.png
+</code></pre><p>These patterns are relative to the directory in which you ran the git lfs track command. To keep things simple, it is best to run git lfs track from the root of your repository. Note that Git LFS does not support negative patterns like .gitignore does.</p>
+<p>After running git lfs track, you’ll notice a new file named .gitattributes in the directory you ran the command from. .gitattributes is a Git mechanism for binding special behaviors to certain file patterns. Git LFS automatically creates or updates .gitattributes files to bind tracked file patterns to the Git LFS filter. However, you will need to commit any changes to the .gitattributes file to your repository yourself:</p>
+<pre><code>$ git lfs track &quot;*.ogg&quot;
+Tracking *.ogg
+
+$ git add .gitattributes
+
+$ git diff --cached
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..b6dd0bb
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1 @@
++*.ogg filter=lfs diff=lfs merge=lfs -text
+
+$ git commit -m &quot;Track ogg files with Git LFS&quot;
+</code></pre><p>For ease of maintenance, it is simplest to keep all Git LFS patterns in a single .gitattributes file by always running git lfs track from the root of your repository. However, you can display a list of all patterns that are currently tracked by Git LFS (and the .gitattributes files they are defined in) by invoking git lfs track with no arguments:</p>
+<pre><code>$ git lfs track
+Listing tracked paths
+ *.stl (.gitattributes)
+ *.png (Assets/Sprites/.gitattributes)
+ *.ogg (Assets/Audio/.gitattributes)
+</code></pre><p>You can stop tracking a particular pattern with Git LFS by simply removing the appropriate line from your .gitattributes file, or by running the git lfs untrack command:</p>
+<pre><code>$ git lfs untrack &quot;*.ogg&quot;
+Untracking *.ogg
+$ git diff
+diff --git a/.gitattributes b/.gitattributes
+index b6dd0bb..e69de29 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -1 +0,0 @@
+-*.ogg filter=lfs diff=lfs merge=lfs -text
+</code></pre><p>After running git lfs untrack you will again have to commit the changes to .gitattributes yourself.</p>
+<h2 id="提交和推送（Committing-and-pushing）"><a href="#提交和推送（Committing-and-pushing）" class="headerlink" title="提交和推送（Committing and pushing）"></a>提交和推送（Committing and pushing）</h2><p>你可以像通常一样提交和推送到一个包含<strong>Git LFS</strong>内容的的仓库，如果你提交被<strong>Git LFS</strong>追踪管理的文件，你将会看到通过git push推送的内容传输的服务器端时候输出一些附加的信息：</p>
+<pre><code>$ git push
+Git LFS: (3 of 3 files) 4.68 MB / 4.68 MB 
+Counting objects: 8, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (8/8), 1.16 KiB | 0 bytes/s, done.
+Total 8 (delta 1), reused 0 (delta 0)
+To git@bitbucket.org:tpettersen/atlasteroids.git
+ 7039f0a..b3684d3 master -&gt; master
+</code></pre><p>如果因为某些原因推送失败，推送会取消并且你可以完全放心地再次尝试。像Git,<strong>Git LFS</strong>存储的内容是可以寻址的：内容是通过本身的<strong>SHA-256</strong>格式的哈希值作为key来存储的，这意味重新传输<strong>Git LFS</strong>文件是安全可行的。你不会用错误的版本的文件内容重写<strong>Git LFS</strong>文件。</p>
+<h3 id="在不同主机间转移Git-LFS仓库"><a href="#在不同主机间转移Git-LFS仓库" class="headerlink" title="在不同主机间转移Git LFS仓库"></a>在不同主机间转移<strong>Git LFS</strong>仓库</h3><p>为了把一个<strong>Git LFS</strong>仓库迁移到另外一台服务器，你可以结合使用带有<strong>–all</strong>参数的<strong>git lfs fetch</strong>和<strong>git lfs push</strong>命令来实现。</p>
+<p>比如，为了将一个叫做<strong>github</strong>的远程仓库移动到<strong>bitbucket</strong>远程仓库，你可以这样做😉：</p>
+<pre><code># create a bare clone of the GitHub repository
+$ git clone --bare git@github.com:kannonboy/atlasteroids.git
+$ cd atlasteroids
+
+# set up named remotes for Bitbucket and GitHub
+$ git remote add bitbucket git@bitbucket.org:tpettersen/atlasteroids.git
+$ git remote add github git@github.com:kannonboy/atlasteroids.git
+
+# fetch all Git LFS content from GitHub
+$ git lfs fetch --all github
+
+# push all Git and Git LFS content to Bitbucket
+$ git push --mirror bitbucket
+$ git lfs push --all bitbucket
+</code></pre><h2 id="获取附加的Git-LFS历史"><a href="#获取附加的Git-LFS历史" class="headerlink" title="获取附加的Git LFS历史"></a>获取附加的<strong>Git LFS</strong>历史</h2><p>Git LFS一般仅仅下载本地切换需要的提交的文件。但是，你可以使用<strong>git lfs fetch –recent</strong>强制<strong>Git LFS</strong>下载附加的内容，因为其他人最近修改了分支。</p>
+<pre><code>$ git lfs fetch --recent
+Fetching master
+Git LFS: (0 of 0 files, 14 skipped) 0 B / 0 B, 2.83 MB skipped Fetching recent branches within 7 days
+Fetching origin/power-ups
+Git LFS: (8 of 8 files, 4 skipped) 408.42 KB / 408.42 KB, 2.81 MB skipped
+Fetching origin/more-music
+Git LFS: (1 of 1 files, 14 skipped) 1.68 MB / 1.68 MB, 2.83 MB skipped
+</code></pre><p>当你要出去吃饭的时候批处理要下载的文件这招很有用，或者你准备评审你同事的代码，但因为你不能在随后网络差的情况下下载，比如，你可能希望执行<strong>git lfs fetch –recent</strong>在登机之前下载最新的内容！</p>
+<p>Git LFS认为任何分支和标签如果包含一周只能得提交就是最近。你可以通过设置<strong>lfs.fetchrecentrefsdays</strong>来配置这个天数数字。</p>
+<pre><code># download Git LFS content for branches or tags updated in the last 10 days
+$ git config lfs.fetchrecentrefsdays 10
+</code></pre><p>默认，<strong>git lfs fetch –recent</strong>将会仅仅下载一个最近分支或者标签的Git LFS内容。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:ce62b78b-dc55-49aa-9b4e-33158f7a0d51/06.svg?cdnVersion=dj" alt="**Git LFS** - **Git LFS** fetch --recent"></p>
+<p>然而你可以配置Git LFS下载早于最近分支和标签的提交，这可以通过配置<strong>lfs.fetchrecentcommitsdays</strong>属性来实现：</p>
+<pre><code># download the latest 3 days of Git LFS content for each recent branch or tag
+$ git config lfs.fetchrecentcommitsdays 3
+</code></pre><p>小心使用这个配置：如果你拥有快速变化的分支，这可能导致有大量的数据需要被下载。然而如果你需要评审分支上插入的修改，比如从其他分支挑选（cherry pick）的提交，或者重写了提交历史。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:4909bcee-61de-4b76-bc7a-b924e84e2695/07.svg?cdnVersion=dj" alt="**Git LFS** - **Git LFS** fetch --recent commits"></p>
+<p>像我们在<strong>在不同主机间转移</strong>Git LFS<strong>仓库</strong>这部分讲的那样，你也可以使用<strong>git lfs fetch –all</strong>命令来选择获取所有的<strong>Git LFS</strong>内容：</p>
+<pre><code>$ git lfs fetch --all
+Scanning for all objects ever referenced...
+✔ 23 objects found 
+Fetching objects...
+Git LFS: (9 of 9 files, 14 skipped) 2.06 MB / 2.08 MB, 2.83 MB skipped
+</code></pre><h2 id="删除-Git-LFS-文件"><a href="#删除-Git-LFS-文件" class="headerlink" title="删除 Git LFS 文件"></a>删除 <strong>Git LFS</strong> 文件</h2><p>你可以使用<strong>git lfs prune</strong>命令删除本地的<strong>Git LFS</strong>缓存中的文件。</p>
+<pre><code>$ git lfs prune
+✔ 4 local objects, 33 retained 
+Pruning 4 files, (2.1 MB)
+✔ Deleted 4 files
+</code></pre><p>这会删除认为过旧的本地 Git LFS文件，没有被引用的文件被认为是过旧的文件：</p>
+<ul>
+<li>当前切换的提交</li>
+</ul>
+<p>一个还没有被推送的提交（到远程，或者任何在<strong>lfs.pruneremotetocheck</strong>设置的）</p>
+<ul>
+<li>一个最近的提交</li>
+</ul>
+<p>默认，一个最近的提交是过去十天的任何一个提交，这是通过添加如下内容计算的：</p>
+<ul>
+<li><p>在获取附加的<strong>Git LFS</strong>历史部分讨论过的<strong>lfs.fetchrecentrefsdays</strong>属性的值。</p>
+</li>
+<li><p><strong>lfs.pruneoffsetdays</strong>属性的值（默认为3）。</p>
+</li>
+</ul>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fda8acc7-67bc-4af0-b047-f6a226aa68bb/08.svg?cdnVersion=dj" alt="git lfs prune"></p>
+<p>你可以为配置一个持用<strong>Git LFS</strong>内容更长的时间：</p>
+<pre><code># don&apos;t prune commits younger than four weeks (7 + 21)
+$ git config lfs.pruneoffsetdays 21
+</code></pre><p>不像Git内置的垃圾回收， Git LFS内容不会自动删除，因此定期执行<strong>git lfs prune</strong>来保留你本地的仓库文件大小是很正确的做法。</p>
+<p>你可以测试在<strong>git lfs prune –dry-run</strong>命令执行后有什么效果：</p>
+<pre><code>$ git lfs prune --dry-run
+✔ 4 local objects, 33 retained 
+4 files would be pruned (2.1 MB)
+</code></pre><p>更精确地查看哪个Git LFS对象被删除可以使用<strong>git lfs prune –verbose –dry-run</strong>命令：</p>
+<pre><code>$ git lfs prune --dry-run --verbose
+✔ 4 local objects, 33 retained 
+4 files would be pruned (2.1 MB)
+ * 4a3a36141cdcbe2a17f7bcf1a161d3394cf435ac386d1bff70bd4dad6cd96c48 (2.0 MB)
+ * 67ad640e562b99219111ed8941cb56a275ef8d43e67a3dac0027b4acd5de4a3e (6.3 KB)
+ * 6f506528dbf04a97e84d90cc45840f4a8100389f570b67ac206ba802c5cb798f (1.7 MB)
+ * a1d7f7cdd6dba7307b2bac2bcfa0973244688361a48d2cebe3f3bc30babcf1ab (615.7 KB)
+</code></pre><p>通过使用<strong>–verbose</strong>模式输出的十六进制的字符串是被删除的<strong>Git LFS</strong>对象的<strong>SHA-256</strong>哈希值（也被称作对象ID,或者OIDs）。你可以使用在<strong>找到引用某个</strong>Git LFS<strong>对象的路径或者提交</strong>章节介绍的技巧去找到其他想要删除的对象。</p>
+<p>作为一个额外安全检查工作，你可以使用<strong>–verify-remote</strong>选项来检查Git LFS store是否存在想要删除的Git LFS对象的拷贝。</p>
+<pre><code>$ git lfs prune --verify-remote
+✔ 16 local objects, 2 retained, 12 verified with remote 
+Pruning 14 files, (1.7 MB)
+✔ Deleted 14 files
+</code></pre><p>这让删除过程非常的非常的缓慢，但是这可以帮助你明白所有删除的对象都是可以从服务器端恢复的。你可以为你的系统用久开启<strong>–verify-remote</strong> 选项，这可以通过全局配置<strong>lfs.pruneverifyremotealways</strong>属性来实现。</p>
+<pre><code>$ git config --global lfs.pruneverifyremotealways true
+</code></pre><p>或者你可以通过去掉<strong>–global</strong>选项来仅仅为当前会话的仓库开启远程验证。</p>
+<h2 id="删除远程服务器的Git-LFS文件"><a href="#删除远程服务器的Git-LFS文件" class="headerlink" title="删除远程服务器的Git LFS文件"></a>删除远程服务器的<strong>Git LFS</strong>文件</h2><p><strong>Git LFS </strong>命令行客户端工具不支持删除服务器文件，那如何实现删除他们就得依靠你的服务器提供方了。</p>
+<p>在<strong>Bitbucket Cloud</strong>上，你可以通过仓库设置&gt;Git LFS查看和删除<strong>Git LFS</strong>文件。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:46218516-f4aa-490a-9afc-c36ca863c98f/09.png?cdnVersion=dj" alt="Bitbucket Cloud - delete lfs from server"></p>
+<p>记住每个<strong>Git LFS</strong>文件通过<strong>SHA-256 OID</strong>索引，通过界面是看到不到文件路径的。这是因为在不同的提交中对一个给定的对象会有不同的路径，因此找到他们会很慢。</p>
+<p>确定一个给定的<strong>Git LFS</strong>文件的具体内容，你有三个选择：</p>
+<ul>
+<li><p>通过查看<strong>Bitbucket Git LFS</strong>界面的左侧的文件缩略图图标和文件类型</p>
+</li>
+<li><p>使用右侧链接中查找到文件的<strong>SHA-256 OID</strong>，然后使用下面章节讨论的方法下载文件。</p>
+</li>
+</ul>
+<h2 id="找到引用某个Git-LFS对象的路径或者提交"><a href="#找到引用某个Git-LFS对象的路径或者提交" class="headerlink" title="找到引用某个Git LFS对象的路径或者提交"></a>找到引用某个<strong>Git LFS</strong>对象的路径或者提交</h2><p>If you have a Git LFS SHA-256 OID, you can determine which commits reference it with git log –all -p -S <oid>:</oid></p>
+<p>如果你有一个<strong>Git LFS</strong>的<strong>SHA-256 OID</strong>，你可以确定引用它的提交，使用<strong>git log –all -p -S <oid></oid></strong>即可：</p>
+<pre><code>$ git log --all -p -S 3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
+commit 22a98faa153d08804a63a74a729d8846e6525cb0
+Author: Tim Pettersen &lt;tpettersen@atlassian.com&gt;
+Date: Wed Jul 27 11:03:27 2016 +1000
+
+ Projectiles and exploding asteroids
+
+diff --git a/Assets/Sprites/projectiles-spritesheet.png
+new file mode 100755
+index 0000000..49d7baf
+--- /dev/null
++++ b/Assets/Sprites/projectiles-spritesheet.png
+@@ -0,0 +1,3 @@
++version https://git-lfs.github.com/spec/v1
++oid sha256:3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
++size 21647
+</code></pre><p><strong>git log</strong>魔法会为所有的分支(-all)的所有提交生成一个补丁（-p），添加和删除一行(-S)包含特定字符串(一个Git LFS SHA-256 OID)。</p>
+<p>这个补丁展示了LFS对象的提交和路径，以及查看到谁添加了它，什么时候被提交的。你可以简单的切换分支，如果需要Git LFS会下载这个文件，并出现在你的工作区。</p>
+<p>如果你在你当前的HEAD，或者特定的分支中怀疑有一个特定的Git LFS对象，你可以使用<strong>git grep</strong>来找到文件路径来索引它：</p>
+<pre><code># find a particular object by OID in HEAD
+$ git grep 3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc HEAD
+HEAD:Assets/Sprites/projectiles-spritesheet.png:oid sha256:3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
+
+# find a particular object by OID on the &quot;power-ups&quot; branch
+$ git grep e88868213a5dc8533fc9031f558f2c0dc34d6936f380ff4ed12c2685040098d4 power-ups
+power-ups:Assets/Sprites/shield2.png:oid sha256:e88868213a5dc8533fc9031f558f2c0dc34d6936f380ff4ed12c2685040098d4
+</code></pre><p>你可以用任意包含Git LFS对象的引用，提交，树来替代HEAD,或者power-up。</p>
+<h2 id="包含或者排除Git-LFS文件"><a href="#包含或者排除Git-LFS文件" class="headerlink" title="包含或者排除Git LFS文件"></a>包含或者排除<strong>Git LFS</strong>文件</h2><p>在某些条件中，你可能想仅仅下载某个特定提交的Git LFS内容。比如，当配置一个持续化集成进行单元测试，你可能仅仅需要你的源代码，因此为了构建代码可能想去除不必要的大文件。</p>
+<p>你可以通过使用<strong>git lfs fetch -X (或者 –exclude)</strong>排除一个通配模式或者一个目录：</p>
+<pre><code>$ git lfs fetch -X &quot;Assets/**&quot;
+</code></pre><p>可替代的，你可能想仅仅包含一个特定的模式或者子目录。比如，一个音频工程仅仅想使用<strong>git lfs fetch -I (或者 –include)</strong>获取ogg和wav格式的文件。</p>
+<pre><code>$ git lfs fetch -I &quot;*.ogg,*.wav&quot;
+</code></pre><p>如果你兼顾包含和排除需求。符合包含通配模式的文件和不匹配排除通配模式的文件会被获取。比如，你可以除了gifs目录，获取Assets目录的所有内容。</p>
+<pre><code>$ git lfs fetch -I &quot;Assets/**&quot; -X &quot;*.gif&quot;
+</code></pre><p>排除和包含支持相同的模式，比如<strong>git lfs track</strong>和<strong>.gitignore</strong>。你可以为特定的仓库，通过设置<strong>lfs.fetchinclude</strong>和<strong>lfs.fetchexclude</strong> 配置属性让这些模式永久有效。</p>
+<pre><code>$ git config lfs.fetchinclude &quot;Assets/**&quot;
+$ git config lfs.fetchexclude &quot;*.gif&quot;
+</code></pre><p>这些配置可以通过加上<strong>–global</strong>选项，让其也可以运用在你系统的所有仓库中。</p>
+<h2 id="给Git-LFS文件加锁"><a href="#给Git-LFS文件加锁" class="headerlink" title="给Git LFS文件加锁"></a>给<strong>Git LFS</strong>文件加锁</h2><p>不幸的是，没有好的方式来解决二进制文件的合并冲突。在版本控制系统中传统解决避免这类合并冲突的方式是给文件加锁。<strong>Git LFS</strong>目前还不支持给文件加锁。然而已经有一些用来实施具体文件加锁的具体建议而且一些实现工作已经在开始做，因此让我们期待Git LFS发布它的那一天。</p>
+<p>在这之前，最好的避免这类冲突的办法就是在你修改二进制文件的时候，通知团队成员，尤其当他们也可能修改的时候。</p>
+<h2 id="Git-LFS是如何工作的"><a href="#Git-LFS是如何工作的" class="headerlink" title="Git LFS是如何工作的"></a><strong>Git LFS</strong>是如何工作的</h2><p>如果你对清理、模糊过滤、推送前hook以及其他关于 Git LFS的有趣的科学问题，你可以查看<strong>LinuxCon 2016</strong>上的来自<strong>Atlassian</strong>的<strong>Git LFS</strong>演讲。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/git-lfs" target="_blank" rel="noopener">Git LFS</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git LFS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 大文件处理系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/18/2017-03-18-Git-LFS/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-03-12-Refs-and-the-Reflog" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -323,15 +699,15 @@ bbe9012 HEAD@{2}: commit: Continue the feature
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Refs and the Reflog</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 引用和引用日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
         		</li>
       		
 		</ul>
@@ -679,15 +1055,15 @@ print &quot;Moving &apos;%s&apos; from %s to %s&quot; % (branch, old_commit, new
         		</li>
       		 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git Hook</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 钩子</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
         		</li>
       		
 		</ul>
@@ -1829,171 +2205,9 @@ git push origin master
 
 
   
-    <article id="post-2016-11-17-Making-a-Pull-Request" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">【译文】Git合并申请（Pull Request）功能精讲</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/17/2016-11-17-Making-a-Pull-Request/" class="archive-article-date">
-  	<time datetime="2016-11-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>我打算翻译<a href="https://www.atlassian.com/git/tutorials/" target="_blank" rel="noopener">《Become a git guru》</a>系列git教程文章，欢迎有兴趣翻译这系列教程的朋友加入我一起完成翻译。</strong></p>
-<blockquote>
-<p>译者注：这篇文章很好的介绍了如何使用合并申请功能来保证项目质量可靠性和帮助团队成员交流成长。文章使用了Bitbucket（一个类似github的代码共享网站）作为远程代码管理工具，国内开发者使用github居多，公司内部可能使用gitlab更多，不过译者认为他们使用方式大同小异，原理更是相通，所以还是决定原文翻译。如果有时间我会针对gitlab单独写一份教程。</p>
-</blockquote>
-<p>使用<a href="http://www.bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>的合并申请功能让开发者之间合作变的非常的easy。你可以使用Bitbucket提供的非常nice的网页管理界面让大家探讨这些修改，然后再合并代码到正式项目。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/01.svg" alt="Git Workflows: Pull Request in Bitbucket"></p>
-<p>你可以仅仅使用合并申请功能来通知团队成员你已经完成了可一个功能开发。当开发者完成他们开发的功能后，他（她）可以登陆Bitbucket，然后发起合并申请。这可以让被通知到人去review代码并合并这些代码到master分支（译者注：应该是指团队主开发分支）。不过合并申请功能可不止发送通知这么简单——它可以用来作为讨论提出申请的功能的专用论坛。如果代码有任何问题，团队成员们可以提出反馈，甚至推送（push）提交来小小的修改代码。合并申请功能可以追踪这些事情。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/02.svg" alt="Git Workflows: Activity inside a pull request"></p>
-<p>跟其他团队合作模型相比，这个分享代码提交的方案使得开发流程更加顺畅。SVN和Git都可以通过简单脚本配置就可以自动发送邮件。然而当需要讨论修改时，如果依赖邮件，那将邮件满天飞，会让事情变的混乱，再加后续的修改提交，就更加恐怖了。合并申请把所有这些事情集合在一个web界面上。你仅仅需要请求另外一个开发者（比如，项目维护者）来从你的仓库拉取代码合并进他的仓库就可以完成一个合并申请。这意味着你发起合并申请需要提供4个信息：源仓库、源分支、目标仓库、目标分支。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/03.svg" alt="Git Workflows: Pull Requests"></p>
-<p>Bitbucket为这四个值提供了合理的默认值。然而，根据不同项目不同合作开发流，你的团队可能需要设置不同的默认值。上面的图表展示如何请求从一个功能分支合并到正式的主干分支（master）。但合并申请的功能比这要多的多。</p>
-<h2 id="如何进行"><a href="#如何进行" class="headerlink" title="如何进行"></a>如何进行</h2><p>合并申请可以被运用在<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow" target="_blank" rel="noopener">功能分支工作流（Feature Branch Workflow）</a>,<br><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow" target="_blank" rel="noopener">(GitFlow工作流(Gitflow Workflow)</a>,<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow" target="_blank" rel="noopener">Forking工作流(forking WorkFlow)</a>。但是合并申请需要在两个不同分支或者不同仓库之间进行，所以它不适用于标准意义上的<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流（Centralized Workflow）</a>。在不同开发工作流上使用合并申请略有不同，不过基本流程是一样的：</p>
-<ol>
-<li>开发者在本地仓库创建一个功能开发专用的分支。</li>
-<li>开发者将分支推送到远程仓库</li>
-<li>开发者发起合并申请</li>
-<li>团队成员review代码，展开讨论或者修改他们。</li>
-<li>项目维护者合并该分支到正式仓库然后关闭合并申请。</li>
-</ol>
-<p>后面的内容我们来聊聊合并申请是如何助力不同的合作开发工作流的。</p>
-<h2 id="功能分支工作流中的合并申请"><a href="#功能分支工作流中的合并申请" class="headerlink" title="功能分支工作流中的合并申请"></a>功能分支工作流中的合并申请</h2><p>功能分支工作流主要用于在同一项目中管理团队合作开发的，开发者们为每个开发的的功能创建分支。但是在代码合并进主干分支前，开发者需要发起合并申请，让大家讨论他开发的功能，这些完成之后才能合并到正式代码里。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/04.svg" alt="Pull Request: Feature Branch workflow"></p>
-<p>由于在功能分支工作流中只有一个公有仓库，因此合并申请的源仓库和目标仓库是一样的，一般来说开发者指定他的功能分支作为源分支，主干分支作为目标分支。</p>
-<p>项目管理者在收到合并申请后，会去查看提交的代码，如果没有问题就会合并代码到主干分支并关闭申请，但是如果在修改的代码中发现问题，他可以在合并申请界面进行反馈，对应的修改提交会显示在评论的右边。</p>
-<p>发起一个没有开发完成的功能也是允许的。比如当一个开发者在开发某个需求时遇到困难，他们可以发起包含需要提交的代码然后发起申请，其他开发者可以在合并申请界面提供建议，或者直接动手帮忙解决问题并提交修改。</p>
-<h2 id="GitFlow工作流中的合并申请"><a href="#GitFlow工作流中的合并申请" class="headerlink" title="GitFlow工作流中的合并申请"></a>GitFlow工作流中的合并申请</h2><p>Gitflow工作流类似工作分支工作流，但是在项目发布周期中严格精确地定义了一个分支模型，在GitFlow工作流中加入合并申请可以让开发者围绕他们正在工作的发布分支或者维护分支进行讨论。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/05.svg" alt="Pull Requests: Gitflow Workflow"></p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/06.svg" alt="Pull Requests: Gitflow Workflow 2"></p>
-<p>Gitflow工作流中合并申请的使用跟之前一样：一个开发者发起一个需要被review的功能、发布、热修复代码的合并申请，团队其他成员通过Bitbucket收到通知。功能开发通常合并进develop分支，然后发布分支和热修复分支通畅合并进develop和master两个分支。合并申请可以在所有这些合并中用到。</p>
-<h2 id="Forking工作流中的合并申请"><a href="#Forking工作流中的合并申请" class="headerlink" title="Forking工作流中的合并申请"></a>Forking工作流中的合并申请</h2><p>在Forking工作流中，开发者将代码先推送到自己的仓库而不是公有仓库。然后，他可以发起合并申请请求项目管理者review代码。合并申请的通知功能在这个时候就特别有用，因为这可能是当开发者向项目管理者的仓库提交代码时项目管理者知道有新代码提交的唯一方式。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/07.svg" alt="Pull Requests: Forking workflow"></p>
-<p>由于开发者有自己的公有仓库，当他们提起合并申请时候源仓库是和目标仓库不同，目标仓库是正式仓库，目标分支主干分支。</p>
-<p>合并申请也可以运用于正式项目之外，例如，当你和队友合作开发一个功能时，这个时候我们发起合并申请可以使用对方仓库作为我们的目标仓库而不是正式项目，我们可以约定同一个功能名称作为源分支和目标分支。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/08.svg" alt="Pull Requests: Forking workflow"></p>
-<p>你们可以在合并申请界面讨论和开发功能，当你们开发完后，你们中可以由一个人向正式项目发起合并申请。合并申请的这种灵活性在forking工作流中尤其有用。</p>
-<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>下面的例子说明了如何在forking工作流中使用合并申请。对小团队以为开源项目贡献代码的个人开发者一样有效。</p>
-<p>在这个例子中，小红（Mary）是一个开发者，小明（John）是项目管理者。他们都有自己的公有仓库，并且小明拥有正式仓库。</p>
-<h3 id="小红拷贝（fork）正式仓库"><a href="#小红拷贝（fork）正式仓库" class="headerlink" title="小红拷贝（fork）正式仓库"></a>小红拷贝（fork）正式仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/09.svg" alt="Pull Requests: Fork the project"></p>
-<p>为了给小明的项目贡献代码，小红需要先拷贝小明的仓库到自己的公有仓库，她可以登录bitbucket，找到小明的仓库然后点击<strong>fork</strong>按钮即可。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/10.svg" alt="Pull Request: Fork in Bitbucket"></p>
-<p>不一小会儿她就拥有了这个项目的一份拷贝了，注意看看姓名和描述是否改变。</p>
-<h3 id="小红克隆（clone）她的公有仓库"><a href="#小红克隆（clone）她的公有仓库" class="headerlink" title="小红克隆（clone）她的公有仓库"></a>小红克隆（clone）她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/11.svg" alt="Pull Request: Clone the Bitbucket repo"></p>
-<p>然后，小红需要克隆她刚才拷贝（fork）的仓库。这样子她在自己的设备上就有了可以开发的仓库了。我们通过命令实现：</p>
-<pre><code>git clone https://user@bitbucket.org/user/repo.git
-</code></pre><p>时刻记住git clone会自动创建一个origin用来指向自己远程拷贝的分支。</p>
-<h3 id="小红开发一个新功能"><a href="#小红开发一个新功能" class="headerlink" title="小红开发一个新功能"></a>小红开发一个新功能</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/12.svg" alt="Pull Requests: develop a new feature"></p>
-<p>在小红开发新功能时，小红需要创建一个分支用于开发功能。这个分支将是她发起合并申请时的源分支。</p>
-<pre><code>git checkout -b some-feature      
-#Edit some codegit 
-commit -a -m &quot;Add first draft of some feature&quot;
-</code></pre><p>开发一个功能小红可能会有很多个提交（commit）。如果分支历史非常混乱她可以使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i" target="_blank" rel="noopener">交互式合并(interactive rebase)</a>来去除或者压缩（squash）无用的提交。在大型项目中，清理分支历史让项目的维护者更容易在合并申请里知道你的修改里做了什么事情。</p>
-<h3 id="小红将她开发的功能推送（push）到她的公有仓库"><a href="#小红将她开发的功能推送（push）到她的公有仓库" class="headerlink" title="小红将她开发的功能推送（push）到她的公有仓库"></a>小红将她开发的功能推送（push）到她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/13.svg" alt="Pull Requests: Push feature to Bitbucket repository"></p>
-<p>在她开发完功能后，小红将功能分支推送到她的远程仓库（不是别人维护的正式仓库，是她fork的仓库），她可以使用这个命令：</p>
-<pre><code>git push origin some-branch
-</code></pre><p>这个让她的修改就在公有仓库里，这样其项目维护者或者其他开发者可以获取到她的修改。</p>
-<h3 id="小红创建合并申请"><a href="#小红创建合并申请" class="headerlink" title="小红创建合并申请"></a>小红创建合并申请</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/14.svg" alt="Pull Request: Create Pull Request"></p>
-<p>在代码push完成后，小红登录Bitbucket，找到她fork的项目，然后点击右上角的<em>Pull request</em>按钮发起合并申请。弹出表达默认设置小红的仓库为源仓库，病要求她设置源分支、目标仓库和目标分枝。</p>
-<p>小红需要合并她的代码到正式项目，所以她设置她的分支为源分支，目标仓库为小明的共有正式仓库，目标分枝为主干分支master。她还需要输入标题和描述她的修改，然后在<em>Reviewers</em> 输入框选择能够同意她的修改的人（包括小明）。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-7.png" alt="Pull Request: Bitbucket"></p>
-<p>在她创建合并申请后，小明就会通过邮件或者订阅收到通知。</p>
-<h3 id="小明评审（review）代码"><a href="#小明评审（review）代码" class="headerlink" title="小明评审（review）代码"></a>小明评审（review）代码</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-8.png" alt="Pull Request: Bitbucket pull requests"></p>
-<p>小明可以在他的仓库通过点击标签 <em>Pull request</em> 来查看所有人的合并申请。点击小红的申请，他将看到小红的申请描述，她分支的提交历史，以及该分支代码包含的修改的差异对比（diff）。</p>
-<p>如果他认为功能可以合并进正式项目，他只需要点击<em>Merge</em>按钮同意合并申请，然后就会合并小红的功能代码到他的主干分支master。</p>
-<p>但是，假如小明在小红的代码里发现了小bug，需要小红在合并前修改代码，他可以在合并申请恢复，可以在大输入框里做一个整体评论，也可以选择一个具体的提交来评论。</p>
-<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-9.png" alt="Pull Request: Comment"></p>
-<h3 id="小红添加随后的补充提交"><a href="#小红添加随后的补充提交" class="headerlink" title="小红添加随后的补充提交"></a>小红添加随后的补充提交</h3><p>如果小红对收到的反馈有任何问题，她可以在合并申请里恢复，类似论坛一样。为了修复错误，小红添加一个新的提交到她的分支，再推送到她的仓库，就像她之前做的那样。她的合并申请自然加到了原来的合并申请里了。然后小明就可以在他评论的地方再次评审。</p>
-<h3 id="小明同意合并"><a href="#小明同意合并" class="headerlink" title="小明同意合并"></a>小明同意合并</h3><p>最后，小明同意这些修改，合并功能到master主干分支，关闭合并申请。这样功能代码就正式集成到项目了。所有这个项目的贡献者就可以使用标准的<strong>git pull</strong>拉取这些修改到他们本地的仓库了。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>现在你已经掌握了所有技能和工具来帮助你使用合并申请。记住，合并申请不是其他所有<a href="https://www.atlassian.com/git/tutorials/comparing-workflows" target="_blank" rel="noopener">基于Git的工作流(Git-based collaboration workflows)</a>的替代者，而是你和其他团队成员合作开发的有利补充。</p>
-<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/making-a-pull-request" target="_blank" rel="noopener">Making a Pull Request</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工作流</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码review</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">合并申请</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Pull Request</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -2116,14 +2330,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
               </li>
              
@@ -2140,6 +2346,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
@@ -2152,15 +2366,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2176,19 +2386,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2204,31 +2410,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2244,23 +2438,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2272,7 +2470,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2300,14 +2514,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
@@ -2316,15 +2522,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2337,6 +2543,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2364,11 +2578,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2396,11 +2610,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2409,10 +2627,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2452,6 +2666,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">投资</a>
               </li>
              
@@ -2464,23 +2694,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2489,6 +2703,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2524,11 +2746,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2541,10 +2759,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
