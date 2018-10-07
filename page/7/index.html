@@ -160,6 +160,176 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-02-05-Merging-vs-Rebasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">【译文】Git merge 和 Git rebase比较</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/" class="archive-article-date">
+  	<time datetime="2017-02-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:15447956-9d33-4817-9dc6-fd6c86f24240/hero.svg?cdnVersion=da" alt="Merging vs rebasing"></p>
+<p><code>git rebase</code> 这个命令经常被人认为是一种Git巫术，初学者应该避而远之。但如果使用得当的话，它能给你的团队开发省去太多烦恼。在这篇文章中，我们会比较<code>git rebase</code>和类似的<code>git merge</code>命令，找到Git工作流中rebase的所有用法。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p> 你要知道的第一件事是，<code>git rebase</code> 和<code>git merge</code> 做的事其实是一样的。它们都被设计来将一个分支的更改并入另一个分支，只不过他们实现方式有些不同。</p>
+<p>想象一下，你刚创建了一个专门的分支开发新功能，然后团队中另一个成员在master分支上添加了新的提交。这就会造成提交历史被分叉（Fork）了一份，对于用Git来协作的开发者来说这样的情况应该很常见。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:01b0b04e-64f3-4659-af21-c4d86bc7cb0b/01.svg?cdnVersion=da" alt="A forked commit history"></p>
+<p>现在，如果master中新的提交和你的工作功能开发是相关的。为了将新的提交并入你的分支，你有两个选项：merge或rebase。 </p>
+<h3 id="Merger选项"><a href="#Merger选项" class="headerlink" title="Merger选项"></a>Merger选项</h3><p>将master分支合并到feature分支最简单的办法就是用下面这些命令：</p>
+<pre><code>git checkout feature 
+git merge master
+</code></pre><p>或者，你也可以把它们压减成一行：</p>
+<pre><code>git merge master feature
+</code></pre><p>这会在功能（feature）分支中创建一个新的合并提交(merge commit)将两个分支的历史链接一起。你会得到下面这样的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e229fef6-2c2f-4a4f-b270-e1e1baa94055/02.svg?cdnVersion=da" alt="Merging master into the feature branch"></p>
+<p>Merge好在它是一个安全的操作。现有的分支不会被更改，避免了rebase潜在的缺点（后面会说）。</p>
+<p>另一方面，这同样意味着每次合并上游更改时feature分支都会引入一个无关的合并提交。如果master非常活跃的话，这或多或少会污染你的分支历史。虽然高级的<code>git log</code>选项可以减轻这个问题，但对于开发者来说，还是会增加理解项目历史的难度。</p>
+<h3 id="Rebase-选项"><a href="#Rebase-选项" class="headerlink" title="Rebase 选项"></a>Rebase 选项</h3><p>作为merge的替代选择，你可以像下面这样将feature分支并入master分支：</p>
+<pre><code>git checkout feature 
+git rebase master
+</code></pre><p>它会有效地把所有master分支上新的提交并入过来，并把整个feature分支移动到master分支的后面。但是，rebase会重写项目历史，它并不会带来合并提交，但会在原分支上为每一个提交创建一个新的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:5b153a22-38be-40d0-aec8-5f2fffc771e5/03.svg?cdnVersion=da" alt="Rebasing the feature branch onto master"></p>
+<p>rebase最大的好处是你的项目提交历史会非常整洁。首先，它不像git merge 那样引入不必要的合并提交。其次，如上图所示，rebase导致最后的项目历史呈现出完美的线性——你可以从项目终点到起点浏览而没有任何的分叉。这让你更容易使用<code>git log</code> 、<code>git bisect</code> 和gitk 来查看项目历史。</p>
+<p>不过，这种简单的提交历史会带来两个问题：安全性和可跟踪性。如果你违反了<a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing" target="_blank" rel="noopener">Rebase黄金法则</a>，重写项目历史可能会给你的开发工作流带来灾难性的影响。此外，rebase操作不回增加合并提交——因此你看不到什么时候上游分支合进来feature分支的。</p>
+<h3 id="交互式的rebase"><a href="#交互式的rebase" class="headerlink" title="交互式的rebase"></a>交互式的rebase</h3><p>交互式的rebase允许你更改并入新分支的提交。这比自动的rebase更加强大，因为它提供了对分支上提交历史完整的控制。一般来说，这被用于将feature分支并入master分支之前，清理混乱的历史。</p>
+<p>把-i 传入git rebase 选项来开始一个交互式的rebase过程：</p>
+<pre><code>git checkout feature 
+git rebase -i master
+</code></pre><p>它会打开一个文本编辑器，显示所有将被移动的提交：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+pick 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>这个列表定义了rebase将被执行后分支会是什么样的。更改pick 命令或者重新排序，这个分支的历史就能根据你的想法改变。比如说，如果第二个提交修复了第一个提交中的小问题，你可以用fixup 命令把它们合到一个提交中：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+fixup 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>保存后关闭文件，Git会根据你的指令来执行rebase，项目历史看上去会是这样：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:fe6942b4-7a60-4464-9181-b67e59e50788/04.svg?cdnVersion=da" alt="Squashing a commit with an interactive rebase"></p>
+<p>忽略不重要的提交会让你的feature分支的历史更清晰易读。这是<code>git merge</code> 做不到的。</p>
+<h2 id="Rebase的黄金法则"><a href="#Rebase的黄金法则" class="headerlink" title="Rebase的黄金法则"></a>Rebase的黄金法则</h2><p>当你理解rebase是什么的时候，最重要的就是什么时候 不能 用rebase。<code>git rebase</code> 的黄金法则：绝不要在公共的分支上使用它。</p>
+<p>比如说，如果你把master分支rebase到你的feature分支上会发生什么：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:1d22f018-b2c7-4096-9db1-c54940cf4f4e/05.svg?cdnVersion=da" alt="Rebasing the master branch"></p>
+<p>这次rebase将master分支上的所有提交都移到了feature分支后面。问题是它只发生在你的代码仓库中，其他所有的开发者还在原来的master上工作。因为rebase引起了新的提交，Git会认为你的master分支和其他人的master已经分叉了。</p>
+<p>同步两个master分支的唯一办法是把它们merge到一起，导致一个额外的合并提交和两堆包含同样更改的提交。不用说，这会让人非常困惑。</p>
+<p>所以，在你运行git rebase 之前，一定要问问你自己“有没有别人正在这个分支上工作？”。如果答案是肯定的，那么把你的爪子放回去，重新找到一个无害的方式（如git revert）来提交你的更改。不然的话，你可以随心所欲地重写历史。</p>
+<h3 id="强制推送"><a href="#强制推送" class="headerlink" title="强制推送"></a>强制推送</h3><p>如果你想把rebase之后的master分支推送到远程仓库，Git会阻止你这么做，因为两个分支包含冲突。但你可以传入–force 标记来强行推送。就像下面一样：</p>
+<pre><code># 小心使用这个命令！
+git push --force
+</code></pre><p>它会重写远程的master分支来匹配你仓库中rebase之后的master分支，对于团队中其他成员来说这看上去很诡异。所以，务必小心这个命令，只有当你知道你在做什么的时候再使用。</p>
+<p>仅有的几个强制推送的使用场景之一是，当你在想向远程仓库推送了一个私有分支之后，执行了一个本地的清理（比如说为了回滚）。这就像是在说“哦，其实我并不想推送之前那个feature分支的。用我现在的版本替换掉吧。”同样，你要注意没有别人正在这个feature分支上工作。</p>
+<h2 id="应用到开发工作流"><a href="#应用到开发工作流" class="headerlink" title="应用到开发工作流"></a>应用到开发工作流</h2><p>rebase可以或多或少应用在你们团队的Git工作流中。在这一节中，我们来看看在feature分支开发的各个阶段中，rebase有哪些好处。</p>
+<p>在工作流中平衡git rebase负面作用的第一步是创建一个功能开发的专门feature分支。这让你拥有安全使用rebase的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6af9de07-088b-4f8b-97a7-b66569a9e4ac/06.svg?cdnVersion=da" alt="Developing a feature in a dedicated branch"></p>
+<h3 id="本地清理"><a href="#本地清理" class="headerlink" title="本地清理"></a>本地清理</h3><p>在你工作流中使用rebase最好的用法之一就是清理本地正在开发的分支。隔一段时间执行一次交互式rebase，你可以保证你feature分支中的每一个提交都是具体而且有意义的。你在写代码时不用担心造成松散的提交——你可以使用rebase解决这个问题。</p>
+<p>调用<code>git rebase</code> 的时候，你有两个选项要去考虑：上游分支（比如master）或者你feature分支中早先的一个提交。我们在“交互式rebase”一节看到了第一种的例子。后一种在当你只需要修改最新几次提交时也很有用。比如说，下面的命令对最新的3次提交进行了交互式rebase：</p>
+<pre><code>git checkout feature 
+git rebase -i HEAD~3
+</code></pre><p>通过指定HEAD~3作为新的基提交，你实际上没有移动分支——你只是将之后的3次提交重写了。注意它不会把上游分支的更改并入到feature分支中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:079532c4-2594-40ed-a5c4-0e3621b9edff/07.svg?cdnVersion=da" alt="Rebasing onto Head~3"></p>
+<p>如果你想用这个方法重写整个feature分支，git merge-base 命令非常方便地找出feature分支开始分叉的基。下面这段命令返回基提交的ID，你可以接下来将它传给git rebase：</p>
+<pre><code>git merge-base feature master
+</code></pre><p>交互式rebase是在你工作流中引入git rebase 的的好办法，因为它只影响本地分支。其他开发者只能看到你已经完成的结果，那就是一个非常整洁、易于追踪的分支历史。</p>
+<p>但同样的，这只能用在私有分支上。如果你在同一个feature分支和其他开发者合作的话，这个分支是公开的，你不能重写这个历史。</p>
+<p>用带有交互式的rebase清理本地提交，这是无法用git merge 命令代替的。</p>
+<h3 id="将上游分支上的更改并入feature分支"><a href="#将上游分支上的更改并入feature分支" class="headerlink" title="将上游分支上的更改并入feature分支"></a>将上游分支上的更改并入feature分支</h3><p>在概览一节，我们看到了feature分支如何通过git merge 或git rebase 来并入上游分支。merge是保留你完整历史的安全选择，rebase将你的feature分支移动到master分支后面，创建一个线性的历史。</p>
+<p>git rebase 的用法和本地清理非常类似（而且可以同时使用），但之间并入了master上的上游更改。</p>
+<p>记住，rebase到远程分支而不是master也是完全合法的。当你和另一个开发者在同一个feature分之上协作的时候，你会用到这个用法，将他们的更改并入你的项目。</p>
+<p>比如说，如果你和另一个开发者——John——往feature分支上添加了几个提交，在从John的仓库中fetch之后，你的仓库可能会像下面这样：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:0bb661aa-361d-47ba-8c7b-00b3be0546cb/08.svg?cdnVersion=da" alt="Collaborating on the same feature branch"></p>
+<p>就和并入master上的上游更改一样，你可以这样解决这个Fork：要么merge你的本地分支和John的分支，要不把你的本地分支rebase到John的分支后面。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1896adb1-5d49-419a-9b50-3a36adac186c/09.svg?cdnVersion=da" alt="Merging vs. rebasing onto a remote branch"></p>
+<p>注意，这里的rebase没有违反Rebase黄金法则，因为只有你的本地分支上的commit被移动了，之前的所有东西都没有变。这就像是在说“把我的改动加到John的后面去”。在大多数情况下，这比通过合并提交来同步远程分支更符合直觉。</p>
+<p>默认情况下，git pull 命令会执行一次merge，但你可以传入–rebase 来强制它通过rebase来整合远程分支。</p>
+<h3 id="用Pull-Request进行审查"><a href="#用Pull-Request进行审查" class="headerlink" title="用Pull Request进行审查"></a>用Pull Request进行审查</h3><p>如果你将pull request作为你代码审查过程中的一环，你需要避免在创建pull request之后使用git rebase。只要你发起了pull request，其他开发者能看到你的代码，也就是说这个分支变成了公共分支。重写历史会造成Git和你的同事难以找到这个分支接下来的任何提交。</p>
+<p>来自其他开发者的任何更改都应该用git merge 而不是git rebase 来并入。</p>
+<p>因此，在提交pull request前用交互式的rebase进行代码清理通常是一个好的做法。</p>
+<h3 id="并入通过的功能分支"><a href="#并入通过的功能分支" class="headerlink" title="并入通过的功能分支"></a>并入通过的功能分支</h3><p>如果某个功能被你们团队通过了，你可以选择将这个分支rebase到master分支之后，或是使用git merge 来将这个功能并入主代码库中。</p>
+<p>这和将上游改动并入feature分支很相似，但是你不可以在master分支重写提交，你最后需要用git merge 来并入这个feature。但是，在merge之前执行一次rebase，你可以确保merge是一直向前的，最后生成的是一个完全线性的提交历史。这样你还可以加入pull request之后的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:df39b1f1-2686-4ee5-90bf-9836783342ce/10.svg?cdnVersion=da" alt="Integrating a feature into master with and without a rebase"></p>
+<p>如果你还没有完全熟悉git rebase，你还可以在一个临时分支中执行rebase。这样的话，如果你意外地弄乱了你feature分支的历史，你还可以查看原来的分支然后重试。</p>
+<p>比如说：</p>
+<pre><code>git checkout feature
+git checkout -b temporary-branch
+git rebase -i master
+# [清理目录]
+git checkout master
+git merge temporary-branch
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>你使用rebase之前需要知道的知识点都在这了。如果你想要一个干净的、线性的提交历史，没有不必要的合并提交，你应该使用git rebase 而不是git merge 来并入其他分支上的更改。</p>
+<p>另一方面，如果你想要保存项目完整的历史，并且避免重写公共分支上的commit， 你可以使用git merge。两种选项都很好用，但至少你现在多了git rebase这个选择。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing" target="_blank" rel="noopener">Merging vs. Rebasing</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 合并</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git merge</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git rebase</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-02-03-Git-Reset-Checkout-and-Revert" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1660,94 +1830,6 @@ being redirected to the login form.
 
 
   
-    <article id="post-2016-10-31-a-man-should-be-independent-at-thirty" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/01/2016-10-31-a-man-should-be-independent-at-thirty/">三十而立，写给三十岁的自己</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/01/2016-10-31-a-man-should-be-independent-at-thirty/" class="archive-article-date">
-  	<time datetime="2016-10-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>30岁生日将至，孔子说三十而立，对于这个“立”字的理解现代人的理解不尽相同，每个人的人生际遇不同，自然到这个年龄每个人的情况和心态也也不尽相同，自然有每个人的理解。身边不少同龄人有车有房，娶妻生子，对此我甚是难看啊，这几样我都没沾边，女友鄙视过了，老家盖了房不算没屁用，Come On。实际的东西没有，只能给自己写点虚的，事实我就是这么理想主义，上帝也是公平的，只会给你想要的，他老人家看我屌丝样，所以就没打算给我房车。</p>
-<p>28岁之前我一直在国企里工作，毕业之后又幸也不幸地加入首都高速公路发展集团旗下的北京云星宇交通工程有限公司，这是一家老派的国企，有我们体制外的人认为的国企各种效率低下和内部管混乱的问题。我在那里做了一年asp.net，开发了两个小项目，项目开发完之后，公司领导也不太可能让我就这么呆着，看我技术能力不错，领导就让我参与支持各个高速公路收费站的DB2的数据库运维工作。我因为在加入公司不久后，看到的企业里出现的各种问题超出我当时的认知范围，慢慢患上了社交恐惧和抑郁症（当时意识到自己有毛病，但不太清楚什么病），后来病情慢慢好转许多之后，在这家单位工作快两年后，在2011年5月份裸辞休息了四个月左右，期间去全国一些名胜古迹转了转，顺便考了一次托福。</p>
-<p>11年国庆之后，我加入了一家算是难得优秀的国企吧——深圳证券交易所控股的深圳证券通信有限公司，在公司里负责机房的系统和网络的软硬件环境的运维。公司内部管理跟我之前呆的国企截然不同，真有地狱和天堂的这种级别的差异，公司管理制度比较规范，同事之间也比较友善和互相包容，而且工作清闲自在，你有足够的时间去做自己的事情，玩点兴趣爱好，有各种兴趣爱好的社团，公司才三四百号人就有各式人才，有书法很牛的，有写词作诗出神入化的，有舞蹈厉害的，有摄影厉害的，有打网球厉害的，有打篮球厉害的……。这家公司对我当时还没完全摆脱抑郁的状态是非常合适的，我有大把时间去看书，去尝试新鲜事物，去瞎琢磨人生的意义什么（在那几年里这是我认为最重要的事情，嗯）。在这家公司专业上收获不多，但是业余时间我看了不少书，电子的加纸质的100本不止，各种心灵鸡汤的，灵修学的，宗教学的，当然也有其他专业的涉猎，去过中国不少的名山名城，也学会了滑雪啊，打网球等收益一辈子的体育爱好。到14年初，我发现像我这种不能依靠父母买车买房的人是不太有资格过神仙日子的，其实也不错啊，还好过了几年，没过过也挺可惜的，真的很爽的，除了有时候闲的只能胡思乱想，偶尔年轻人会迷茫迷茫外。所以14年春节回来后我就琢磨要摆脱这个舒适区，到了该改变的时候了，开发App当时是我觉得最酷最想做的事情。</p>
-<p>在深证通我有的就是时间，14年春节后我上班时间在学写代码，下班时间也是在写代码，自学期间独立完成了几个App，后来为朋友的公司开发了一个小型商业App之后，15年我正式转行担任高级iOS开发一直到现在，在小公司干过小1年做了两个项目，在一家正规军的大团队干了一年做了一个大项目，现在在平安负责一个iOS项目，刚开发完第一版。从14年初到现在，我每天应该14个小时用在做iOS有关的事情，而且周末也是在做公司的项目或者自己的个人项目，一年应该有320天以上如此吧。多次被女友嫌弃到差点抛弃，还好女友善良仁慈，我才得以逃过被休的命运。按照10000小时的定律来看，我粗略的算了我这近三年在iOS上所花的时间已经超了这个数了。和同行们交流多了，我大概已经知道自己在iOS领域是一个什么水平，我用了3年时间，从一个iOS的入门汉已经成长为在iOS方向无所畏惧的开发者了。</p>
-<p>再回头看，我干过1年多的后端，干过小1年的DB2数据库管理员，干了3年的Linux系统和思科网络管理员，然后又干了近三年的iOS开发，在大公司呆过，在小团队干过，在好公司感受到过团队开发合作流的美好，也在烂公司经历过各种痛苦，在团队里合作开发过项目，也有过从盗图设计到产品构思到数据库设计到app研发的独立开发App的经历。在我做iOS开发的这三年里，我也时常收益于我之前的工作经历，比如和后端沟通的时候我很能理解他们是如何实现的，能理解他们的难处，也能给他们一些合理的建议，我也非常关注项目的可维护性和可括扩展性，因为我有运维人员的思维，也理解运维人员痛点，希望做的项目尽可能是可维护可读性高的可扩展的。我能站在一个项目生命周期上整体上去思考立项、研发、运维、迭代等的工作如何进行如何规划会让所有环节的工作开展顺利流畅。我毕业后的7年多，经历很多困难，但同时也让我参与互联网行业的不少工种，让我成为一个技术能力比较综合的互联网从业者，上天真TM确实是公平的，你有机会经历九九八十一难，就能收获多少份真经，少一难你也就少取得一份真经。</p>
-<p>农村出身的我，初中才有机会在暑假去县城工作的姐姐那玩去过一次县城，然后高中在县城念了三年书，在高中期间因为参加一次考试去过省城，大学去省城读了4年，大学毕业旅行去了趟四川重庆，算是第一次跨过一次省吧，毕业之后就想来首都见识见识就来了北京，然后就在首都苦逼了7年多。我的成长轨迹，自然而然我心里种下了一颗信念的种子，我相信自己这样努力下去，迈着迈着就会来到更大的舞台，见识更大的世界。信念一旦种下，想挡也都挡不住😄。</p>
-<p>人到三十，蛮尴尬的，混的好与不好的开始拉开段位。从现实成就上看，我目前还不算一个做的好的（真不想承认是差的啊），但从阿Q精神状态上看，我觉得自己还是蛮不错的。三十岁之后的我要用自己的能力、努力、牛逼的态度去创造价值去收获成绩：做一两款有名的优秀产品，多写点文章总结反思，有机会出一两本书，走狗屎运的话希望能带着一个团队做这些事情。同时也该有点物质追求了：结婚生子买房买车（求亲朋好友大款赞助）。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">总结</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">三十而立</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/01/2016-10-31-a-man-should-be-independent-at-thirty/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -1857,15 +1939,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1889,6 +1971,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -1902,10 +1988,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1941,6 +2023,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1953,15 +2043,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1969,27 +2051,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2002,6 +2064,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2053,14 +2135,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -2074,6 +2148,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2097,6 +2179,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
@@ -2113,18 +2219,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git log</a>
               </li>
              
@@ -2138,18 +2232,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2197,6 +2279,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">货币</a>
               </li>
              
@@ -2205,23 +2299,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2233,19 +2311,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
              
               <li class="article-tag-list-item">
