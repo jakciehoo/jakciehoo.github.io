@@ -160,6 +160,217 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-03-12-Refs-and-the-Reflog" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/">【译文】Git之Refs and the Reflog</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/" class="archive-article-date">
+  	<time datetime="2017-03-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p># </p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:8d62148d-ba03-4762-bd3a-06ddc465b07f/hero.svg?cdnVersion=dj" alt="Refs and the Reflog"></p>
+<p>Git主要用来管理提交的：你准备提交，创建提交，查看旧的提交，并且使用其他Git命令来在仓库间迁移提交。大多数这些命令都是在某种形式上用来操作一个提交的，这些命令一般接受提交引用作为他们的参数，比如，你可以通过传入提交的哈希值来<strong>git checkout</strong>查看一个旧的提交，或者你可以传入一个分支名在分支间切换。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:62440330-6153-4f43-9554-b94c7b205e62/01.svg?cdnVersion=dj" alt="Many ways of referring to a commit"></p>
+<p>有很多的方式方法来找到某个提交，理解这点会让这些明亮更强大。在这篇文章，我们将通过研究找到某个提交的各种方法来揭示<strong>git checkout</strong>,<strong>git branch</strong>以及<strong>git push</strong>这些常用命令的内部工作机制。</p>
+<p>我们将学习通过Git的reflog方法来访问“丢失”的提交来重新找到会他们。</p>
+<h2 id="哈希值（Hashes）"><a href="#哈希值（Hashes）" class="headerlink" title="哈希值（Hashes）"></a>哈希值（Hashes）</h2><p>最直接访问一个提交的方法就是通过它的<strong>SHA-1</strong>哈希值了，它是每个提交的唯一ID，你可以使用<strong>git log</strong>的输出找到所有的提交的哈希值。</p>
+<pre><code>commit 0c708fdec272bc4446c6cabea4f0022c2b616eba
+Author: Mary Johnson &lt;mary@example.com&gt;
+Date: Wed Jul 9 16:37:42 2014 -0500
+Some commit message
+</code></pre><p>当你需要把这个提交作为参数传递给其他Git命令时，你仅仅需要确定足够识别唯一代表这个提交的的字符数就行，比如，你想了解上面这个提交的详细信息，你可以使用如下命令：</p>
+<pre><code>git show 0c708f
+</code></pre><p>有时候我们需要提交的哈希值来处理一个分支、标签或者另外一个非简介的引用。这个时候，你可以使用<strong>git rev-parse</strong>命令，下面这个命令返回指向master分支的哈希值：</p>
+<pre><code>git rev-parse master
+</code></pre><p>对于写一些需要接受提交引用作为参数的自定义脚本这非常有用。你可以使用<strong>git rev-parse</strong>来自动生成提交引用，而不是手动解析出提交引用。</p>
+<h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><p>一个ref间接指向一个提交。你可以把它看做是提交哈希值的别名，它对用户来说可读性更友好。在Git内部实现机制里它代表分支或者标签。</p>
+<p>Refs采用一般的文本文件存放在<strong>.git/refs</strong>目录。可以进入.git/refs目录，来深入研究你仓库的refs。你会看到如下结构，它会因为你仓库拥有什么分支、标签、远程仓库而包含不同的文件：</p>
+<pre><code>.git/refs/
+heads/
+master
+some-feature
+remotes/
+origin/
+master
+tags/
+v0.9
+</code></pre><p>heads目录定义了仓库所有的本地分支。每个文件对应一个相关的分支，在文件内你可以找到一个提交哈希值。这个提交哈希值代表分支所在的末端位置。为了验证所说，可以试着执行如下两个命令：</p>
+<pre><code># Output the contents of `refs/heads/master` file:
+cat .git/refs/heads/master
+# Inspect the commit at the tip of the `master` branch:
+git log -1 master
+</code></pre><p><strong>cat</strong>命令返回的哈希值应该是和<strong>git log</strong>命令返回的提交ID的值是一样的。</p>
+<p>为了修改master分支的位置，在Git中可以仅仅通过修改<strong>refs/heads/master</strong>即可。类似的，创建一个分支也可以简单的在这个目录添加一个新文件，并在文件中写入一个提交哈希值就可以了。这部分解释了相比SVN，Git为什么如此轻量级。</p>
+<p>tags目录也是如此，但是它包含的是标签而不是分支。remotes目录则列出了你使用<strong>git remote</strong>命令创建的远程仓库的子目录，在每个目录中，你将找到所有你获取（fetch）到本地仓库的远程分支。</p>
+<h3 id="Specifying-Refs"><a href="#Specifying-Refs" class="headerlink" title="Specifying Refs"></a>Specifying Refs</h3><p>当传入一个ref引用给Git命令时，你可以使用ref的全名，也可以使用短名称，然后让Git去查找一个匹配的ref。你应当已经非常熟悉refs的短名了，因为你每次都会使用的分支名称。</p>
+<pre><code>git show some-feature
+</code></pre><p><strong>some-feature</strong>参数实际上就是分支的短名，Git会在使用它之前自动指向<strong>refs/heads/some-feature</strong>，你也可以在命令行明确写出完整的ref，像这样：</p>
+<pre><code>git show refs/heads/some-feature
+</code></pre><p>加上ref所在位置可以避免出现歧义。有时候这是必要的，比如，如果你有个分支和标签都叫做<strong>some-feature</strong>，那是用短名就会存在歧义了。不过，如果你遵守正确的命名传统，标签和分支的歧义通畅不会发生。</p>
+<p>我们在<strong>Refspecs</strong>章节会更多的介绍ref完整命名。</p>
+<h2 id="Packed-Refs"><a href="#Packed-Refs" class="headerlink" title="Packed Refs"></a>Packed Refs</h2><p>对于大型仓库，为了性能Git会定期执行垃圾回收来移除不必要的对象并压缩refs到一个文件中。你可以使用如下垃圾回收命令强制执行压缩:</p>
+<pre><code>git gc
+</code></pre><p>这会将refs文件夹下的每个分支和标签文件移到.git目录下的<strong>packed-refs</strong>文件中。如果打开这个文件，你将会看到提交哈希值和refs的对应关系表：</p>
+<pre><code>00f54250cf4e549fdfcafe2cf9a2c90bc3800285 refs/heads/feature
+0e25143693cfe9d5c2e83944bbaf6d3c4505eb17 refs/heads/master
+bb883e4c91c870b5fed88fd36696e752fb6cf8e6 refs/tags/v0.9
+</code></pre><p>在外部看来，Git功能的通畅不会受到任何影响，但是，如果你想知道为什么<strong>.git/refs</strong>为什么是空的，这就是原因。</p>
+<h2 id="特殊引用（Special-Refs）"><a href="#特殊引用（Special-Refs）" class="headerlink" title="特殊引用（Special Refs）"></a>特殊引用（Special Refs）</h2><p>作为refs目录的补充，在.git目录会有一些特殊的refs，如下列表所示：</p>
+<ul>
+<li>HEAD – 当前切换到的分支或者提交。</li>
+<li>FETCH_HEAD – 从远程仓库获取到的最新分支。</li>
+<li>ORIG_HEAD – 在严重修改前HEAD的备份。</li>
+<li>MERGE_HEAD – 使用git merge命令合并进当前分支的提交。</li>
+<li>CHERRY_PICK_HEAD – 你执行<strong>cherry-pick</strong>的提交。</li>
+</ul>
+<p>这鞋refs都是由Git创建和更新的。比如，<strong>git pull</strong> 命令首先会执行<strong>git fetch</strong>,这就会更新<strong>FETCH_HEAD</strong>引用，然后它会执行<strong>git merge FETCH_HEAD</strong>来完成拉取获取到的分支到分支到仓库。当然你可以像其他ref一样使用所有这些ref，和我们处理HEAD一样。</p>
+<p>这些文件会根据他们不同的类型已经不同状态而包含不同的内容。HEAD要么包含一个符号链接的ref，它指向另外一个ref而不是一个提交哈希值，或者就是包含一个提交哈希值。比如，如果你在master分支上是看看HEAD的内容吧：</p>
+<pre><code>git checkout master
+cat .git/HEAD
+</code></pre><p>内容将会是<strong>ref: refs/heads/master</strong>，这意味着HEAD指向<strong>refs/heads/master</strong>ref，Git根据这个知道它当前切换到的是master分支。如果你切换到另外一个分支，HEAD的内容会更新内容来对应新的分支。但是，如果你切换到是一个非分支的提交时，HEAD的内容则是包含一个提交的哈希值而不是一个符号链接ref，这样Git就知道它处于分离HEAD状态。</p>
+<p>大多数时候，HEAD仅仅代表你直接使用的引用，其他的通畅在写底层的脚本时候有用，比如hook到Git内部去修改Git的一些默认工作。</p>
+<h2 id="Refspecs"><a href="#Refspecs" class="headerlink" title="Refspecs"></a>Refspecs</h2><p><strong>refspec</strong>是本地仓库一个分支到远程仓库分支的关系表。这让我们可以使用本地Git命令来管理远程分支，来配置一些高级命令如<strong>git push</strong> 和<strong>git fetch</strong>的行为。</p>
+<p><strong>refspec</strong>使用<strong>[+]<src>:<dst></dst></src></strong>来表示，<strong><src> </src></strong>参数代表本地的源分支，而<strong><dst> </dst></strong>代表远程仓库的目的分支。 可选的<strong>+</strong>正数符号用来强制远程仓库执行非线型更新。</p>
+<p><strong>Refspecs</strong>可以通过给以不同名称的远程分支来和<strong>git push</strong>命令一起使用。比如，下面的命令会推送master分支到远程仓库，像一般的git push一样。但是它使用qa-master作为远程分支名。这对QA团队非常有用，他们可以推送他们的分支到远程仓库。</p>
+<pre><code>git push origin master:refs/heads/qa-master
+</code></pre><p>你也能够使用<strong>refspecs</strong>来删除远程分支，这在功能分支开发工作流中是一个常见情形，你会推送本地功能分支到远程仓库（或者为了备份目的）。远程功能分支如果在本地该分支删除还存在的话，这导致你有一个没用的功能分支。你可以通过传入空的<src>参数来推送refspec的方法来删除它们，如下所示：</src></p>
+<pre><code>git push origin :some-feature
+</code></pre><p>这个是非常方便的，因为这样你不需要登陆到远程仓库，然后手动删除远程仓库。注意在Git v1.7.0版本中你能够使用<strong>–delete</strong>标志来删除分支。下面的命令会有相同的效果：</p>
+<pre><code>git push origin --delete some-feature
+</code></pre><p>通过在配置文件中添加几行命令，你能够使用<strong>refspecs</strong>来修改<strong>git fetch</strong>的行为。默认<strong>git fetch</strong>会获取远程仓库的所有分支，原因是因为<strong>.git/config</strong>文件的配置导致：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/*:refs/remotes/origin/*
+</code></pre><p><strong>fetch</strong>那一行高速<strong>git fetch</strong>会从<strong>origin</strong>仓库下载所有的分支。举例，许多持续集成工作流仅仅关注master分支。为了仅仅获取master分支，我们可以修改fetch那一行内容如下：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/master:refs/remotes/origin/master
+</code></pre><p>你也可以为<strong>git push </strong>做相似的配置修改。举例，如果希望总是推送master到qa-master上。你可以做这样的的修改：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/master:refs/remotes/origin/master
+push = refs/heads/master:refs/heads/qa-master
+</code></pre><p><strong>refspecs</strong>让你可以完全控制许多git命令在仓库之间如何转移。它们让你可以从本地删除远程分支，重命名远程分支，使用不同的名称<strong>fetch/push</strong>分支，配置<strong>git fetch</strong>和<strong>git push</strong>来选择你想工作的分支。</p>
+<h2 id="相关引用（Relative-Refs）"><a href="#相关引用（Relative-Refs）" class="headerlink" title="相关引用（Relative Refs）"></a>相关引用（Relative Refs）</h2><p>你也可以查找一个提交有有关系的提交。～字符让你可以查找父提交，比如，下面这个命令可以查找HEAD的祖父：</p>
+<pre><code>git show HEAD~2
+</code></pre><p>But, when working with merge commits, things get a little more complicated. Since merge commits have more than one parent, there is more than one path that you can follow. For 3-way merges, the first parent is from the branch that you were on when you performed the merge, and the second parent is from the branch that you passed to the git merge command.<br>但是，当有合并提交时，这个情况就有点复杂。因为合并提交会有多个父提交，你有不止一个查找路径。在<strong>3-way</strong>合并中，第一个父提交是当你执行合并所在分支，第二个父提交是你传给<strong>git merge</strong>命令的分支。</p>
+<p>～字符总是会查找到合并提交的第一个父提交，如果你想查找另一个父提交，你需要使用^字符来明确指出来，比如，如果HEAD是一个合并提交，下面这个命令会找到HEAD的第二个父提交：</p>
+<pre><code>git show HEAD^2
+</code></pre><p>你可以使用多个^字符字符来移动不止一代的提交，举例，下面个这命令会查找HEAD（假设它是个合并提交）第二个父提交路径上的祖父提交.</p>
+<pre><code>git show HEAD^2^1
+</code></pre><p>可以使用下图来帮助我们搞清楚~ 和 ^的工作原理，图中介绍了如何从A这个commit查找其他相关提交引用，在某些情况下，有许多方法可以找到一个提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:cb2ce970-3ef4-4eda-96a9-fe990745f5a7/02.svg?cdnVersion=dj" alt="Accessing commits using relative refs"></p>
+<p>相关refs可以结合其他命令一起使用，就像一般的引用中的一样。比如，所有下面的命令可以用在相关引用中：</p>
+<pre><code># Only list commits that are parent of the second parent of a merge commit
+git log HEAD^2
+# Remove the last 3 commits from the current branch
+git reset HEAD~3
+# Interactively rebase the last 3 commits on the current branch
+git rebase -i HEAD~3
+</code></pre><h2 id="The-Reflog"><a href="#The-Reflog" class="headerlink" title="The Reflog"></a>The Reflog</h2><p>reflog是Git的安全屏障，它记录了仓库中几乎所有的变化，不管你是否提交了快照。你可以把它看作是本地仓库所有操作的记录历史。执行<strong>git reflog</strong>命令查看reflog，它会输出类似如下内容：</p>
+<pre><code>400e4b7 HEAD@{0}: checkout: moving from master to HEAD~2
+0e25143 HEAD@{1}: commit (amend): Integrate some awesome feature into `master`
+00f5425 HEAD@{2}: commit (merge): Merge branch &apos;;feature&apos;;
+ad8621a HEAD@{3}: commit: Finish the feature
+</code></pre><p>他们的含义如下：</p>
+<ul>
+<li>你刚刚从master切换到 HEAD~2</li>
+<li>在此之前你修改了提交信息</li>
+<li>在此之前你合并了功能分支到master</li>
+<li>提交了一个功能</li>
+<li>The HEAD{<n>} syntax lets you reference commits stored in the reflog. It works a lot like the HEAD~<n> references from the previous section, but the <n> refers to an entry in the reflog instead of the commit history.</n></n></n></li>
+</ul>
+<p>You can use this to revert to a state that would otherwise be lost. For example, lets say you just scrapped a new feature with git reset. Your reflog might look something like this:</p>
+<p>你可以使用这个命令来回滚到已经丢失的状态，比如，你使用了<strong>git reset</strong>撤销了一个功能，你的reflog可能如下所示：</p>
+<pre><code>ad8621a HEAD@{0}: reset: moving to HEAD~3
+298eb9f HEAD@{1}: commit: Some other commit message
+bbe9012 HEAD@{2}: commit: Continue the feature
+9cb79fa HEAD@{3}: commit: Start a new feature
+</code></pre><p><strong>git reset</strong>之前的三个提交获取不到了，除了使用reflog没有其他方法找到他们。现在，你确认想找回你这三个提交的工作，你仅仅需要切换到<strong>HEAD@{1}</strong>来找回你执行<strong>git reset</strong>前的状态。</p>
+<pre><code>git checkout HEAD@{1}
+</code></pre><p>这让你进入了分离HEAD的状态，这时候，你可以创建一个新的分支来继续开发你的功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过本文，你应该很轻松滴就可以找到仓库提交了。我们学习了分支和标签是如何存储在.git目录的，如何读取<strong>packed-refs</strong>文件的，HEAD的作用，如何在进阶的推送和获取命令中使用refspecs。如果使用相关的～和^操作符号来横跨一个分支结构。</p>
+<p>我们也介绍了reflog,它是引用提交的一种方式，这种方式其他手段实现不了。它是后悔药。当你做了不该做的操作时，可以使用它来恢复。</p>
+<p>在任何开发场景中所有这些能精确挑出你想要的提交。从本文中学到的技巧可以帮助你使用好Git，比如常见的命令都需要refs作为参数，包括，<strong>git log</strong> , <strong>git show</strong>, <strong>git checkout</strong>, <strong>git reset</strong>, <strong>git revert</strong>, <strong>git rebase</strong>等等。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/refs-and-the-reflog" target="_blank" rel="noopener">Refs and the Reflog</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Refs and the Reflog</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 引用和引用日志</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-03-11-Git-Hooks" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1780,116 +1991,6 @@ commit -a -m &quot;Add first draft of some feature&quot;
 
 
   
-    <article id="post-2016-11-12-why-you-need-quit-SVN-and-use-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">为什么需要抛弃SVN拥抱Git</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/" class="archive-article-date">
-  	<time datetime="2016-11-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我之前做开发一直使用SVN,从上一家单位开始使用Git，到现在大概一年多时间。使用Git让我开发工作变的更自由更快,以及Git帮助团队代码管理和review更规范，现在我已经完全放弃使用SVN全身心拥抱Git。今天整理了一些SVN和Git的对比，希望阅读到此文使用SVN的开发团队能开始迁移到Git,引用习大大最近的一句话啊：世界潮流,浩浩荡荡，顺之则昌，逆之则亡。</p>
-<h3 id="Git对比SVN的优势"><a href="#Git对比SVN的优势" class="headerlink" title="Git对比SVN的优势"></a>Git对比SVN的优势</h3><h4 id="1-Git分支功能最为强大，分支管理能力让SVN望尘莫及"><a href="#1-Git分支功能最为强大，分支管理能力让SVN望尘莫及" class="headerlink" title="1.Git分支功能最为强大，分支管理能力让SVN望尘莫及"></a>1.Git分支功能最为强大，分支管理能力让SVN望尘莫及</h4><pre><code>•    git：有本地分支
-•    svn：无本地分支
-</code></pre><p>git可以方便创建本地分支，且创建分支的时间是0(1)，即瞬间就创建好了。由于分支可以是本地的，也就不存在svn目录权限的问题。本地实验不确定的修改，可以创建分支进行，由于在Git上创建分支几乎零成本，git推荐创建分支来隔离修改。</p>
-<p>Git可以很容易地对比两个分支，知道一个分支中哪些提交尚未合并到另一分支，反之亦然。</p>
-<p>1.查看当前分支比other分支多了哪些提交<code>$ git log other..</code></p>
-<p>2.查看other分支比当前分支多了哪些提交<code>$ git log ..other</code></p>
-<p>SVN想做到这些不太容易。</p>
-<h4 id="2-Git可以实现更好的发布控制"><a href="#2-Git可以实现更好的发布控制" class="headerlink" title="2.Git可以实现更好的发布控制"></a>2.Git可以实现更好的发布控制</h4><p>针对同一个项目，Git可以设置不同层级的版本库（多版本库）， 或者通过不同的分支（多分支）实现对发布的控制。<br>    •    设置只有发布管理员才有权限推送的版本库或者分支，用于稳定发布版本的维护。<br>    •    设置只有项目经理、模块管理员才有权推送的版本库或者分支，用用于整合测试。</p>
-<h5 id="3-隔离开发，提交审核"><a href="#3-隔离开发，提交审核" class="headerlink" title="3.隔离开发，提交审核"></a>3.隔离开发，提交审核</h5><p>如何对团队中的新成员的开发进行审核呢？在Git服务器上可以实现用户自建分支和自建版本库的功能， 这样团队中的新成员既能将本地提交推送到服务器以对工作进行备份， 又能够方便团队中的其他成员对自己的提交进行审核。</p>
-<p>审核新成员提交时，从其个人版本库或个人分支获取（fetch）提交，从提交说明、代码规范、编译测试 等多方面对提交逐一审核。审核通过执行 git merge 命令合并到开发主线中。</p>
-<p>4.对合并更好的支持，更少的冲突，更好的冲突解决<br>因为Git基于对内容的追踪而非对文件名追踪，所以遇到一方或双方对文件名更改时， Git能够很好进行自动合并或提供工具辅助合并。而SVN遇到同样问题时会产生树冲突， 解决起来很麻烦。<br>Git的基于DAG（有向非环图）的设计比SVN的线性提交提供更好的合并追踪， 避免不必要的冲突，提高工作效率。这是开发者选择Git、抛弃SVN的重要理由。</p>
-<h4 id="5-版本库的安全性"><a href="#5-版本库的安全性" class="headerlink" title="5.版本库的安全性"></a>5.版本库的安全性</h4><p>SVN版本库安全性很差，是管理员头痛的问题。<br>    •    SVN版本库服务器端历史数据被篡改，或者硬盘故障导致历史数据被篡改时， 客户端很难发现。管理员的备份也会被污染。<br>    •    SVN作为集中式版本控制系统，存在单点故障的风险。备份版本库的任务非常繁重。<br>Git在这方面完胜SVN。首先Git是分布式版本控制系统，每个用户都相当于一份备份， 管理员无需为数据备份而担心。再有Git中包括提交、文件内容等都通过SHA1哈希保证数据的完整性， 任何恶意篡改历史数据都会被及时发现从而被挫败。</p>
-<h4 id="更多的十条喜欢Git的理由"><a href="#更多的十条喜欢Git的理由" class="headerlink" title="更多的十条喜欢Git的理由"></a>更多的十条喜欢Git的理由</h4><pre><code>•    异地协同工作。
-•    现场版本控制。
-•    重写提交说明。
-•    无尽的后悔药。
-•    更好用的提交列表。
-•    更好的差异比较。
-•    工作进度保存。
-•    作为SVN前端实现移动办公。
-•    无处不在的分页器。
-•    快。
-</code></pre><h3 id="什么情况推荐使用SVN"><a href="#什么情况推荐使用SVN" class="headerlink" title="什么情况推荐使用SVN"></a>什么情况推荐使用SVN</h3><p>夸了这么多Git的优点，当然事实上也是如此，做开发还是拥抱Git吧。不过对于以二进制文件 （Word文档、PPT演示稿） 为主的版本库，为避免多人同时编辑造成合并上的困难， 建议使用SVN做版本控制。因为SVN具有的悲观锁的功能，能够实现一个用户在编辑时对文件进行锁定，阻止多人同时编辑 一个文件。这一悲观锁的功能是 Git 所不具备的。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Git相比SVN优势还是挺明显的，由于SVN比Git早几年出现，在国内不少成熟(gubuzifeng)的团队还在使用SVN，Git这几年才在国内开始流行，并已经成为年轻团队代码管理必备了。SVN因为没有分支功能，所以对一般开发者而言可能使用起来更简单（对管理者而言可能会头疼），只需要GUI工具就基本能满足需求，而Git因为有强大的分支功能和修改保存功能等，团队代码管理规范的公司为了规范代码的管理需要每个开发者精确的使用Git分支能力,开发者因此需要掌握分支维护能力以及其他Git高级功能，这会增加普通开发者的学习成本。为了团队代码维护更好的，同时提高团队每个成员的开发效率，掌握git技能，放弃SVN拥抱Git是值得的。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">代码版本管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">分布式版本管理管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SVN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -1987,14 +2088,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -2003,11 +2096,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2039,15 +2140,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2083,14 +2184,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -2103,31 +2196,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2147,6 +2228,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
@@ -2163,14 +2264,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
               </li>
              
@@ -2180,6 +2273,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2199,31 +2320,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2236,6 +2337,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2263,18 +2376,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -2284,14 +2385,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2308,6 +2401,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2367,35 +2468,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">投资</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2412,6 +2489,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Nas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
