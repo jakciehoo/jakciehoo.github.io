@@ -160,6 +160,181 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-09-12-using-reveal-to-debug" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/12/2016-09-12-using-reveal-to-debug/">iOS比优鸡调试技巧篇（一）：reveal视图调试</a>
+    </h1>
+  
+
+        
+        <a href="/2016/09/12/2016-09-12-using-reveal-to-debug/" class="archive-article-date">
+  	<time datetime="2016-09-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>深深的喜欢这篇文章《iOS各种调试技巧》的写作风格，读起来就是那么愉快，文章有内容有价值，而且作者这么用心为大家写，推荐大家阅读这篇文章。写文章就是用来读的啊。我们开发者写产品要有为用户考虑的态度才能做出好产品；写文章要有为读者服务的态度才能让读者喜欢；做好工作也要有给同事给领导排忧解难的的公仆态度才对。你可能要问了，人家写了那么好的有关调试的文章，你干嘛还要写调试的文章，多此一举啊？你要是有这想法啊，我就得说您幼稚了，作者我混迹江湖这么多年，怎么这会考虑不到呢，主要是觉得《iOS各种调试技巧》只能算是一个调试技巧的笼统介绍，其实里面的每一种调试技巧都值得深入讲解，而且有些调试技巧他的文章也没有提到，比如这篇文章要讲的reveal调试，但我希望能借鉴他这篇文章的写作风格，希望带给读者轻松的阅读体验。</p>
+<h3 id="作为iOS开发者为什么需要学会使用reveal"><a href="#作为iOS开发者为什么需要学会使用reveal" class="headerlink" title="作为iOS开发者为什么需要学会使用reveal"></a>作为iOS开发者为什么需要学会使用reveal</h3><p>1.相比xcode自带的视图调试（下文简称XcodeVD），reveal强大的不是一丁点。<br>比如，XcodeVD会有部分信息不显示，还有布局显示不精确，而reveal则表现好很多。<br>XcodeVD下的表现：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-5738a0354757ec14.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>reveal下的表现：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-9968c41345d75e42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>大家可以注意看看，XcodeVD中显示的文本被挡住了挡住了耶，这怎么受得了，如果读者您眼尖，相信您已经注意到reveal显示的视图层次结构提供的信息更丰富，比如显示了文本的内容（中文内容信息），而xcode不仅仅需要您眼尖，还需要您能智慧过人聪明绝顶的去猜测一个UILabel对应模拟器上的哪个Label,蛋疼吗？不疼只能说明您牛逼。</p>
+<p>2.相比xcodeVD只能看看之外，reveal可以修改视图的属性，并实时在模拟器（真机）上显示变化。（当然只是临时修改的属性，不会修改工程的实际代码，如果真实修改，还是需要修改的工程源代码的）。</p>
+<p>在reveal中修改UILabel的属性</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-bce6b26fc2027310.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>而XcodeVD几乎什么也干不了，只能看看，咳。</p>
+<p>3.reveal最强大的一点是可以通过它查看和分析别伦家的App视图元素构成和布局。（牛逼波？这是reveal最有价值的部分，如果您觉得这个信息有价值，你西不西应该打赏我一下）。<br>下图是我特地为了读者您去偷窥了下携程这个美妞，（如果读者您是携程的，请您留情，不要笑我太疯癫，我只笑他人看不穿（😄））。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-5284ac59643ddacc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>好了，您如果看到这里，我相信您已经迫不及待想要去学会如何使用reveal，我知道您不是因为喜欢偷窥而去学的，您只是单纯的爱好学习。</p>
+<h3 id="如何在Mac上安装Reveal"><a href="#如何在Mac上安装Reveal" class="headerlink" title="如何在Mac上安装Reveal"></a>如何在Mac上安装Reveal</h3><p><strong>1.作为国人我知道您不喜欢轻易付费</strong><br>reveal破解和安装：在简书上看到这篇文章《Reveal 1.6.2最新版 破解教程》,大家照着做就好，如果您笨到搞不定（或者聪明到想利用时间专注做好开发和产品，而不是这些非核心的学习上），您可以付费咨询我（打赏金额：￥10+）。<br><strong>2.您是愿意的付费的小众？</strong><br>直接去官网下载然后购买吧 <a href="http://revealapp.com/" target="_blank" rel="noopener">http://revealapp.com/</a> 你要是肯花钱买，我真的为您点个赞，您是有钱的主，您顺便顺个手也给我打赏打赏吧，嗯。</p>
+<h3 id="如何在项目中集成Reveal"><a href="#如何在项目中集成Reveal" class="headerlink" title="如何在项目中集成Reveal"></a>如何在项目中集成Reveal</h3><p>1.reveal官方有中文集成的教程。介绍了静态库、动态库、cocoapod的安装方法（这三种建议选这种）自行查看吧：<br><a href="http://support.revealapp.com/kb/getting-started/reveal" target="_blank" rel="noopener">http://support.revealapp.com/kb/getting-started/reveal</a><br>上面的集成方式多少需要在我们的工程项目中加入一些代码，可能有些同事并不想使用这玩意，所以应该在团队中慎用。<br>2.下面这个方法不需要在工程中加入任何代码就可以使用：<br><a href="http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/" target="_blank" rel="noopener">http://support.revealapp.com/kb/getting-started/revealxcodereveal</a><br>3.一劳永逸的最佳集成玩法：<br><a href="http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/" target="_blank" rel="noopener">http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/</a><br>第三种集成的高级玩法有点复杂，如果你只想用好reveal而不想浪费时间去学如何集成，或者同样您可能笨到没搞定（哈哈，不是侮辱您啊，我也很笨，笨有笨的优点啊，比如学习有耐性和长性，我就研究了两天才研究明白），同样可以付费咨询我：（20元打赏+）。</p>
+<h3 id="在自己的项目中使用Reveal"><a href="#在自己的项目中使用Reveal" class="headerlink" title="在自己的项目中使用Reveal"></a>在自己的项目中使用Reveal</h3><p>一、基本使用<br>本文的重点是教大家如何使用Reveal，这部分只能有请我闪亮登场（掌声响起来），亲自出马搞了，关于Reveal的中文教程真的太少，不信你搜搜看看，基本都是一些重复且看了等于没看的垃圾文章。像作者我这样认认真真给老外当搬运工的人都不多见。<br>1.如果您安装reveal顺利，打开reveal应该是看到大致如下图这样的界面：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fff63b6dbd9bebb5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>2.如果您搞定了集成，那你可以在模拟器（真机）上运行您项目程序，然后就可以reveal的左上角选择该模拟器（真机）了。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fb3fd85cbaf2ef7b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>3.刷新界面<br>当您在模拟器上操作您的APP，你可能发现reveal没有及时更新，这个它确实做不到，您可以像2提到的再选择一次模拟，或者按下Command+R,还可以点击右上角的刷新图标：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-e68545487f3a07b5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h3 id="Reveal-界面和功能介绍"><a href="#Reveal-界面和功能介绍" class="headerlink" title="Reveal 界面和功能介绍"></a>Reveal 界面和功能介绍</h3><p>Reveal界面主要分为三个部分：<br><img src="http://upload-images.jianshu.io/upload_images/1112722-e9495e58ed14eb75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>1.左侧层级面板：界面层级关系区域，用于显示当前界面元素的结构树。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fee15adbfd20429e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>如果你多查看几个APP，就会发现他们的根都是UIScreen,然后是UIWindow，然后还有几个我们都不了解的UIKit封装类，如：</p>
+<ul>
+<li>1）UINavigationTransitionView：导航控制器在这里发生转场行为的容器视图。</li>
+<li>2)UIViewControllerWrapperView: 包含view controller 的view属性的封装视图。<br>总之这些我们不了解的视图我们(biè)管就对了。</li>
+</ul>
+<p>2.中央可视化面板：可视化查看区域， 用于显示当前界面的布局效果（2D/3D）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-4d0d52b8bfa4f40e.gif?imageMogr2/auto-orient/strip" alt=""><br>在顶部有是三个控件。</p>
+<ul>
+<li>1）显示样式分段控件。从左至右可以让视图显示三种状态：只显示视图边界frame，不显示内容；只显示内容不显示边界frame；边界frame和内容都显示。</li>
+<li>2）中间的选择器控制器可以选择视图尺寸大小，它的值是视图内容和模拟器内容的大小正比值。</li>
+<li>3）最右侧的开关控制可以选择显示3D效果还是2D效果。默认为3D效果。</li>
+</ul>
+<p>在3D模式下，点击空白区域然后上下左右拖动，视图也跟着您的拖动方向三地旋转和3D展示。</p>
+<p>3.右侧属性面板：控件详细参数区域，用于当前选中控件的参数展示（可以修改并 实时反应到可视化查看区域）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-1e09af593160c4bd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>如图所示，包含以下5个功能。</p>
+<ul>
+<li>1）程序观察器Application Inspector。主要显示和程序相关的全局属性。</li>
+<li>2）对象观察器Identity Inspector。主要显示选中对象的先关属性，如父类信息，自身类名信息，内存地址信息等。</li>
+<li>3）属性观察器Attributes Inspector。我知道您聪明，这些都知道。可是我就是要告诉您一遍：这里展示和选中对象相关属性的信息。您能拿我怎么着（O(∩_∩)O哈哈）。</li>
+<li>4）布局观察器Layout Inspector。这里可以查看选中对象的frame,bounds，自动布局特性相关信息。</li>
+<li>5）图层观察器Layer Inspector。</li>
+</ul>
+<h3 id="自动布局的调试（这部分的内容是从这里搬运）"><a href="#自动布局的调试（这部分的内容是从这里搬运）" class="headerlink" title="自动布局的调试（这部分的内容是从这里搬运）"></a>自动布局的调试（这部分的内容是从<a href="http://revealapp.com/blog/reveal-common-tips-cn.html" target="_blank" rel="noopener">这里</a>搬运）</h3><p>自动布局（Auto Layout）已经越来越普遍的深入千家万户了，随着iOS设备分辨率的多(sui)样(pian)化，自动布局已慢慢成为了标准配置。<br>你可能经常看到控制台输出类似这样的内容，而不知何处下手：</p>
+<p><code>Unable to simultaneously satisfy constraints.</code><br><code>Probably at least one of the constraints in the following list is one you don&#39;t want. Try this: (1) look at each constraint and try to figure out which you don&#39;t expect; (2) find the code that added the unwanted constraint or constraints and fix it. (Note: If you&#39;re seeing NSAutoresizingMaskLayoutConstraints that you don&#39;t understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints)</code><br><code>(</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d3e18a0 H:[UIView:0x7fc82aba1210(768)]&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d6369e0 H:[UIView:0x7fc82aba1210]-(0)-|   (Names: &#39;|&#39;:UIView:0x7fc82d6b9f80 )&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d636a30 H:|-(0)-[UIView:0x7fc82aba1210]   (Names: &#39;|&#39;:UIView:0x7fc82d6b9f80 )&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d3e7fd0 &#39;UIView-Encapsulated-Layout-Width&#39; H:[UIView:0x7fc82d6b9f80(50)]&gt;&quot;</code><br><code>)</code><br><code></code>Will attempt to recover by breaking constraint<code></code>\&lt;NSLayoutConstraint:0x7fc82d3e18a0 H:<a href="#">UIView:0x7fc82aba1210(768)</a>><code></code><br><code>Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.</code><br><code>The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</code></p>
+<p>除了我们在编码时自己绑定到View上的约束条件(Constraints)之外，其实许多UIKit控件还会被隐式地地设置上一些约束，而这些可能会带来一些意外的布局结果。</p>
+<p>也许曾经你需要使用LLDB来一点点调试Auto Layouts：</p>
+<p><code>(lldb) po 0x7731880</code><br><code>$0 = 124983424 &lt;UIView: 0x7731880; frame = (90 -50; 80 100);</code><br><code>layer = &lt;CALayer: 0x7731450&gt;&gt;</code><br><code></code>(lldb) po <a href="#">0x7731880 superview</a><code></code>$2 = 0x07730fe0 \&lt;UIView: 0x7730fe0; frame = (32 128; 259 604);<code></code>layer = \&lt;CALayer: 0x7731150>><code></code><br><code>(lldb) po [[0x7731880 superview] recursiveDescription]</code><br><code>$3 = 0x07117ac0 &lt;UIView: 0x7730fe0; frame = (32 128; 259 604); layer = &lt;CALayer: 0x7731150&gt;&gt;</code><br><code>| &lt;UIView: 0x7731880; frame = (90 -50; 80 100); layer = &lt;CALayer: 0x7731450&gt;&gt;</code><br><code>| &lt;UIView: 0x7731aa0; frame = (90 101; 80 100); layer = &lt;CALayer: 0x7731c60&gt;&gt;</code><br>有了Reveal，这就方便多了。Reveal对视图上的约束条件提供了相当丰富的检视与实时修改功能，具体看下面这张图，再自己摸索一下就好了。<br><img src="http://upload-images.jianshu.io/upload_images/1112722-f0ccef29956c1974.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<ul>
+<li>a显示/隐藏所有约束条件</li>
+<li>b 查看关联到此View的所有约束</li>
+<li>c 可以直接在Canvas中选中某一约束</li>
+<li>d 查看某一约束的具体信息，可以实时修改constant属性，立刻检查效果</li>
+<li>e 跳转到某一约束的详细属性页面</li>
+</ul>
+<p>给大家透露一个我摸索到的十分特别以及及其重要的知识：蓝色的约束代表系统给对象添加的约束，紫色的约束是我们开发者给对象添加的约束。恩，这个在您调试布局冲突时很重要。不谢，打赏我就对了，我不是雷锋，我不会武功，我不会飞檐走壁，也不会饿着肚子写文章。</p>
+<h3 id="实时修改View属性"><a href="#实时修改View属性" class="headerlink" title="实时修改View属性"></a>实时修改View属性</h3><p>Reveal不仅仅只是查看各种属性的工具，也支持实时的修改一些属性。如下图中的大部份属性，你都可以实时的在模拟器中看到修改后的效果。这省去了过去总是要修改代码，重新编译运行这个漫长的反馈流程。在和设计师一起尝试各种显示效果时，这个功能特别高效。</p>
+<h3 id="Reveal偷窥正确姿势"><a href="#Reveal偷窥正确姿势" class="headerlink" title="Reveal偷窥正确姿势"></a>Reveal偷窥正确姿势</h3><p>（部分内容搬运，接受鄙视，但是我是让文章有深度需要的勤快的搬运工，和普通搬运工可以区别开来好嘛，O(∩_∩)O）（您错过以下内容，我只能呵呵了）<br>温馨提示：前方高能，越过难度有点大，如果遇到头晕脑胀、眼神绝望，请尽快逃离现场。如果您依然十分想要偷窥，又不想费时费力，最好的解决办法依然是打赏我拉，小的带您坐缆车，飞速直达目的地。（打赏￥50+）。<br>1.越狱你的iOS设备：可以利用盘古、PP助手、太极等三方工具一键越狱。这部分内容请自行搜索。<br>2.iOS设备越狱完成后，需要使用Cydia<br>安装两个软件：OpenSSH 和CydiaSubstrate<br>安装OpenSSH，打开越狱后的设备上的Cydia程序，点击搜索输入OpenSSH，然后点击安装。（下面的配图是已经安装成功后搜索的显示画面）</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_33.png" alt=""></p>
+<p>SSH是一种可以保证用户加密远程登录到系统的协议，OpenSSH是一个SSH的连接传输工具。</p>
+<p>安装Cydia Substrate，打开越狱后的设备上的Cydia程序，点击搜索输入Cydia Substrate，然后点击安装。只有安装了CydiaSubstrate之后才会有MobileSubstrate目录（此目录必须存在才可以继续下面的步骤）。（下面的配图是已经安装成功后搜索的显示画面）<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_34.png" alt=""></p>
+<p>MobileSubstrate是一个公共库，可以用来动态替换内存中的代码、数 据等。基本上越狱机下比较有用的系统工具都需要这个库，是Cydia同一个作者 维护的，可以放心装。</p>
+<p>3.将libReveal.dylib上传到越狱后的设备的/Library/MobileSubstrate/DynamicLibraries下检查工作：测试OpenSSH和CydiaSubstrate是否安装成功</p>
+<ul>
+<li>1）上传libReveal.dylib文件必须使用到上面安装的OpenSSH工具。如果想要使用OpenSSH工具，那么就必须将Reveal软件所在的mac设备与越狱后的iOS设备置于同一个局域网内。</li>
+<li><p>2）首先来测试OpenSSH是否安装成功。获取越狱后的设备的局域网内的IP地址，打开“设置”->“WLAN”，连上局域网，然后再点击连接上的局域网查看iOS设备的IP地址。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_37.png" alt=""></p>
+</li>
+<li><p>3）打开mac上的终端工具(Terminal)，输入如下命令：ssh root@iOS设备IP地址。输入完成后回车，等待连接iOS设备。</p>
+</li>
+</ul>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_39.png" alt=""></p>
+<p>iOS设备的IP地址指的是越狱后的设备（iphone、ipad）的IP地址，也就是上个步骤中获取的IP地址，后面的教程中出现的地址仅仅是代表笔者测试时iOS设备的IP地址(192.168.2.2)，读者请一定要查看自己的iOS设备地址，并进行替换。</p>
+<p>4）接下来会提示你输入root用户的密码，iOS设备root用户的默认密码是alpine，在终端中输入密码时，终端不会显示你输入的字符，所以只需要输入alpine字符后回车就可以请求连接iOS设备了。（这一步请保证你的iOS设备屏幕已经解锁，不然不会出现输入密码的提示！）</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_40.png" alt=""></p>
+<p>如果出现root#字符就表示连接成功了。</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_41.png" alt=""></p>
+<p>接下来测试Cydia Substrate 是否安装成功，上一步已经连接上iOS设备的终端中输入以下命令：cd /Library/MobleSubstrate/DinamicLibraries<br>，回车查看返回结果。如果出现-sh: cd: /Library/MobileSubstrate/DynamicLibraries: No such file or directory<br>提示那就说明Cydia Substrate安装不成功，不成功请重新进入iOS设备上下载安装Cydia Substrate软件。<br>若果没出现如何错误提示信息，就说明Cydia Substrate安装成功！<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_42.png" alt=""><br>4.上传libReveal.dylib。如果上一个步骤的检查工作全部完成：OpenSSH和Cydia Substrate成功安装。<br>重新打开mac上的终端工具(Terminal)，使用如下命令进入Reveal软件的动态库所在目录：cd /Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_43.png" alt=""></p>
+<p>使用如下命令将libReveal.dylib上传到iOS设备的/Library/MobileSubstrate/DynamicLibraries目录下：scp libReveal.dylib root@iOS设备IP地址:/Library/MobileSubstrate/DynamicLibraries/<br>，请替换@之后的“iOS设备的IP地址”为你的iOS设备的真实地址，回车执行命令后会让你输入iOS设备的root的密码，默认是alpine，上传成功后会显示%100字样。</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_44.png" alt=""><br>5.编写并上传一份libReveal.plist<br>到iOS设备的/Library/MobileSubstrate/DynamicLibraries<br>目录中。这个文件的作用是：在Reveal中监控指定的App，不上传这个文件也是可以的，那么Reveal就会监控所有的App，只是这样速度会慢一点点。编写libReveal.plist文件，最简单的方法就是新建一个plist文件，它的内容是<br> Filter = { Bundles = ( “你要查看的app的bundle Id1”,”你要查看的app的bundle Id2” ); ; }</p>
+<p>xcode下打开这个libReveal.plist文件可以看到它的结构示例（笔者已经添加了两个Bundle ID）：<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_47.png" alt=""></p>
+<p>关于获取iOS App应用的Bundle ID：打开PP助手、iTools、itunes等工具，备份手机上安装到的程序到电脑上(或直接下载需要查看程序ipa文件)，将.ipa修改成.zip，解压后按如下路径进入info.plist文件所在目录，打开info.plist其中便有我们需要的bundle Id。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_49.png" alt=""></p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_54.png" alt=""></p>
+<p>6.上传libReveal.plist<br>到iOS设备的/Library/MobileSubstrate/DynamicLibraries<br>目录中。打开终端进入libReveal.plist所在的目录，使用如下命令上传：scp libReveal.plist root@iOS设备的IP地址:/Library/MobileSubstrate/DynamicLibraries/，请替换@之后的“iOS设备的IP地址”为你的iOS设备的真实地址，回车执行命令后会让你输入iOS设备的root的密码，默认是alpine，上传成功后会显示%100字样。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_55.png" alt=""></p>
+<p>7.接下来在重启你的iOS设备，连上mac电脑所在的局域网，上打开你需要在Reveal中观察的程序，此时在mac电脑上的Reveal中选择你要观察的程序。</p>
+<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_57.png" alt=""><br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_58.png" alt=""><br><em>提示：如果此时在mac上的Reveal左上方没有出现你想要调试的程序，这里给出几个检查的建议：</em></p>
+<ul>
+<li>1.手机连接的wifi是否与mac处于同一局域网（如果你在执行步骤7时是在正确执行步骤5和6之后，那就忽略这个检查，这里是针对手机重启了或者是切换了手机网络等情况）。</li>
+<li>2.查看你编写的libReveal.plist文件中写的BundleID是否与你在iOS设备上打开的应用是否匹配。甚至，请检查你的pist文件结构是否正确！</li>
+<li>3.iOS设备上想要观察的App应用必须处于前台，进入后台即使打开了，在Reveal的左上角“选择连接的应用”框中也不会显示。<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3>欢迎收藏的 <a href="http://jackiehoo.com/" target="_blank" rel="noopener">我的博客</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS比优鸡调试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">bug调试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">reveal</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/09/12/2016-09-12-using-reveal-to-debug/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-08-28-iOS-Xcode-Snippets" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1235,137 +1410,6 @@
 
 
   
-    <article id="post-2016-04-29-be-caution-of-subclassing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/29/2016-04-29-be-caution-of-subclassing/">iOS架构师之路：慎用继承</a>
-    </h1>
-  
-
-        
-        <a href="/2016/04/29/2016-04-29-be-caution-of-subclassing/" class="archive-article-date">
-  	<time datetime="2016-04-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-04-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　最近在看大神Casa的文章《<a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html" target="_blank" rel="noopener">跳出面向对象思想(一) 继承</a>》，脑洞大开。文章给我们展示了一个随着产品需求不断变化的例子，该例子中通过继承实现不同页面的搜索视图和搜索逻辑的代码复用，随着产品需求的演变，最后导致继承的搜索功能层级越来越深，相互依赖越来越严重，最后导致拔出萝卜带出泥，又随着个性化需求的发展，最后代码变得越来越混乱。相信有经验的开发人员都经历过这方面的痛苦。继承对代码复用来说非常好用，但同时继承复用的思路随着产品经理的需求变化会导致项目紧耦合，牵一发而动全身。继承做面向对象的三大特性之一，当然宅正确的时候使用它能发挥巨大价值，但如果不加思索的使用也会带来代码维护和扩展上的灾难。那我们应该在什么情况下使用继承，什么情况下又需要避免滥用继承，并能够有其他方案替代继承实现代码复用的目的呢，这是作为架构师需要掌握的内功，最终达到十八般武艺，样样精通，需要时信手拈来的境界。</p>
-<h1 id="适用继承的场合"><a href="#适用继承的场合" class="headerlink" title="适用继承的场合"></a><strong>适用继承的场合</strong></h1><pre><code>大神Chris Eidhof的文章[《subclassing》](https://www.objc.io/issues/13-architecture/subclassing/)提到需要自定义UITableViewCell等View视图的时候我们可以使用继承来创建自定义View,这些代码放入子类更合理，不光代码得到更好的封装，也能得到一个可以在工程中重用的组件。Chris Edihof还提到model可以继承来实现了 isEqual: 、hash 、 copyWithZone: 和 description 等方法的类。
-</code></pre><p>Chris Eidhof说的只是继承的几个应用场景，他没有说使用继承的界限。 Casa还提到是否使用继承需要考虑三个点：</p>
-<blockquote>
-<ul>
-<li><ol>
-<li>父类只是给子类提供服务，并不涉及子类的业务逻辑</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>层级关系明显，功能划分清晰，父类和子类各做各的。</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>父类的所有变化，都需要在子类中体现，也就是说此时耦合已经成为需求</li>
-</ol>
-</li>
-</ul>
-</blockquote>
-<pre><code>在我看来一个很重要的原则就是我们不能脱离cocoa框架开发，所以我们可以继承cocoa的类，以达到快速开发的目的，但是如果没有特殊原因我们写的代码要控制在继承链不增加两层。
-</code></pre><p><strong>不适合继承的场景</strong></p>
-<pre><code>我比较同意Casa的观点。当你发现你的继承超过2层的时候，你就要好好考虑是否这个继承的方案了，第三层继承正是滥用的开端。确定有必要之后，再进行更多层次的继承。Chris Eidhof也有类似的观点：`In a lot of projects that I’ve worked on, I’ve seen deep hierarchies of subclasses. I am guilty of doing this as well. Unless the hierarchies are very shallow, you very quickly tend to hit limits.`（ 在我工作的许多项目中看到过一些深度继承的项目。当我也这么干的时候，总会感到内疚。除非继承的层次非常浅，否则你会很快发现它的局限性。）
-</code></pre><h1 id="替代继承解决复用需求的解决方案"><a href="#替代继承解决复用需求的解决方案" class="headerlink" title="替代继承解决复用需求的解决方案"></a><strong>替代继承解决复用需求的解决方案</strong></h1><p><strong> 1.协议（protocols）</strong></p>
-<p>　　我经常使用继承来使得对象能够响应某个方法，假设一个APP有播放器（player）对象，它拥有播放（play）方法播放视频，如果APP希望支持YouTube，需要相同几个播放（player）接口，但是方法的实现不同，通过继承实现的代码如下：
-　　</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface Player : NSObject</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface YouTubePlayer : Player</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　这两个类并没有太多共用的代码，它们只不过具有相同的接口。如果这样的话，使用协议可能会是更好的方案。可以这样用协议来写你的代码。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@protocol VideoPlayer &lt;NSObject&gt;</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface Player : NSObject &lt;VideoPlayer&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface YouTubePlayer : NSObject &lt;VideoPlayer&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　这样，YouTubePlayer类就不必知道 Player类的内部实现了。</p>
-<p><strong>2.代理（delegation）</strong> </p>
-<p>　　再以上面的例子为例，player对象希望在播放的时候执行一些自定义的行为，使用继承也可以轻易的实现：创建个player对象的子类，然后重写play方法，再调用[super play]，再跟着希望执行的行为。但是我们也可以通过的代理的方式更有优雅的实现这个需求：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@class Player;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@protocol PlayerDelegate</span></span><br><span class="line"></span><br><span class="line">- (void)playerDidStartPlaying:(Player *)player;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface Player : NSObject</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (nonatomic,weak) id&lt;PlayerDelegate&gt; delegate;</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　现在在player对象的play方法里，我们可以通过代理属性调用 playerDidStartPlaying：方法，任何使用Player类的对象，可以遵守代理协议，就可以实现自定义的playerDidStartPlaying：方法了，player类依然保持它的通用性和独立性，方便为对外提供服务。代理是非常强大技巧，苹果本身就经常使用。像 UITextField这样的类，有时候你还会想把几个不同的方法分组到几个单独的协议里，比如UITableView—— 它不仅有一个代理（delegate），还有一个数据源（dataSource）。</p>
-<p><strong>3.类别（category）</strong></p>
-<p>　　我们有时候会给对象添加方法，通过集成的方式当然可以实现，但是不如category的方式来的方便和容易使用，不增加新的类，可复用的价值也更高。 比如我们需要给NSArray添加一个arrayByRemovingFirstObject方法，通过category的方式我们就可以这么做：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@interface NSArray (OBJExtras)</span></span><br><span class="line"></span><br><span class="line">- (void)obj_arrayByRemovingFirstObject;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　在用类别扩展一个不是你自己的类的时候，在方法前添加前缀是个比较好的习惯做法。如果不这么做，有可能别人也用类别对此类添加了相同名字的函数。那时候程序的行为可能跟你想要的并不一样，未预期的事情可能会发生。</p>
-<p>　　使用类别还有另外一个风险，那就是，到最后你可能会使用一大堆的类别，连你自己都会失去对代码全局的认识。假如那样的话，创建自定义的类可能更简单一些。</p>
-<p><strong>4.组合（composition）</strong></p>
-<p>　　Casa提到我们尽可能用组合替代继承。组合是最强大的替代组合的选项。如果你想复用已经存在的代码，并且不想共享同样的接口，组合是最佳选择。举个例子，假设你要设计一个缓存类：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@interface OBJCache : NSObject</span></span><br><span class="line"></span><br><span class="line">- (void)cacheValue:(id)value forKey:(NSString *)key;</span><br><span class="line">- (void)removeCachedValueForKey:(NSString *)key;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　一个简单的做法就通过继承NSDictionary并且通过调用字典的方法来实现这上面两个缓存方法。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface OBJCache : NSDictionary</span></span><br></pre></td></tr></table></figure>
-<p>　　但是这样做会带来一些问题。它本来是应该被详细实现的，但只是通过字典来实现。现在，在任何需要一个 NSDictionary 参数的时候，你可以直接提供一个 OBJCache 值。但如果你想把它转为其它完全不同的东西（例如你自己的库），你就可能需要重构很多代码了。
-　　</p>
-<p>　　更好的方式就是组合了。创建一个缓存类，并添加一个字典的私有属性，对外还是暴露这两个接口，实现的时候就可以通过调用字典属性的方法实现我们使用字典的方法了，这样做可以灵活改变其涉嫌，而该类的使用者恩不用进行重构。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface OBJCache :NSObject</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (nonmatic, strong) NSDictionary cacheDict;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>　　</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h1><p>　　代码复用，尽管他们都可以通过继承实现，但是我们为了在没有耦合需求的时候尽量不要使用继承，而是根据不同场景采用不同复用代码的方式。如果只是共享接口，我们可以使用协议；如果是希望共用一个方法的部分实现，但希望根据需要执行不同的其他行为，我们可以使用代理；如果是添加方法，我们可以优先使用类别（category）；如果是为了使用一个类的很多方法，我们可以使用组合来实现。，如果当初只是出于代码复用的目的而不区分类别和场景，就采用继承是不恰当的。当你发现你的继承超过2层的时候，你就要好好考虑是否这个继承的方案了，第三层继承正是滥用的开端。确定有必要之后，再进行更多层次的继承。我认同Casa的看法：万不得已不要用继承，优先考虑组合等方式。</p>
-<h1 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h1><p>《<a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html" target="_blank" rel="noopener">跳出面向对象思想(一) 继承</a>》、<a href="https://www.objc.io/issues/13-architecture/subclassing/" target="_blank" rel="noopener">《subclassing》</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">view层架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">subclassing</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/04/29/2016-04-29-be-caution-of-subclassing/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
@@ -1471,10 +1515,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
@@ -1487,15 +1527,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1507,11 +1543,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1523,7 +1571,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1551,11 +1611,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1568,14 +1632,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1599,18 +1655,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
@@ -1623,22 +1667,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
@@ -1647,15 +1675,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1683,26 +1747,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -1712,26 +1756,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1751,6 +1775,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -1763,6 +1795,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -1771,19 +1815,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1835,19 +1879,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1859,11 +1903,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1883,14 +1935,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
               </li>
              
@@ -1907,6 +1951,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -1916,10 +1964,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
