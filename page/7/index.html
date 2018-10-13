@@ -160,19 +160,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2017-04-02-why-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-why-git/">【译文】为什么要选择Git</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
     </h1>
   
 
         
-        <a href="/2017/04/02/2017-04-02-why-git/" class="archive-article-date">
+        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
   	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
@@ -180,58 +180,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:dbdec37b-f619-456e-aca4-a1689a08b5f3/hero.svg?cdnVersion=dt" alt=""></p>
-<p>从集中版本控制系统切换到Git会改变开发团队开发软件的方式。而且，如果您是依赖其关键任务应用的软件的公司，更改开发流将影响整个业务。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fe39ef08-ff6a-4603-adc6-fcfc78035a50/01.svg?cdnVersion=dt" alt="组织发展"></p>
-<p>在本文中，我们将讨论Git如何在各个方面为公司组织带来益处，从您的开发团队到您的营销团队，及其他。在本文结尾，应该很清楚，Git不仅仅适合<a href="https://www.atlassian.com/agile/developer" target="_blank" rel="noopener">敏捷软件开发</a> - 它适合用于敏捷业务。</p>
-<h2 id="Git可以为开发者带来什么"><a href="#Git可以为开发者带来什么" class="headerlink" title="Git可以为开发者带来什么"></a>Git可以为开发者带来什么</h2><h3 id="功能分支工作流"><a href="#功能分支工作流" class="headerlink" title="功能分支工作流"></a>功能分支工作流</h3><p>Git的最大优点之一是其分支功能。与集中版本控制系统不同，Git分支使用容易而且易于合并。这有助于功能分支工作流再许多Git用户中流行。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fcad863b-e0da-4a55-92ee-7caf4988e34e/02.svg?cdnVersion=dt" alt="功能分支工作流程"></p>
-<p>功能分支为您的代码库的每个更改提供了一个孤立的环境。当开发人员想要开始工作时，无论大小还是小，都可以创建一个新的分支。这样可以确保主分支始终是产品级质量代码。</p>
-<p>使用功能分支不仅比直接编辑生产代码更可靠，而且还提供结构化的优点。他们让您可以和您的<a href="https://www.atlassian.com/agile/backlogs" target="_blank" rel="noopener">敏捷待办事项</a>使用相同的粒度来代表开发工作。例如，您可以实施一个策略，其中每个<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>票证可以在自己的功能分支中找到。</p>
-<h3 id="分布式开发"><a href="#分布式开发" class="headerlink" title="分布式开发"></a>分布式开发</h3><p>在SVN中，每个开发人员都获得一个指向一个中央仓库的工作副本。然而，Git是分布式版本控制系统。每个开发人员不用工作副本，而是获取自己的本地仓库，并具有完整的提交历史记录。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:9d51f0ee-5946-4be2-886c-ff040ef8c1a1/03.svg?cdnVersion=dt" alt="分布式开发"></p>
-<p>拥有完整的本地历史使Git更快，因为这意味着您不需要网络连接就能创建提交，检查文件的先前版本，或者在提交之间执行差异。</p>
-<p>分布式开发还可以让你更轻松地扩展您的工程团队。如果有人破坏了SVN的生产分支，其他开发人员在修复问题之前就无法检查它们的更改。使用Git，这种阻塞就不会存在。每个人都可以继续在自己的本地仓库中进行开发。</p>
-<p>而且，与功能分支类似，分布式开发创造了一个更可靠的环境。即使一个开发人员删除了自己的仓库，他们也可以简单地克隆别人，重新开始。</p>
-<h3 id="合并申请"><a href="#合并申请" class="headerlink" title="合并申请"></a>合并申请</h3><p>许多源代码管理工具，比如<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>，可以通过合并申请增强核心的Git功能。合并申请用来要求另一开发人员将您的一个分支合并到其仓库中的一种方式。这不仅使项目管理者能够更轻松地跟踪变更情况，还可以让开发人员在将其与其他代码集成在一起之前展开讨论。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:92c7f92c-cafb-4254-ab40-0b91821d3fd0/04.svg?cdnVersion=dt" alt="合并申请"></p>
-<p>由于它们本质上是附加到功能分支的注释，所以合并申请有很多作用。当开发者遇到困难的问题时，他们可以打开一个合并申请，要求其他团队的帮助。或者，初级开发人员可以放心，通过将合并申请视为正式代码审查，他们不会破坏整个项目。</p>
-<h3 id="社区支持"><a href="#社区支持" class="headerlink" title="社区支持"></a>社区支持</h3><p>在许多方面，Git已经成为新项目的版本控制系统的标配。如果您的团队正在使用Git，您可能无需在工作流程上培训新员工，因为他们已经熟悉分布式开发。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:60fb4158-0c3e-4f1b-a932-fb4e8a660ee4/05.svg?cdnVersion=dt" alt="Git社区"></p>
-<p>另外，Git在开源项目中非常受欢迎。这意味着轻松利用第三方库的优势，并鼓励其他人分享自己的开源代码。</p>
-<h3 id="更快的释放周期"><a href="#更快的释放周期" class="headerlink" title="更快的释放周期"></a>更快的释放周期</h3><p>功能分支，分布式开发，合并申请和稳定社区带来的最终结果是项目更快的发布周期。这些功能有助于<a href="https://www.atlassian.com/agile/workflow" target="_blank" rel="noopener">敏捷开发工作流</a>，鼓励开发人员更频繁地分享更小的更改。相应地，相比集中式版本控制系统，修改可以更快地发布。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:4263b82f-e177-47d4-a587-dab97a20334d/06.svg?cdnVersion=dt" alt="更快的释放周期"></p>
-<p>正如您所期望的那样，Git在持续集成和持续交付环境中工作得很好。Git钩子允许您在仓库内部发生某些事件时运行脚本，从而使您可以自动部署到您核心内容。您甚至可以将代码从特定的分支部署到不同的服务器。</p>
-<p>例如，您可能希望配置Git，以便每当任何人将pull请求合并到其中时，将最新的提交从开发分支部署到测试服务器。将这种构建自动化与同行审查相结合，意味着您可以对代码从开发转移到生产发布准备阶段，可以有很高信任度。</p>
-<h2 id="Git可以为市场营销带来什么"><a href="#Git可以为市场营销带来什么" class="headerlink" title="Git可以为市场营销带来什么"></a>Git可以为市场营销带来什么</h2><p>要了解切换到Git会如何影响您公司的市场营销活动，请假设您的开发团队预计在未来几周内完成三个重要的修改：</p>
-<ul>
-<li><p>整个团队正在完成他们在过去6个月中一直在努力的重大的功能。</p>
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
+<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
+<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
+<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
+<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
+<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
+<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
+<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
+<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
+<ol>
+<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
 </li>
-<li><p>玛丽正在实施一个更小，不相关的功能，只会影响现有客户。</p>
+<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
 </li>
-<li><p>Rick正在对用户界面进行一些非常需要的更新。</p>
-</li>
-</ul>
-<p>如果您使用集中式VCS这种传统开发工作流程，则所有这些更改都可能会包含在单个版本中。市场营销部门只能发布那个重大功能的公告，其他两个更新的作用就会被忽略掉。</p>
-<p>Git非常适用于更短的开发周期，这使得我们可以将它们轻易地分成多个发布版本。这让市场营销人员可以有更多和更频繁的宣传机会。在上述情况下，市场营销可以构建围绕每个功能，针对特定的细分市场，推出三个活动。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:452591fb-9c9d-4a94-a262-671e146fe869/07.svg?cdnVersion=dt" alt="Git营销"></p>
-<p>例如，他们可能为重大功能准备一个大型的PR推送，为玛丽开发的功能写一篇公司博客文章和简报，以及一些关于Rick的底层UX理论的文章发送到外部设计博客上。所有这些活动可以与单独的版本同步发布。</p>
-<h2 id="Git可以为产品管理带来什么"><a href="#Git可以为产品管理带来什么" class="headerlink" title="Git可以为产品管理带来什么"></a>Git可以为产品管理带来什么</h2><p>Git对产品管理的好处与营销大致相同。更频繁的发布意味着更频繁的客户反馈和更快的更新反馈。您可以在开发人员编写完代码之后尽快将解决方案推送给客户，而不是等待8周之后的下一个版本。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1c1cc48f-324a-4aaa-9a54-58ab93a7d219/08.svg?cdnVersion=dt" alt="优先管理git工作流程"></p>
-<p>当优先级更改时，功能分支工作流还提供了足够的灵活性。例如，如果您在发布周期中途，并且想要推迟一个功能，而代替加入另一个时间紧迫的功能，那没有问题。这个推迟的功能可以保留在自己的分支中，直到工程需要它的时候再用。</p>
-<p>同样的功能使得管理创新项目，版本测试项目和快速原型作为独立代码库变得容易。</p>
-<h2 id="Git可以为设计师带来什么"><a href="#Git可以为设计师带来什么" class="headerlink" title="Git可以为设计师带来什么"></a>Git可以为设计师带来什么</h2><p>功能分支可以快速响应设计原型。无论您的UX / UI设计人员想要实现一个完整的用户流程还是简单地替换一些图标，切换到一个新的分支可以让他们在独立地沙箱环境中进行。这样，设计人员可以在产品的真实工作副本中看到他们修改的变化，而这不会破坏现有的功能。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6521263d-9cd5-4705-89d7-769f0d286fa4/09.svg?cdnVersion=dt" alt="Git非破坏性版本"></p>
-<p>封装这样的用户界面更改可以容易地向其他利益相关者提供更新。例如，如果工程总监想看看设计团队做了什么，他们所要做的就是告诉主管切换到相应的分支。</p>
-<p>合并申请进一步带来好处，为有兴趣的各方讨论新界面提供正式的地方。设计师可以进行任何必要的更改，生成的提交将显示在合并申请中，这可以让大家参与迭代过程。</p>
-<p>也许为原型提供不同分支最大的好处就是将变更合并到生产中就像将其抛弃一样容易，这没有任何压力。这鼓励设计师和UI开发人员进行实验，同时确保只有最好的想法才能提供给客户。</p>
-<h2 id="Git为客户支持带来什么"><a href="#Git为客户支持带来什么" class="headerlink" title="Git为客户支持带来什么"></a>Git为客户支持带来什么</h2><p>客户支持和客户成功往往与产品经理不同。当客户打电话时，他们通常会遇到某种问题。如果这个问题是由您公司的软件造成的，那么需要尽快推出一个错误修复。</p>
-<p>Git流线型开发周期避免了耽误错误修复，而不用等到下一次大型版本。开发人员可以修补问题并将其直接推送到生产。更快的修复问题意味着让客户更容易满足和更少的重复问题。而不是左右为难，“对不起，我们正在处理”，现在您的客户支持团队可以开始回应“我们已经解决了！“</p>
-<h2 id="Git为人力资源带来什么"><a href="#Git为人力资源带来什么" class="headerlink" title="Git为人力资源带来什么"></a>Git为人力资源带来什么</h2><p>在一定程度上，您的软件开发工作流程决定了您雇用的人员。我们要聘请熟悉您的技术和工作流程的工程师，但使用Git也提供了其他优势。</p>
-<p>员工被吸引到提供职业发展机会的公司，这个公司熟悉如何在大型和小型组织中利用Git的优势，这对任何程序员都是一种福音。通过选择Git作为您的版本控制系统，这个决定可以帮助你吸引具有前瞻性的优秀开发人员。</p>
-<h2 id="Git为管理预算带来什么"><a href="#Git为管理预算带来什么" class="headerlink" title="Git为管理预算带来什么"></a>Git为管理预算带来什么</h2><p>Git提升效率。对于开发人员来说，它消除了在集中版本控制系统中，在网络上传输提交到合并修改浪费的时间。它甚至通过给初级开发者一个安全的独立工作环境而让项目更安全，这一切都会影响你的工程部门的底线。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:c5db1ef6-ae40-46cc-8408-c0f9e0b53a84/10.svg?cdnVersion=dt" alt="Git分布式团队"></p>
-<p>但是，不要忘记，这些效率也在开发团队之外。它避免市场营销对不受欢迎的功能投入人力。他们让设计师先于实际产品测试新的界面。他们让你的团队立即对客户的投诉做出响应。</p>
-<p>敏捷意味着尽可能找到有效的工作，放大带来成功的努力，消除那些不成功的工作。通过确保每个部门都能更有效地开展工作，Git成为公司所有业务活动的倍增效益的因素。</p>
+</ol>
+<ol start="3">
+<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
+<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
 
       
 
@@ -263,7 +233,104 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-why-git/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-04-02-Migrate-to-Git-from-SVN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">【译文】从SVN到Git：迁移到Git</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://www.atlassian.com/dam/jcr:003ac8ad-493e-4a16-8096-95e7b4a4a9af/hero.svg" alt="Migrate to Git"></p>
+<p>我们将SVN迁移到Git的步骤拆解成5个简单的步骤：</p>
+<ol>
+<li>准备迁移的环境。</li>
+<li>将SVN仓库转换成本地Git仓库。 </li>
+<li>当SVN仓库发生变化时同步到本地Git仓库。</li>
+<li>通过Git服务器共享你的Git仓库给其他开发者。</li>
+<li>将你的开发工作从SVN迁移到Git仓库里。</li>
+</ol>
+<p>准备、转变、同步步骤需要一个SVN提交历史并将它转至Git仓库。操作这三部的最好方式是指定一个人做为迁移负责人（如果你读了这篇文章可能就是你了）。所有这三步应当在迁移负责人的本地电脑上执行。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:620e114f-077f-416b-aeb4-ecdb4b6c64c6/01.svg" alt="Git Migration: Prepare, clone, sync"></p>
+<p>在同步阶段完成后，迁移负责人可以很轻易的保持本地Git仓库和SVN仓库同步更新，为了共享他的Git仓库，迁移负责人需要将他的本地Git仓库推送到一个Git宿主服务器，比如Gitlab、GitHub、Bitbucket等。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:adce07b0-ef2a-4ab4-b08b-72a02d0a61fb/02.svg" alt="Git Migration: Share the git repo via bitbucket"><br>如果服务器是在Bitbucket上，其他开发者可以克隆Git仓库将代码转移至本地，使用Git命令查看历史，将该服务器用于构建代码流程中。然而我们提倡，在你们团队准备好一个纯净的Git工作流的时候，采取一步到位的方式来迁移SVN到Git。这意味着团队每个人对这个服务器是只读的，他们依旧将代码提交到SVN仓库。将这些修改的操作应当交给迁移负责人来同步、推送这些修改到Bitbucket。</p>
+<p>这让你团队在明确切换这段时间内可以熟悉Git开发工作流，而不用中断基于SVN的工作流。一旦你确信所有开发者已经准备好切换到Git，那最后的一步就是冻结你的SVN仓库，让大家开始使用Git提交代码。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:a202d2e1-bb9a-4c25-92ed-91a16a63ccde/03.svg" alt="Git migration: Migrate Active Development to Git"><br>这个切换应该是一个非常自然的过程。整个Git工作流已经开始运转，并且开发者有大把的时间去熟悉它。从这刻起，你已经成功地将你的项目从SVN迁移到Git上了。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/migrating-overview" target="_blank" rel="noopener">Migrate to Git from SVN</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SVN到Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">迁移</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">展开全文 >></a>
         </p>
       
 
@@ -1967,206 +2034,6 @@ git revert HEAD~2
 
 
   
-    <article id="post-2016-12-03-Using-Branches" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/03/2016-12-03-Using-Branches/">【译文】玩转git分支</a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/03/2016-12-03-Using-Branches/" class="archive-article-date">
-  	<time datetime="2016-12-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/hero.svg" alt=""></p>
-<h1 id="玩转git分支"><a href="#玩转git分支" class="headerlink" title="玩转git分支"></a>玩转git分支</h1><p>这是一篇介绍git分支的综合性教程。首先，我们会简单介绍分支的创建，它就像请求一个新项目的历史一样。然后，我们将看看如何使用<code>git checkout</code>选择分支。最后，我们将学习使用<code>git merge</code>进行各个独立的分支合并。在你阅读的时候，记住git的分支和svn的分支不同，svn的分支仅仅用来捕获偶尔大范围的开发，然后git分支却是你每日工作流必不可少的部分。</p>
-<h2 id="git分支"><a href="#git分支" class="headerlink" title="git分支"></a>git分支</h2><p>一个分支代表一个独立的开发流水线，在本教程的第一部分的<a href="https://www.atlassian.com/git/tutorials/saving-changes" target="_blank" rel="noopener">git基础（Git Basics）</a>章节中我们介绍了编辑／暂存／提交过程，分支就是这些流程的抽象。你可以把分支看作请求一个新的工作目录区、暂存区、项目提交历史的方法。新的提交会在当前分支的提交历史中记录，在项目历史中导致一个分流（fork）。</p>
-<p>git branch命令让你创建、列出、重命名和删除分支。它不会让你在不同分支中切换，也不会让你的分流开发的历史再次合并回一起。因此<code>git branch</code>和<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a> 和 <a href="https://www.atlassian.com/git/tutorials/using-branches/git-merge" target="_blank" rel="noopener">git merge
-</a>命令紧密联系在一起工作。</p>
-<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git branch
-</code></pre><p>列出仓库的分支历史</p>
-<pre><code>git branch &lt;branch&gt;
-</code></pre><p>创建一个叫做<code>&lt;branch&gt;</code>的新的分支，这个命令不会切换到这个新分支。</p>
-<pre><code>git branch -d &lt;branch&gt;
-</code></pre><p>删除指定分支。在git中这是一个安全的操作，因为如果该分支存在没有合并的修改git会阻止你删除分支。</p>
-<pre><code>git branch -D &lt;branch&gt;
-</code></pre><p>强制删除一个指定分支，不管有没有未合并的修改，当你想永久删除这个开发流水线上所有提交历史时可以使用这个命令。</p>
-<pre><code>git branch -m &lt;branch&gt;
-</code></pre><p>重命名当前分支名为<code>&lt;branch&gt;</code>。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>在git中，分支是你日常开发过程的一部分。当你想添加一个新的功能或者想修复一个bug，无论他们的大或者小，你都可以创建一个分支将他们封装起来。这可以确保不稳定的代码不会提交到主要核心代码里。并且在你合并到主分支之前让你有机会清理功能开发的历史。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/01.svg" alt="Git Tutorial: git branch"></p>
-<p>举个例子，上图形象地展示了一个包含两个独立开发的流水线的仓库，一个开发小功能，另外一个开发一个耗时较大的功能。通过将他们包含在不同分支中开发，不仅仅可以让开发工作可以并行，而且保证主分支<code>master</code>不会被有问题的代码污染。</p>
-<h3 id="分支节点（Branch-Tips）"><a href="#分支节点（Branch-Tips）" class="headerlink" title="分支节点（Branch Tips）"></a>分支节点（Branch Tips）</h3><p>git分支实现比svn要轻量级的多。git不需要拷贝目录的文件到另一个目录，git存储一个分支作为一个提交的索引。这样看来，分支代表着一系列提交的节点（tip），而不是多个提交的容器。通过提交之间的关系来推断一个分支的历史。在git合并模型中这有巨大的影响。svn中的合并是基于文件的，而在git中让使用提交进行工作，这个更加抽象。事实上在项目提交历史中你可以把合并看作是两个独立的提交历史的连接。</p>
-<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><h4 id="创建分支"><a href="#创建分支" class="headerlink" title="创建分支"></a>创建分支</h4><p>理解分支仅仅是指向提交的<strong>指针</strong>这个概念非常重要。当你创建分支，git所需要作的仅仅是一个指针——它不会对仓库造成任何修改，因此，如果你像下面这样开始在一个仓库上开发。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/02.svg" alt="Git Tutorial: repository without any branches"></p>
-<p>然后，你使用如下命令创建一个分支：</p>
-<pre><code>git branch crazy-experiment
-</code></pre><p>仓库的历史依然不会修改，你只是拥有了一个指向当前提交的指针：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/03.svg" alt="Git Tutorial: Create new branch"></p>
-<p>主要这仅仅是创建了一个新的分支。为了添加一个提交，你需要使用<code>git checkout</code>选择一个分支，然后使用标准的<code>git add</code> 和 <code>git commit</code>命令。请查看这篇文章的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a>段落了解更多。</p>
-<h2 id="删除分支"><a href="#删除分支" class="headerlink" title="删除分支"></a>删除分支</h2><p>当你在一个分支上完成开发，并且把该分支的修改合并进了主要代码库，现在你不用担心丢失任何修改提交历史就可以删除分支了。</p>
-<pre><code>git branch -d crazy-experiment
-</code></pre><p>然而，如果你的分支没有合并，上面这个命令会产生如下错误信息：</p>
-<pre><code>error: The branch &apos;crazy-experiment&apos; is not fully merged.
-If you are sure you want to delete it, run &apos;git branch -D crazy-experiment&apos;.
-</code></pre><p>这可以防止你丢失对这些提交的索引，这意味着你失去了对这条分支开发流水线的访问。如果你真的想要删除这个分支（比如，这个分支开发完全是一次失败的实验），你可以使用大些的<code>-D</code>标志：</p>
-<pre><code>git branch -D crazy-experiment
-</code></pre><p>这将删除这个分支，不管这个分支是什么状态，它不会给出任何警告，所以使用这个命令要特别小心。</p>
-<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p><code>git checkout</code>命令可以让你在创建的分支上自由切换，切换一个分支会更新工作目录的文件，保持和该分支的版本控制的内容一致。它会让git记录在当前分支上的所有新的提交。把切换分支想象成你去选择一个你想从事开发工作的开发流水线。</p>
-<p>在<a href="https://www.atlassian.com/git/tutorials/undoing-changes" target="_blank" rel="noopener">前面的章节</a>，我们知道了如何使用<code>git checkout</code>查看过去的提交。切换分支和被更新到选择的分支和修改的工作目录类似，不过，新的修改会被保存到项目版本历史——意味着，这不是一个只读操作。</p>
-<h3 id="如何使用-1"><a href="#如何使用-1" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git checkout &lt;existing-branch&gt;
-</code></pre><p>切换到指定分支，这个分支应当是之前已经使用<code>git branch</code>创建过的分支，这个命令让已经存在的分支称为当前分支，并且对应会更新当前工作目录。</p>
-<pre><code>git checkout -b &lt;new-branch&gt;
-</code></pre><p>创建并切换到<code>&lt;new-branch&gt;</code>分支，<code>-b</code>选项会让git先执行<code>git branch &lt;new-branch&gt;</code>再执行<code>git checkout &lt;new-branch&gt;</code>操作。</p>
-<pre><code>git checkout -b &lt;new-branch&gt; &lt;existing-branch&gt;
-</code></pre><p>和之前的命令类似，但是不是基于当前分支创建新分支，而是基于<code>&lt;existing-branch&gt;</code>这个分支创建和切换新分支。 </p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p><code>git checkout</code>和<code>git branch</code>并肩而战，当我们想开始一个新功能开发时，我们先使用<code>git branch</code>创建分支，然后使用<code>git checkout</code>切换分支。你可以使用<code>git checkout</code>命令在一个仓库的多个功能分支上切换。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/04.svg" alt="Git Tutorial: Switch between multiple features in a single repo with git checkout."></p>
-<p>为每个功能使用一个专门分支，这是相比svn的工作流来说一个巨大的变化。它让尝试一个新实验变的极其容易，因为你完全不需要担心损坏已经存在的功能，并且让多个不相关的功能同时开发变的可能。而且，分支也让多种合作开发流工作的更顺手。</p>
-<h3 id="分离头（Detached-HEADs）"><a href="#分离头（Detached-HEADs）" class="headerlink" title="分离头（Detached HEADs）"></a>分离头（Detached HEADs）</h3><p>刚才我们介绍了 <code>git checkout</code>的三种使用方法。现在我们来聊聊我们上一章节提到过的分离头（Detached HEADs），记住头（HEAD）在git中是我们用来索引当前快照的方式。在git内部实现中，<code>git checkout</code>命令指示简单的更新指向指定分支或者提交的头（HEAD）。当指向一个分支时，Git不会有任何提示，但是当你切换提交时，git就进入了分离头（Detached HEAD）状态。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/05.svg" alt="Git Tutorial: Attached vs Detached Head"></p>
-<p>这个警告告诉你将作的所有事情已经和项目开发的其他部分分离（detached）了。如果你要在一个分离头状态下开发一个新功能，你将没有分支可以允许你回到该开发。当你切换到另外一个分支（比如，进行合并你的开发），你将没有你的功能开发的索引：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/06.svg" alt="Git Tutorial: Detached Head state"></p>
-<p>特别指出，因此你的开发应当永远在分支上进行——不要在分离头上进行。这将确保你能索引到你最新的提交。然而，如果你只是想看看以前的提交的内容，是否进入分离头模式就无所谓了。</p>
-<h3 id="举个例子-1"><a href="#举个例子-1" class="headerlink" title="举个例子"></a>举个例子</h3><p>下面歌命令展示了基本的git 分支处理过程。当你想要做一个新功能开发时，你创建一个专门的分支，切换到该分支：</p>
-<pre><code>git branch new-feature
-git checkout new-feature
-</code></pre><p>然后，我们就像之前章节讲到的一样提交新的快照。</p>
-<pre><code># Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Started work on a new feature&quot;
-# Repeat
-</code></pre><p>所有这些将被记录在新的功能分支<code>new-feature</code>上，完全和master分支分隔开来。你想提交多少次就提交多少次，完全不需要担心其他分支发生了什么。当到了需要切换到正式代码库时，只需要简单的切换到master分支即可：</p>
-<pre><code>git checkout master
-</code></pre><p>这个会告诉你仓库的状态，然后你可以选择是否合并已经完成的功能，或者创建一个新的分支开始一个另一个不相关的功能，或者在项目的稳定代码master分支上工作。</p>
-<h2 id="git-merge"><a href="#git-merge" class="headerlink" title="git merge"></a>git merge</h2><p>合并可以让一个分叉的分支历史合再次合并到一起。<code>git merge</code>命令让你将<a href="https://www.atlassian.com/git/tutorials/using-branches/git-branch" target="_blank" rel="noopener">git branch
-</a>创建的独立开发流水线集成合并进一个单一的分支。</p>
-<p>注意下面所有的命令会合并进当前分支，当前分支会拥有合并后的结果，目标分支则完全不受影响。再此强调，<code>git merge</code>总是和用于选择当前分支的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a>命令结合起来使用，然后使用<code>git branch -d</code>命令用来删除无用的目标分支。</p>
-<h3 id="如何使用-2"><a href="#如何使用-2" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git merge &lt;branch&gt;
-</code></pre><p>Merge the specified branch into the current branch. Git will determine the merge algorithm automatically (discussed below).</p>
-<p>合并指定分支到当前分支，git会自动采取合并的算法（后面再讨论这个）。</p>
-<pre><code>git merge --no-ff &lt;branch&gt;
-</code></pre><p>合并指定分支到当前分支，但是总是会产生一个合并提交（甚至是线性向前（fast-forward）合并）。这个对于想归档仓库所有的发生的合并有用。</p>
-<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>单你在一个独立的分支上完成一个功能，你肯定希望合并进主要代码库，git会根据你的仓库的接口，可以采取线性向前方式或者3-way方式完成合并。</p>
-<p> 当当前分支节点到目标分支有一个线性路径时会使用<em>线性向前合并（fast-forward merge）</em>，这样它不用发生真正的合并，git仅仅会通过移动当前分支节点到目标分支节点来集成合并历史。合并非常高效，因为目标分支的所有的提交现在可以在当前分支查得到。举例来说，一个线性向前的合并<code>some-feature</code>到<code>master</code>像下图所示：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/07.svg" alt="Git Tutorial: Fast-forward merge"></p>
-<p>However, a fast-forward merge is not possible if the branches have diverged. When there is not a linear path to the target branch, Git has no choice but to combine them via a <strong>3-way merge</strong>. 3-way merges use a dedicated commit to tie together the two histories. The nomenclature comes from the fact that Git uses <em>three</em> commits to generate the merge commit: the two branch tips and their common ancestor.<br>但是，当分支之间都有分叉时线性向前和冰就不可能了。当没有线性路径到目标分支时，git别无选择只能采取<strong>3-way合并</strong>。3-way合并使用一个专门的提交来将两个分支历史捆绑在一起。这个明明源自git使用了三个提交来生成合并提交：两个分支节点和他们共同的祖先提交。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/08.svg" alt="Git Tutorial: Three way merge"></p>
-<p>你可以使用这些合并策略，然后很多开发者喜欢为小功能开发或者bug修复使用线性向前合并（通过使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase" target="_blank" rel="noopener">rebasing</a>命令可以很容易实现），同时在较大较长耗时的功能开发时使用3-way合并，在前面的例子中，产生的合并提交用来作为合并两个分支的象征性连接点。</p>
-<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><p>如果你尝试合并两个分支时，者两个分支对同一个文件的同一部分作了修改，git这时候不清楚你要运用哪个版本的修改。当这种情况发生时，它会停止合并提交，以便让你去手动解决冲突。</p>
-<p>git牛逼的地方就是合并过程中解决合并冲突就类似之前提到的编辑／暂存／提交的工作流程。当你遇到合并冲突时，执行<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status
-</a>命令，它会告诉你哪个文件冲突需要解决，例如，如果两个分支都修改了<code>hello.py</code>文件的同一部分，你将看到类似如下内容：</p>
-<pre><code># On branch master
-# Unmerged paths:
-# (use &quot;git add/rm ...&quot; as appropriate to mark resolution)## both modified: hello.py#
-</code></pre><p>然后，你就可以找到这个文件根据你的需要修复这个合并冲突，当你准备完成合并时，你只需要执行在冲突的文件上<code>git add</code>命令，告诉git冲突已经解决，然后，你可以执行<code>git commit</code>命令来生成一个合并提交。这和生成一个普通快照完全相同，因此对一般开发者来说管理他们的合并非常容易。</p>
-<p>记住，合并冲突只会发生在<code>3-way合并</code>中，不太可能在线性向前合并中发生有冲突的修改。</p>
-<h3 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h3><h4 id="线性向前合并"><a href="#线性向前合并" class="headerlink" title="线性向前合并"></a>线性向前合并</h4><p>我们的第一个例子展示一个<code>线性向前合并</code>。下面的代码先创建一个新的分支，添加了两个提交，然后将这个分支合并集成到主干线上，这是一个线性向前合并过程。</p>
-<pre><code># Start a new feature
-git checkout -b new-feature master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Start a feature&quot;# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Finish a feature&quot;
-# Merge in the new-feature branch
-git checkout master
-git merge new-feature
-git branch -d new-feature
-</code></pre><p>在短小分支上经常使用这个工作流，比大功能开发用的多。</p>
-<p>注意这个时候可以使用<code>git branch -d</code>删除该新分支，因为新功能开发 的提交已经可以在master分支上访问得到了。</p>
-<h4 id="3-Way合并"><a href="#3-Way合并" class="headerlink" title="3-Way合并"></a>3-Way合并</h4><p>下一个例子非常类似，但是在<code>master</code>已经有修改进展，功能开发也有修改进展，所以这个时候git会使用<code>3-Way合并</code>，这个在大型功能开发时很常见，在多个开发者同时在项目上开发时也很常见。</p>
-<pre><code># Start a new feature
-git checkout -b new-feature master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Start a feature&quot;
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Finish a feature&quot;
-# Develop the master branch
-git checkout master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Make some super-stable changes to master&quot;
-# Merge in the new-feature branch
-git merge new-feature
-git branch -d new-feature
-</code></pre><p>注意对于这个例子git不可能执行<code>线性向前合并</code>，因为如果不原路返回（backtracking）master没法直接移动到新功能上去。在实际工作中，<code>new feature</code>很可能是一个大型耗时的项目开发，在开发它的过程中很可能已经有别的修改加到<code>master</code>上去了，但是如果是一个小的功能开发，你可以在<code>master</code>上使用<code>rebase</code>命令来执行线性向前合并，这样可以减少多余的合并提交，从而防止项目版本历史变得混乱。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/using-branches" target="_blank" rel="noopener">Using Branches</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 分支</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Branch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/03/2016-12-03-Using-Branches/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -2276,15 +2143,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2316,10 +2183,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
@@ -2328,19 +2191,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2368,18 +2227,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -2392,11 +2239,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2409,14 +2284,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2452,11 +2319,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2472,11 +2339,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2493,14 +2368,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2532,14 +2399,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -2561,6 +2420,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2616,18 +2483,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">货币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数字货币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">投资</a>
               </li>
              
@@ -2636,27 +2491,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+                <a href="javascript:void(0)" class="js-tag color3">货币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数字货币</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2668,11 +2515,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">中国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2696,18 +2563,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">成长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">时间</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
@@ -2721,6 +2576,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">成长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">时间</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
