@@ -160,6 +160,99 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-01-01-from-2016-to-2017" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/01/2017-01-01-from-2016-to-2017/">借2016的东风，冲向2017的浪潮</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/01/2017-01-01-from-2016-to-2017/" class="archive-article-date">
+  	<time datetime="2016-12-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>2016年很忙很苦逼，6月份跳槽加入中国平安。上半年在老东家做了一个全新的App（亚程旅游），下半场在新东家从零开始又做了一个全新的App（平安健康），这一年工作强度之大，是近四五年没有的，前段时间一直杠杠的身体都发出超负荷警报，最近才算自我恢复过来。2016年的主旋律就是苦并享受着，之所以享受主要是成长了。</p>
+<h2 id="记录2016"><a href="#记录2016" class="headerlink" title="记录2016"></a>记录2016</h2><p>2016年开始写文章记录自己在技术上的成长，先是在简书（<a href="http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。" target="_blank" rel="noopener">http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。</a></p>
+<p>2016年我主要在研究移动App的架构以及Git代码管理技术上，并把自己学习到技术运用到了我今年做的两个App上，平安健康App算是我架构设计的最佳实践作品。</p>
+<h3 id="关注架构"><a href="#关注架构" class="headerlink" title="关注架构"></a>关注架构</h3><p>好的架构师，首先是有丰富的研发经验，只有经过多个项目的洗礼，你才知道技术研发过程中的各个环节的痛点，项目需要的技术选型有哪些，对项目各个环节需要的技术了如指掌；比经验更重要的人性，架构师要有一颗正直善良的内心，时刻想着用技术手段为领导分忧解难，时刻想着用合理的技术运用为工程师兄弟们服务，优秀的架构是润物细无声的；有了善良的内心，架构师不断学习新的技术就变成自然而然的事情了，因为他总想用更好的技术为团队贡献力量。关于技术规范对于有两三年工作经验的人来说也许会不屑一顾，但对于我这种有工匠精神人则依然不放过一丝改善的机会，精益求精是原则，关于代码规范我总结了《iOS架构师之路：工程文件组织结构设计》、《iOS架构师之路：制定代码规范》、《iOS开发插件推荐（2）：自动化代码规范神器ClangFormat-Xcode》等多篇文章，为的就是能让代码规范满足项目高质量的同时却不会给开发带来多少负担，有自动化的手段的就自动化，能通人性的规范就通人性，代码规范方面已经积累了一套代码规范管理体系。网络层属于App项目的最顶层，网络层架构对于App来说尤为重要，在网络层架构方面我主要借鉴了casa大神的架构思路，参考我以前做的项目经验，总结了一套网络层架构解决方案，总结一片网络层架构设计的文章《iOS架构师之路：大型APP应用网络层架构思考》，我做的网络层架构大致解决了数据传输安全问题、性能问题（请求缓存和暂停取消等）、mock网络请求问题、数据标准化问题、交付问题、数据校验问题等，在网络架构方面我已经算是略有建树。关于项目内存管理，我也一套解决方案，比如项目的内存管理如何自动化，设计一套方案能减少开发工程师关注iOS内存的时间，又能有效的解决项目内存问题，为此我总结了《iOS架构师之路：项目内存管理方案》、《【译文】在iOS上自动检测内存泄漏》，这方面技术有运用到了平安健康App，这方面我还有需要学习和发掘的空间，目前我的一套内存管理方案也许能快速发现内存泄露，但如何能帮助开发定位内存泄露的代码方面还不成熟。关于提高项目效率方面，我总结了《iOS架构师之路：利用代码片段（XCodeSnippets）助力团队开发和项目质量管理》、《iOS比优鸡调试技巧篇（一）：reveal视图调试》，有一整理和设计了一套工具类，来帮助开发更有效率的写代码、搞定项目常用功能、提高调试效率等。在项目其他质量方面，我也有许多的思考，如何提倡减少继承来提高项目的可维护性，提倡瘦身控制器来提高项目可读性，为此总结和翻几篇文章，如《iOS架构师之路：控制器（View Controller）瘦身设计》、《iOS架构师之路：慎用继承》。缓存持久化方案方面，我也有较深的涉猎，总结了《iOS架构师之路：本地持久化方案》。关于架构未来还有很多可以发挥和学习的空间，如动态方案、组件化方案等，这些架构设计也会陆续运用到项目中。在关注最擅长的iOS领域的架构外，由于自己有过后端开发经验，也有过多年的网络，数据库，系统管理经验，2017希望自己能涉猎更多前后端知识，成为一个技术领域的的顶层设计者掌舵者。</p>
+<h3 id="学习Git"><a href="#学习Git" class="headerlink" title="学习Git"></a>学习Git</h3><p>2016年由于要带团队也关注项目管理方面的工作，因此学习过一些项目管理的方面的知识，后来对Git技术产生了兴趣，所以深入学习了Git技术。从不太懂git，到经过一年的学习和运用，在git技术运用上有收获不少，创作或者翻译了多篇git有关的文章。希望在2017年能至少集合出一本关于Git电子书吧，希望为git技术的推广贡献个人力量。</p>
+<h2 id="冲向2017年"><a href="#冲向2017年" class="headerlink" title="冲向2017年"></a>冲向2017年</h2><p>2016年对于技术人来说是非凡的一年，有许多革命性的技术诞生，大数据、移动互联网、云计算的高温还在持续的时候，随着今年alpha Go战胜李世石，人工智能开始站在了风口。在年末张小龙的一席演讲，小程序的崛起似乎也有很多可能性，未来可穿戴设备应用将改变人们的生活习惯。还有随着区块链成长起来的比特币交易。我们处在一个又一个技术革命的时代。未来人类社会的形态，将发生颠覆性的变化。旧的社会结构正在肢解，社会底层的机会将会被人工智能替代，未来会怎么发展即值得期待又让人忧心。作为技术人，未来依然大有可为是一定的。</p>
+<p>2016年看了一本书，是吴军写的《浪潮之巅》，书主要从技术和商业的角度介绍了借着技术革命的浪潮诞生的科技巨头，如软件时代的微软，互联网时代的Google、阿里巴巴，社交网络时代的腾讯，Facebook。2017年又是浪潮卷起的又一个元年，大风已起，想不被波及都不太可能。作为变革时代的人——要么get busy living ，要么get busy dying。</p>
+<p>2016年收获很多，2016年已经翻篇，借着2016年的势头，再接再厉，持续学习，持续改变，在2017年，发现一些适合自己的机会，去做一些想做的事情。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">生活感悟</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">年度总结</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2016</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2017</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/01/2017-01-01-from-2016-to-2017/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-12-16-Skating-And-Me" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1518,11 +1611,11 @@ being redirected to the login form.
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">产品与技术的碰撞</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">产品与技术的碰撞</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
         		</li>
       		
 		</ul>
@@ -1533,143 +1626,6 @@ being redirected to the login form.
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/10/31/2016-10-31-thinking-about-technique-and-product/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2016-10-07-a-protocol-for-dying" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/07/2016-10-07-a-protocol-for-dying/">【译文】临终协定 A protocol For Dying</a>
-    </h1>
-  
-
-        
-        <a href="/2016/10/07/2016-10-07-a-protocol-for-dying/" class="archive-article-date">
-  	<time datetime="2016-10-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>​前几天在微博上，看到有猿友转发了著名的开源消息管理平台zeroMQ的作者Pieter Hintjens安乐死的消息，作者简单在twitter发布了个消息，写了几个字：I’m choosing euthanasia etd 1pm.I have no last words.（我在下午一点选择了安乐死，我没有遗憾）。 作者如此平静和自信的离开，让我非常震惊和好奇，于是找到他的博客拜读了他的一系列文章。这篇文章是他被诊断胆管癌后写下的第一篇文章，讲述了作者对面对死亡的态度和做法，实在太有感动了，这篇文章有一篇台湾人的繁体翻译，不过放在facebook上，而且翻译不是特别好，所以我决定在它的基础上修改，希望给自己未来持续拜读以及有缘之人看到。</p>
-</blockquote>
-<p>原文出处：<a href="http://hintjens.com/blog:115" target="_blank" rel="noopener">A Protocol for Dying</a> <a href="https://www.facebook.com/notes/%E8%91%89%E4%BF%A1%E6%BA%90/%E8%87%A8%E7%B5%82%E5%8D%94%E5%AE%9Aa-protocol-for-dying/10153556546128601" target="_blank" rel="noopener">繁体翻译出处</a></p>
-<p>这是我的最后一篇文章（不是真的，后来作者还写几篇）。或许我可以多写几篇，但是有太多事情要去处理了，写完这个，我得选个最舒适的卧床姿势，去专注和病痛斗争以及陪伴我的家人了。  </p>
-<p>昨天有12个朋友来看我，包括我几个可爱的小孩，你可能会想这么多人来会累个半死，然而络绎不绝的朋友跟家人来访对我而言，就像一场奢华的，无限量供应新鲜热水的泡澡，棒极了。  </p>
-<p>我曾经是一个与社会断绝联繫又孤单的年轻人，也许有点自闭，心中只有工作、游泳跟几只猫。对于「跟其他人跟在一起会感到快乐」这种想法感到奇怪，不过我的工作还算有点价值，至少我自己是这么想的。我们用Cobol语言写过代码生成器，我写的编辑器在公司中很快受欢迎，因為它运作的非常好，而且能在我们所有的系统平台上执行。我自学C跟8086汇编，还写过几个工具性的共享软件。我就是这样慢慢地度过了90年代。  </p>
-<p>久而久之我发现如果跟陌生人交谈，任何形式的互动过程（例如买热狗、或者买东西）对方都会愉快地回应，这让我对交谈上了瘾，就像那些喝咖啡慢慢上癮的人一样。  </p>
-<p>它逐渐变成了日常，然后又变成我工作的目地：到陌生的地方去见不同的人。我喜欢参加研讨会，因為在那裡找人讲话不需要想借口，每个人都喜欢而且想要讲话。我很少在那里讨论技术性议题。如果你想讨论技术的话，可以去读代码。  </p>
-<p>因為这样，这几十年来我很自豪我的主要工作就是跟人谈话、听他们说话、彼此交流知识，然后综合起来再分享给其他人。我总共在欧洲、美洲、非洲与亚洲做了上千场交流，任何人赞誉我有创意、聪明，我都欣然接受。其实那些我曾提出的观点原型或理论，一直都是从有现实生活经验的人们那发掘出来的。  </p>
-<p>感谢你们，我的朋友们，因為你们才有那些。当我说 ” 我爱你们 ” 时，那不是一种姿态。我一直从你们身上获取给养，包括专业和思想。  </p>
-<p>今天，我要记录最后一个观点原型，它是关于如何面对死亡的。但是这篇文章不是RFC:)  </p>
-<h3 id="发生什么事了呢？"><a href="#发生什么事了呢？" class="headerlink" title="发生什么事了呢？"></a>发生什么事了呢？</h3><p>从专业技术上来讲，我所罹患的胆管癌已经转移到左右的肺部。从二月份开始干咳，疲惫感越来越沈重，以致无法专心工作。三月份我父亲过世我们忙进忙出办理他的后事时，咳嗽一直伴随着我。4月8日我跟我的肿瘤医生说我非常不舒服，她替我安排了紧急的CAT扫描跟抽血检验。  </p>
-<p>4月13日做了恐怖的内视镜及切片，4月15日做正子断层扫描(PET Scan)，4月16日本来我打算开车到Eindhoven去NextBuild公司演讲，没去成反而是进了急诊室，切片那一侧有剧痛，打了抗生素之后疼痛才感到纾解。4月18日肿瘤科医生确认是癌症转移，我无法出院得要继续留下来，我的主治大夫正在考虑要进行怎样的化疗，我罹患的癌症在欧洲病例不多，相关资料很少。  </p>
-<p>我们所确知的是胆管癌对化疗的反应不佳，而且我身上的癌症攻击性很强而且移动得很快，第三，身体其它地方（肺部）已经发现有癌症转移，这些都是清清楚楚的具体资料。  </p>
-<p>所以，那一天我对外公开了这个讯息，并准备面对死亡。  </p>
-<h3 id="如何与临终者交谈"><a href="#如何与临终者交谈" class="headerlink" title="如何与临终者交谈"></a>如何与临终者交谈</h3><p>与临终者谈话可能很艰辛，我们暂时称这个将死之病人为Bob，探病的人称为Alice，以下几点是Alice不应该对Bob说的：  </p>
-<ol>
-<li>”撑著点！你必须保持希望，你必须击败它！” ，你要假设 「Bob已经尽力去击败病魔了」，这个假设不会错的，就算他没有，那也是他的选择。</li>
-<li>”我好难过，你不能死”，我女儿曾对我讲过这句话，我当时跟她说这是无可争论的现实，死亡是不允许我们选择的。对事实生气或难过是在浪费时间，无法改变事实。</li>
-<li>”你一定可以打败它！不试怎么知道” ，这是Alice在表达她的期望。但错误的期望不是治疗，好的化疗药剂或者解痛剂才是。</li>
-<li>“好像还有一些偏方”，这句话让我很想拿鎚子，还好对我讲这种话的人不多。就算真有奇迹，也要考虑费用跟找到它对其他人所造成的压力，我们大家都知道，找到的机率像中头彩一样渺茫，那样做的话很自私也没效益。人活着，就有死亡，生死由命。</li>
-<li>”读圣经第几章第几节，会对你有帮助”，这种讲法是既鲁莽又失礼，再加上愚蠢与傲慢。如果Bob需要信仰帮忙的话，他自己会去找牧师，如果没有就是他不想去。这句话也会让我想拿鎚子。</li>
-<li>小心翼翼吞吞吐吐地探问是一种消极性的骚扰。让Bob一再反覆回答一些细微、无聊的蠢问题。例如「我把你吵醒了吗」，很可能Bob根本没有心情跟你作无意义的闲聊乱扯，他要么想要人们亲近他，要么跟他讲些有趣的事情（下面会讲）。<br>此外，不要打电话给他然后在电话上哭，如果你感觉快要哭了，先挂断电话等个十分钟后再打。流眼泪不是问题，可是对Bob而言，「自怜」比任何其它情绪都更加灰暗。我知道该怎么主导自己的情绪，但大部分其他Bob们的心灵还是很脆弱的。  </li>
-</ol>
-<p>以下是Alice可以对Bob说，并且会令他感到快乐的事：</p>
-<ol>
-<li>曾经一起经历过的往事。”还记得那时候吗？”，”喔！我想起来了，…，真棒！”</li>
-<li>诊疗的细节。Bob现在困在病床上，他经历林林总总行礼如仪的疗程、医护人员、药物以及他罹患的疾病等等。我会立刻靠上前去倾听Bob跟我分享。</li>
-<li>帮忙Bob处理实际的问题。要让生活井然有序很复杂，需要人出手相助与心力关照。</li>
-<li>假若Bob像我一样是个作家的话，可以跟他说”我买了你的书”这一类的话，不管是基于奉承或者真心都能让Bob会心一笑。<br>还有，除了快乐之外的其他情绪不必透露。记得，不要给他出新的功课。  </li>
-</ol>
-<h3 id="Bob的责任"><a href="#Bob的责任" class="headerlink" title="Bob的责任"></a>Bob的责任</h3><p>不是全部都是Alice的事，在此协定中Bob也有他的责任，至少有以下几件事：</p>
-<ol>
-<li>常喜乐。这点听起来有迂腐但很必要。如果Bob郁郁寡欢，Alice每次跟他讲话也会跟著心情沮丧。</li>
-<li>无庸置疑，Bob必须把自己的事情处理好。既然已经预期到来日无多，应该尽力让自己变得可有可无。在家庭上，这不可能做到，但是在工作上是做得到的。所以这几年来我已经把自己从活跃的ZeroMQ社群里面抽离了。</li>
-<li>减少所有能减少的压力跟花费。例如，比利时可以安乐死，我已经告诉医生请他们准备了（不是现在！时机到的时候…）。我会请人们当我还活著的时候来道别，不必办丧礼。如果大学觉得有用的话，我准备把器官捐给大学。</li>
-<li>认清现实。“希望”不是药，这点我已经解释过了。如果你打算跟你的医生协商，那么讨论些实用性的、让其他人都能受惠的议题。我已经告诉我的医生，如果他们想在我身上实验任何化疗药物就尽管去作。他们获得了数据，而我起码也对这个让我多活了五年以上的医疗系统作点贡献。</li>
-<li>作最坏打算。我的肿瘤医师当时一看到我的片子马上打电话给我，说她研判是癌症。左右两边的肺部都有，处处可见。我放下电话，告诉了孩子，隔天我也把最坏的状况告诉孩子们的学校，然后是家庭律师、公证人。十天之后，切片病理检验确认是癌症，这额外的十天让我有时间作准备，也让我自己有时间替自己感到悲伤。</li>
-<li>坦诚、透明地面对其他人。其他人需要有时间去悲伤，如果他们能在Bob还能讲话时跟他讨论的话，处理后事相对会简单得多。没什麼好难以啟齿的，死亡并不是失败。<h3 id="向孩子们解释"><a href="#向孩子们解释" class="headerlink" title="向孩子们解释"></a>向孩子们解释</h3></li>
-</ol>
-<p>我的小孩分别是12岁、9岁、5岁。没有父亲陪著长大是一件非常不好的事情，但这是现实。但我将活在他们的DNA里面、活在Youtube上无尽的会议演讲里面，活在我的文章里面。  </p>
-<p>这几年来我已经慢慢地向他们解释很多遍：终有一天我会走，或早或晚。每个人都会死，是的，小Gregor，你也是呀。那是生命的一部分。  </p>
-<p>小Gregor，想像你有一盒乐高玩具，你拼了一栋房子，留著它又一直继续拼新的房子，旧的都不拆掉的话会发生什麼事？”盒子会变成空的，爹地”，很好，这就对了，那麼你能继续盖新房子吗？”不可以，不行了” 。嗯，我们就像乐高游戏的房子，死了以后我们会被拆解，就像回到盒子裡，让新的身体可以被生出来，这就是生死之转轮。  </p>
-<p>不过，他们最常看到的是自己的老爸快乐又轻松（不是因为止痛剂的缘故），而且好几个礼拜都感觉蛮正常地在跟他们说再见。<strong>我好感恩没有突然挂掉，我好感恩没有像植物人那样失去心智。</strong>  </p>
-<p>而且我已经告诉我的孩子们要会游泳、骑单车、溜冰跟射击，要会煮东西、要去旅行，要去露营，要会使用新的科技而不必害怕。Gregor三岁的时候就在玩Minecraft，左手键盘，右手滑鼠。Noemie七岁的时候就学会用手枪。他们会讲好几种语言。他们有自信而且学得很快，就跟他们老爸一样。  </p>
-<p><strong>每个人都应该认识死亡的意义。构成一个完整的个体的核心之一就是接纳自己“生命有限”这个真相。</strong>当然，我们要為活下去打拼，然而当它要成為过去的时候，我们就拥抱这个终点吧。我很高兴自己能把这门功课亲自传授给孩子们，以前从来没有人会告诉我这些事情。  </p>
-<h3 id="安乐死"><a href="#安乐死" class="headerlink" title="安乐死"></a>安乐死</h3><p>我很庆幸自己最后还是没有离开比利时。这个国家允许临终或生命品质已经糟糕透顶的病人自主地选择结束生命。后者需要经过三个医师及一个精神科医师的评估，以及四个礼拜的缓冲期。若是前者则只须一个医生的评估意见。  </p>
-<p>我父亲是安乐死的，他选择了周二复活节，那时我们好几个家人陪伴他经历一个简单又安详的过程。第一剂注射让他进入昏睡状态，第二剂让心脏停止跳动。当时我觉得这样死法不错，虽然当时我不知道接著轮到我病了，（总之）安乐死是我已经想过的事。  </p>
-<p>令我感到震撼的是，都已经是2016年了依然很少国家允许安乐死，强制要求病人承受腐烂的折磨后和无效的急救，太残忍了。安乐死跟癌症特别有关系，因为癌症是主要的死因之一。如果你所属选区的民意代表反对的话，请抽空游说一下他，有尊严地死亡才是正确的方式。  </p>
-<h3 id="我对死亡的的态度"><a href="#我对死亡的的态度" class="headerlink" title="我对死亡的的态度"></a>我对死亡的的态度</h3><p>我从来不是一个怕事的人。关于我成为掠夺者角色 （Allen Ding形容得很好的那个）这件事情，我的死亡大笔一挥让我能淡然面对它在事业与社会上所产生的风险，也让我们能够在「权力游戏 Game of Thrones」计划结束后平静下来。那从来不是真正的我，只是恰巧在那个时间、那个地点我扮演了那个必须让事情继续运作下去的角色。  </p>
-<p><strong>我已经准备了多年去面对这一切，亲眼目睹数个精心筹划的计划同步进行的壮观场面，让我深深感到心满意足。从2011年开始我成为手枪射击专家、自学弹钢琴（还自编了几段小曲），能亲眼见到自己的小孩长成具有快乐、朝气蓬勃的性格，写了三本书，还指导ZeroMQ社群能逐步壮大。Bob如我，夫复何求？</strong>  </p>
-<p>这里的医护人员很亲切，我没有任何抱怨，我只有感恩所有的朋友，这几年来你们带给我欢乐，也感谢那些维持我性命和活力的药物。  </p>
-<p>谢谢你们 ！ :)  </p>
-<h3 id="替孩子们着想"><a href="#替孩子们着想" class="headerlink" title="替孩子们着想"></a>替孩子们着想</h3><p>可以把这篇文章用在你的故事里。如果你把故事写在别的地方或想Email给我的话，可以，请复制/粘贴在本篇下方的评论(Comments)上。我想让孩子们从一个地方就可以知道他们的父亲在别人口中是怎样的人。  </p>
-<p>许多想捐点钱帮助孩子们的人在问我的Paypal帐号，它是： <a href="mailto:ph@imatix.com" target="_blank" rel="noopener">ph@imatix.com</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">临终协定</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">a protocol for dying</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/07/2016-10-07-a-protocol-for-dying/">展开全文 >></a>
         </p>
       
 
@@ -1796,6 +1752,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">view层架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
               </li>
              
@@ -1808,27 +1784,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">view层架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">light controller</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1837,6 +1793,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1849,14 +1813,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1877,14 +1833,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1912,6 +1860,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
@@ -1932,15 +1888,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1952,7 +1904,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1984,6 +1940,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -2000,6 +1964,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
               </li>
              
@@ -2009,22 +1981,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2064,18 +2020,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
@@ -2085,14 +2029,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2109,6 +2045,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2160,6 +2116,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">投资</a>
               </li>
              
@@ -2172,23 +2144,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2197,6 +2153,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2216,14 +2180,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
               </li>
              
@@ -2240,6 +2196,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -2249,10 +2209,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
