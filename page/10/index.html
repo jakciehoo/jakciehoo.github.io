@@ -160,6 +160,147 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-07-17-iOS-OC-coding-guideline" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/17/2016-07-17-iOS-OC-coding-guideline/">iOS架构师之路：制定代码规范</a>
+    </h1>
+  
+
+        
+        <a href="/2016/07/17/2016-07-17-iOS-OC-coding-guideline/" class="archive-article-date">
+  	<time datetime="2016-07-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>先吹个牛，我打心眼自认为自己是喜欢对团队项目的代码质量负责的人，对于思考如何写出高质量可读性的代码我是乐此不彼。之前我写过两篇关于代码命名规范和代码编写规范的文章，<a href="http://www.jianshu.com/p/c598d32560e8" target="_blank" rel="noopener">《iOS架构师之路：iOS开发（OC）中的命名规范》</a>、<a href="http://www.jianshu.com/p/1aa8b9bb4576" target="_blank" rel="noopener">《iOS架构师之路：IOS项目中的编码规范》</a>，您要是心情很好，就去看看吧，如果低于很好，那不建议您看，怕您心里骂娘，因为现在看，感觉自己写的不太认真，有不少方面可以写的更细致，恩，我决定给自己帖贴金，不能这么说自己：其实这半年小哥我在代码规范方面的知识又见涨不少，所以看以前定制的规范不爽，作为架构师保持谦卑，通过不断学习，不断自我修正，对代码有一点洁癖是该有的气质（潜台词其实我想说我有）。制定项目的代码规范对架构师的重要性，就像要你生个娃一样，责任重大，万一生出来缺胳膊少腿，娶不到姑娘，你以后即使伺候他一辈子，给他当牛做马，他也不一定会念你的好。</p>
+</blockquote>
+<h2 id="论代码规范的重要性"><a href="#论代码规范的重要性" class="headerlink" title="论代码规范的重要性"></a>论代码规范的重要性</h2><blockquote>
+<ul>
+<li>1.架构师要为整个项目技术方向的发展负责，所以制定一个良好的代码规范，让开发工程师遵守，有利于项目朝着您预知的方向发展。比如当您向使用AOP技术实现日志功能时，就需要规定一些方法命名。</li>
+<li>2.一致的代码规范，有利于代码reveiw工作。如果每个工程师写的代码风格不一样，review代码的同事，阅读起来肯定不顺畅。</li>
+<li>3.要求工程师按照代码规范写出一致的代码，就不怕他跳槽。这行本来就浮躁，流动性大，要是工程师写的代码风格只有他自己能看懂，那玩意他跳槽，新人是很难继续维护这部分代码的，得不偿失。</li>
+</ul>
+</blockquote>
+<h2 id="培养代码洁癖"><a href="#培养代码洁癖" class="headerlink" title="培养代码洁癖"></a>培养代码洁癖</h2><p>给大家推荐一本关于代码规范的杰作，第一本：<a href="https://github.com/oa414/objc-zen-book-cn" target="_blank" rel="noopener">《禅与 Objective-C 编程艺术（Zen and the Art of the Objective-C Craftsmanship 中文翻译）》</a>（简称：Zen），这本书开源社区的大牛，无偿奉献出来的，该书给我们介绍许多写代码的正确姿势，并解释为什么使用这个姿势体验更好。看完这本书应该知道如何写出优雅、高可读性并且可靠的代码了。</p>
+<h2 id="我推荐的代码规范"><a href="#我推荐的代码规范" class="headerlink" title="我推荐的代码规范"></a>我推荐的代码规范</h2><p><a href="https://github.com/NYTimes/objective-c-style-guide" target="_blank" rel="noopener">《The Objective-C Style Guide used by The New York Times》</a>（简称：New York，该规范也有中文版），《New York》是我比较喜欢的编码规范风格，它是《Zen》的编码思想一个很好的实践。</p>
+<h2 id="关于《Zen》、《New-York》代码规范的补充"><a href="#关于《Zen》、《New-York》代码规范的补充" class="headerlink" title="关于《Zen》、《New York》代码规范的补充"></a>关于《Zen》、《New York》代码规范的补充</h2><h3 id="1-iOS切图文件的命名规范"><a href="#1-iOS切图文件的命名规范" class="headerlink" title="1.iOS切图文件的命名规范"></a>1.iOS切图文件的命名规范</h3><p>这部分规范可能是很有经验的设计提供，也有可能是我们开发人员提供，掌握总是没有坏处的。</p>
+<p>我们的命名规则的基本思想是把文件名分成三部分，第一部分是图片的逻辑归属分类，第二部分是图片的表现内容，第三部分是图片的内容的类型，有些图片还会有第四部分，表示图片表现的状态。首先有几个规则是：</p>
+<blockquote>
+<ul>
+<li>用英文命名，不用拼音</li>
+<li>每一部分用下划线分隔</li>
+<li>图片名中两倍图在名字最后要加@2x，三倍图在名字最后要加@3x</li>
+</ul>
+</blockquote>
+<p><strong>万能公式</strong>：</p>
+<p><img src="/img/in-post/ios_coding_guideline/image_naming_guideline.png" alt=""></p>
+<p><strong>逻辑分类</strong></p>
+<p>逻辑分类即是这张图片所属的分组，在 iOS 中大多的项目是以 Tab bar 的形式进行逻辑上的分组，以Showtime客户端为例：</p>
+<p><img src="/img/in-post/ios_coding_guideline/show_time_client_image.png" alt=""></p>
+<p>这张图中的 Showtime 客户端就是使用 Tab bar 进行分组的，可以看出内容分成了五个部分：Home，Categories，Live TV，My List 和 Search。所以例如在这个界面中，右上角的设置按钮，那么它的切图命名的 第一部分就是 Home。</p>
+<p>但是仔细看看上面这个界面的话有一些图其实是不属于某个分类的，比如 Tab bar 中的图标文件和 Navigation Bar 中的 Showtime 图标，对于这两种内容来讲，它们命名的规范是第一部分显示的是 navigationbar 或者是 tabbar。</p>
+<p><strong>表现内容</strong></p>
+<p>表现内容就是这个图片表现的内容，同样以上图为例，界面中右上角的按钮表现的是设置按钮，那么它的表现内容就是设置，所以这个按钮在第二部分显示的就是 settings。</p>
+<p>而在上图的 Tab bar 中第二部分的名字就是它们在程序中显示的名字 ，而 Navigation Bar 中的图标的第二部分命名因为表现的内容就是 Showtime，所以显示的就是 showtime。</p>
+<p><strong>内容类型</strong></p>
+<p>同样以 Showtime 的图为例，在 Navigation Bar 中的图标，它的内容类型是 icon，所以这个图片文件的两倍图完整命名就是 <a href="mailto:navigationbar_showtime_icon@2x.png" target="_blank" rel="noopener">navigationbar_showtime_icon@2x.png</a>。而右上角的设置按钮的话，它的类型是按钮，所以第三部分即是 button 的缩写 btn，即是 navigationbar_settings_button，下面五个 Tab bar 的图片名分别是 tabbar_home_icon,tabbar_categories_icon,tabbar_livetv_icon,tabbar_mylist_icon 和 tabbar_search_icon。</p>
+<p><strong>图片状态</strong></p>
+<p>对于某些类型的切图，它可能代表的只是某个控件的一种状态，以按钮为例，正常的状态就是 normal，而点击中的状态是 highlighted，选中的状态则是 selected。Showtime 的图中，右上角的设置图标是正常的状态，所以加入图片的状态之后，它的两倍图的完整命名应该是 <a href="mailto:navigationbar_settings_btn_normal@2x.png" target="_blank" rel="noopener">navigationbar_settings_btn_normal@2x.png</a>。而下方的 Tab bar 来讲，选中的是 Home，那么当前这张图片的两倍图的完整命名就应该是 <a href="mailto:tabbar_home_icon_selected@2x.png" target="_blank" rel="noopener">tabbar_home_icon_selected@2x.png</a>。</p>
+<h3 id="2-类的布局"><a href="#2-类的布局" class="headerlink" title="2.类的布局"></a>2.类的布局</h3><p>程序布局的目的是显示出程序良好的逻辑结构，提高程序的准确性、连续性、可读性、可维护性。更重要的是，统一的程序布局和编程风格，有助于提高整个项目的开发质量，提高开发效率，降低开发成本。同时，对于普通程序员来说，养成良好的编程习惯有助于提高自己的编程水平，提高编程效率。因此，统一的、良好的程序布局和编程风格不仅仅是个人主观美学上的或是形式上的问题，而且会涉及到产品质量，涉及到个人编程能力的提高，必须引起大家重视。</p>
+<h5 id="2-1-文件布局"><a href="#2-1-文件布局" class="headerlink" title="2.1.文件布局"></a>2.1.文件布局</h5><p><strong>【规则2-1-1】遵循统一的布局顺序来书写头文件。</strong></p>
+<p><strong>说明：</strong>以下内容如果某些节不需要，可以忽略。但是其它节要保持该次序。<strong> </strong><br>头文件布局:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">文件头</span><br><span class="line"><span class="comment">#import （依次为标准库头文件、非标准库头文件）</span></span><br><span class="line">全局宏</span><br><span class="line">常量定义</span><br><span class="line">全局数据类型</span><br><span class="line">类定义</span><br></pre></td></tr></table></figure>
+<p><strong>正例：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                文件引用</span><br><span class="line"> ***************************************************************************/ </span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 类引用</span><br><span class="line"> ***************************************************************************/</span><br><span class="line"> </span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 宏定义</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 常量</span><br><span class="line"> ***************************************************************************/ </span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                类型定义</span><br><span class="line"> ***************************************************************************/ </span><br><span class="line">/ ***************************************************************************</span><br><span class="line"> *                                 类定义</span><br><span class="line"> ***************************************************************************/</span><br></pre></td></tr></table></figure>
+<p><strong>【规则2-1-2】遵循统一的布局顺序来书写实现文件。</strong><br><strong>说明：</strong>以下内容如果某些节不需要，可以忽略。但是其它节要保持该次序。<br>实现文件布局：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">文件头（参见“注释”一节）</span><br><span class="line"><span class="comment">#import （依次为标准库头文件、非标准库头文件）</span></span><br><span class="line">文件内部使用的宏</span><br><span class="line">常量定义</span><br><span class="line">文件内部使用的数据类型</span><br><span class="line">全局变量</span><br><span class="line">本地变量（即静态全局变量）</span><br><span class="line">类的实现</span><br></pre></td></tr></table></figure>
+<p><strong>正例：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                文件引用</span><br><span class="line"> ***************************************************************************/ </span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 宏定义</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 常量</span><br><span class="line"> ***************************************************************************/ </span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                类型定义</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                全局变量</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/***************************************************************************</span><br><span class="line"> *                                 原型</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/ ***************************************************************************</span><br><span class="line"> *                                类特性</span><br><span class="line"> ***************************************************************************/</span><br><span class="line">/ ***************************************************************************</span><br><span class="line"> *                                类的实现</span><br><span class="line"> ***************************************************************************/</span><br></pre></td></tr></table></figure>
+<h5 id="2-2类结构布局"><a href="#2-2类结构布局" class="headerlink" title="2.2类结构布局"></a>2.2类结构布局</h5><p>使用#pragma mark –来分类方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#pragma mark – Life Cycle</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - Events</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark – Private Methods</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - UITextFieldDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - UITableViewDataSource</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - UITableViewDelegate</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - Custom Delegates</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark – Getters and Setters</span></span><br></pre></td></tr></table></figure>
+<h5 id="2-3布局中的空格"><a href="#2-3布局中的空格" class="headerlink" title="2.3布局中的空格"></a>2.3布局中的空格</h5><p>每个方法或者功能块之间为了结构清晰，应当有且只有一行空格。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface SomeClass:NSObject</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (noatomic, strong) UIView *aView</span></span><br><span class="line"></span><br><span class="line">-(void)someMethod;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@implementation SomeClass</span></span><br><span class="line"></span><br><span class="line">- (void)setAView:(NSInteger )aview &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(void)someMethod &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<h5 id="2-4关于布局中的Private-Methods块，正常情况下ViewController里面不应该写"><a href="#2-4关于布局中的Private-Methods块，正常情况下ViewController里面不应该写" class="headerlink" title="2.4关于布局中的Private Methods块，正常情况下ViewController里面不应该写"></a>2.4关于布局中的Private Methods块，正常情况下ViewController里面不应该写</h5><p>不是delegate方法的，不是event response方法的，不是life cycle方法的，就是private method了。对的，正常情况下ViewController里面一般是不会存在private methods的，这个private methods一般是用于日期换算、图片裁剪啥的这种小功能。这种小功能要么把它写成一个category，要么把他做成一个模块，哪怕这个模块只有一个函数也行。<br>ViewController基本上是大部分业务的载体，本身代码已经相当复杂，所以跟业务关联不大的东西能不放在ViewController里面就不要放。另外一点，这个private method的功能这时候只是你用得到，但是将来说不定别的地方也会用到，一开始就独立出来，有利于将来的代码复用。</p>
+<h3 id="3-属性初始化放哪最好？建议在Getter中初始化"><a href="#3-属性初始化放哪最好？建议在Getter中初始化" class="headerlink" title="3.属性初始化放哪最好？建议在Getter中初始化"></a>3.属性初始化放哪最好？建议在Getter中初始化</h3><p>我看到很多APP，甚至我公司的项目，很多开发工程师，初始化属性的位置比较随意，有单独添加一个初始化方法类似setupView的，有在init初始化的，各种情况都有，我其实挺崩溃的，首先初始化方式不一致，其次也这样做非常有可能破坏了每个方法功能的单一性（每个方法只做一件事）。我比较习惯一个对象的”私有”属性写在extension里面，然后这些属性的初始化全部放在getter里面做，在init和dealloc之外，是不会出现任何类似_property这样的写法的。就是这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface CustomObject()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (nonatomic, strong) UILabel *label;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@implementation</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pragma mark - getters and setters</span></span><br><span class="line"></span><br><span class="line">- (UILabel *)label &#123;</span><br><span class="line">    <span class="keyword">if</span> (_label == nil) &#123;</span><br><span class="line">        _label = [[UILabel alloc] init];</span><br><span class="line">        _label.text = @<span class="string">"1234"</span>;</span><br><span class="line">        _label.font = [UIFont systemFontOfSize:<span class="number">12</span>];</span><br><span class="line">        ... ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _label;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"><span class="comment">#pragma mark - life cycle</span></span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [self.view addSubview:self.label];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewWillAppear:(BOOL)animated &#123;</span><br><span class="line">    [super viewWillAppear:animated];</span><br><span class="line">    self.label.frame = CGRectMake(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>唐巧说他喜欢的做法是用_property这种，然后关于<code>_property</code>的初始化通过<code>[self setupProperty]</code>这种做法去做。从刚才上面的代码来看，就是要在viewDidLoad里面多调用一个setup方法而已，然后我推荐的方法就是不用多调一个setup方法，直接走getter。</p>
+<p>嗯，怎么说呢，其实两种做法都能完成需求。但是从另一个角度看，苹果之所以选择让<code>[self getProperty]</code>和<code>self.property</code>可以互相通用，这种做法已经很明显地表达了苹果的倾向：希望每个property都是通过getter方法来获得。</p>
+<p>早在2003年，Allen Holub就发了篇文章《<a href="http://www.javaworld.com/article/2073723/core-java/why-getter-and-setter-methods-are-evil.html" target="_blank" rel="noopener">Why getter and setter methods are evil</a>》，自此之后，业界就对此产生了各种争议，虽然是从Java开始说的，但是发展到后面各种语言也参与了进来。然后虽然现在关于这个问题讨论得少了，但是依旧属于没有定论的状态。setter的情况比较复杂，也不是我这一节的重点，我这边还是主要说getter。我们从objc的设计来看，苹果的设计者更加倾向于getter is not evil。<br>      认为getter is evil的原因有非常之多，或大或小，随着争论的进行，大家慢慢就聚焦到这样的一个原因：Getter和Setter提供了一个能让外部修改对象内部数据的方式，这是evil的，正常情况下，一个对象自己私有的变量应该是只有自己关心。</p>
+<p>然后我们回到iOS领域来，objc也同样面临了这样的问题，甚至更加严重：objc并没有像Java那么严格的私有概念。但在实际工作中，我们不太会去操作头文件里面没有的变量，这是从规范上就被禁止的。</p>
+<p>认为getter is not evil的原因也可以聚焦到一个：高度的封装性。getter事实上是工厂方法，有了getter之后，业务逻辑可以更加专注于调用，而不必担心当前变量是否可用。我们可以想一下，假设一个ViewController有20个subview要加入view中，这20个subview的初始化代码是肯定逃不掉的，放在哪里比较好？放在哪里都比放在addsubview的地方好，我个人认为最好的地方还是放在getter里面，结合单例模式之后，代码会非常整齐，生产的地方和使用的地方得到了很好的区分。<br>所以放到iOS来说，我还是觉得使用getter会比较好，因为evil的地方在iOS这边基本都避免了，not evil的地方都能享受到，还是不错的。</p>
+<h3 id="4-Getters-and-Setters放在最底部"><a href="#4-Getters-and-Setters放在最底部" class="headerlink" title="4.Getters and Setters放在最底部"></a>4.Getters and Setters放在最底部</h3><p>我之前写代码一直把Getters and Setters 放在implementation的最前面，昨天看大神<a href="https://github.com/casatwy" target="_blank" rel="noopener">casatwy</a>说最好放在最后面，我觉得更有道理。控制器可能会有非常多的view属性和其他属性,如果所有的getters and setters放在前面，就会导致在implementation代码顶部有大量的初始化代码，这就导致主要的逻辑代码挪到后面去了，其他人阅读代码是不太方便的。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>夜深，该睡了。</p>
+<p>　</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">编码规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">coding guideline</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/07/17/2016-07-17-iOS-OC-coding-guideline/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-07-16-what-you-need-to-know-to-start-learning-how-to-code" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -978,6 +1119,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
@@ -990,19 +1135,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1022,19 +1155,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1043,14 +1180,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1066,6 +1195,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1075,6 +1216,46 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1090,27 +1271,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1122,19 +1295,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1150,39 +1311,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1202,11 +1335,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1219,14 +1360,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1246,6 +1379,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -1258,15 +1411,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1287,14 +1436,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1334,23 +1475,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1358,7 +1483,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1371,6 +1496,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1414,6 +1555,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -1423,10 +1568,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
