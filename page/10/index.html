@@ -160,6 +160,109 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-08-28-iOS-Xcode-Snippets" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/">iOS架构师之路：利用代码片段（XCodeSnippets）助力团队开发和项目质量管理</a>
+    </h1>
+  
+
+        
+        <a href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/" class="archive-article-date">
+  	<time datetime="2016-08-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
+<p>最近哥们我比较痴迷于琢磨如何利用技术手段，提高项目代码的可维护性，不要嫌弃我烦啊，往往知识就藏在细微之中啊，现在APP的竞争那是相当的激烈，你做的比别人好那么一点点，也许剩者就是你了，有木有，想不想做王，肯定的是不是，那就好好琢磨一些别人不去关注的细节吧。</p>
+</blockquote>
+<p>前面我已经写过几篇代码规范的文章，也讲到了利用clangFormatForXcode来统一代码规范配置，从而标准格式化团队代码。如果您还没看到过，推荐你去看看，推荐理由：因为是我写的。</p>
+<p>clangFormat能解决代码一遍编写规范错误问题，比如方法的第一个括号与方面名之间有一个空格，并且不换行的这样的规范问题clangFormat能帮我们快速发现并自动处理。但是……如果写的代码如果结构和选型有问题，它就像个白痴了，一丁点忙也帮不上。所以我后面还会有几篇文章介绍一些技术手段来解决方法选型问题，比如制作代码模板 (Code Template)来帮助团队开发人员编写规范的代码结构、用OCLint给iOS代码做静态分析等，是不是迫不及待想学习这些知识呢？不过今天不能如你愿，我又没挣你的钱，所以我只负责自己写自己想写的，不好意西啦。</p>
+<p>人应该都是懒惰的吧，优秀程序员也是人好嘛。只是优秀程序员会思考如何偷懒又能达成目标，而普通程序员就是想着偷懒，甚至都懒得想，只是单纯的偷懒而已。最近哥哥我又跳了一个新坑——中国平安。TMD，好几天的生命要浪费在配置开发环境上。我决定以后不用公司电脑了，用自己的，恩，努力多挣钱。相信很多iOS开发者都多少有些自己的代码片段，但是，但是肯定不全，因为懒得去制作代码片段，也懒得去收集。作为优秀程序员的我呢，跟尔等比就是勤奋这么一点点，所以在配置新的开发环境时，我决定把自己以前的代码片段，以及网上收集了不少很不错的代码片段总结出来，分享给大家，恩，你不用说，其实我就是IT界的雷锋。github地址：<a href="https://github.com/jakciehoo/XcodeSnippetsForObjective-C" title="XcodeSnippetsForObjective-C" target="_blank" rel="noopener">《XcodeSnippetsForObjective-C》</a></p>
+<h3 id="如何使用XcodeSnippetsForObjective-C"><a href="#如何使用XcodeSnippetsForObjective-C" class="headerlink" title="如何使用XcodeSnippetsForObjective-C"></a>如何使用XcodeSnippetsForObjective-C</h3><p>需要你先装一个Xcode插件——ACCodeSnippetRepositoryPlugin插件。下载地址：<a href="https://github.com/acoomans/ACCodeSnippetRepositoryPlugin" title="ACCodeSnippetRepositoryPlugin插件" target="_blank" rel="noopener">https://github.com/acoomans/ACCodeSnippetRepositoryPlugin</a>，怎么装插件不用我教了吧，你要是不会可以付费咨询我。具体安装和使用参考github的官方介绍吧。</p>
+<p>这次你先这么使用吧，我回头有时间把这个细节的文章整理下，然后做一个脚本把这些工具和规范都自动搞定，恩。</p>
+<h3 id="XcodeSnippetsForObjective-C主要包含的代码片段介绍"><a href="#XcodeSnippetsForObjective-C主要包含的代码片段介绍" class="headerlink" title="XcodeSnippetsForObjective-C主要包含的代码片段介绍"></a>XcodeSnippetsForObjective-C主要包含的代码片段介绍</h3><p>1.常用property创建的片段</p>
+<p><img src="/img/in-post/ios_xcode_snippets/Screen%20Shot%202016-08-28%20at%205.10.14%20PM.png" alt=""></p>
+<p>2.常见的ENUM、UITableViewDataSource/Delegate、PickerViewDataSourceDelegate、UICollectionViewDataSource/Delegate等片段创建</p>
+<p><img src="/img/in-post/ios_xcode_snippets/Screen%20Shot%202016-08-28%20at%205.18.55%20PM.png" alt=""></p>
+<p>3.常见的singleton、init、initialize、kvo等方法片段的创建</p>
+<p>4.其他常用片段的创建</p>
+<h3 id="XcodeSnippetsForObjective-C的后期维护"><a href="#XcodeSnippetsForObjective-C的后期维护" class="headerlink" title="XcodeSnippetsForObjective-C的后期维护"></a>XcodeSnippetsForObjective-C的后期维护</h3><p>这个片段github仓库我会长期维护，也欢迎朋友提交你认为对大家有价值的代码片段上来。</p>
+<h3 id="关于XCode代码片段的制作和使用"><a href="#关于XCode代码片段的制作和使用" class="headerlink" title="关于XCode代码片段的制作和使用"></a>关于XCode代码片段的制作和使用</h3><p>这部分国内文章也不少，大家自行查找吧，我这顺手找了一篇：<a href="http://ios.jobbole.com/82215/" target="_blank" rel="noopener">《iOS 开发偷懒小技巧：自定义 XCode 代码片段</a><br>》<a href="#"></a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>等着有时间制作一个脚本，把所有规范代码的技术工具，一次性用脚本在项目中部署。</strong></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="%5Bhttp://nshipster.com/xcode-snippets/%5D">《Xcode Snippets》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">XCode snippets</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发效率</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码片段</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-08-20-iOS-Plugin-Recommend-ClangFormat-Xcode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1263,119 +1366,9 @@
 
 
   
-    <article id="post-2016-04-23-light-your-view-controler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/23/2016-04-23-light-your-view-controler/">iOS架构师之路：控制器（View Controller）瘦身设计</a>
-    </h1>
-  
-
-        
-        <a href="/2016/04/23/2016-04-23-light-your-view-controler/" class="archive-article-date">
-  	<time datetime="2016-04-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-04-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h1><p>　　古老的MVC架构是容易被iOS开发者理解和接受的设计模式，因此在项目中也是应用最多。但是由于iOS开发的项目功能越来越庞大，项目代码也随之不断壮大，MVC的模糊定义导致我们的业务开发工程师很容易把大量的代码写到视图控制器中，行业中对这种控制器有个专业词汇Massive ViewControler（臃肿的视图控制器）。代码臃肿导致可读性可维护性差，而且这种不清晰的设计还有许多的副作用，比如代码重用性差。作为架构师需要关注项目的代码质量。指导业务开发工程师写出高质量，高健壮性，高可用的代码也是很重要的工作。因此需要知道一些为控制器瘦身的技巧，并在项目中帮助业务开发工程师合理的运用它们。本文翻译一篇国外优秀文章：<a href="https://www.objc.io/issues/1-view-controllers/lighter-view-controllers/" target="_blank" rel="noopener">Lighter View Controllers</a>。<br>示例代码下载地址：<a href="https://github.com/jakciehoo/Lighter-View-Controller/" target="_blank" rel="noopener">JackieHoo’s GitHub</a></p>
-<h1 id="分离数据源-Data-Source-等协议-Protocol"><a href="#分离数据源-Data-Source-等协议-Protocol" class="headerlink" title="分离数据源(Data Source)等协议(Protocol)"></a><strong>分离数据源(Data Source)等协议(Protocol)</strong></h1><p>　　瘦身控制器的有效方法之一就是将实现 UITableViewDataSource 协议相关的代码封装成一个类(比如本文中的 ArraryDataSource )。如果你多用几次这个设计，你就会创建复用性高的封装类。<br>　　举个例子，示例工程中的类 PhotosViewController实现如下数据源方法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#pragma mark Private Method</span></span><br><span class="line"></span><br><span class="line">- (Photo*)photoAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    <span class="keyword">return</span> photos[(NSUInteger)indexPath.row];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># pragma mark UITableViewDataSource</span></span><br><span class="line"></span><br><span class="line">- (NSInteger)tableView:(UITableView*)tableView</span><br><span class="line"> numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">    <span class="keyword">return</span> photos.count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UITableViewCell*)tableView:(UITableView*)tableView</span><br><span class="line">        cellForRowAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    PhotoCell* cell = [tableView dequeueReusableCellWithIdentifier:PhotoCellIdentifier</span><br><span class="line">                                                      forIndexPath:indexPath];</span><br><span class="line">    Photo* photo = [self photoAtIndexPath:indexPath];</span><br><span class="line">    cell.label.text = photo.name;</span><br><span class="line">    <span class="keyword">return</span> cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　上面示例的数据源的实现都与 NSArray 有关，还有一个方法的实现与 Photo 有关(Photo 与 Cell 呈一一对应关系)。下面让我们来把与 NSArray 相关的代码从 控制器中抽离出来,并改用 block 来设置 cell 的视图。当然你也可以用代理来实现，取决于你的个人喜好。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@implementation ArrayDataSource</span></span><br><span class="line"></span><br><span class="line">- (id)itemAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    <span class="keyword">return</span> items[(NSUInteger)indexPath.row];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)tableView:(UITableView*)tableView</span><br><span class="line"> numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">    <span class="keyword">return</span> items.count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UITableViewCell*)tableView:(UITableView*)tableView</span><br><span class="line">        cellForRowAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    id cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier</span><br><span class="line">                                              forIndexPath:indexPath];</span><br><span class="line">    id item = [self itemAtIndexPath:indexPath];</span><br><span class="line">    configureCellBlock(cell,item);</span><br><span class="line">    <span class="keyword">return</span> cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
-<p>现在我们可以控制器中的三个数据源代理方法可以干掉，并且把 控制器的 dataSource 设置为 ArrayDataSource 的实例。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void (^configureCell)(PhotoCell*, Photo*) = ^(PhotoCell* cell, Photo* photo) &#123;</span><br><span class="line">cell.label.text = photo.name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">photosArrayDataSource = [[ArrayDataSource alloc] initWithItems:photos</span><br><span class="line">cellIdentifier:PhotoCellIdentifier</span><br><span class="line">configureCellBlock:configureCell];</span><br><span class="line">self.tableView.dataSource = photosArrayDataSource;</span><br></pre></td></tr></table></figure>
-<p>通过上面的方法，你就可以把设置 Cell 视图的工作从 控制器中抽离出来。现在你不需要再关心indexPath如何与 NSArrary 中的元素如何关联，当你需要将数组中的元素在其它 UITableView 中展示时你可以重用以上代码。你也可以在 ArrayDataSource 中实现更多的方法，比如<code>tableView:commitEditingStyle:forRowAtIndexPath:</code>。</p>
-<p>这样做还能带来额外的好处，我们还可以针对这部分实现编写单独的单元测试。不仅仅针对NSArray，我们可以使用这种分离思路处理其他数据容器（比如<code>NSDictionary</code>）。</p>
-<p>该技巧同样适用于其他 Protocol ,比如<code>UICollectionViewDataSource</code> 。通过该协议，你可以定义出各种各样的 UICollectionViewCell 。假如有一天，你需要在代码在使用到 UICollectionView 来替代当前的 UITableView，你只需要修改几行 控制器中的代码即可完成替换。你甚至能够让你的 DataSource 类同时实现 <code>UICollectionViewDataSource</code> 协议和<code>UITableViewDataSource</code>协议。</p>
-<h1 id="把业务逻辑移至-Model"><a href="#把业务逻辑移至-Model" class="headerlink" title="把业务逻辑移至 Model"></a><strong>把业务逻辑移至 Model</strong></h1><p>　　下面是一段位于 控制器中的代码，作用是找出针对用户active priority的一个列表。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//ViewController.m</span><br><span class="line">- (void)loadPriorities &#123;</span><br><span class="line">  NSDate* now = [NSDate date];</span><br><span class="line">  NSString* formatString = @<span class="string">"startDate &lt;= %@ AND endDate &gt;= %@"</span>;</span><br><span class="line">  NSPredicate* predicate = [NSPredicate predicateWithFormat:formatString, now, now];</span><br><span class="line">  NSSet* priorities = [self.user.priorities filteredSetUsingPredicate:predicate];</span><br><span class="line">  self.priorities = [priorities allObjects];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　然而，假如你把代码实现移至 User 的 Category 中，控制器中的代码将会更简洁、更清晰。</p>
-<p>将以上代码移到User+Extension.m中 </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//User+Extension.m</span><br><span class="line">- (NSArray*)currentPriorities &#123;</span><br><span class="line">    NSDate* now = [NSDate date];</span><br><span class="line">    NSString* formatString = @<span class="string">"startDate &lt;= %@ AND endDate &gt;= %@"</span>;</span><br><span class="line">    NSPredicate* predicate = [NSPredicate predicateWithFormat:formatString, now, now];</span><br><span class="line">    <span class="keyword">return</span> [[self.priorities filteredSetUsingPredicate:predicate] allObjects];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　ViewController.m 中的代码可以改成这个鬼样子，是不是明显要简洁许多，可读性强很多呢。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//ViewController.m</span><br><span class="line">- (void)loadPriorities &#123;</span><br><span class="line">    self.priorities = [self.user currentPriorities];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　实际开发中，有些代码很难移至 model 对象中，但是很明显这些代码与 model 对象有关。针对这种情况，我们可以创建一个 store 类，并把相关代码迁移进去。</p>
-<h1 id="创建Store类"><a href="#创建Store类" class="headerlink" title="创建Store类"></a><strong>创建Store类</strong></h1><p>　　在这个示例项目工程中，我们有一段用于从本地文件加载数据并解析的代码:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)readArchive &#123;</span><br><span class="line">    NSBundle* bundle = [NSBundle bundleForClass:[self class]];</span><br><span class="line">    NSURL *archiveURL = [bundle URLForResource:@<span class="string">"photodata"</span></span><br><span class="line">                                 withExtension:@<span class="string">"bin"</span>];</span><br><span class="line">    NSAssert(archiveURL != nil, @<span class="string">"Unable to find archive in bundle."</span>);</span><br><span class="line">    NSData *data = [NSData dataWithContentsOfURL:archiveURL</span><br><span class="line">                                         options:<span class="number">0</span></span><br><span class="line">                                           error:NULL];</span><br><span class="line">    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];</span><br><span class="line">    _users = [unarchiver decodeObjectOfClass:[NSArray <span class="class"><span class="keyword">class</span>] <span class="title">forKey</span>:</span>@<span class="string">"users"</span>];</span><br><span class="line">    _photos = [unarchiver decodeObjectOfClass:[NSArray <span class="class"><span class="keyword">class</span>] <span class="title">forKey</span>:</span>@<span class="string">"photos"</span>];</span><br><span class="line">    [unarchiver finishDecoding];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　<em>控制器</em>不应该负责以上的工作，控制器只要负责数据调度就可以了，数据获取的工作我们完全可以交给 <em>store</em> 对象来负责。通过将这些代码从 <em>控制器</em>中抽离出来，我们可以更容易复用、测试这些方法、同时让<em>控制器</em>变得更轻巧( <em>Store</em> 对象一般负责数据的加载、缓存、持久化。<em>Store</em> 对象也经常被称作 <em>Service Layer</em> 对象，或者 <em>Repository</em> 对象)。</p>
-<h1 id="将网络通信（Web-Service）逻辑移至Model层"><a href="#将网络通信（Web-Service）逻辑移至Model层" class="headerlink" title="将网络通信（Web Service）逻辑移至Model层"></a><strong>将网络通信（Web Service）逻辑移至Model层</strong></h1><p>　　这与上一个主题非常相似：别把 <em>Web Service</em> 相关的代码写在 <em>控制器</em>中，应该把这部分代码抽离出来。并通过方法的回调对数据进行处理。</p>
-<p>　　不仅如此，你还可以把处理异常情况的工作也转交给 <em>Store</em> 对象负责。</p>
-<h1 id="把视图相关的代码移至View层"><a href="#把视图相关的代码移至View层" class="headerlink" title="把视图相关的代码移至View层"></a><strong>把视图相关的代码移至View层</strong></h1><p>　　同样构建视图（尤其是复杂视图）的代码也不应该写在 <em>View Controller</em> （关我毛事啊，我只负责调度和通信啊）中。要么使用<em>Interface Builder</em> ，要么封装一个 <em>Vew</em> 的子类来完成这部分工作。假设现在需要实现自定义一个日期选择器。我们应该新建一个 <em>DatePickerView</em> 的子类来完成构建视图的工作，而不是把这部分工作放在 <em>View Controller</em>中完成。同样的，这将是你的代码更简洁，复用性更强。</p>
-<p>　　除了用 <em>code</em> 的形式来实现自定义视图，你也可以使用 <em>Interface Builder</em> 来完成构建自定义视图的工作。很多人都认为 <em>Interface Builder</em> 只能用于为 <em>View Controller</em> 构建视图，其实不然，你可以通过单独的 <em>nib</em> 文件来加载在 <em>Interface Builder</em>中构建的自定义视图。在示例工程当中，我们创建了一个包含了 <em>Photo Cell</em> 视图的 <em>PhotoCell.xib</em> 文件。<br> <img src="http://upload-images.jianshu.io/upload_images/1112722-d945cbc94313b0fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>如图所示，我们在 <em>view</em> 中创建了属性(无需设置 <em>File’s Owner</em> 对象)并把它们与 <em>Interface Builder</em> 中的视图关联起来。这个方法同样适用于构建其它自定义视图。</p>
-<h1 id="通讯"><a href="#通讯" class="headerlink" title="通讯"></a><strong>通讯</strong></h1><p>我们在<em>控制器</em>中经常需要与其它<em>控制器</em>、<em>Model</em> 、 <em>View</em> 进行通讯。虽然这本来就是 <em>控制器</em>应该负责处理的事情，但我们依然可以用尽可能少的代码完成我们控制器的负责的工作。</p>
-<p>现在已经有很多成熟的方案来建立 <em>控制器</em>与 <em>View</em> 的通讯(例如 <em>KVO</em> 和 <em>fetched results controllers</em>)。然而 <em>控制器</em>之间的通讯目前还没有类似的方案可以借鉴。</p>
-<p>在实际开发中，我们经常需要把 遇到需要把<em>控制器</em>持有的一些状态信息，传递到多个<em>控制器的需求</em>。通常我们会将这些状态信息保存在一个对象中然后传递给其他的视图控制器。这部分的瘦身技巧比较复杂，我留在以后再专门讲解吧。</p>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a><strong>结论</strong></h1><p>我们已经展示了一些瘦身<em>控制器</em>的方法。作为架构师我们不可能完全照搬这些设计技巧，但我们需要清楚我们这么做的目的，我们只有一个目标:使得代码更易于维护，只要架构师在review代码时时刻关注这个目标，我们可以就可以扩展这些技巧，灵活运用到项目中。通过了解这些方法，我们能够更好的处理好复杂的视图控制器，并且让这些视图控制器的代码更整洁，更清晰。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">view层架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">light controller</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/04/23/2016-04-23-light-your-view-controler/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 
@@ -1470,14 +1463,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1486,11 +1471,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1506,11 +1499,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1522,11 +1515,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1598,19 +1591,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1623,6 +1608,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1678,6 +1671,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -1694,6 +1695,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -1703,42 +1712,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1758,6 +1731,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -1770,11 +1755,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1786,11 +1779,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1858,19 +1851,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1914,10 +1907,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -1927,6 +1916,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
