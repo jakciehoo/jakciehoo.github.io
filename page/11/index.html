@@ -160,6 +160,111 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-05-18-How-to-use-injectionforxode-to-improve-your-coding-efficiency" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/18/2016-05-18-How-to-use-injectionforxode-to-improve-your-coding-efficiency/">iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率</a>
+    </h1>
+  
+
+        
+        <a href="/2016/05/18/2016-05-18-How-to-use-injectionforxode-to-improve-your-coding-efficiency/" class="archive-article-date">
+  	<time datetime="2016-05-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-05-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这款插件曾经被我扔到了垃圾堆，直到最近UI部门要联调App,为了改一个像素，改个颜色，我不得不修改代码，停止运行，再重启模拟器，再一个页面页面的跳转到调试所在页面，其实崩溃的不是代码不是代码，是我是我是我。。。还好我想起了它，还好有<code>Github</code>，否则我将追悔莫及，恨一万年都不够。今天就跟大家介绍这款神级插件<code>injectionforxcode</code>。</p>
+<h3 id="神奇之处"><a href="#神奇之处" class="headerlink" title="神奇之处"></a>神奇之处</h3><p>  在程序运行过程中插入<code>OC/Swift</code>代码，不需要重启模拟器就可以查看模拟器运行效果。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-b44f2349c108a9c6.gif?imageMogr2/auto-orient/strip" alt="injected.gif"></p>
+<h3 id="开门请神"><a href="#开门请神" class="headerlink" title="开门请神"></a>开门请神</h3><p>跟安装其他插件的方式一样，推荐使用Alcatraz插件管理器安装。<br>打开Xcode我们可以看到Product菜单下多出了如下两个选项代表你请神成功了。<br><img src="http://upload-images.jianshu.io/upload_images/1112722-03f6d34018a846d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h3 id="召唤神"><a href="#召唤神" class="headerlink" title="召唤神"></a>召唤神</h3><p>1.在APP运行过程中修改代码，比如在controller中加入以下方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)injected</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@<span class="string">"I've been injected: %@"</span>, self);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.按下<code>ctrl</code> + <code>=</code>，有没有出现一个加载的进度？？？有的话，说明你插件安装成功，马上你就可以看到控制台打印了<strong><em>I’ve been injected </em></strong>。是不是很神奇，如果你不这么觉得我就敢说你是神经病。</p>
+<h3 id="拜拜神，给你带来财富"><a href="#拜拜神，给你带来财富" class="headerlink" title="拜拜神，给你带来财富"></a>拜拜神，给你带来财富</h3><p>现在你可以尝试在在代码插入任何代码了，记住按<code>ctrl</code> + <code>=</code>召唤神，让模拟器立刻响应你的代码变化吧，看看神是如何神奇地提高你的调试效率的。</p>
+<h3 id="它为什么这么神"><a href="#它为什么这么神" class="headerlink" title="它为什么这么神"></a>它为什么这么神</h3><p>它通过解析应用的build日志来判断源代码文件上次是怎么被编译的。然后会把这些重新编译一遍包在一个已经通过动态加载器（<code>dynamic loader</code>）注入到应用的<code>bundle</code>里。这个时候其实有两个版本的类在app里，一个原始的和一个修改过的版本。修改过的版本通过转发<code>&quot;swizzled&quot;</code>作用在原来的类上来产生效果。<br>这个<code>swizzling</code>技巧事实上利用了OC的运行时绑定方法调用和方法实现的来达到目的。这个也可以在Swift中没有标记为<code>final</code>或者<code>private</code>的方法（比如可以被<code>override</code>的方法）。</p>
+<p><strong>原理图</strong><br><img src="http://upload-images.jianshu.io/upload_images/1112722-fa5b4d516138bb70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="yuan&#39;li&#39;tu"></p>
+<h3 id="提供的技能"><a href="#提供的技能" class="headerlink" title="提供的技能"></a>提供的技能</h3><p>它提供了三个实现回调的方法<br>1.- (void)injected实例方法。它可以让我们按下<code>ctrl</code> + <code>=</code>更新一个类。比如在该方法里调用viewDidLoad方法，就可以再次调用控制器的viewDidLoad方法。<br>2.+ (void)injected类方法，可以让我们更新全局函数。<br>3.监听名为<code>INJECTION_BUNDLE_NOTIFICATION</code>的通知，因此我们可以让其他类监听该通知。<br>4.<a href="https://github.com/johnno1962/injectionforxcode/blob/master/documentation/tunable_parameters.md" target="_blank" rel="noopener">使用tunable_parameters</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-f6c15f030173f70a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h3 id="神是万能的"><a href="#神是万能的" class="headerlink" title="神是万能的"></a>神是万能的</h3><ul>
+<li>1.我其实还支持Storyboard <a href="https://github.com/johnno1962/injectionforxcode/blob/master/documentation/storyboards.md" target="_blank" rel="noopener">Storyboard-based iOS projects</a>.</li>
+<li>2.我其实也可以可视化的调整颜色 <a href="https://github.com/johnno1962/injectionforxcode/blob/master/documentation/tunable_parameters.md" target="_blank" rel="noopener">collection of tunable parameters</a></li>
+<li>3.当你开始注入时，我会在同一个目录下生成一个项目文件：iOSInjectionProject 或者 OSXInjectionProject。这个项目用于注入你的修改到原项目。<strong>建议加入.gitignore。</strong></li>
+<li>4.<code>ctrl</code>+<code></code>=的快捷键可以在 “Tunable App Parameters”面板里自定义</li>
+<li>5.如果想在一台设备上使用，参考这个文档<a href="https://github.com/johnno1962/injectionforxcode/blob/master/documentation/patching_injection.md" target="_blank" rel="noopener">patch to your project.</a>.<br>低调低调，你知道我很神就行了。</li>
+</ul>
+<h3 id="神仙下凡时"><a href="#神仙下凡时" class="headerlink" title="神仙下凡时"></a>神仙下凡时</h3><p>我再神也要下凡的啊，不要笑话就行啊，看看就得了，敢笑话我？我就让你写的程序一直有<code>bug</code>,一直有一直有Z Z Z 。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1112722-c86a8d37a84fd4f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<ul>
+<li>1.为了防止出现两个单例（之前提到swizzle会创建一个相同的类），shared前缀修饰的类方式不能注入代码。</li>
+<li>2.dispatch_on_main方法不能注入。</li>
+<li>3.第三点我看不懂，不知道怎么翻译，可以去Github看起官方原文，不好意西。</li>
+</ul>
+<h3 id="找到此神"><a href="#找到此神" class="headerlink" title="找到此神"></a>找到此神</h3><p>GitHub :<a href="https://github.com/johnno1962/injectionforxcode" target="_blank" rel="noopener">Injection Plugin for Xcode</a><br>作者twitter :<a href="https://twitter.com/orta" target="_blank" rel="noopener">@orta</a><br>作者亲自录的教程（英文） :<br><a href="https://www.youtube.com/watch?v=uftvtmyZ8TM&amp;feature=youtu.be" target="_blank" rel="noopener">https://www.youtube.com/watch?v=uftvtmyZ8TM&amp;feature=youtu.be</a></p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>给你介绍这么好的东西，你不需要谢谢我，不要给我打赏，千万不要，你要是打赏了，我一定不会。。。手软。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">xcode插件</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">injectionforxcode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/05/18/2016-05-18-How-to-use-injectionforxode-to-improve-your-coding-efficiency/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-04-29-be-caution-of-subclassing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -498,14 +603,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -514,11 +611,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,11 +631,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -542,19 +647,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -594,14 +699,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -611,6 +708,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,26 +743,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
@@ -674,6 +759,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
@@ -682,7 +771,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -730,14 +843,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -747,26 +852,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -786,14 +871,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -806,6 +883,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -814,7 +899,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">迁移</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -823,6 +924,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -850,11 +955,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">货币</a>
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数字货币</a>
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -862,11 +967,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+                <a href="javascript:void(0)" class="js-tag color3">货币</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+                <a href="javascript:void(0)" class="js-tag color5">数字货币</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -886,11 +991,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -902,11 +1007,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
