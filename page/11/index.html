@@ -160,6 +160,336 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-11-13-learniing-git-flow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/13/2016-11-13-learniing-git-flow/">渐进式学习Git工作流</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/13/2016-11-13-learniing-git-flow/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>每个团队的开发流程各式各样，在工作中如何运用好git并不轻松。这个章节就尝试探究一下在公司团队中最最常用的git工作流。</p>
+<p>在你阅读的时候，记住这些开发流主要用来做参考，而不是必须严格遵守，我们只是想展示主流的各种开发工作流让你了解，你应该融汇贯通的运用它们，并形成一个适合你们团队的开发流。</p>
+<h2 id="1-集中式工作流"><a href="#1-集中式工作流" class="headerlink" title="1. 集中式工作流"></a>1. 集中式工作流</h2><p>切换到分布式版本管理系统刚开始看起来困难，但你也可以不用改变你习惯的开发流就可以使用git，你团队可以像你使用SVN那样使用git进行开发。</p>
+<p>不过使用Git作为开发的工作流，相比SVN有几个优势。 首先，每个开发者可以有整个项目的本地拷贝，隔离的环境让开发者们的工作和项目的其他部分修改独立开来 —— 开发者们可以提交代码到自己的本地仓库，可以完全忽略上游的开发，直到方便的时候再把修改推送到上游或者拉取上游的修改合并到本地。</p>
+<p>其次，Git提供了强大的分支和合并模型。不像SVN，Git的分支成可以做为一种用来在仓库之间合并代码和交叉修改的”失败安全”的机制。</p>
+<h3 id="1-1-如何进行"><a href="#1-1-如何进行" class="headerlink" title="1.1. 如何进行"></a>1.1. 如何进行</h3><p>集中式工作流以中央仓库作为项目所有修改的唯一的入口，可以像SVN一样，Git业可以这么做。相比SVN缺省的开发分支trunk，Git叫做master，所有修改提交到这个分支上。本工作流除了使用master分支外不需要其他分支。</p>
+<p>开发者先先克隆中央仓库，在自己的本地克隆项目中可以像SVN一样编辑文件和提交修改；但提交记录是存在本地的，和中央仓库是完全隔离的。开发者可以把和上游的同步延后到一个方便时间点。</p>
+<p>要发布修改到正式项目中，开发者要把本地master分支的修改推送（push）到中央仓库中，这相当于svn commit操作，不过push操作会将本地所有还没有提交到中央仓库的本地提交都推上去。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-push-local.png" alt=""></p>
+<h3 id="1-2-解决冲突"><a href="#1-2-解决冲突" class="headerlink" title="1.2. 解决冲突"></a>1.2. 解决冲突</h3><p>中央仓库代表了正式项目，所以提交历史应该被严肃对待并且不应该修改提交历史。如果开发者本地的提交历史不是中央仓库历史提交派生（译者注：即开发者历史提交需要包含中央仓库的所有提交），Git会拒绝这种push推送，因为如果不这么设计的话这会覆盖已经在中央库的正式提交。<br><img src="/img/in-post/learning-git-flow/git-workflow-svn-managingconflicts.png" alt=""></p>
+<p>在开发者推送开发的功能到中央库前，他们需要先拉取（pull）中央库的新增提交，然后合并（rebase）自己的修改到中央库并显示在提交历史最顶部。 这样做的意思是在说：”我要把自己的修改加到别人已经完成的修改上“。最终的结果是一个完美的线性提交历史，这就像以前的SVN的工作流中一样。</p>
+<p>如果本地修改和上游提交有冲突，Git会暂停rebase过程，需要你手动解决冲突。Git解决冲突非常方便，合并冲突和生成提交一样，使用git status和git add命令即可。而且，如果解决冲突时非常棘手，在Git中中止整个rebase操作轻而易举，然后重新来一次（或者找高手来帮助）。</p>
+<h3 id="1-3-举例"><a href="#1-3-举例" class="headerlink" title="1.3. 举例"></a>1.3. 举例</h3><p>让我们通过例子来一步步介绍在一个典型的小团队如何采用这个工作流来协作。有两个开发者小明（John）和小红（Mary），我们来看看他们是如何开发自己的功能然后提交到中央仓库上的。</p>
+<h4 id="1-3-1-第一步、先初始化好中央仓库"><a href="#1-3-1-第一步、先初始化好中央仓库" class="headerlink" title="1.3.1 第一步、先初始化好中央仓库"></a>1.3.1 第一步、先初始化好中央仓库</h4><p>第一步，有人在服务器上创建好中央仓库。如果是新项目，你可以初始化一个空仓库；如果不是心项目，你可以导入已有的Git或SVN仓库。</p>
+<p>中央仓库应该是个裸仓库（bare repository），即没有工作目录（working directory）的仓库。可以用下面的命令创建：</p>
+<pre><code>ssh user@host
+git init --bare /path/to/repo.git
+</code></pre><p>确保写上有效的user（SSH的用户名），host（服务器的域名或IP地址），/path/to/repo.git（你想存放仓库的位置）。 注意，为了表示是一个裸仓库，按照约定加上.git扩展名到仓库名上。</p>
+<h4 id="1-3-2-第二步、所有人需要克隆（clone）刚创建的裸仓库"><a href="#1-3-2-第二步、所有人需要克隆（clone）刚创建的裸仓库" class="headerlink" title="1.3.2. 第二步、所有人需要克隆（clone）刚创建的裸仓库"></a>1.3.2. 第二步、所有人需要克隆（clone）刚创建的裸仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-clone.png" alt=""></p>
+<p>下一步，各个开发者创建整个项目的本地拷贝。通过git clone命令完成：</p>
+<p><code>git clone ssh://user@host/path/to/repo.git</code></p>
+<p>因为猜测未来你想要和克隆的仓库进行交互，克隆仓库时Git会自动添加远程别名origin指回”父“仓库。</p>
+<h4 id="1-3-3-第三步、小明（John）着手开发新功能"><a href="#1-3-3-第三步、小明（John）着手开发新功能" class="headerlink" title="1.3.3. 第三步、小明（John）着手开发新功能"></a>1.3.3. 第三步、小明（John）着手开发新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-1.png" alt=""></p>
+<p>小明在自己的本地仓库里能够使用标准的Git提交过程开发新功能：编辑、暂存（Stage）和提交。 如果你不熟悉暂存区（Staging Area），暂存区是用来准备一个提交，它允许你不把工作目录中所有的修改内容都包含进来， 尽管你本地修改很多内容，但暂存区让你可以创建一个高度聚焦（译者注：选择你希望提交到的修改）的提交。</p>
+<pre><code>git status          # 查看本地仓库的修改状态 
+git add              # 暂存文件     
+git commit        # 提交文件
+</code></pre><p>记住，因为这些命令生成的是本地提交，小明想重复这个过程多少次就多少次，完全不用担心中央仓库发生了什么。 对较大的功能开发，我们可以将其拆分成一个一个简单的、小而完整的小功能，运用s这个过程很有用。</p>
+<h4 id="1-3-4-第四步、小红（Mary）开发功能"><a href="#1-3-4-第四步、小红（Mary）开发功能" class="headerlink" title="1.3.4. 第四步、小红（Mary）开发功能"></a>1.3.4. 第四步、小红（Mary）开发功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-2.png" alt=""></p>
+<p>与此同时，小红在自己的本地仓库中用相同的编辑、暂存和提交过程开发功能。和小明一样，她也不关心中央仓库； 也无须关心小明在他的本地仓库中的操作，因为所有本地仓库都是各玩各的。</p>
+<h4 id="1-3-5-小明发布功能"><a href="#1-3-5-小明发布功能" class="headerlink" title="1.3.5. 小明发布功能"></a>1.3.5. 小明发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-3.png" alt=""></p>
+<p>一旦小明完成了他的功能开发，会发布他的本地提交到中央仓库中，这样其它团队成员可以看到他的修改。他可以用下面的git push命令：<br><code>git push origin master</code><br>记住，origin是在小明克隆仓库时Git创建的远程中央仓库别名，master参数告诉Git推送的分支。 由于中央仓库自从小明克隆以来还没有被更新过，所以push操作不会有冲突，推送将会顺利完成。</p>
+<h4 id="1-3-6-小红试着发布功能"><a href="#1-3-6-小红试着发布功能" class="headerlink" title="1.3.6. 小红试着发布功能"></a>1.3.6. 小红试着发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-4.png" alt=""></p>
+<p>一起来看看在小明发布修改后，小红push修改会怎么样？她使用完全一样的push命令：</p>
+<p><code>git push origin master</code></p>
+<p>但她的本地历史已经和中央仓库有分歧（diverge）了，Git拒绝操作并给出下面乱七八糟的出错消息：</p>
+<pre><code>error: failed to push some refs to &apos;/path/to/repo.git&apos;
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Merge the remote changes (e.g. &apos;git pull&apos;)
+hint: before pushing again.
+hint: See the &apos;Note about fast-forwards&apos; in &apos;git push --help&apos; for details.
+</code></pre><p>这避免了小红覆写中央仓库的正式提交。她要先拉取（pull）小明的更新到她的本地仓库合，然后合并她的本地修改，再重试推送。</p>
+<h4 id="1-3-7-小红在小明的提交基础上合并（rebase）"><a href="#1-3-7-小红在小明的提交基础上合并（rebase）" class="headerlink" title="1.3.7. 小红在小明的提交基础上合并（rebase）"></a>1.3.7. 小红在小明的提交基础上合并（rebase）</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-5.png" alt=""></p>
+<p>小红用git pull合并上游的修改到自己的仓库中。 这条命令类似svn update——拉取所有上游提交命令到小红的本地仓库，并尝试和她的本地修改合并：</p>
+<p><code>git pull --rebase origin master</code></p>
+<p><em>–rebase</em>选项告诉Git把小红的提交移到同步了中央仓库修改后的master分支的顶部，如下图所示：</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-6.png" alt=""></p>
+<p>如果你忘加了这个选项，pull操作仍然可以完成，但每次pull操作要同步中央仓库中别人修改时，提交历史会以一个多余的『合并提交』结尾。 对于集中式工作流，最好是使用rebase而不是生成一个合并提交。</p>
+<h4 id="1-3-8-小红解决合并冲突"><a href="#1-3-8-小红解决合并冲突" class="headerlink" title="1.3.8. 小红解决合并冲突"></a>1.3.8. 小红解决合并冲突</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-7.png" alt=""></p>
+<p>rebase操作是把本地提交一次性地转移到已经更新过的中央仓库master分支之上。 这意味着可能要解决在转移某个提交时出现的合并冲突，而不是解决包含了所有提交的大型合并时所出现的冲突。 这样的方式让你尽可能保持每个提交的聚焦和项目历史的整洁。而且，找出引入Bug的地方也变的容易，如果有必要，可以回滚修改能保证对项目的影响最小。</p>
+<p>如果小红和小明的功能是不相关的，不大可能在rebase过程中有冲突。如果有，Git在合并有冲突的提交处暂停rebase过程，输出下面的信息并带上相关的指令：</p>
+<p><code>CONFLICT (content): Merge conflict in &lt;some-file&gt;</code></p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-8.png" alt=""></p>
+<p>Git很赞的一点是，任何人可以解决他自己的冲突。在这个例子中，小红可以简单的运行git status命令来查看哪里有问题。 冲突文件列在Unmerged paths（未合并路径）一节中：</p>
+<pre><code># Unmerged paths:
+# (use &quot;git reset HEAD &lt;some-file&gt;...&quot; to unstage)
+# (use &quot;git add/rm &lt;some-file&gt;...&quot; as appropriate to mark resolution)
+# both modified: &lt;some-file&gt;
+</code></pre><p>接着小红编辑这些文件。修改完成后，用老套路暂存这些文件，并让git rebase完成剩下的事：</p>
+<pre><code>git add &lt;some-file&gt; 
+git rebase --continue
+</code></pre><p>要做的就这些了。Git会继续一个一个地合并后面的提交，如其它的提交有冲突就重复这个过程。</p>
+<p>如果你碰到了冲突，但发现搞不定，不要惊慌。只要执行下面这条命令，就可以回到你执行git pull –rebase命令前的样子：</p>
+<p><code>git rebase --abort</code></p>
+<h4 id="1-3-9-小红成功发布功能"><a href="#1-3-9-小红成功发布功能" class="headerlink" title="1.3.9. 小红成功发布功能"></a>1.3.9. 小红成功发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-9.png" alt=""></p>
+<p>小红完成和中央仓库的同步后，就能成功发布她的修改了：</p>
+<p><code>git push origin master</code></p>
+<p>如你所见，仅使用几个Git命令我们就可以模拟出传统Subversion开发环境。对于要从SVN迁移过来的团队来说这太好了，但没有发挥出Git分布式版本管理的天然优势。<br>如果你的团队适应了集中式工作流，但想要更流畅的协作效果，绝对值得探索一下_ 功能分支工作流 _的优点。 通过为一个功能分配一个分支，这样可以让在一个新增功能合并进正式项目之前向团队发起对新功能进行深入讨论称为可能。</p>
+<h2 id="2-功能分支工作流"><a href="#2-功能分支工作流" class="headerlink" title="2. 功能分支工作流"></a>2. 功能分支工作流</h2><p><img src="/img/in-post/learning-git-flow/git-workflow-feature_branch.png" alt=""><br><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-1.png" alt=""></p>
+<p>一旦你玩转了集中式工作流，在开发过程中加上功能分支可以方便地鼓励开发者之间协作和流畅地交流。<br>功能分支工作流背后的核心思路是所有的功能开发应该在一个专门的分支，而不是在master分支上。 这个隔离可以方便多个开发者在各自的功能上开发而不会弄乱主干代码。 另外，也保证了master分支的代码一定不会是有问题的，极大有利于持续集成环境。</p>
+<p>隔离功能开发也让pull requests工作流成功可能， pull requests工作流能为每个分支合并发起一个讨论，在其它开发者有表示赞同之后才可以合并进正式项目。 另外，如果你在功能开发中有问题卡住了，可以开一个pull requests来向同学们征求建议。 这些做法的重点就是，pull requests让团队成员之间互相评论工作变成非常方便！</p>
+<h3 id="2-1-如何进行"><a href="#2-1-如何进行" class="headerlink" title="2.1. 如何进行"></a>2.1. 如何进行</h3><p>功能分支工作流仍然才用中央仓库，并且master分支还是代表了正式项目的历史。 但不是直接提交本地历史到各自的本地master分支，开发者每次在开始新功能前先创建一个新分支。 功能分支应该有个有描述性的名字，比如animated-menu-items或issue-#1061，这种做法可以让每个分支有清晰明确目的。</p>
+<p>master分支和功能分支，对Git来说没有技术上的区别，所以开发者可以用和集中式工作流中完全一样的方式编辑、暂存和提交修改到功能分支上。</p>
+<p>另外，功能分支也可以（且应该）push到中央仓库中。这样不修改正式代码就可以和其它开发者分享提交的功能。 由于master是仅有的一个特殊分支，在中央仓库上存多个功能分支不会有任何问题。当然，这样做也可以很方便地备份各自的本地提交。</p>
+<h3 id="2-2-合并申请（Pull-Requests）"><a href="#2-2-合并申请（Pull-Requests）" class="headerlink" title="2.2. 合并申请（Pull Requests）"></a>2.2. 合并申请（Pull Requests）</h3><p>功能分支除了可以隔离功能的开发，也使得通过合并申请 （Pull Requests）讨论变更成为可能。 一旦某个开发者完成一个功能，不是立即合并到master，而是推送（push）到中央仓库的对应的功能分支上，然后发起一个合并申请（Pull Request）请求合并他的修改到master分支。 在修改成为主干代码前，这让其它的开发者有机会先去Review变更。</p>
+<p>Code Review是Pull Requests的一个重要的优点，但Pull Requests设计的真正初衷是为了交流和讨论代码。 你可以把Pull Requests作为专门给某个分支的一次讨论。这意味着可以在更早的开发过程中就运用pull requests。 比如，一个开发者开发功能需要帮助时，要做的就是发起一个Pull Request，感兴趣的人就会自动收到通知，在相关的提交旁边能看到提出的问题。</p>
+<p>一旦Pull Request被接受了，发布功能要做的就和集中式工作流就很像了。 首先，确定本地的master分支和上游的master分支是同步的。然后合并功能分支到本地master分支并push已经更新的本地master分支到中央仓库。</p>
+<p>pull request 可以运用在仓库管理的产品解决方案提供商，像Bitbucket云。你可以从Bitbucket的Pull Requests文档中找找例子。</p>
+<h3 id="2-3-示例"><a href="#2-3-示例" class="headerlink" title="2.3. 示例"></a>2.3. 示例</h3><p>下面的示例演示了如何把Pull Requests作为Code Review的方式，但注意Pull Requests可以用于很多其它的目的。</p>
+<h4 id="2-3-1-小红开始开发一个新功能"><a href="#2-3-1-小红开始开发一个新功能" class="headerlink" title="2.3.1. 小红开始开发一个新功能"></a>2.3.1. 小红开始开发一个新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-2.png" alt=""></p>
+<p>在开始开发功能前，小红需要一个独立的分支。使用下面的命令新建一个分支：</p>
+<p><code>git checkout -b marys-feature master</code></p>
+<p>这个命令检出一个基于master名为marys-feature的分支，Git的-b选项表示如果分支还不存在则新建分支。 这个新分支上，小红按老套路编辑、暂存和提交修改，按需要提交以实现功能：</p>
+<pre><code>git status
+git add &lt;some-file&gt;
+git commit
+</code></pre><h4 id="2-3-2-小红要休息去吃个午饭"><a href="#2-3-2-小红要休息去吃个午饭" class="headerlink" title="2.3.2. 小红要休息去吃个午饭"></a>2.3.2. 小红要休息去吃个午饭</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-3.png" alt=""></p>
+<p>早上小红为新功能添加一些提交。 去吃午饭前，push功能分支到中央仓库是很好的做法，这样可以方便地备份，如果和其它开发协作，也让他们可以看到小红的提交。</p>
+<p><code>git push -u origin marys-feature</code></p>
+<p>这条命令push marys-feature分支到中央仓库（origin），-u选项设置本地分支去跟踪远程对应的分支。 设置好跟踪的分支后，小红就可以使用git push命令省去指定推送分支的参数。</p>
+<h4 id="2-3-3-小红完成功能开发"><a href="#2-3-3-小红完成功能开发" class="headerlink" title="2.3.3. 小红完成功能开发"></a>2.3.3. 小红完成功能开发</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-4.png" alt=""></p>
+<p>小红吃完午饭回来后，并完成了她的功能的开发。在合并到master之前， 她发起一个Pull Request让团队的其它人知道功能已经完成。但首先，她要确认中央仓库中已经有她最近的提交：</p>
+<p><code>git push</code></p>
+<p>然后，在她的Git GUI客户端中发起Pull Request，请求合并marys-feature到master，团队成员会自动收到通知。Pull Request很酷的是可以在相关的提交旁边显示评注，所以你可以对某个变更集进行提问。</p>
+<h4 id="2-3-4-小贝-Bill-收到Pull-Request"><a href="#2-3-4-小贝-Bill-收到Pull-Request" class="headerlink" title="2.3.4. 小贝(Bill)收到Pull Request"></a>2.3.4. 小贝(Bill)收到Pull Request</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-5.png" alt=""></p>
+<p>小贝收到了Pull Request后会查看marys-feature的修改。决定在合并到正式项目前是否要做些修改，且通过Pull Request和小红来回地讨论。</p>
+<h4 id="2-3-5-小红再做修改"><a href="#2-3-5-小红再做修改" class="headerlink" title="2.3.5. 小红再做修改"></a>2.3.5. 小红再做修改</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-6.png" alt=""></p>
+<p>要再做修改，小红用和功能第一个迭代完全一样的过程。编辑、暂存、提交并push更新到中央仓库。小红这些活动都会显示在Pull Request上，小黑可以继续做评注。</p>
+<p>如果小黑有需要，也可以把marys-feature分支拉到本地，自己来修改，他加的提交也会一样显示在Pull Request上。</p>
+<h4 id="2-3-6-小红发布她的功能"><a href="#2-3-6-小红发布她的功能" class="headerlink" title="2.3.6. 小红发布她的功能"></a>2.3.6. 小红发布她的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-7.png" alt=""></p>
+<p>一旦小黑可以的接受Pull Request，就可以合并功能到稳定项目代码中（可以由小黑或是小红来做这个操作）：</p>
+<pre><code>git checkout master
+git pull
+git pull origin marys-feature
+git push
+</code></pre><p>无论谁来做合并，首先要检出master分支并确认是它是最新的。然后执行git pull origin marys-feature合并marys-feature分支到和已经和远程一致的本地master分支。 你可以使用简单git merge marys-feature命令，但前面的命令可以保证总是最新的新功能分支。 最后更新的master分支要重新push回到origin。</p>
+<p>这个过程常常会生成一个合并提交。有些开发者喜欢有合并提交，因为它像一个新功能和原来代码基线的连通符。 但如果你偏爱线性的提交历史，可以在执行合并时rebase新功能到master分支的顶部，这样生成一个快进（fast-forward）的合并。</p>
+<p>一些GUI客户端可以只要点一下『接受』按钮执行好上面的命令来自动化Pull Request的合并过程。 如果你的客户端没有这个功能，记得在功能合并到master分支后关闭Pull Request。</p>
+<h4 id="2-3-7-与此同时，小明在做和小红一样的事"><a href="#2-3-7-与此同时，小明在做和小红一样的事" class="headerlink" title="2.3.7. 与此同时，小明在做和小红一样的事"></a>2.3.7. 与此同时，小明在做和小红一样的事</h4><p>当小红和小黑在marys-feature上工作并讨论她的Pull Request的时候，小明在自己的功能分支上做完全一样的事。</p>
+<p>通过隔离功能到独立的分支上，每个人都可以自主的工作，当然这跟在必要的时候让变更开发者之间交流分享的作用比微不足道。</p>
+<h3 id="2-4-下一步该做什么呢？"><a href="#2-4-下一步该做什么呢？" class="headerlink" title="2.4. 下一步该做什么呢？"></a>2.4. 下一步该做什么呢？</h3><p>到了这里，但愿你发现了功能分支可以成倍提高 仅有master分支的集中式工作流的实用性。 另外，功能分支还使用了Pull Request，使得可以在你的版本控制GUI客户端中讨论某个提交。</p>
+<p>功能分支工作流是开发项目异常灵活的方式。问题是，有时候太灵活了。对于大型团队，常常需要给不同分支分配一个更具体的角色。 Gitflow工作流是管理功能开发、发布准备和维护的常用模式。</p>
+<h2 id="3-Gitflow工作流"><a href="#3-Gitflow工作流" class="headerlink" title="3. Gitflow工作流"></a>3. Gitflow工作流</h2><p>Gitflow工作流通过为功能开发、发布准备和维护分配独立的分支，让发布迭代过程更流畅。严格的分支模型也为大型项目提供了一些非常必要的结构。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflows-gitflow.png" alt=""></p>
+<p>这节介绍的Gitflow工作流借鉴自Vincent Driessen写的<a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="noopener">《A successful Git branching model》</a>。</p>
+<p>Gitflow工作流定义了一个围绕项目发布的严格分支模型。虽然比功能分支工作流复杂几分，但提供了用于管理大型项目的最佳框架。</p>
+<p>Gitflow工作流没有用超出功能分支工作流的概念和命令，而是为不同的分支分配一个很明确的角色，并定义分支之间如何和什么时候进行交互。 除了使用功能分支，在准备期、维护期和予发布期各使用了单独的分支。 当然你可以用上功能分支工作流所有的好处：Pull Requests、隔离实验性开发和更高效的协作。</p>
+<h3 id="3-1-如何进行"><a href="#3-1-如何进行" class="headerlink" title="3.1 如何进行"></a>3.1 如何进行</h3><p>Gitflow工作流仍然用中央仓库作为所有开发者的交互中心。和其它的工作流一样，开发者在本地工作并push分支到要中央仓库中。</p>
+<h4 id="3-1-1-历史分支"><a href="#3-1-1-历史分支" class="headerlink" title="3.1.1 历史分支"></a>3.1.1 历史分支</h4><p>相对使用仅有的一个master分支，Gitflow工作流使用2个分支来记录项目的历史。master分支存储了正式发布的历史，而develop分支作为功能的合并汇合分支。 这样也方便master分支上的所有提交分配一个版本号。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-1historical.png" alt=""></p>
+<p>剩下要说明的问题围绕着这2个分支的区别展开。</p>
+<h4 id="3-1-2-功能分支"><a href="#3-1-2-功能分支" class="headerlink" title="3.1.2. 功能分支"></a>3.1.2. 功能分支</h4><p>每个新功能位于一个自己的分支，这样可以push到中央仓库以备份和协作。 但功能分支不是从master分支上拉出新分支，而是使用develop分支作为父分支。当新功能完成时，合并回develop分支。 新功能提交应该从不直接与master分支交互。</p>
+<p>注意：从各种含义和目的上来看，功能分支加上develop分支就是功能分支工作流的用法。但Gitflow工作流没有在这里止步。</p>
+<h4 id="3-1-3-发布分支"><a href="#3-1-3-发布分支" class="headerlink" title="3.1.3. 发布分支"></a>3.1.3. 发布分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-3release.png" alt=""></p>
+<p>一旦develop分支上有了做一次发布（或者说快到了既定的发布日）的足够功能，就从develop分支上fork一个发布分支。 新建的分支用于开始发布循环，所以从这个时间点开始之后新的功能不能再加到这个分支上—— 这个分支只应该做Bug修复、文档生成和其它面向发布任务。 一旦对外发布的工作都完成了，发布分支合并到master分支并分配一个版本号打好Tag。 另外，这些从新建发布分支以来的做的修改要合并回develop分支。</p>
+<p>使用一个用于发布准备的专门分支，使得一个团队可以在完善当前的发布版本的同时，另一个团队可以继续开发下个版本的功能。 这也打造定义良好的开发阶段（比如，可以很轻松地说，“这周我们要做准备发布版本4.0”，并且在仓库的目录结构中可以实际看到）。<br>常用的分支约定：</p>
+<p><strong>用于新建发布分支的分支: develop</strong><br><strong>用于合并的分支: master</strong><br><strong>分支命名: release-<em> 或 release/</em></strong></p>
+<h4 id="3-1-4-维护分支"><a href="#3-1-4-维护分支" class="headerlink" title="3.1.4. 维护分支"></a>3.1.4. 维护分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-4maintenance.png" alt=""></p>
+<p>维护分支或说是热修复（hotfix）分支用于生成快速给产品发布版本（production releases）打补丁，这是唯一可以直接从master分支fork出来的分支。 修复完成，修改应该马上合并回master分支和develop分支（当前的发布分支），master分支应该用新的版本号打好Tag。</p>
+<p>为紧急Bug修复使用专门分支，让团队可以处理掉问题而不用打断其它工作或是等待下一个发布循环。 你可以把维护分支想成是一个直接在master分支上处理的临时发布。</p>
+<h3 id="3-2-示例"><a href="#3-2-示例" class="headerlink" title="3.2. 示例"></a>3.2. 示例</h3><p>下面的示例演示本工作流如何用于管理单个发布循环。假设你已经创建了一个中央仓库。</p>
+<h4 id="3-2-1-创建开发分支"><a href="#3-2-1-创建开发分支" class="headerlink" title="3.2.1. 创建开发分支"></a>3.2.1. 创建开发分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-5createdev.png" alt=""></p>
+<p>第一步为master分支配套一个develop分支。简单来做可以本地创建一个空的develop分支，push到服务器上：</p>
+<pre><code>git branch develop
+git push -u origin develop
+</code></pre><p>以后这个分支将会包含了项目的全部历史，而master分支将只包含了部分历史。其它开发者这时应该克隆中央仓库，建好develop分支的跟踪分支：</p>
+<pre><code>git clone ssh://user@host/path/to/repo.git
+git checkout -b develop origin/develop
+</code></pre><p>现在每个开发都有了这些历史分支的本地拷贝。</p>
+<h4 id="3-2-2-小红和小明开始开发新功能"><a href="#3-2-2-小红和小明开始开发新功能" class="headerlink" title="3.2.2. 小红和小明开始开发新功能"></a>3.2.2. 小红和小明开始开发新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-6maryjohnbeginnew.png" alt=""></p>
+<p>这个示例中，小红和小明开始各自的功能开发。他们需要为各自的功能创建相应的分支。新分支不是基于master分支，而是应该基于develop分支：</p>
+<p><code>git checkout -b some-feature develop</code></p>
+<p>他们用老套路添加提交到各自功能分支上：编辑、暂存、提交：</p>
+<pre><code>git status
+git add &lt;some-file&gt;
+git commit
+</code></pre><h4 id="3-2-3-小红完成功能开发"><a href="#3-2-3-小红完成功能开发" class="headerlink" title="3.2.3. 小红完成功能开发"></a>3.2.3. 小红完成功能开发</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-7maryfinishes.png" alt=""></p>
+<p>添加了提交后，小红觉得她的功能OK了。如果团队使用Pull Requests，这时候可以发起一个用于合并到develop分支的请求。 否则她可以直接合并到她本地的develop分支后push到中央仓库：</p>
+<pre><code>git pull origin develop
+git checkout develop
+git merge some-feature
+git push
+git branch -d some-feature
+</code></pre><p>第一条命令在合并功能前确保develop分支是最新的。注意，功能决不应该直接合并到master分支。 冲突解决方法和集中式工作流一样。</p>
+<h4 id="3-2-4-小红开始准备发布"><a href="#3-2-4-小红开始准备发布" class="headerlink" title="3.2.4 小红开始准备发布"></a>3.2.4 小红开始准备发布</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-8maryprepsrelease.png" alt=""></p>
+<p>这个时候小明正在实现他的功能，小红开始准备她的第一个项目正式发布。 像功能开发一样，她用一个新的分支来做发布准备。这一步也确定了发布的版本号：</p>
+<p><code>git checkout -b release-0.1 develop</code><br>这个分支是清理发布、执行所有测试、更新文档和其它为下个发布做准备操作的地方，像是一个专门用于改善发布的功能分支。<br>只要小红创建这个分支并push到中央仓库，这个发布就是功能冻结的。任何不在develop分支中的新功能都推到下个发布循环中。</p>
+<h4 id="3-2-5-小红完成发布"><a href="#3-2-5-小红完成发布" class="headerlink" title="3.2.5 小红完成发布"></a>3.2.5 小红完成发布</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-9maryfinishes.png" alt=""></p>
+<p>一旦准备好了对外发布，小红合并修改到master分支和develop分支上，删除发布分支。合并回develop分支很重要，因为在发布分支中已经提交的重要更新需要在后面的新功能中也要是可用的。 另外，如果小红的团队要求Code Review，这是一个发起Pull Request的理想时机。</p>
+<pre><code>git checkout master
+git merge release-0.1
+git push
+git checkout develop
+git merge release-0.1
+git push
+git branch -d release-0.1
+</code></pre><p>发布分支是作为功能开发（develop分支）和对外发布（master分支）间的缓冲。只要有合并到master分支，就应该打好Tag以方便跟踪。</p>
+<pre><code>git tag -a 0.1 -m &quot;Initial public release&quot; master
+git push --tags
+</code></pre><p>Git有提供各种勾子（hook），即仓库有事件发生时触发执行的脚本。 可以配置一个勾子，在你push中央仓库的master分支时，自动构建好对外发布。</p>
+<h4 id="3-2-6-终端用户发现Bug"><a href="#3-2-6-终端用户发现Bug" class="headerlink" title="3.2.6 终端用户发现Bug"></a>3.2.6 终端用户发现Bug</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-gitflow-enduserbug.png" alt=""></p>
+<p>对外发布后，小红回去和小明一起做下个发布的新功能开发，直到有终端用户开了一个Ticket抱怨当前版本的一个Bug。 为了处理Bug，小红（或小明）从master分支上拉出了一个维护分支，提交修改以解决问题，然后直接合并回master分支：</p>
+<pre><code>git checkout -b issue-#001 master
+Fix the bug
+git checkout master
+git merge issue-#001
+git push
+</code></pre><p>就像发布分支，维护分支中新加这些重要修改需要包含到develop分支中，所以小红要执行一个合并操作。然后就可以安全地删除这个分支了：</p>
+<pre><code>git checkout develop
+git merge issue-#001
+git push
+git branch -d issue-#001
+</code></pre><p>到了这里，但愿你对集中式工作流、功能分支工作流和Gitflow工作流已经感觉很舒适了。 你应该也牢固的掌握了本地仓库的潜能，push/pull模式和Git健壮的分支和合并模型。</p>
+<p>记住，这里演示的工作流只是可能用法的例子，而不是在实际工作中使用Git不可违逆的条例。 所以不要畏惧按自己需要对工作流的用法做取舍。不变的目标就是让Git为你所用。</p>
+<h2 id="4-Forking工作流"><a href="#4-Forking工作流" class="headerlink" title="4. Forking工作流"></a>4. Forking工作流</h2><p>Forking工作流是分布式工作流，充分利用了Git在分支和克隆上的优势。可以安全可靠地管理大团队的开发者（developer），并能接受不信任贡献者（contributor）的提交。</p>
+<p>Forking工作流和前面讨论的几种工作流有根本的不同，这种工作流不是使用单个服务端仓库作为中央代码库，而让各个开发者都有一个服务端仓库。这意味着各个代码贡献者有2个Git仓库而不是1个：一个本地私有的，另一个服务端公开的。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflows-forking.png" alt=""></p>
+<p>Forking工作流的一个主要优势是，贡献的代码可以被合并，而不需要所有人都能push代码到仅有的中央仓库中。 开发者push到自己的服务端仓库，而只有项目维护者才能push到正式仓库。 这样项目维护者可以接受任何开发者的提交，但无需给他正式代码库的写权限。</p>
+<p>效果就是一个分布式的工作流，能为大型、自发性的团队（包括了不受信的第三方）提供灵活的方式来安全的协作。 也让这个工作流成为开源项目的理想工作流。</p>
+<h3 id="4-1-如何进行"><a href="#4-1-如何进行" class="headerlink" title="4.1 如何进行"></a>4.1 如何进行</h3><p>和其它的Git工作流一样，Forking工作流要先有一个公开的正式仓库存储在服务器上。 但一个新的开发者想要在项目上工作时，不是直接从正式仓库克隆，而是fork正式项目在自己的服务器上创建一个拷贝。</p>
+<p>这个仓库拷贝作为他个人公开仓库 —— 其它开发者不允许push到这个仓库，但可以pull修改（后面我们很快就会看这点很重要）。 在创建了自己服务端拷贝之后，和之前的工作流一样，开发者执行git clone命令克隆仓库到本地机器上，作为私有的开发环境。</p>
+<p>要提交本地修改时，push提交到自己的公开仓库中 —— 而不是正式仓库中。 然后，给正式仓库发起一个pull request，让项目维护者知道有更新已经准备好可以集成了。 对于贡献的代码，pull request也可以很方便地作为一个讨论的地方。</p>
+<p>为了集成功能到正式代码库，维护者pull贡献者的变更到自己的本地仓库中，检查变更以确保不会让项目出错， 合并变更到自己本地的master分支， 然后推送master分支到服务器的正式仓库中。 到此，贡献的提交成为了项目的一部分，其它的开发者应该执行pull操作与正式仓库同步自己本地仓库。</p>
+<h4 id="4-2-1-正式仓库"><a href="#4-2-1-正式仓库" class="headerlink" title="4.2.1. 正式仓库"></a>4.2.1. 正式仓库</h4><p>在Forking工作流中，正式仓库的叫法只是一个约定，理解这点很重要。 从技术上来看，各个开发者仓库和正式仓库在Git看来没有任何区别。 事实上，让正式仓库之所以正式的唯一原因是它是项目维护者的公开仓库。</p>
+<h4 id="4-2-2-Forking工作流的分支使用方式"><a href="#4-2-2-Forking工作流的分支使用方式" class="headerlink" title="4.2.2. Forking工作流的分支使用方式"></a>4.2.2. Forking工作流的分支使用方式</h4><p>所有的个人公开仓库实际上只是为了方便和其它的开发者共享分支。 各个开发者应该用分支隔离各个功能，就像在功能分支工作流和Gitflow工作流一样。 唯一的区别是这些分支被共享了。在Forking工作流中这些分支会被pull到另一个开发者的本地仓库中，而在功能分支工作流和Gitflow工作流中是直接被推送到正式仓库中。</p>
+<h3 id="4-3-示例"><a href="#4-3-示例" class="headerlink" title="4.3 示例"></a>4.3 示例</h3><h4 id="4-3-1-项目维护者初始化正式仓库"><a href="#4-3-1-项目维护者初始化正式仓库" class="headerlink" title="4.3.1. 项目维护者初始化正式仓库"></a>4.3.1. 项目维护者初始化正式仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-1.png" alt=""></p>
+<p>和任何使用Git项目一样，第一步是创建在服务器上一个正式仓库，让所有团队成员都可以访问到。 通常这个仓库也会作为项目维护者的公开仓库。</p>
+<p>公开仓库应该是裸仓库，不管是不是正式代码库。 所以项目维护者会运行像下面的命令来搭建正式仓库：</p>
+<pre><code>ssh user@host
+git init --bare /path/to/repo.git
+</code></pre><p>Bitbucket提供了一个方便的GUI客户端以完成上面命令行做的事。 这个搭建中央仓库的过程和前面提到的工作流完全一样。 如果有现存的代码库，维护者也要push到这个仓库中。</p>
+<h4 id="4-3-2-开发者fork正式仓库"><a href="#4-3-2-开发者fork正式仓库" class="headerlink" title="4.3.2 开发者fork正式仓库"></a>4.3.2 开发者fork正式仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-2.png" alt=""></p>
+<p>其它所有的开发需要fork正式仓库。 可以用git clone命令用SSH协议连通到服务器， 拷贝仓库到服务器另一个位置 —— 是的，fork操作基本上就只是一个服务端的克隆。 Bitbucket和Stash上可以点一下按钮就让开发者完成仓库的fork操作。</p>
+<p>这一步完成后，每个开发都在服务端有一个自己的仓库。和正式仓库一样，这些仓库应该是裸仓库。</p>
+<h4 id="4-3-3-开发者克隆自己fork出来的仓库"><a href="#4-3-3-开发者克隆自己fork出来的仓库" class="headerlink" title="4.3.3. 开发者克隆自己fork出来的仓库"></a>4.3.3. 开发者克隆自己fork出来的仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-3.png" alt=""></p>
+<p>下一步，各个开发者要克隆自己的公开仓库，用熟悉的git clone命令。</p>
+<p>在这个示例中，假定用Bitbucket托管了仓库。记住，如果这样的话各个开发者需要有各自的Bitbucket账号， 使用下面命令克隆服务端自己的仓库：</p>
+<p><code>git clone https://user@bitbucket.org/user/repo.git</code></p>
+<p>相比前面介绍的工作流只用了一个origin远程别名指向中央仓库，Forking工作流需要2个远程别名 —— 一个指向正式仓库，另一个指向开发者自己的服务端仓库。别名的名字可以任意命名，常见的约定是使用origin作为远程克隆的仓库的别名 （这个别名会在运行git clone自动创建），upstream（上游）作为正式仓库的别名。</p>
+<p><code>git remote add upstream https://bitbucket.org/maintainer/repo</code></p>
+<p>需要自己用上面的命令创建upstream别名。这样可以简单地保持本地仓库和正式仓库的同步更新。 注意，如果上游仓库需要认证（比如不是开源的），你需要提供用户：</p>
+<p><code>git remote add upstream https://user@bitbucket.org/maintainer/repo.git</code></p>
+<p>这时在克隆和pull正式仓库时，需要提供用户的密码。</p>
+<h4 id="4-3-4-开发者开发自己的功能"><a href="#4-3-4-开发者开发自己的功能" class="headerlink" title="4.3.4. 开发者开发自己的功能"></a>4.3.4. 开发者开发自己的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-4.png" alt=""></p>
+<p>在刚克隆的本地仓库中，开发者可以像其它工作流一样的编辑代码、提交修改和新建分支：</p>
+<pre><code>git checkout -b some-feature
+Edit some code
+git commit -a -m &quot;Add first draft of some feature&quot;
+</code></pre><p>所有的修改都是私有的直到push到自己公开仓库中。如果正式项目已经往前走了，可以用git pull命令获得新的提交：</p>
+<p><code>git pull upstream master</code></p>
+<p>由于开发者应该都在专门的功能分支上工作，pull操作结果会都是快进合并。</p>
+<h4 id="4-3-5-开发者发布自己的功能"><a href="#4-3-5-开发者发布自己的功能" class="headerlink" title="4.3.5. 开发者发布自己的功能"></a>4.3.5. 开发者发布自己的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-5.png" alt=""></p>
+<p>一旦开发者准备好了分享新功能，需要做二件事。 首先，通过push他的贡献代码到自己的公开仓库中，让其它的开发者都可以访问到。 他的origin远程别名应该已经有了，所以要做的就是：</p>
+<p><code>git push origin feature-branch</code></p>
+<p>这里和之前的工作流的差异是，origin远程别名指向开发者自己的服务端仓库，而不是正式仓库。<br>第二件事，开发者要通知项目维护者，想要合并他的新功能到正式库中。 Bitbucket提供了Pull Request按钮，弹出表单让你指定哪个分支要合并到正式仓库。 一般你会想集成你的功能分支到上游远程仓库的master分支中。</p>
+<h4 id="4-3-6-项目维护者合并开发者的功能"><a href="#4-3-6-项目维护者合并开发者的功能" class="headerlink" title="4.3.6. 项目维护者合并开发者的功能"></a>4.3.6. 项目维护者合并开发者的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-6.png" alt=""></p>
+<p>当项目维护者收到pull request，他要做的是决定是否集成它到正式代码库中。有二种方式来做：</p>
+<ol>
+<li>直接在pull request中查看代码</li>
+<li>pull代码到他自己的本地仓库，再手动合并</li>
+</ol>
+<p>第一种做法更简单，维护者可以在GUI中查看变更的差异，做评注和执行合并。 但如果出现了合并冲突，需要第二种做法来解决。这种情况下，维护者需要从开发者的服务端仓库中fetch功能分支， 合并到他本地的master分支，解决冲突：</p>
+<pre><code>git fetch https://bitbucket.org/user/repo feature-branch
+git checkout master
+git merge FETCH_HEAD
+</code></pre><p>变更集成到本地的master分支后，维护者要push变更到服务器上的正式仓库，这样其它的开发者都能访问到：</p>
+<p><code>git push origin master</code></p>
+<p>注意，维护者的origin是指向他自己公开仓库的，即是项目的正式代码库。到此，开发者的贡献完全集成到了项目中。</p>
+<h4 id="4-3-7-开发者和正式仓库做同步"><a href="#4-3-7-开发者和正式仓库做同步" class="headerlink" title="4.3.7. 开发者和正式仓库做同步"></a>4.3.7. 开发者和正式仓库做同步</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-7.png" alt=""></p>
+<p>由于正式代码库往前走了，其它的开发需要和正式仓库做同步：</p>
+<p><code>git pull upstream master</code></p>
+<p>如果你之前是使用SVN，Forking工作流可能看起来像是一个激进的范式切换（paradigm shift）。 但不要害怕，这个工作流实际上就是在功能分支工作流之上引入另一个抽象层。 不是直接通过单个中央仓库来分享分支，而是把贡献代码发布到开发者自己的服务端仓库中。</p>
+<p>示例中解释了，一个贡献如何从一个开发者流到正式的master分支中，但同样的方法可以把贡献集成到任一个仓库中。 比如，如果团队的几个人协作实现一个功能，可以在开发之间用相同的方法分享变更，完全不涉及正式仓库。</p>
+<p>这使得Forking工作流对于松散组织的团队来说是个非常强大的工具。任一开发者可以方便地和另一开发者分享变更，任何分支都能有效地合并到正式代码库中。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" target="_blank" rel="noopener">《Comparing Workflows》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">代码版本管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">分布式版本管理管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git Flow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git 工作流</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-learniing-git-flow/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -587,11 +917,11 @@ being redirected to the login form.
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">临终协定</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">临终协定</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -714,11 +1044,11 @@ being redirected to the login form.
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">iOS内存管理</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">iOS内存管理</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1245,169 +1575,6 @@ being redirected to the login form.
 
 
   
-    <article id="post-2016-08-06-ios-app-network-architect-design-thinking" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/">iOS架构师之路：大型APP应用网络层架构思考</a>
-    </h1>
-  
-
-        
-        <a href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/" class="archive-article-date">
-  	<time datetime="2016-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p>我们平安健康的App项目的整体架构是我做的。我把我最近学习的网络架构知识结合以前的项目经验，设计了《平安健康》App项目网络架构。现在把这些知识和实践经验总结出来，希望加深网络架构的思考，并和同仁共同学习进步。</p>
-</blockquote>
-<h2 id="认识网络架构"><a href="#认识网络架构" class="headerlink" title="认识网络架构"></a>认识网络架构</h2><p>对于网络层的架构，在APP端是不太受到工程师们重视的，在这个APP圈钱的时代，boss们关心的更多是这个APP是否能够工作,然后赚钱，对于APP内部代码设计是否合理,技术应用和代码实现是否可维护可扩展，他们是不care的，老板们多半非技术出身，也关心不到这些，全仰仗工程师们的良知了。等到APP的维护性和扩展性出现问题的时候，可能工程师就已经跳槽了，然后负责填坑的工程师们就要骂娘了，完全不敢接手就跑了。我之前由于知识的局限，考虑不到那么全面。因为看到很多APP，包括以前做的项目都是简单对AFNetworking做一个封装，想当然的以为网络架构就是那么回事。</p>
-<p>这半年一直在关注的casa大神的架构系列文章。实在干货太多，所以这半年费了N多脑细胞去琢磨他的几篇文章，比如《iOS应用架构谈 网络层设计方案》。在读这系列文章时，宝宝内心是崩溃的，那感觉就像星爷在电影《九品芝麻官》拿半个饼换了尚书大人两大盘饼，本来星爷很得意认了个亲，还赚了两大盘烧饼，但是尚书那奸臣却要星爷当场啃完那几十个大烧饼…想想我就要吐了吐了……。我因为是一个好学上进的有志青年，所以看到这么好的系列文章，也是恨不得赶紧吸收为己所用，即使吐也要一边吃一边*。</p>
-<p>相比普通工程师而言，优秀工程师他们更加关注细节，他们会为了提升一点点团队效率，提升一点项目质量，提升一点点技术手段而绞尽脑汁的去学习然后解决问题。在点点滴滴的总结中提炼出优秀的项目开发和架构方案。</p>
-<p>App端的架构和服务器端的侧重点不同，App端技术的架构相比服务器端而言，对性能的关注度不如对用户体验的关注度，因为前端是用户直接使用的端，能从架构层面帮助业务开发解决部分用户体验问题也是很重要的(这个在后面会讲到从网络架构层面可以帮助解决哪些用户体验的问题)；服务器端更看中健壮性和承压能力（性能），而由于前端面对产品的需求变化比服务器端也大，因此架构上对可扩展性、可维护性、可读性的关注度也相比后端更关注一些，假设业务之间耦合性太大，动一些业务代码都导致整个项目难以为继，那这得是多么失败的架构啊。如果能从顶层引导业务开发工程师的代码更规范，那是一件对架构师多有成就感的事情呢。</p>
-<h2 id="App网络架构设计的两个关注点"><a href="#App网络架构设计的两个关注点" class="headerlink" title="App网络架构设计的两个关注点"></a>App网络架构设计的两个关注点</h2><p>在APP中，网络层属于项目的顶层了。网络层负责直接和server端通信获取或者修改数据，将返回结果交付给业务层去处理，或者业务层将数据传递给网络层去跟server端通信。网络层对接的是sever端和APP项目的业务层，架构师在做网络架构时就需要考虑网络层和这两个层对接设计。</p>
-<blockquote>
-<ul>
-<li>1.网络层架构如何设计能更合理地对接server端。</li>
-<li>2.网络层架构如何设计能更合理地对接业务开发。</li>
-</ul>
-</blockquote>
-<p>casa在的系列开篇中提到架构设计是自顶向下去设计，然后自下向上去实现，反向去验证架构的合理性。我同意这个观点。所以本文的思路就从顶向下去思考的网络层架构的。先从整体思考以前项目中缺陷，从全局层面去思考如何架构能够解决网络层架构存在的问题，然后抽丝剥茧去一个一个找到方案去解决问题。</p>
-<p>架构师需要根据自己过去项目的经验，去预演设想项目发展过程中可能遇到的网络架构需要解决的技术坑、同server端对接遇到的坑、和业务层开发工程师对接遇到的坑。</p>
-<h2 id="关注点1：如何设计网络架构能更合理地对接server端"><a href="#关注点1：如何设计网络架构能更合理地对接server端" class="headerlink" title="关注点1：如何设计网络架构能更合理地对接server端"></a>关注点1：如何设计网络架构能更合理地对接server端</h2><p><strong>1.安全问题</strong></p>
-<blockquote>
-<ul>
-<li>1）网络通信的数据安全如何解决？</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>2）如何防止中间人攻击，比如运营商的广告插入？</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>3）如何确保网络请求由开发的App发出，防止其他人爬API请求获取返回数据?</li>
-</ul>
-</blockquote>
-<p><strong>解决方案：</strong></p>
-<p>关于第一条、第二条的解决方案如果能和server端协商改成HTTPS就用HTTPS。事实上现在苹果要求的请求必须是HTTPS，从iOS9之后非https的请求的App是无法审核通过的，必须要提出特殊APP使用HTTP的申请。HTTPS可以防止中间人攻击（比如运营商在返回数据里插入广告），也可以保障数据的安全。如果server端就是不支持HTTPS，除了鄙视他们，你能做的就是和他们协商对请求返回的数据做加密处理。</p>
-<p>关于第三条安全的解决方案通常做法是使用签名，对请求参数加盐做hash算法，然后在服务端去用彼此协商好的加密解密规则去解这个hash值，如果最后的结果一致，说明该请求是由自家的APP发出，反之则可能是有其他人截获请求后发出的，server端需要把这中非自家的请求给quit掉。服务器端和APP端可以协商一个相对复杂的加密算法，这样不容易被黑客猜测到。APP端最好不要将加密的规则写到本地文件中，而是直接写在代码里，这样不容被攻击者获取到加密规则。</p>
-<p><strong>2.性能优化</strong></p>
-<blockquote>
-<ul>
-<li>1)如何减少不必要的网络请求，减小server端的压力？</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>2)如何提高用户请求的相应速度？</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>3）如何降低用户请求流量消耗和耗电？</li>
-</ul>
-</blockquote>
-<p><strong>解决方案：</strong></p>
-<p>   <em><code>1.必要的API请求的缓存，可以优化上面所有的点。</code></em></p>
-<p>   如果一个请求的返回数据几分钟甚至几小时内不容易有变化，比如产品详情页面的数据一般几个小时内是不怎么会变化的，我们可对请求的返回数据做内存缓存；如果一个请求的返回数据可能几天甚至几个月都不会变化，比如推送的文章数据，我们可以对请求的返回数据做内存和磁盘的二级缓存，当然有变化如何处理，这个可以参考我的文章《iOS架构师之路：数据持久化方案》；关于磁盘缓存，如果数据要求精确度较高，我们可以用数据库精确到字段去存储数据，比如用户信息，城市信息；如果数据只是要求整存整取的非核心数据，我们可以用数据库也可以文件存取。<br>   现在的AFNetworking已经提供CachePolicy这个字段让我们做请求的缓存，但是如果请求头Header加入了区分请求的字段，那用CachePolicy就不好使了，因此在做架构的时候，就需要自定义请求缓存类了。</p>
-<p>   <em><code>2.请求状态的记录、暂停、取消。</code></em></p>
-<p>   用户的行为无法预知，比如点击某个按钮发起请求后可能再次点击触发请求，这时候我们最好在网络架构的时候考虑这个问题，有一个机制记录请求是否在请求中，如果在请求中，我们可以暂停发起过的请求的或者暂停即将发起的请求。比如下拉列表，发起请求后，如果用户再次下拉，最好不要再次请求，因为两次的请求数据相同，不需要重复发送请求；如果是用户筛选的请求，那最好取消之前发起的请求，再发起新的请求，因为之前的请求对用户已经没有任何意义了，新请求才可能是用户期望的行为。因此在做网络架构的时候，就需要网络层给业务开发提供记录状态、取消请求的接口。</p>
-<p>   <em><code>避免DNS解析，直接IP请求可以稍微提高一写网络请求的速度。</code></em></p>
-<p>域名解析多少是需要一个解析过程的，APP端因为无需像浏览器一样，需要给用户一个比APP更容易记住的域名输入需求，所以没必要发起请求使用域名，完全可以使用IP地址。</p>
-<p>   <em><code>本地IP表，可以解决中国南电信和北联通运营商之间的PING延时差。</code></em></p>
-<p>   用户的手机使用网络环境不可预知，经常出差的同事可能会在多种网络环境下使用手机APP。如果服务器端有多个IP地址，有联通的，用电信的，或者其他运营商的。我们最好能在APP端有一份IP地址列表，把服务器端的所有IP列入，当APP启动时候，针对这个列表的IP地址做ping延时时间，取延时最小的IP作为这段时间应用的服务器IP地址。    </p>
-<p><strong>3 .如果server端的接口设计的规范和数据结构五花八门，网络层如何为业务开发解决这部分困扰？</strong></p>
-<p>我们的服务器端的团队可能是多个团队，也可能是外部团队，甚至是第三方，比如谷歌地图，比如天气服务。这时候我们最好能在网络架构的时候充分考虑到这些。让业务开发可以使用相似的接口，尽可能少的调整就能使用不同接口设计规范提供的API。</p>
-<p>在团队中可能多个业务模块由不同的后端团队去做，比如我之前公司《亚程旅游》APP的酒店业务有城市列表，机票业务也有城市列表，但是这两个城市列表的后端来自不同团队，服务器端返回给APP端的数据字段个数不同，字段命名不同。这时候我们可以在网络层提供一个洗数据的功能，让业务端拿到相同字段数字段名的数据。</p>
-<p>还有我们的后端有开发、测试、和生产环境。网络架构的时候做好开关功能，而不是切换环境需要手段去更改IP，虽然看起来这并不费工夫，但在实际团队开发的合作开发过程中，我们负责打包的工程师可能会忘记修改IP地址，这时候打包给测试或者上架，那时间成本和代价就不是十分钟二十分钟的事情了。所以能自动化解决的一定要自动化。</p>
-<p><strong>4 .当server端没有提前交付真实接口时，在网络层如何通过mock数据，让业务开发顺利进展？</strong></p>
-<p>团队作战的能力真的是千差万别，只有更神奇没有最神奇。有些时候，sever端的开发严重滞后前端开发，前端拿不到真实数据，根本不好调试界面和界面逻辑，因此影响前端的开发进度。如果在业务层写很多的假数据，或者硬编码假数据，这又在对接真实数据时需要删除整理，而且让mock假数据的工作变得非常繁杂和沉重，让业务开发感到非常的沮丧。所以架构师需要注意到这些，架构师的存在一个重要理由，就是为业务工程师服务的。<br>    所以在网络层，可以设计一个mock数据的开关，业务开发可以按照接口文档示例，mock一个本地json/xml数据文件，以一个约定方式命名这个json文件。这时候业务开发就可以像调用接口一样调用mock数据里，让开发能够顺利进行。</p>
-<h2 id="关注点2：网络架构如何设计能更合理地对接业务开发"><a href="#关注点2：网络架构如何设计能更合理地对接业务开发" class="headerlink" title="关注点2：网络架构如何设计能更合理地对接业务开发"></a>关注点2：网络架构如何设计能更合理地对接业务开发</h2><p><strong>1.以哪种方式交付数据给业务层</strong></p>
-<p>casa在他的文章中提到一个观点：架构师在该灵活的时候要灵活，该限制的要限制。当然何时灵活合适限制是需要架构师的经验的。网络层交付返回数据给业务层的方式主要有notification、delegate、block.由于AFNetworking使用的是代理的方式，所以多数APP为了偷懒，在网络层都是沿用了AFNetworking的方式，使用了block。而block虽然让代码紧凑，但是在一段代码里，包含我们请求时的参数组装、参数的判断、请求发起、返回数据校验、各种判断的弹出提示、对返回数据进行处理，这些会让请求这段代码变得非常臃肿。业务开发工程师如果勤快一点，可能会为block块单独开一个方法去处理返回结果，但是这样可能导致各个业务处理的方法名不一致，可读性差，因此还不如在网络层架构的时候，就直接使用代理的方式给到业务开发，这样就把请求和返回分离了，代码结构也更清晰，方法命名也更统一。</p>
-<p><strong>2.交付什么数据给业务层</strong></p>
-<p>我认为这部分就是该灵活的时候了，我看过一些APP直接在网络层返回model给开发，或者是未序列的responseData的原数据给业务开发，这两种方式都不太合理。后者就不必多说，网络层没必要偷这个懒，直接序列化之后给业务开发，就不用每个API业务开发都需要先序列化一下，何乐而不为？而前者直接返回model的话，我认为就对业务开发限制太死了，我认为这部分是网络架构可以该灵活的时候了。可能一个页面只需要这个model的一个两个字段，这样带一个model过去不太合适，太重了，而且也有可能这个页面的数据是多个model的数据某些字段组合而成的，那这时候就会让业务开发很蛋疼了，这个页面可能需要定义一个新的model，或者这个页面需要多个model的数据，那可能需要带入多个model，这样做都很难看。所以我建议网络层返回一个序列化后的数据就好。在casa的文章中还提到了reformmer机制，可以洗数据用，让每个页面取得需要的数据。你可以这么做，也可以直接用字典搞定，或者转化为model，建议最好把处理交给业务层。</p>
-<p><strong>3.传递什么类型的参数给网络层</strong></p>
-<p>我见过一些项目，可以传model作为参数给网络层，可以传字典到网络层，也可以传key,value的方式给网络层。我认为没必要，直接传递字典就好，这部分完全没必要灵活。因为无论是model，还是字典，还是key value，极可能在发起请求前是需要组装参数的，传入model的话，可能传参前需要转化成model，到网络层可能还需要转字典一下，浪费这个性能和时间成本完全没必要。key,value的方式或许好点，没有多少转化成本，但是为了可读性和规范性，还是觉得没必要。因此我任务传参统一用字典就好，让传参行为标准化，对代码可维护和可读性也是有好处的。</p>
-<p><strong>4.给业务层封装共用和不必要的参数传入</strong></p>
-<p>这部分不必多说，多数网络层都会做这个事情，但是如果结合综合前文中和server端对接提到的多种服务的情况，最好封装共用参数是和服务绑定的。而不是直接写死，否则网络层应对服务端接口变化时候，可能服务变了，需要不断的改这部分代码。</p>
-<p><strong>5.请求状态的记录、取消、暂停的接口开放给业务层。</strong></p>
-<p>这部分其实不少APP架构的忽略了这部分设计。这类APP是不关心用户流量的，可能还会给用户非期望的结果。优秀的APP还是尽量多的为用户考虑下吧，所以该设计的要设计，因为业务开发的能力可能还考虑不到这些。</p>
-<p><strong>6.请求参数的校验</strong></p>
-<p>我们的请求参数，可能是依赖其他API的返回值，或者依赖其他页面，而这个请求的参数的值可能有要求，比如不能为空，或者只能是枚举值中的几个值，这时候如果我们能对参数做校验，在架构成眠为业务提供校验参数的接口，我们业务开发就能根据参数校验情况，决定要不要发起这次请求，直接给用用一个提示；或者让他们根据业务决定要不要给参数一个默认值，有些业务有默认返回结果可能比没有结果更好。所以架构的时候考虑了做这个接口，这样给业务开发工程师一个可以校验的参数的接口，在必要的时候业务开发是喜欢用的。</p>
-<p><strong>7.返回值的必要校验</strong></p>
-<p>这部分和请求参数的校验类似，因为某些字段服务器返回的不稳定，比如返回”NULL”字符串，就挺让用户崩溃的，这时候如果能够对某些关键的不稳定的字段做一些校验，业务开发肯定期望有这么一个接口，如果网络架构考虑到这些，他一定会对感激涕零的。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章主要是我对平安健康APP架构的实践的思考，主要的思想来自casa大神，同时也加入了自己的经验。网络架构由于是项目的顶层，如果设计不好，比如该开发的接口没有开发，该限制的地方没限制，该灵活的地方没有灵活，会影响整个项目的进度和业务开发的代码性能和质量。这篇文章主要是谈网络架构的关注的两个点：和服务器对接以及和业务层对接。以及围绕这两个点，架构师需要前瞻到可能会踩到的坑，能在网络层解决的就要提前设计好，然后找到解决方案去解决。这篇文章偏重于设计，由于篇幅太长，周期太长，所以写的时候状态也不一，所以可能写的有点乱，我会在后续的时间慢慢整理。后续有时间我也会把自己的架构设计方案的代码搬上来。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://casatwy.com/iosying-yong-jia-gou-tan-wang-luo-ceng-she-ji-fang-an.html" target="_blank" rel="noopener">《iOS应用架构谈 网络层设计方案》</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">network architect design</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/08/06/2016-08-06-ios-app-network-architect-design-thinking/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
@@ -1505,6 +1672,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1517,11 +1692,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1534,10 +1705,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1565,15 +1732,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1601,15 +1768,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1625,27 +1788,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1658,6 +1805,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1701,22 +1868,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码review</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">合并申请</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
@@ -1745,6 +1896,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码review</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">合并申请</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -1754,26 +1921,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1790,6 +1937,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1869,6 +2036,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
@@ -1885,19 +2060,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1925,19 +2100,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1950,6 +2113,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
