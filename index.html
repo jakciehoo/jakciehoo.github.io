@@ -182,197 +182,9 @@
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Okex马上也要推出永续合约。永续合约相比到期交割的合约降低部分投资的风险，因为没有交割期，这样投资者相对有更多的时间周期去应对。这几个月用Bimex交易所，对完善的设计、网站的流畅性、细节的处理真的很让惊叹。推出BTC量化两个月，量化细节在不断完善，只为两个目标：降低风险和增加盈利概率。</p>
 <p>对于自动化、量化交易策略的研究分类大致为：趋势型、 对冲型、 网格策略、 高频策略、 人工智能、 算法交易、 深度学习。其中 网格策略和对冲类型策略 可以算是比较经典的策略类型。</p>
-<h2 id="方案形成思路"><a href="#方案形成思路" class="headerlink" title="方案形成思路"></a>方案形成思路</h2><p>在Bitmex上赚钱目前总结大致有三种：<br>1.做对期货方向，平仓盈利。这个玩过期货的都懂。<br>2.赚取提供流动性佣金(挂单)。目前每个挂单有0.0250%的奖励。<br>3.赚取持仓费。Bitmex目前对做空的单子有持仓费返还，目前是0.0379%。每天4点、12点、20点三次结算。</p>
-<p><img src="/img/in-post/token-earn/fee.png" alt="奖励"></p>
-<p>赚钱机会的同时也意味着有亏损的风险发生的可能，一般来说，机会和风险是成正比的。在Bitmex做交易存在的风险。<br>1.方向做错，平仓亏损，甚至爆仓。<br>2.挂吃单，提供手续费，目前是0.075%的手续费。<br>3.多单，提供持仓费，目前是0.0379%。</p>
-<p>当然盈利和亏损最主要的决定因素主要还是买卖方向。但是其他两项也值得重视，毕竟老话说“不积跬步无以至千里,不积小流无以成江海”。</p>
-<p>控制的风险扩大的盈利的方式有很多，比如提高长期短期的操盘水平，通过操盘技术发现更大概率的盈利的机会。但是对于大多数投资者而言，这种能力不具备，另外技术再牛有时候也玩不过庄家，尤其在被高度控盘的数字货币市场。既然方向不可预知，也难以完全通过技术来预知，那对于多数人来说仓位管理是控制风险的主要手段。</p>
-<p>目前的BTC量化采用的是网格策略，网格策略其实就是一种仓位管理策略，用于动态调仓，指以某点为基点，每上涨或下跌一定点数挂一定数量空单或多单。一般会设定盈利目标，但不设止损。</p>
-<h2 id="法币本位的低风险网格策略设计方案"><a href="#法币本位的低风险网格策略设计方案" class="headerlink" title="法币本位的低风险网格策略设计方案"></a>法币本位的低风险网格策略设计方案</h2><h3 id="方案关键要点"><a href="#方案关键要点" class="headerlink" title="方案关键要点"></a>方案关键要点</h3><p>1.持有一部分BTC现货，一部分BTC做期货。假设按当前币价44000多（6400美金），花了9万购买了两个BTC。那这个策略就可以一个BTC放在钱包屯着，一个放在BITMEX做量化。当然是否是1：1的关系这个可以自己计算一下。</p>
-<p>2.在BITMEX的币永远只做空，控制爆仓价格为购买时币价的两倍，如果买入价格是6400美金，那就是12800美金的爆仓点位，这样即使爆仓，现货的价格翻倍，以法币本位看还是是赚钱的。</p>
-<p>3.不预测方向，可能做空失败，也可能做空成功，但是持仓奖励和挂单奖励一定要拿到，因此一直做空，一直做挂单，而且尽可能多让挂单成交。</p>
-<p>4.仓位控制，控制风险，至少让自己的仓位在12800点上方才可能爆仓。一个BTC当前币价6400美金，最大杠杆100倍，可以做空640000份合约。但是风险也放大100倍，币价每上涨1美元，账户损失100美元的币，上涨60美元就爆仓了。</p>
-<h3 id="仓位管理"><a href="#仓位管理" class="headerlink" title="仓位管理"></a>仓位管理</h3><p>本方案后面介绍如何让自己的挂单更多的成交，更多机会盈利平仓，即使平仓失败被套，也能赚取持仓费，而且不会爆仓，至少在12800点上方爆仓。</p>
-<p>能实现这个办法有两种，一种是永远低仓位玩，比如永远不加杠杆。但是这样收益也就低了。另外一种办法就是加杠杆，但是能够不断的提高持仓均价，让100倍杠杆了最终均价在12000点以上。</p>
-<p>既然做这个方案，当然目的是为了控制风险的同时也能最大化收益，所以肯定会使用杠杆来放大收益的，那就需要有机会抬高均价到12000点以上。</p>
-<table>
-<thead>
-<tr>
-<th>当前币价（美元）</th>
-<th>持仓数量</th>
-<th>持仓均价</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>6400</td>
-<td>10000</td>
-<td>6400</td>
-</tr>
-<tr>
-<td>6600</td>
-<td>20000</td>
-<td>6500</td>
-</tr>
-<tr>
-<td>6900</td>
-<td>40000</td>
-<td>6700</td>
-</tr>
-<tr>
-<td>7500</td>
-<td>80000</td>
-<td>7100</td>
-</tr>
-<tr>
-<td>8500</td>
-<td>100000</td>
-<td>7800</td>
-</tr>
-<tr>
-<td>10000</td>
-<td>320000</td>
-<td>8900</td>
-</tr>
-<tr>
-<td>12000</td>
-<td>640000</td>
-<td>10450</td>
-</tr>
-<tr>
-<td>-</td>
-<td>总计1270000</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<p>上面的币的价格间距分别是200、300、600、1000、1500、2000。比特币的价格变化一般是2%以内，也就是200、300美元以内振动，当然偶尔也有保证百分10的时候。所以我设计的阶梯如此，同时给了方案6此加仓的机会，每次都是翻倍加仓最后一次将近翻两倍。</p>
-<p>因此如果我在上面指定间隔加仓翻倍数量，控制加仓次数6次，这样策略就可以做到在12000以上也不爆仓。</p>
-<table>
-<thead>
-<tr>
-<th>币量（个）</th>
-<th>当前币价（美元）</th>
-<th>最大可持仓数量（100倍杠杆）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>6400</td>
-<td>640000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>6600</td>
-<td>660000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>6900</td>
-<td>69000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>7500</td>
-<td>780000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>8500</td>
-<td>850000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>10000</td>
-<td>1000000</td>
-</tr>
-<tr>
-<td>1</td>
-<td>12000</td>
-<td>1200000</td>
-</tr>
-</tbody>
-</table>
-<p>上面两张表对比，我们发现如果一个BTC大致可以起始仓位控制到10000份稍微少点，我们就用1%吧6400美元，这样更安全。</p>
-<p>最后得出如果投入一个BTC到量化的一张加仓表：</p>
-<table>
-<thead>
-<tr>
-<th>当前币价（美元）</th>
-<th>持仓数量</th>
-<th>持仓均价</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>6400</td>
-<td>6400</td>
-<td>6400</td>
-</tr>
-<tr>
-<td>6600</td>
-<td>12800</td>
-<td>6500</td>
-</tr>
-<tr>
-<td>6900</td>
-<td>25600</td>
-<td>6700</td>
-</tr>
-<tr>
-<td>7500</td>
-<td>51200</td>
-<td>7100</td>
-</tr>
-<tr>
-<td>8500</td>
-<td>102400</td>
-<td>7800</td>
-</tr>
-<tr>
-<td>10000</td>
-<td>204800</td>
-<td>8900</td>
-</tr>
-<tr>
-<td>12000</td>
-<td>409600</td>
-<td>10450</td>
-</tr>
-<tr>
-<td>-</td>
-<td>总计812800</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<p>我们还剩余一部分资金可以继续加仓，哈哈。如果是0.1个或者10个币可以参考做乘法就好。</p>
-<h3 id="如何赚取更多的挂单奖励"><a href="#如何赚取更多的挂单奖励" class="headerlink" title="如何赚取更多的挂单奖励"></a>如何赚取更多的挂单奖励</h3><p>上面的补仓方法，我们已经让仓位可以变得安全。但是是不是应该每次到达指定价格就全部资金砸进去呢？其实这样赚不到更多的挂单手续费，因为很可能是一次性的，比如在6400美元挂单，然后幸运成交，但是价格一直回不到盈利平仓价，那这部分资金就一直被套，只能赚一次的挂单费用，当然持仓费是可以赚到的。</p>
-<p>事实上我们可能更希望是不停的能够挂单成功，并盈利平仓。然后继续挂单，反反复复。这样不停的可以赚取挂单费用。所以需要将每份资金再拆分，在不同价格上挂单，但是又不能拆分的太细，因为在5-15分钟内BTC的价格一般20美金以内震荡。又最好不能每次都是接近市价单挂，因为遇到不回头行情可能就不能平仓这部分资金了，资金利用率就降低了，最好每份资金都不被套。</p>
-<p>再次将每份资金分成20份，每次只挂出去5份，每份间隔3-4美元，直到20份资金都成交且没有达到止盈平仓被套等待解套后继续执行挂单，或者到达目标价格补仓后再挂单。</p>
-<p>这里刷新时间间隔和每次刷新的首单价格就很重要。如果刷新时间快，首单价格与市场价很近，很可能会有大量的低价单，也可能导致一直被套。首单价格远，刷新时间快，可能大致成单少。首单价格近，刷新时间慢点可能更合适，这里的度需要根据行情震荡情况把握好。</p>
-<h3 id="做好盈利了结的安排"><a href="#做好盈利了结的安排" class="headerlink" title="做好盈利了结的安排"></a>做好盈利了结的安排</h3><p>这样的方案，总是能赚到法币的，不要贪心，不要无止境加仓。风险随时会来，能凭知识赚点就好。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上是法币本位的超低风险的策略。目前币赚量化，打算按照这个思路再去改进。另外还有币本位的对冲策略,方案正在完善，代码正在测试完善中。祝大家都赚大钱。</p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://zhuanlan.zhihu.com/p/35699456" target="_blank" rel="noopener">一种多空双开的比特币期货交易策略</a></p>
-<h3 id="关于币赚"><a href="#关于币赚" class="headerlink" title="关于币赚"></a>关于币赚</h3><p>币赚量化项目由本人发起成立的数字资产理财项目。成为朋友们的数字资产理财管理专家是币赚的使命。币赚团队会不断努力，不辱我们的使命，让更多朋友在数字资产领域拥有更多获得感。</p>
-<p>币赚量化实盘直播日记会选择一个账户，通过直播的方式真实呈现量化收益，希望让更多的人知道我们，信任我们，加入我们。</p>
-<p>投资币赚的投资者只需要提供具有委托权限的API，就可以在自己交易账户进行量化，随时管理监控自己的账户收益情况，安全自主性强。当然投资者也可以选择委托我们统一管理，投资者只需要关心收益即可。</p>
-<h3 id="关于币赚大饼btc量化"><a href="#关于币赚大饼btc量化" class="headerlink" title="关于币赚大饼btc量化"></a>关于币赚大饼btc量化</h3><p>btc量化交易系统在bitmex上做btc的期货交易，对于btc的持有者而言，我认为是最好的量化赚币的机会。</p>
-<p>为什么选择bitmex? 大家可以参考这篇文章</p>
-<p><a href="https://www.zhihu.com/question/270645455/answer/356762283" target="_blank" rel="noopener">如何评价比特币期货交易平台BitMEX？</a></p>
-<p><a href="https://www.zhihu.com/question/270645455/answer/356762283" target="_blank" rel="noopener">https://www.zhihu.com/question/270645455/answer/356762283</a></p>
-<p>并且bitmex对于挂单有手续费返利，所以高频策略更容易获得更多收益。</p>
-<p>btc量化提供了懒人版、参数版（在一定规则下根据行情变化修改参数可以追求更高的收益）、定投版。</p>
-<p>如果希望了解收益情况可以查看我的文章，然后私下咨询我收益以及如何加入赚钱等信息。</p>
-<p>建议你用我的邀请链接注册bitmex，用它注册可以获得6个月10%的手续费优惠，另外可以获得我更加热情的服务。</p>
-<p><a href="https://www.bitmex.com/register/fPJ7B1" target="_blank" rel="noopener">bitmex注册邀请链接</a></p>
-<p><a href="https://www.bitmex.com/register/fPJ7B1" target="_blank" rel="noopener">https://www.bitmex.com/register/fPJ7B1</a></p>
-<p>走过路过千万别再错过。。。</p>
-<h3 id="加入社区"><a href="#加入社区" class="headerlink" title="加入社区"></a>加入社区</h3><p>如果您对量化交易感兴趣、想学习或交流，欢迎加入社群。</p>
-<p>关注公众号”胡同学和朋友们的成长日记”， 回复【币赚】两字即可。</p>
-<h3 id="联系我"><a href="#联系我" class="headerlink" title="联系我"></a>联系我</h3><p><img src="/img/erQRCode.JPG" alt="联系我"></p>
-
+        
+          <a class="article-more-a" href="/2018/11/10/quant-design-grid/#more">more >></a>
+        
       
 
       
@@ -1096,6 +908,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1104,19 +924,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1148,10 +960,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
@@ -1160,23 +968,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1192,6 +992,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1204,15 +1016,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1244,11 +1052,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1264,11 +1076,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1280,23 +1092,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1313,6 +1109,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1344,6 +1160,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git Reset</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Revert</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git log</a>
               </li>
              
@@ -1364,22 +1208,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -1393,22 +1221,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git Reset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Revert</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1436,6 +1248,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">比特币</a>
               </li>
              
@@ -1460,19 +1288,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1484,19 +1304,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1516,19 +1336,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1544,6 +1352,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
               </li>
              
@@ -1556,15 +1368,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">通证经济</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">token economy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
               </li>
              
               <li class="article-tag-list-item">
