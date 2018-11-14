@@ -160,6 +160,128 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-07-10-ios-project-file-structure" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/10/2016-07-10-ios-project-file-structure/">iOS架构师之路：工程文件组织结构设计</a>
+    </h1>
+  
+
+        
+        <a href="/2016/07/10/2016-07-10-ios-project-file-structure/" class="archive-article-date">
+  	<time datetime="2016-07-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>编程是一门艺术活，不同意？嘿嘿，那不要怪跟你翻两个白眼。没关系，你一定会同意这句话：艺术品的一个及其重要且必须有的特征就是它们都是由艺术家创作出来的O(∩_∩)O~。方才小生我是逗你玩的，讲真艺术品是由艺术家创作是没有任何问题的，当然其实艺术品还有一个特征就是它把重要的细节发挥到极致。所以，作为ios架构师，不放过任何一个可以提升项目质量、效率、健壮性等等的技术手段，也就是分内事了。也许是不够有技术含量，，发现国内外鲜有关于工程文件组织结构设计的文章。但是从我负责过的几个项目来看，一个好的工程文件组织结构能够从源头上提升工程师的开发效率，提升项目的健壮性和可扩展性，而我也清楚的看到过一些项目因为糟糕的文件目录设计，导致代码管理和项目发展过程会带来的问题。</p>
+<h3 id="一个好的工程文件组织结构设计的优点"><a href="#一个好的工程文件组织结构设计的优点" class="headerlink" title="一个好的工程文件组织结构设计的优点"></a>一个好的工程文件组织结构设计的优点</h3><p>1.工程文件分类明确，文件容易查找</p>
+<p>2.目录功能定义清晰，工程师能轻易知道在哪创建新文件，尤其是当团队有天秤座的工程师时</p>
+<p>3.工程和磁盘文件结构清晰，代码维护容易</p>
+<p>4.目录粒度足够精细，减少项目依赖关系和增加模块的可移植性</p>
+<p>……</p>
+<h3 id="关于MVC架构的在工程中两种体现形式"><a href="#关于MVC架构的在工程中两种体现形式" class="headerlink" title="关于MVC架构的在工程中两种体现形式"></a>关于MVC架构的在工程中两种体现形式</h3><p>1.有很多项目是直接在工程里创建Controllers、Views、Models这样的目录结构…这样归类<br>2.按 Feature来划分，每个Feature里面有Controllers、Views、Models…这样归类</p>
+<p>ios开发分工有两种，一种是分层开发，第一种形式适合分层开发，一种是分feature开发，第二种形式适合分feature开发。分层开发通常是有人负责DAO层（数据存取）开发，有人负责控制器和view层的开发，但是当API尚未形成，而且Dao层同事对业务层关注不够，DAO层开发的的同事就完全需要依靠自身的想象力去设计数据存取的接口，而往往这和实际API提供的接口存在巨大的落差，从而导致分层开发的各层都会做出大量代码重构。所以分feature开发是大家比较容易接受的一种开发方式。</p>
+<p><strong>所以我的建议：是采用第二种MVC组织形式，如果你采用MVVM或者其他，也可以参考此思路。其实第一种形式还有一个问题，比如你要找ControllerA的TableView用到的cellB类，你还要去Views里面一个个找，太痛苦了，就算search也还是苦毕竟不能所见即所得。而分feature则对于负责此feature的开发工程师找到有关文件则容易的多了。</strong></p>
+<h3 id="关于Helper与Utility"><a href="#关于Helper与Utility" class="headerlink" title="关于Helper与Utility"></a>关于Helper与Utility</h3><p>我看过很多项目，包括自己参与过的一些项目要么没有Helper,要么没有Utility文件夹，而是将他们糅在一起，傻傻分不清楚。<br><strong>我的建议：尽量细粒度化项目目录结构，在项目里分开提供helper目录和utility目录给开发者使用。与业务无关，具有对象性质，提供支持功能的代码放到Helper，比如创建一个自定义对象的封装。如果只是属于函数或算法，不是对象而且很多地方能用到，就放到Utility，比如排序/加密算法。</strong></p>
+<h3 id="关于Common文件夹"><a href="#关于Common文件夹" class="headerlink" title="关于Common文件夹"></a>关于Common文件夹</h3><p>这个在大神casa的文章《iOS应用架构谈 开篇》已经有清晰的表示，在他的文章中他建议在工程中标不要有Common文件夹。我一直以来可能都践行细粒度的目录结构划分方式，所以由我负责架构的项目都没有过common文件夹。我也比较认同casa的观点，不仅仅是对common文件夹，其实前面提到的helper和utility文件夹之所以拆分开也是因为希望能细粒度拆分模块，减少横向依赖。</p>
+<p>Common的好处只有一个，就是前期特别省事儿。然而它的坏处比好处要多太多。</p>
+<p>Common不仅仅是一个文件夹，它也会是一个Pod。不管是什么，在Common里面很容易形成错综复杂的小模块依赖，在模块成长过程中，会纵容工程师不注意依赖的管理，乃至于将来如果要将模块拆分出去，会非常的困难。<br>Common本身与细粒度模块设计的思想背道而驰，属于一种不合适的偷懒手段，在将来业务拓张会成为阻碍。<br>一旦设置了Common，就等于给地狱之门打开了一个小缝，每次业务迭代都会有一些不太好分类的东西放入Common，这就给维护Common的人带来了非常大的工作量，而且这些工作量全都是体力活，非常容易出错。</p>
+<p><strong>我建议在项目中不使用Common文件夹。这样工程师在创建一些共有文件，就必须按照他们的职责把他们分到不同模块里去，而不是偷懒，扔到common里，这样做虽然前期非常费劲，但是对后期维护、扩展、移植将带来巨大的好处。你会发现项目的可维护性大大提高，模块升级之后要做的同步工作非常轻松，解放了那个苦逼的Common维护者，更多的时间可以用在更实质的开发工作上。这符合我移植强调的细粒度模块划分的架构思想。</strong></p>
+<h3 id="关于Xcode的文件夹如何创建"><a href="#关于Xcode的文件夹如何创建" class="headerlink" title="关于Xcode的文件夹如何创建"></a>关于Xcode的文件夹如何创建</h3><p><strong>Xcode中组（Group） 和 文件夹引用（Folder Reference）的区别</strong></p>
+<p>刚才说了一些有关目录结构设计事情，现在说说 Xcode 的文件夹。我看过很多项目，我认为相当一部分的项目的文件夹管理不合理。在Xcode中 项目的文件夹有 Group 和 Folder Reference 之分。它们的区别在 <a href="http://vocaro.com/trevor/blog/2012/10/21/xcode-groups-vs-folder-references/" target="_blank" rel="noopener">Xcode Groups vs. Folder References</a> 这篇文章里有详细的讲述。</p>
+<p><img src="/img/in-post/ios_project_structure/group_and_folder_reference.png" alt=""></p>
+<p>Group 的缺点如下：</p>
+<p>1）Xcode 会为每个文件创建一个 reference，存储在 project.pbxproj 文件中，当有多个 target 时，每个文件的 reference 会被复制多个，这就会大大增加 project.pbxproj 文件的尺寸和复杂度，这对于代码版本管理来是个头疼的问题，尤其是遇到 merge conflict 的时候。<br>2）项目中 Group 的结构跟磁盘上的文件价的结构可以说是没有啥关系的，在磁盘上的一个文件在一个某个文件夹中，但是在 Xcode 的项目结构中，它可能在任何 Group 中，这样想要去找对应的文件就常常让人很晕。<br>3）如果你在 Xcode 之外直接去 Finder 里移动项目文件到不同的目录时，那么在 Xcode 中对这个文件的 reference 就会坏掉。<br>Group 的优点如下：</p>
+<p>1）你可以选择磁盘上的文件添加到项目中，不想要的不添加就行了。<br>2）对不同的 target 对应的文件能够更好地管理，比如，你可以选择对一个 target 排除某一个文件。<br>3）当 build 的时候，Xcode 会把所有的 Group 下的文件都放到 bundle 的顶级目录，所以你调用文件时不需要制定它的具体位置，比如，你不必这样 [UIImage imageNamed:@”Images/Icons/Go”]; ，这用这样就可以 [UIImage imageNamed:@”Go”];，但是这就意味着在整个项目中，你不能有同名的文件了。<br>Folder Reference 的有这些优点：</p>
+<p>1）Xcode 只存储 folder 的 reference，这个 folder 下所有的文件和 subfolder 都会自动添加到项目中去。这会使项目文件更小更简单，代码版本管理时，产生 merge conflict 的可能就更少。<br>2）如果你在文件系统中直接对 folder 下的文件进行修改、移动或者删除，Xcode 会自动更新对应的 folder reference 来反应这些改变，这样管理项目文件也更简单。<br>3）项目的结构和 folder 在磁盘的结构是一致的，这样就不会晕菜了。<br>4）由于存在不同的 folder 路径，你就不需要担心文件重名问题了，因为在 build 的时候，文件夹结构也会被放到 bundle 中去。<br>Folder Reference 的有这些缺点：</p>
+<p>1）对不同的 target 的管理是个灾难，因为一个 folder 下的代码或文件，要么全一样要么全不要。当然，如果你能为不同的 target 去建立不同的 Folder Reference，这看起来也没什么不好的。<br>2）对 folder 下的文件无法隐藏，磁盘上如果这个 folder 下有这个文件，那么在项目结构中就会看到它。<br>3）在加载文件资源的时候，你必须制定全路径。也就是说，你得这样：[UIImage imageNamed:@”Images/Icons/Go”];。<br>4）存储在 Folder Reference 中的图片在 Interface Builder 中使用时会遇到各种问题。<br>在实际使用中，使用 Group 要多得多。</p>
+<p><strong>Xcode 项目结构和磁盘文件结构的对应</strong></p>
+<p>上面说了 Group 和 Folder Reference 各自的优缺点，在项目中，我习惯上也是不使用 Folder Reference，只用 Group。在 Xcode 项目中创建 Group 的方式有两种：</p>
+<p>1）第一种方式：创建时需要先在磁盘上创建对应的文件夹，再把文件夹拖进 Xcode 项目中对应的位置，并选择 Create groups for any added folders。这样创建的 Group 会对应着磁盘上的 Folder。</p>
+<p>2）第二种方式：直接在 Xcode 项目中创建 Group。</p>
+<p>对照 Xcode 项目的 MyProject.xcodeproj/project.pbxproj 文件可以看到对应着 Folder 的 Group 和直接创建的 Group 的区别就在于前者是用 path 属性去记录，后者是用 name 属性去记录。如下，Helper 是一个不对应 Folder 的 Group，Resource 是一个对应 Folder 的 Group。通过各个结点的父子关系以及 path 属性，Xcode 就能管理好每个文件的 Reference。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//MyProject.xcodeproj/project.pbxproj</span><br><span class="line"></span><br><span class="line"><span class="number">45E59</span>EDF18BBA92C00251797 /* Helper */ = &#123;</span><br><span class="line">     isa = PBXGroup;</span><br><span class="line">     children = (</span><br><span class="line">          <span class="number">452183</span>D3195AA18F00679F14 /* CXTaskControlService.h */,</span><br><span class="line">          <span class="number">452183</span>D4195AA18F00679F14 /* CXTaskControlService.m */,</span><br><span class="line">     );</span><br><span class="line">     name = Helper;</span><br><span class="line">     sourceTree = <span class="string">"&lt;group&gt;"</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="number">45E59</span>EE318BC2B4100251797 /* Resource */ = &#123;</span><br><span class="line">     isa = PBXGroup;</span><br><span class="line">     children = (</span><br><span class="line">          <span class="number">45E59</span>EE418BC2B4100251797 /* Image */,</span><br><span class="line">          <span class="number">45</span>C97CA91900260A0020C517 /* Sound */,</span><br><span class="line">     );</span><br><span class="line">     path = Resource;</span><br><span class="line">     sourceTree = <span class="string">"&lt;group&gt;"</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>对于第一种方式：</code></p>
+<p><code>好处</code>：这样磁盘上的结构和 Xcode 中的项目结构就是一一对应的。让 Xcode 的目录结构能够跟磁盘文件的结构保持一致，这样让在找代码文件的时候能够更清晰。</p>
+<p><code>坏处</code>：创建和管理代码文件时就要麻烦一些。当你在 Xcode 项目中把一个文件从一个目录拖动到另外一个目录中时，它在 Xcode 中显示的目录路径改变了，但是它在磁盘上的物理位置并没有发生改变，这就会造成混乱。所以，为了保持对应关系，当你要改变文件的目录时，你需要手动到 Finder 文件夹中去移动文件，再在 Xcode 项目中去删除相应的文件引用再重新添加到新的目录下。这又带来了另外一个问题，就是 git 对文件的版本管理信息会被破坏，你可能无法看到这个文件之前的版本了，这个代价可就大了。所以，如果要采用版本管理，就要好好考虑这个因素了。</p>
+<p><code>对于第二种方式：</code></p>
+<p><code>好处</code>：直接在 Xcode 中管理项目，添加、删除、移动都很方便。采用版本管理时，代码文件的版本信息不会因为移动而丢失。</p>
+<p><code>坏处</code>：Xcode 中的项目结构和磁盘上的结构不能一一对应。<br>根据上面的对比，</p>
+<p><strong>我的建议：对于固定的可复用代码可以采用第一种方式，因为也不会经常移动。复用时，挪动起来也好操作；对于大的目录结构，比如一级目录：Utilities、Helpers、Features、Resource 等目录可以采用第一种方式。其他的情况均采用第二种方式就行了。</strong></p>
+<p>###我现在项目的工程结构设计样例</p>
+<p>废话不多说，最后给大家举一个我现在项目通常采用工程文件设计结构的例子吧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>主目录结构</span><br><span class="line">-ProjectDemo</span><br><span class="line">	--Features         //模块。包含各个模块的Model,View,Controller,Manager</span><br><span class="line">	--categories			//类目。包含各种类的分类</span><br><span class="line">	--Frameworks		//系统框架。包含导入的系统的框架</span><br><span class="line">	--Helpers			//帮助类。包含网络，数据库，归档，定位等操作类的封装和实现</span><br><span class="line">	--Utilites       //工具类，一些非对象的，而是类方法调用的类</span><br><span class="line">	--Vendors			//第三方库。部分需要修改或者不支持cocoapod的第三方的框架引入</span><br><span class="line">	--Config				//配置。包含宏定义文件，全局配置文件，全局常量文件，颜色配置文件</span><br><span class="line">	--Resources			//资源。包含plist,image,html,bundle，Localizable.strings等</span><br><span class="line">	--AppEntry			//程序入口。包含AppDelegate,main.c,info.plist</span><br><span class="line">-PAHealthTests</span><br><span class="line">-PAHealthUITests</span><br><span class="line">-Products           // 系统自动生成的.app所在文件夹</span><br><span class="line">-Pods					// 采用 CocoaPods 管理的第三方库。</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>模块目录结构</span><br><span class="line">-- Features         </span><br><span class="line">	---Base				//MVC的基类或者通用类</span><br><span class="line">		----Models		//数据模型</span><br><span class="line">		----Views		//视图</span><br><span class="line">		----Controllers	//控制器</span><br><span class="line">		----Manager		//store层的数据管理类</span><br><span class="line">	---Home</span><br><span class="line">		----Models</span><br><span class="line">		----Views</span><br><span class="line">		----Controllers</span><br><span class="line">		----Manager</span><br><span class="line">	---UserCenter</span><br><span class="line">		----Models</span><br><span class="line">		----Views</span><br><span class="line">		----Controllers</span><br><span class="line">		----Manager</span><br><span class="line">	---UserEntry</span><br><span class="line">		----Models</span><br><span class="line">		----Views</span><br><span class="line">		----Controllers</span><br><span class="line">		----Manager</span><br><span class="line"></span><br><span class="line">	---Payment</span><br><span class="line">		----Models</span><br><span class="line">		----Views</span><br><span class="line">		----Controllers</span><br><span class="line">		----Manager</span><br><span class="line">	…</span><br></pre></td></tr></table></figure>
+<p>###参考文章</p>
+<p><a href="http://www.samirchen.com/ios-project-structure/" target="_blank" rel="noopener">iOS项目的目录结构</a></p>
+<p><a href="http://casatwy.com/iosying-yong-jia-gou-tan-kai-pian.html" target="_blank" rel="noopener">iOS应用架构谈 开篇 </a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">ios架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程结构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/07/10/2016-07-10-ios-project-file-structure/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-06-18-loving-unit-test-series-one-rumen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -721,6 +843,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -745,18 +879,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
@@ -777,14 +899,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
@@ -793,15 +907,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -825,14 +935,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -842,6 +944,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -865,19 +979,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -909,6 +1031,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -937,11 +1067,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -950,14 +1080,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1001,14 +1123,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
@@ -1018,6 +1132,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1049,18 +1171,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">比特币</a>
               </li>
              
@@ -1085,7 +1195,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1094,18 +1228,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1125,14 +1247,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
               </li>
              
@@ -1149,19 +1263,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">成长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">时间</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1178,6 +1288,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">成长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">时间</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
