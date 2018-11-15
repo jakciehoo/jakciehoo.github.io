@@ -160,6 +160,189 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-02-03-Git-Reset-Checkout-and-Revert" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">【译文】代码回滚之Reset, Checkout, and Revert命令比较</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/" class="archive-article-date">
+  	<time datetime="2017-02-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/hero.svg" alt=""></p>
+<p><strong>git reset</strong>、<strong>git checkout</strong> 和 <strong>git revert</strong> 是Git中的常用工具。他们都可以用来撤销仓库中的修改。而前两个命令不仅可以作用于提交，还可以作用于特定文件。</p>
+<p>因为它们非常相似，所以我们经常会搞混，不知道什么场景下该用哪个命令。在这篇文章中，我们会比较<strong>git reset</strong>、<strong>git checkout</strong>和<strong>git revert</strong>最常见的用法。希望你在看完后能游刃有余地使用这些命令来管理你的仓库。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/01.svg" alt="The main components of a Git repository"></p>
+<p>Git仓库有三个主要组成——工作目录，暂存区和提交历史。这张图有助于理解每个命令对仓库产生作用的三个区：工作目录，暂存区、提交历史。当你阅读的时候，牢记这三个区。</p>
+<h2 id="提交层面的操作"><a href="#提交层面的操作" class="headerlink" title="提交层面的操作"></a>提交层面的操作</h2><p>你传给git reset 和 git checkout的参数决定他们的作用范围。如果参数里不包括一个文件路径，他们将作用于整个提交历史。这节内容我们主要探讨这个。注意git revert没有文件层面的操作。</p>
+<h4 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h4><p>在提交层面上，<code>reset</code>将一个分支的末端指向另一个提交。这可以用来移除当前分支的一些提交。比如，下面这两条命令让<code>hotfix</code>分支向后回退了两个提交。</p>
+<pre><code>git checkout hotfix
+git reset HEAD~2
+</code></pre><p><code>hotfix</code>分支末端的两个提交现在变成了悬挂（dangling）提交。也就是说，下次Git执行垃圾回收的时候，这两个提交会被删除。换句话说，如果你想扔掉这两个提交，你可以这么做。reset操作如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/02.svg" alt="Resetting the hotfix branch to HEAD~2"></p>
+<p>如果更改还没有共享给其他人并且你乡撤销这些更改，<code>git reset</code>是非常方便你达到这个目的的方法。当你开发一个功能的时候发现『糟糕，我做了什么？我应该重新来过！』时，reset就像是go-to命令一样。</p>
+<p>除了在当前分支上操作，你还可以通过传入这些标记来修改你的暂存区或工作目录：</p>
+<ul>
+<li>–soft    – 暂存区和工作目录都不会被改变</li>
+<li>–mixed   – 默认选项。暂存区和你指定的提交同步，但工作目录不受影响</li>
+<li>–hard    – 暂存区和工作目录都同步到你指定的提交</li>
+</ul>
+<p>把这些参数想成定义<code>git reset</code>操作的作用域就容易理解多了。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/03.svg" alt="The scope of `git reset`’s modes"></p>
+<p>这些标记往往和HEAD作为参数一起使用。比如，<code>git reset --mixed HEAD</code> 将你当前的改动从暂存区中移除，但是这些改动还留在工作目录中。另一方面，如果你想完全舍弃你没有提交的改动，你可以使用<code>git reset --hard HEAD</code>。这是git reset最常用的两种用法。</p>
+<p>当你传入HEAD以外的其他提交的时候要格外小心，因为reset操作会重写当前分支的历史。正如<a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting/summary" target="_blank" rel="noopener">Rebase黄金法则</a>所说的，在公共分支上这样做可能会引起严重的后果。</p>
+<h4 id="Checkout"><a href="#Checkout" class="headerlink" title="Checkout"></a>Checkout</h4><p>你应该已经非常熟悉提交层面的git checkout。当传入分支名时，可以切换到那个分支。</p>
+<pre><code>git checkout hotfix
+</code></pre><p> 上面这个命令做的不过是将HEAD移到一个新的分支，然后更新工作目录。因为这可能会覆盖本地的修改，Git强制你提交或者隐藏工作目录中的所有更改，不然在checkout的时候这些更改都会丢失。和<code>git reset</code>不一样的是，<code>git checkout</code>没有移动这些分支。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/04.svg" alt="Moving `HEAD` from `master` to `hotfix`"></p>
+<p> 除了分支之外，你还可以传入提交的引用来checkout到任意的提交。这和checkout到另一个分支是完全一样的：把HEAD移动到特定的提交。比如，下面这个命令会checkout到当前提交的祖父提交。</p>
+<pre><code>git checkout HEAD~2
+</code></pre><p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/05.svg" alt="Moving `HEAD` to an arbitrary commit"></p>
+<p>这对于快速查看项目旧版本来说非常有用。但如果你当前的HEAD没有任何分支引用，那么这会造成HEAD分离。这是非常危险的，如果你接着添加新的提交，然后切换到别的分支之后就没办法回到之前添加的这些提交。因此，在为分离的HEAD添加新的提交的时候你应该创建一个新的分支。</p>
+<h4 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h4><p>Revert撤销一个提交的同时会创建一个新的提交。这是一个安全的方法，因为它不会重写提交历史。比如，下面的命令会找出倒数第二个提交，然后创建一个新的提交来撤销这些更改，然后把这个提交加入项目中。</p>
+<pre><code>git checkout hotfix
+git revert HEAD~2
+</code></pre><p>如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/06.svg" alt="Reverting the 2nd to last commit"></p>
+<p>相比<code>git reset</code>，它不会改变现在的提交历史。因此，<code>git revert</code>可以用在公共分支上，<code>git reset</code>应该用在私有分支上。</p>
+<p>你也可以把<code>git revert</code>当作撤销已经提交的更改，而<code>git reset HEAD</code>用来撤销没有提交的更改。</p>
+<p>就像<code>git checkout</code> 一样，<code>git revert</code> 也有可能会重写文件。所以，Git会在你执行revert之前要求你提交或者缓存你工作目录中的更改。</p>
+<h2 id="文件层面的操作"><a href="#文件层面的操作" class="headerlink" title="文件层面的操作"></a>文件层面的操作</h2><p><code>git reset</code>和<code>git checkout</code>命令也接受文件路径作为参数。这时它的行为就大为不同了。它不会作用于整份提交，参数将它限制于特定文件。</p>
+<h4 id="Reset-1"><a href="#Reset-1" class="headerlink" title="Reset"></a>Reset</h4><p>当检测到文件路径时，git reset 将暂存区同步到你指定的那个提交。比如，下面这个命令会将倒数第二个提交中的foo.py加入到暂存区中，供下一个提交使用。</p>
+<pre><code>git reset HEAD~2 foo.py
+</code></pre><p>和提交层面的<code>git reset</code>一样，通常我们使用HEAD而不是某个特定的提交。运行<code>git reset HEAD foo.py</code> 会将当前的foo.py从暂存区中移除出去，而不会影响工作目录中对foo.py的更改。<br>暂存区<br><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/07.svg" alt="Moving a file from the commit history into the staged snapshot"></p>
+<p><em>–soft</em>、<em>–mixed</em>和<em>–hard</em>对文件层面的<code>git reset</code>毫无作用，因为暂存区中的文件一定会变化，而工作目录中的文件一定不变。</p>
+<h4 id="Checkout-1"><a href="#Checkout-1" class="headerlink" title="Checkout"></a>Checkout</h4><p>Checkout一个文件和带文件路径<code>git reset</code> 非常像，除了它更改的是工作目录而不是缓存区。不像提交层面的checkout命令，它不会移动HEAD引用，也就是你不会切换到别的分支上去。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/08.svg" alt="Moving a file from the commit history into the working directory"></p>
+<p>比如，下面这个命令将工作目录中的foo.py同步到了倒数第二个提交中的foo.py。</p>
+<pre><code>git checkout HEAD~2 foo.py
+</code></pre><p>和提交层面相同的是，它可以用来检查项目的旧版本，但作用域被限制到了特定文件。</p>
+<p>如果你缓存并且提交了checkout的文件，它具备将某个文件回撤到之前版本的效果。注意它撤销了这个文件后面所有的更改，而git revert 命令只撤销某个特定提交的更改。</p>
+<p>和<code>git reset</code> 一样，这个命令通常和HEAD一起使用。比如<code>git checkout HEAD foo.py</code>等同于舍弃foo.py没有缓存的更改。这个行为和git <code>reset HEAD --hard</code>很像，但只影响特定文件。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>你现在已经掌握了Git仓库中撤销更改的所有工具。git reset、git checkout、和 git revert命令比较容易混淆，但当你想起它们对工作目录、缓存区和提交历史的不同影响，就会容易判断现在应该用哪个命令。</p>
+<p>下面这个表格总结了这些命令最常用的使用场景。记得经常对照这个表格，因为你使用Git时一定会经常用到。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令</th>
+<th style="text-align:center">作用域</th>
+<th style="text-align:center">常用情景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在私有分支上舍弃一些没有提交的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">将文件从缓存区中移除</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">切换分支或查看旧版本</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">舍弃工作目录中的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在公共分支上回滚更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">（然而并没有）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting" target="_blank" rel="noopener">Reset, Checkout, and Revert</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 撤销</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git Reset</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Revert</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git Checkout</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-01-01-from-2016-to-2017" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -987,6 +1170,166 @@ commit -a -m &quot;Add first draft of some feature&quot;
 
 
   
+    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
+<li>加快 Reviewing Code 的过程</li>
+<li>帮助我们写好 release note</li>
+<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
+<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
+<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
+</ul>
+<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
+<blockquote>
+<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
+</blockquote>
+<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
+<p> 一个不好的例子：</p>
+<pre><code>git commit -m &quot;Fix login bug&quot;
+</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
+<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
+<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
+<li><p><strong>为什么这次修改是必要的？</strong></p>
+<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
+</li>
+<li><p><strong>如何解决的问题？</strong></p>
+</li>
+</ul>
+<p>这可不是说技术细节。看下面的两个例子：</p>
+<p><code>Introduce a red/black tree to increase search speed</code></p>
+<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
+<p>如果你的修改特别明显，就可以忽略这个。</p>
+<ul>
+<li><strong>这些变化可能影响哪些地方？</strong></li>
+</ul>
+<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
+<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
+<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
+<li>使用 fix, add, change 而不是 fixed, added, changed</li>
+<li>永远别忘了第2行是空行</li>
+<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
+<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
+</ul>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
+<pre><code>Fix bug where user can&apos;t signup.
+
+[Bug #2873942]
+
+Users were unable to register if they hadn&apos;t visited the plans 
+and pricing page because we expected that tracking    information 
+to exist for the logs we create after a user signs up.  
+I fixed this by adding a check to the logger
+to ensure that if that information was not available
+we weren&apos;t trying to write it.
+</code></pre><p>例子2.</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
+<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
+<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
+<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-11-13-learniing-git-flow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1317,166 +1660,6 @@ git merge FETCH_HEAD
 
 
   
-    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
-  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
-<li>加快 Reviewing Code 的过程</li>
-<li>帮助我们写好 release note</li>
-<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
-<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
-<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
-</ul>
-<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
-<blockquote>
-<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
-</blockquote>
-<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
-<p> 一个不好的例子：</p>
-<pre><code>git commit -m &quot;Fix login bug&quot;
-</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
-<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
-<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
-<li><p><strong>为什么这次修改是必要的？</strong></p>
-<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
-</li>
-<li><p><strong>如何解决的问题？</strong></p>
-</li>
-</ul>
-<p>这可不是说技术细节。看下面的两个例子：</p>
-<p><code>Introduce a red/black tree to increase search speed</code></p>
-<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
-<p>如果你的修改特别明显，就可以忽略这个。</p>
-<ul>
-<li><strong>这些变化可能影响哪些地方？</strong></li>
-</ul>
-<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
-<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
-<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
-<li>使用 fix, add, change 而不是 fixed, added, changed</li>
-<li>永远别忘了第2行是空行</li>
-<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
-<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
-</ul>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
-<pre><code>Fix bug where user can&apos;t signup.
-
-[Bug #2873942]
-
-Users were unable to register if they hadn&apos;t visited the plans 
-and pricing page because we expected that tracking    information 
-to exist for the logs we create after a user signs up.  
-I fixed this by adding a check to the logger
-to ensure that if that information was not available
-we weren&apos;t trying to write it.
-</code></pre><p>例子2.</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
-<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
-<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
-<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2016-10-31-a-man-should-be-independent-at-thirty" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1536,96 +1719,6 @@ being redirected to the login form.
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/11/01/2016-10-31-a-man-should-be-independent-at-thirty/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2016-10-31-thinking-about-technique-and-product" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/31/2016-10-31-thinking-about-technique-and-product/">关于技术与产品的思考</a>
-    </h1>
-  
-
-        
-        <a href="/2016/10/31/2016-10-31-thinking-about-technique-and-product/" class="archive-article-date">
-  	<time datetime="2016-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-10-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="1-关于移动端对用户输入的校验"><a href="#1-关于移动端对用户输入的校验" class="headerlink" title="1.关于移动端对用户输入的校验"></a>1.关于移动端对用户输入的校验</h5><p>iOS和android的同事就移动端用户输入是否需要校验，以及用户输入是否需要更强的校验有不同的看法，争论的时候没有找到共通点，所以不了了之了。</p>
-<p>现在想想我们其实都同意移动端适合弱校验、问题主要是在什么是弱校验上有分歧。android同事倾向于很弱的校验，比如手机号码只限制11位的最多数字，身份证只校验最大输入18位，他们认为这样即使未来手机号码段增加客户端也不会有校验通不过的风险。他们理由确实有道理，不能让客户端校验无法通过阻碍用户使用我们是有共识的。不过如果服务器端没做校验呢？比如用户输入一个非法的手机号，服务端确没有得到正确的反馈这也不太好，即使如果服务器端做了校验，那也是在发出请求loading一段时间之后给的用户反馈，这浪费了用户流量也浪费了用户时间，从用户体验的角度看，这是不太友好的。那如何平衡用户体验和功能可用性，提高用户体验同时又能保证功能可用？这是进一步思考的问题。为了保证这两点，我觉得对弱校验的弱需要做一点点增强，因为移动互联网发展特别快，手机更新换代也很快，软件升级发展更快，基本一两个月就会有一版，所以保证可预见的时间内产品可用就行了，比如两三年，这样的话我们就可以对一些数据的校验能不能更严格有一个判断，比如身份证我们完全可以做一个强校验，身份证号码是有一套严格的规则的，未来很长时间也不会有变化，完全可以更强的校验，在用户输入错误时，移动端提前就给用户输入错误以正确的用户提示，而不是在提交服务器后才得到反馈，作为用户的角度应该更容易接受，用户有这个心理预期。其他诸如银行卡，邮箱也都是可以做强校验的。至于一些在可预见的时间内会有些变化的输入，比如用户手机号码，可能未来号段会增加，我们可以预测下未来的几年可能会增加的号段，其实短时间号段也不会太大变化的，对于这种可能会变化的输入校验，就需要我们有一个更准确的评估，我们在客户端可以适当校验放松一点，但必要的校验还是要的，至少校验用户手机号码输入是1开头的11数字位是可以做的，甚至判断下第二位是在3、5、6、7、8中选一个数字也是可以做的。在保证用户体验的同时做一些必要的加强版弱校验还是必要的。</p>
-<p>在一些技术和产品边界点，也许更考验一个团队的整体价值观了，一切都要从我们做产品的初心去思考，我们都希望做用户体验最极致的产品，我们都希望做功能最可靠的产品，都希望产品的效益最大化。回到初心之后，我们就需要一步一步的去规划，如何兼顾长期目标和短期目标，然后再去去了解团队现状，比如团队的能力是什么样子，团队开发的产品的迭代周期是多久，市场整体的发展状况是怎样等。</p>
-<h5 id="2-关于项目的横向依赖问题"><a href="#2-关于项目的横向依赖问题" class="headerlink" title="2.关于项目的横向依赖问题"></a>2.关于项目的横向依赖问题</h5><p>最近因为几个bug搞得很郁闷，有几个类似的bug从界面上看android展示的比iOS友好，比如iOS一个详情页没有展示产品名称，而android却展示了，所以产品和测试就有足够的理由说iOS做的不对了，认为iOS端出了一个这么不友好且低级的bug，问题报给我们，我们肯定也觉得自己写的代码有问题导致差异。然而最后定位问题发现是后端没有返回产品名称，所以导致iOS 客户端无法展示，但是android为什么能展示呢，询问他们之后，他们告诉我android从前面的列表页面带过来了产品名称，我因此想起还有几个bug开给iOS，是因为android跨页面带入了数据导致。</p>
-<p>从我的技术直觉上我不太理解这种做法，因为这样没完没了的横向带入不必要数据增加了类之间的横向依赖和耦合性，这不符合软件设计的基本原则：<strong>高内聚，低耦合</strong>。这种做法让代码里多了一些数据正常情况下不需要的判断逻辑，这无疑会增加代码的可维护性可阅读性的成本，也让类的迁移和更改带来成本。但android给人的效果确实好，所以这类bug对于iOS端来说改与不改都难受，不改的话就只能等着后端改好，后端会因为改bug的时间较长，而android做了兼容，后端同事会建议iOS端是否也可以参考带入先保证app工作，同时产品测试更是会催着你赶紧改好，然而改的话又觉得对不起自己做的技术架构和做技术运用的原则，iOS App是尽最大努力减少类之间的横向依赖，让项目中的类保持独立性，这样做符合软件设计的原则的，代码更简洁，我们以后的架构还会设计一个底层参数池的中间件，帮助类与类之间交换数据和通信，这样类之间的横向依赖问题会得到更好的解决，所以我不太愿意为了改一个bug，而牺牲代码质量和技术架构。最后我做了妥协，很郁闷。</p>
-<p>关于这个问题android和iOS端处理方式的不同，android的做法保证了产品的健壮性，从产品的角度大家都是乐于看到的，但是从技术的角度，这样做其实是不太恰当，让代码质量变差了，是不太利于后期维护的。从发展的角度来说，后端应该解决这个bug，因为这种bug不解决是有点说不过去的，移动端为后端做这样的保护不太必要，首先这样的话两个客户端都需要做这种处理，增加了成本，其二这种问题早点暴露，还是有利于前后端解决好问题的。</p>
-<p>这类bug的不同处理方式还引起我的更深层次的思考，我们作为程序员应该是技术导向的思维方式还是应该产品导向的思维方式？如何让技术人员兼顾这两种思维？兼顾这两者最佳的点在哪里？哪些地方需要做好健壮性保护，哪些地方由应该互相信任。一款产品的成功应该需要大家的通力协作，团队的每个环节都需要做到最好。</p>
-<h5 id="3-关于后端交付何种格式的数据给移动端"><a href="#3-关于后端交付何种格式的数据给移动端" class="headerlink" title="3.关于后端交付何种格式的数据给移动端"></a>3.关于后端交付何种格式的数据给移动端</h5><p>我们在项目过程中，还遇到了不少后端提供哪种格式的数据给移动端的问题，比如返回null导致iOS崩溃问题。</p>
-<p>从后台的角度来说，api中返回的数据中，正确值和空值的类型必须一样，举例，用户名的字段是“realname”: “xxx”,如果用户名为空，则应该返回“realname”: “”。如果返回值是一个array，空数据则返回一个空array，绝对禁止null值。对于客户端，必须用个全局的函数来处理所有api的返回数据，需要有一个机制：对于某个客户端需要数据，如果api中缺失，客户端自动补上并给予默认值。这个机制在我们的实践中大大减少了app的闪退。</p>
-<p>再比如返回时间数据问题。有同事认为将需要移动端计算的时间后端可以用长整型时间给到移动端，移动端计算后再处理用来回传或展示，而展示性的数据则由后端处理直接交给移动端展示，也有像我认为的同事，把这种格式化的问题交给移动端，后段提供统一的时间戳的格式给客户端就好，让事情变的统一一致。类似的问题还有金额问题，金额有些地方需要显示5000元，有些地方需要显示5万元，到底后端是直接给我们5万这个字符串让移动端直接展示好呢，还是给我们50000这个数字，移动端处理后再展示好呢。</p>
-<p>这个问题其实不是什么大问题，把格式化放在后端可以让我们更容易控制，因为如果需要展示不同格式数据时，我们只需要修改后端就好，否则就需要客户端发布新版本，但是这样子也带来一些问题，让后端开发需要关注移动端页面展示的细节来定义接口文档，并且让接口返回的数据格式不统一，比如有些接口返回年月日，有些地方返回月日等，这其实不利于数据的标准化管理。把格式化放在移动端的话，会带来发布版本的成本，但却可以让接口文档更清晰，遇到时间和金额的数据的时候就知道接口返回的格式。</p>
-<p>我个人倾向于后端应该是一个管道的角色，负责数据的增删改查组合分离等，后端专注于做大接口的提供方，而不是为了微观的事情改代码，这可能会引起更大的问题，比如后端修改后的部署对用户的影响是更大的，而把如果把数据的加工处理工作交给移动端处理，这样分工更清晰，虽然这样子的修改可能需要发版，但是这类小问题的完全可以积攒到一个大版本再发，其实也不太影响发版，不过可能会让不同版本的app的展示有些微小的不一致，用户一般一个平台都只有一个手机，即使有多个不同手机，展示的一点不一致，用户应该也是可以接受的。我个人认为这样做对项目长期可维护是有好处，当然这是一家之言，最后还是应该实践检验真知吧。</p>
-<p>事物的存在都是有两面性的，技术选型也是如此。看来在技术运用和产品的实现上，价值观是一个很重要的，不忘初心，理清思路，方能设计一个一致性很强的技术项目，帮助实现产品的效益的最大。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">产品与技术的碰撞</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/10/31/2016-10-31-thinking-about-technique-and-product/">展开全文 >></a>
         </p>
       
 
@@ -1752,18 +1845,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1776,15 +1857,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1796,11 +1881,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1816,11 +1917,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1836,14 +1949,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1856,15 +1961,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">思考</a>
+                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">总结</a>
+                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1896,15 +2005,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
+                <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">XCode插件</a>
+                <a href="javascript:void(0)" class="js-tag color3">总结</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">开发效率提升插件</a>
+                <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1912,19 +2021,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1937,14 +2038,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1976,19 +2069,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2001,6 +2094,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2020,15 +2125,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2041,14 +2142,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2068,6 +2161,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
               </li>
              
@@ -2076,7 +2173,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2104,31 +2209,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2137,6 +2218,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2156,6 +2249,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
               </li>
              
@@ -2172,15 +2273,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">成长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">时间</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2197,18 +2302,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">成长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">时间</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
               </li>
              
               <li class="article-tag-list-item">
