@@ -160,6 +160,327 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">CocoaPods从入门到精通(三)：创建私有pod</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/" class="archive-article-date">
+  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Cocoapods是非常好用的一个iOS依赖管理工具，使用它可以方便的管理和更新项目中所使用到的第三方库，以及将自己的项目中的公共组件交由它去管理。Cocoapods的介绍及优点本文就不在赘述，我开始使用Cocoapods还是在两年前，那个时候它刚刚出现，网上的资料还非常的少，就连他们自己的HomePage都十分的简单，我就着手尝试着使用了一下，用它管理起第三方库确实是十分的方便顺手。后来它有了更强大的功能就是自己创建podspec，更可以设置私有的库。</p>
+<p>春节回来上班，一天的工作结束之后，需要充实下自己，正好项目中有一些公共组件需要从庞大的项目体系中剥离出来，而且年前项目终于从SVN迁移到了Git，真是喜大普奔，大快人心！这样项目使用Cocoapods就有了条件，正好学习一下创建私有的podspec并在项目中部署使用，以及pods的subspec的创建及使用。<br>整体先说明一下创建一个私有的podspec包括如下那么几个步骤：</p>
+<ul>
+<li>创建并设置一个私有的Spec Repo。</li>
+<li>创建Pod的所需要的项目工程文件，并且有可访问的项目版本控制地址。</li>
+<li>创建Pod所对应的podspec文件。</li>
+<li>本地测试配置好的podspec文件是否可用。</li>
+<li>向私有的Spec Repo中提交podspec。</li>
+<li>在个人项目中的Podfile中增加刚刚制作的好的Pod并使用。</li>
+<li>更新维护podspec。</li>
+</ul>
+<p>在这一系列的步骤中需要创建两个Git仓库，分别是第一步和第二步（第二步不一定非要是Git仓库，只要是可以获取到相关代码文件就可以，也可以是SVN的，也可以说zip包，区别就是在podspec中的source项填写的内容不同），并且第一步只是在初次创建私有podspec时才需要，之后在创建其他的只需要从第二步开始就可以。本文只介绍在Git环境下的操作，其他环境其他方式暂不说明。</p>
+<h2 id="创建私有Spec-Repo"><a href="#创建私有Spec-Repo" class="headerlink" title="创建私有Spec Repo"></a>创建私有Spec Repo</h2><p>先来说第一步，什么是Spec Repo？他是所有的Pods的一个索引，就是一个容器，所有公开的Pods都在这个里面，他实际是一个Git仓库remote端<br>在GitHub上，但是当你使用了Cocoapods后他会被clone到本地的~/.cocoapods/repos目录下，可以进入到这个目录看到master文件夹就是这个官方的Spec Repo了。这个master目录的结构是这个样子的</p>
+<pre><code>.
+├── Specs
+    └── [SPEC_NAME]
+        └── [VERSION]
+            └── [SPEC_NAME].podspec
+</code></pre><p>因此我们需要创建一个类似于master的私有Spec Repo，这里我们可以fork官方的Repo，也可以自己创建，个人建议不fork，因为你只是想添加自己的Pods，没有必要把现有的公开Pods都copy一份。所以创建一个 Git仓库，这个仓库你可以创建私有的也可以创建公开的，不过既然私有的Spec Repo，还是创建私有的仓库吧，需要注意的就是如果项目中有其他同事共同开发的话，你还要给他这个Git仓库的权限。因为GitHub的私有仓库是收费的，我还不是GitHub的付费用户，所以我使用了其他Git服务，我使用的是CODING，当然还有其他的可供选择开源中国、Bitbucket以及CSDN</p>
+<p>创建完成之后在Terminal中执行如下命令</p>
+<pre><code># pod repo add [Private Repo Name] [GitHub HTTPS clone URL]
+$ pod repo add WTSpecs https://coding.net/wtlucky/WTSpecs.git
+</code></pre><p>此时如果成功的话进入到~/.cocoapods/repos目录下就可以看到WTSpecs这个目录了。至此第一步创建私有Spec Repo完成。</p>
+<p>PS：如果有其他合作人员共同使用这个私有Spec Repo的话在他有对应Git仓库的权限的前提下执行相同的命令添加这个Spec Repo即可。</p>
+<h2 id="创建Pod项目工程文件"><a href="#创建Pod项目工程文件" class="headerlink" title="创建Pod项目工程文件"></a>创建Pod项目工程文件</h2><p>这个第二步没有什么好介绍的，如果是有现有的组件项目，并且在Git的版本管理下，那么这一步就算完成了，可以直接进行下一步了。</p>
+<p>如果你的组件还在你冗余庞大的项目中，需要拆分出来或者需要自己从零开始创建一个组件库，那么我建议你使用Cocoapods提供的一个工具将第二步与第三步结合起来做。</p>
+<p>现在来说一下这个工具，相关的文档介绍是Using Pod Lib Create 就拿我创建的podTestLibrary为例子具体讲一下这里是如何操作的，先cd到要创建项目的目录然后执行</p>
+<pre><code>$ pod lib create podTestLibrary
+</code></pre><p>之后他会问你四个问题，1.是否需要一个例子工程；2.选择一个测试框架；3.是否基于View测试；4.类的前缀；4个问题的具体介绍可以去看官方文档，我这里选择的是1.yes；2.Specta/Expecta；3.yes；4.PTL。 问完这4个问题他会自动执行pod install命令创建项目并生成依赖。</p>
+<pre><code>$ tree PodTestLibrary -L 2
+PodTestLibrary
+├── Example                                  #demo APP
+│   ├── PodTestLibrary
+│   ├── PodTestLibrary.xcodeproj
+│   ├── PodTestLibrary.xcworkspace
+│   ├── Podfile                              #demo APP 的依赖描述文件
+│   ├── Podfile.lock
+│   ├── Pods                                  #demo APP 的依赖文件
+│   └── Tests
+├── LICENSE                               #开源协议 默认MIT
+├── Pod                                       #组件的目录
+│   ├── Assets                            #资源文件
+│   └── Classes                              #类文件
+├── PodTestLibrary.podspec           #第三步要创建的podspec文件
+└── README.md                                #markdown格式的README
+
+9 directories, 5 files
+</code></pre><p>以上是项目生成的目录结构及相关介绍。</p>
+<p>接下来就是向Pod文件夹中添加库文件和资源，并配置podspec文件，我把一个网络模块的共有组件放入Pod/Classes中，然后进入Example文件夹执行pod update命令，再打开项目工程可以看到，刚刚添加的组件已经在Pods子工程下Development Pods/PodTestLibrary中了，然后编辑demo工程，测试组件，我并没有使用提供的测试框架进行测试，这里就先不介绍了。</p>
+<p>注：这里需要注意的是每当你向Pod中添加了新的文件或者以后更新了podspec的版本都需要重新执行一遍pod update命令。</p>
+<p>测试无误后需要将该项目添加并推送到远端仓库，并编辑podspec文件。</p>
+<p>通过Cocoapods创建出来的目录本身就在本地的Git管理下，我们需要做的就是给它添加远端仓库，同样去GitHub或其他的Git服务提供商那里创建一个私有的仓库，拿到SSH地址，然后cd到PodTestLibrary目录</p>
+<pre><code>$ git add .
+$ git commit -s -m &quot;Initial Commit of Library&quot;
+$ git remote add origin git@coding.net:wtlucky/podTestLibrary.git           #添加远端仓库
+$ git push origin master     #提交到远端仓库
+</code></pre><p>因为podspec文件中获取Git版本控制的项目还需要tag号，所以我们要打上一个tag，</p>
+<pre><code>$ git tag -m &quot;first release&quot; 0.1.0
+$ git push --tags     #推送tag到远端仓库
+</code></pre><p>做完这些就可以开始编辑podspec文件了，它是一个Ruby的文件，把编辑器的格式改成Ruby就能看到语法高亮，下面我贴上我的podspec文件，并在后面以注释的形式说明每个字段的含义，没有涉及到的字段可以去官方文档查阅</p>
+<pre><code>Pod::Spec.new do |s|
+  s.name             = &quot;PodTestLibrary&quot;    #名称
+  s.version          = &quot;0.1.0&quot;             #版本号
+  s.summary          = &quot;Just Testing.&quot;     #简短介绍，下面是详细介绍
+  s.description      = &lt;&lt;-DESC
+                       Testing Private Podspec.
+
+                       * Markdown format.
+                       * Don&apos;t worry about the indent, we strip it!
+                       DESC
+  s.homepage         = &quot;https://coding.net/u/wtlucky/p/podTestLibrary&quot;                           #主页,这里要填写可以访问到的地址，不然验证不通过
+  # s.screenshots     = &quot;www.example.com/screenshots_1&quot;, &quot;www.example.com/screenshots_2&quot;           #截图
+  s.license          = &apos;MIT&apos;              #开源协议
+  s.author           = { &quot;wtlucky&quot; =&gt; &quot;wtlucky@foxmail.com&quot; }                   #作者信息
+  s.source           = { :git =&gt; &quot;https://coding.net/wtlucky/podTestLibrary.git&quot;, :tag =&gt; &quot;0.1.0&quot; }      #项目地址，这里不支持ssh的地址，验证不通过，只支持HTTP和HTTPS，最好使用HTTPS
+  # s.social_media_url = &apos;https://twitter.com/&lt;TWITTER_USERNAME&gt;&apos;                       #多媒体介绍地址
+
+  s.platform     = :ios, &apos;7.0&apos;            #支持的平台及版本
+  s.requires_arc = true                   #是否使用ARC，如果指定具体文件，则具体的问题使用ARC
+
+  s.source_files = &apos;Pod/Classes/**/*&apos;     #代码源文件地址，**/*表示Classes目录及其子目录下所有文件，如果有多个目录下则用逗号分开，如果需要在项目中分组显示，这里也要做相应的设置
+  s.resource_bundles = {
+    &apos;PodTestLibrary&apos; =&gt; [&apos;Pod/Assets/*.png&apos;]
+  }                                       #资源文件地址
+
+  s.public_header_files = &apos;Pod/Classes/**/*.h&apos;   #公开头文件地址
+  s.frameworks = &apos;UIKit&apos;                  #所需的framework，多个用逗号隔开
+  s.dependency &apos;AFNetworking&apos;, &apos;~&gt; 2.3&apos;   #依赖关系，该项目所依赖的其他库，如果有多个需要填写多个s.dependency
+end
+</code></pre><p>编辑完podspec文件后，需要验证一下这个文件是否可用，如果有任何WARNING或者ERROR都是不可以的，它就不能被添加到Spec Repo中，不过xcode的WARNING是可以存在的，验证需要执行一下命令</p>
+<pre><code>$ pod lib lint
+</code></pre><p>当你看到</p>
+<pre><code> -&gt; PodTestLibrary (0.1.0)
+
+PodTestLibrary passed validation.
+</code></pre><p>时，说明验证通过了，不过这只是这个podspec文件是合格的，不一定说明这个Pod是可以用的，我们需要在本地做一下验证，这就是第四步的内容了，第四步在具体说明。</p>
+<h2 id="创建podspec文件"><a href="#创建podspec文件" class="headerlink" title="创建podspec文件"></a>创建podspec文件</h2><p>如果从第二步过来，已经有了现成的项目，那么就需要给这个项目创建一个podspec文件，创建它需要执行Cocoapods的另外一个命令，官方文档在这里</p>
+<pre><code>$ pod spec create PodTestLibrary git@coding.net:wtlucky/podTestLibrary.git
+</code></pre><p>执行完之后，就创建了一个podspec文件，他其中会包含很多内容，可以按照我之前介绍的进行编辑，没用的删掉。编辑完成之后使用验证命令验证一下</p>
+<pre><code>$ pod lib lint
+</code></pre><p>验证无误就可以进入下一步了。</p>
+<h2 id="本地测试podspec文件"><a href="#本地测试podspec文件" class="headerlink" title="本地测试podspec文件"></a>本地测试podspec文件</h2><p>我们可以创建一个新的项目，在这个项目的Podfile文件中直接指定刚才创建编辑好的podspec文件，看是否可用。 在Podfile中我们可以这样编辑，有两种方式</p>
+<pre><code>platform :ios, &apos;7.0&apos;
+
+pod &apos;PodTestLibrary&apos;, :path =&gt; &apos;~/code/Cocoapods/podTest/PodTestLibrary&apos;      # 指定路径
+pod &apos;PodTestLibrary&apos;, :podspec =&gt; &apos;~/code/Cocoapods/podTest/PodTestLibrary/PodTestLibrary.podspec&apos;  # 指定podspec文件
+</code></pre><p>然后执行pod install命令安装依赖，打开项目工程，可以看到库文件都被加载到Pods子项目中了，不过它们并没有在Pods目录下，而是跟测试项目一样存在于Development Pods/PodTestLibrary中，这是因为我们是在本地测试，而没有把podspec文件添加到Spec Repo中的缘故。</p>
+<p>在项目中编写代码，测试库文件无误后就可以开始下一步了，提交podspec到Spec Repo中。</p>
+<h2 id="向Spec-Repo提交podspec"><a href="#向Spec-Repo提交podspec" class="headerlink" title="向Spec Repo提交podspec"></a>向Spec Repo提交podspec</h2><p>向Spec Repo提交podspec需要完成两点一个是podspec必须通过验证无误，在一个就是删掉无用的注释（这个不是必须的，为了规范还是删掉吧）。 向我们的私有Spec Repo提交podspec只需要一个命令</p>
+<pre><code>$ pod repo push WTSpecs PodTestLibrary.podspec  #前面是本地Repo名字 后面是podspec名字
+</code></pre><p>完成之后这个组件库就添加到我们的私有Spec Repo中了，可以进入到~/.cocoapods/repos/WTSpecs目录下查看</p>
+<pre><code>.
+├── LICENSE
+├── PodTestLibrary
+│   └── 0.1.0
+│       └── PodTestLibrary.podspec
+└── README.md
+</code></pre><p>再去看我们的Spec Repo远端仓库，也有了一次提交，这个podspec也已经被Push上去了。</p>
+<p>至此，我们的这个组件库就已经制作添加完成了，使用pod search命令就可以查到我们自己的库了</p>
+<pre><code>$ pod search PodTestLibrary
+
+-&gt; PodTestLibrary (0.1.0)
+   Just Testing.
+   pod &apos;PodTestLibrary&apos;, &apos;~&gt; 0.1.0&apos;
+   - Homepage: https://coding.net/u/wtlucky/p/podTestLibrary
+   - Source:   https://coding.net/wtlucky/podTestLibrary.git
+   - Versions: 0.1.0 [WTSpecs repo]
+</code></pre><p>这里说的是添加到私有的Repo，如果要添加到Cocoapods的官方库了，可以使用trunk工具，具体可以查看官方文档</p>
+<h2 id="使用制作好的Pod"><a href="#使用制作好的Pod" class="headerlink" title="使用制作好的Pod"></a>使用制作好的Pod</h2><p>在完成这一系列步骤之后，我们就可以在正式项目中使用这个私有的Pod了只需要在项目的Podfile里增加以下一行代码即可</p>
+<pre><code>$ pod &apos;PodTestLibrary&apos;, &apos;~&gt; 0.1.0&apos;
+</code></pre><p>然后执行pod update，更新库依赖，然后打卡项目可以看到，我们自己的库文件已经出现在Pods子项目中的Pods子目录下了，而不再是Development Pods。</p>
+<h2 id="更新维护podspec"><a href="#更新维护podspec" class="headerlink" title="更新维护podspec"></a>更新维护podspec</h2><p>最后再来说一下制作好的podspec文件后续的更新维护工作，比如如何添加新的版本，如何删除Pod。</p>
+<p>我已经制作好了PodTestLibrary的0.1.0版本，现在我对他进行升级工作，这次我添加了更多的模块到PodTestLibrary之中，包括工具类，底层Model及UIKit扩展等，这里又尝试了一下subspec功能，给PodTestLibrary创建了多个子分支。</p>
+<p>具体做法是先将源文件添加到Pod/Classes中，然后按照不同的模块对文件目录进行整理，因为我有四个模块，所以在Pod/Classes下有创建了四个子目录，完成之后继续编辑之前的PodTestLibrary.podspec，这次增加了subspec特性</p>
+<pre><code>Pod::Spec.new do |s|
+  s.name             = &quot;PodTestLibrary&quot;
+  s.version          = &quot;1.0.0&quot;
+  s.summary          = &quot;Just Testing.&quot;
+  s.description      = &lt;&lt;-DESC
+                       Testing Private Podspec.
+
+                       * Markdown format.
+                       * Don&apos;t worry about the indent, we strip it!
+                       DESC
+  s.homepage         = &quot;https://coding.net/u/wtlucky/p/podTestLibrary&quot;
+  # s.screenshots     = &quot;www.example.com/screenshots_1&quot;, &quot;www.example.com/screenshots_2&quot;
+  s.license          = &apos;MIT&apos;
+  s.author           = { &quot;wtlucky&quot; =&gt; &quot;wtlucky@foxmail.com&quot; }
+  s.source           = { :git =&gt; &quot;https://coding.net/wtlucky/podTestLibrary.git&quot;, :tag =&gt; &quot;1.0.0&quot; }
+  # s.social_media_url = &apos;https://twitter.com/&lt;TWITTER_USERNAME&gt;&apos;
+
+  s.platform     = :ios, &apos;7.0&apos;
+  s.requires_arc = true
+
+  #s.source_files = &apos;Pod/Classes/**/*&apos;
+  #s.resource_bundles = {
+  #  &apos;PodTestLibrary&apos; =&gt; [&apos;Pod/Assets/*.png&apos;]
+  #}
+  #s.public_header_files = &apos;Pod/Classes/**/*.h&apos;
+
+  s.subspec &apos;NetWorkEngine&apos; do |networkEngine|
+      networkEngine.source_files = &apos;Pod/Classes/NetworkEngine/**/*&apos;
+      networkEngine.public_header_files = &apos;Pod/Classes/NetworkEngine/**/*.h&apos;
+      networkEngine.dependency &apos;AFNetworking&apos;, &apos;~&gt; 2.3&apos;
+  end
+
+  s.subspec &apos;DataModel&apos; do |dataModel|
+      dataModel.source_files = &apos;Pod/Classes/DataModel/**/*&apos;
+      dataModel.public_header_files = &apos;Pod/Classes/DataModel/**/*.h&apos;
+  end
+
+  s.subspec &apos;CommonTools&apos; do |commonTools|
+      commonTools.source_files = &apos;Pod/Classes/CommonTools/**/*&apos;
+      commonTools.public_header_files = &apos;Pod/Classes/CommonTools/**/*.h&apos;
+      commonTools.dependency &apos;OpenUDID&apos;, &apos;~&gt; 1.0.0&apos;
+  end
+
+  s.subspec &apos;UIKitAddition&apos; do |ui|
+      ui.source_files = &apos;Pod/Classes/UIKitAddition/**/*&apos;
+      ui.public_header_files = &apos;Pod/Classes/UIKitAddition/**/*.h&apos;
+      ui.resource = &quot;Pod/Assets/MLSUIKitResource.bundle&quot;
+      ui.dependency &apos;PodTestLibrary/CommonTools&apos;
+  end
+
+  s.frameworks = &apos;UIKit&apos;
+  #s.dependency &apos;AFNetworking&apos;, &apos;~&gt; 2.3&apos;
+  #s.dependency &apos;OpenUDID&apos;, &apos;~&gt; 1.0.0&apos;
+end
+</code></pre><p>因为我们创建了subspec所以项目整体的依赖dependency，源文件source_files，头文件public_header_files，资源文件resource等都移动到了各自的subspec中，每个subspec之间也可以有相互的依赖关系，比如UIKitAddition就依赖于CommonTools。</p>
+<p>编辑完成之后，在测试项目里pod update一下，几个子项目都被加进项目工程了，写代码验证无误之后，就可以将这个工程push到远端仓库，并打上新的tag-&gt;1.0.0。</p>
+<p>最后再次使用pod lib lint验证编辑好的podsepc文件，没有自身的WARNING或者ERROR之后，就可以再次提交到Spec Repo中了，命令跟之前是一样的</p>
+<pre><code>$ pod repo push WTSpecs PodTestLibrary.podspec
+</code></pre><p>之后再次到~/.cocoapods/repos/WTSpecs目录下查看</p>
+<pre><code>.
+├── LICENSE
+├── PodTestLibrary
+│   ├── 0.1.0
+│   │   └── PodTestLibrary.podspec
+│   └── 1.0.0
+│       └── PodTestLibrary.podspec
+└── README.md
+
+3 directories, 4 files
+</code></pre><p>已经有两个版本了，使用pod search查找得到的结果为</p>
+<pre><code>$ pod search PodTestLibrary
+
+-&gt; PodTestLibrary (1.0.0)
+   Just Testing.
+   pod &apos;PodTestLibrary&apos;, &apos;~&gt; 1.0.0&apos;
+   - Homepage: https://coding.net/u/wtlucky/p/podTestLibrary
+   - Source:   https://coding.net/wtlucky/podTestLibrary.git
+   - Versions: 1.0.0, 0.1.0 [WTSpecs repo]
+   - Sub specs:
+     - PodTestLibrary/NetWorkEngine (1.0.0)
+     - PodTestLibrary/DataModel (1.0.0)
+     - PodTestLibrary/CommonTools (1.0.0)
+     - PodTestLibrary/UIKitAddition (1.0.0)
+</code></pre><p>完成这些之后，在实际项目中我们就可以选择使用整个组件库或者是组件库的某一个部分了，对应的Podfile中添加的内容为</p>
+<pre><code>source &apos;https://github.com/CocoaPods/Specs.git&apos;  # 官方库
+source &apos;https://git.coding.net/wtlucky/WTSpecs.git&apos;   # 私有库
+platform :ios, &apos;7.0&apos;
+
+pod &apos;PodTestLibrary/NetWorkEngine&apos;, &apos;1.0.0&apos;  #使用某一个部分
+pod &apos;PodTestLibrary/UIKitAddition&apos;, &apos;1.0.0&apos;
+
+pod &apos;PodTestLibrary&apos;, &apos;1.0.0&apos;   #使用整个库
+</code></pre><p>最后介绍一下如何删除一个私有Spec Repo，只需要执行一条命令即可</p>
+<pre><code>$ pod repo remove WTSpecs
+</code></pre><p>这样这个Spec Repo就在本地删除了，我们还可以通过</p>
+<pre><code>$ pod repo add WTSpecs git@coding.net:wtlucky/WTSpecs.git
+</code></pre><p>再把它给加回来。</p>
+<p>如果我们要删除私有Spec Repo下的某一个podspec怎么操作呢，此时无需借助Cocoapods，只需要cd到~/.cocoapods/repos/WTSpecs目录下，删掉库目录</p>
+<pre><code>wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ rm -Rf PodTestLibrary
+</code></pre><p>然后在将Git的变动push到远端仓库即可</p>
+<pre><code>wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ git add --all .
+wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ git ci -m &quot;remove unuseful pods&quot;
+wtlucky@wtluckydeMacBook-Pro:~/.cocoapods/repos/WTSpecs$ git push origin master
+</code></pre><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://guides.cocoapods.org/making/private-cocoapods.html" target="_blank" rel="noopener">Private Pods</a></p>
+<p><a href="http://blog.grio.com/2014/11/creating-a-private-cocoapod.html" target="_blank" rel="noopener">Creating a Private CocoaPod</a></p>
+<p><a href="http://www.objectpartners.com/2014/06/25/developing-private-in-house-libraries-with-cocoapods/" target="_blank" rel="noopener">Developing Private In-House Libraries with CocoaPods</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -385,242 +706,6 @@ pod &apos;AFNetworking&apos;, :git =&gt; &apos;https://github.com/gowalla/AFNetw
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Getting-Start/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
-  	<time datetime="2017-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
-<h2 id="创建spec文件"><a href="#创建spec文件" class="headerlink" title="创建spec文件"></a>创建spec文件</h2><p>将代码克隆到本地,如果本地已经存在,直接跳过这一步.<br>创建.podspec文件,切换到项目根目录,创建spec文件:</p>
-<pre><code>//切换到项目根目录
-
-cd SGExtenion
-
-//创建spec文件
-
-pod spec create SGExtension
-</code></pre><p>用xcode打开 SGExtension.podspec,里面有英文注释,我这里直接给简单模板,其实就是去掉了注释,详细的设置看这里</p>
-<pre><code>Pod::Spec.new do |spec|
-
-spec.name                  = &apos;SGExtension&apos;
-
-spec.version               = &apos;1.0.2&apos;
-
-spec.ios.deployment_target = &apos;8.0&apos;
-
-spec.license               = &apos;MIT&apos;
-
-spec.homepage              = &apos;https://github.com/iOSSinger&apos;
-
-spec.author                = { &quot;iOSSinger&quot; =&gt; &quot;747616044@qq.com&quot; }
-
-spec.summary               = &apos;各种工具的合集&apos;
-
-spec.source                = { :git =&gt; &apos;https://github.com/iOSSinger/SGExtension.git&apos;, :tag =&gt; spec.version }
-
-spec.source_files          = &quot;SGExtension/**/{*.h,*.m}&quot;
-
-spec.resources             = &quot;SGExtension/source.bundle&quot;
-
-spec.frameworks            = &apos;UIKit&apos;
-
-spec.library               = &apos;z&apos;
-
-spec.requires_arc          = true
-
-end
-</code></pre><p>解释下每行的意思:</p>
-<ul>
-<li><p>spec.name</p>
-<p>  名字，pod search 搜索的关键词,注意这里一定要和.podspec的名称一样,否则报错</p>
-</li>
-<li><p>spec.version</p>
-<p>  版本号</p>
-</li>
-<li><p>spec.ios.deployment_target</p>
-<p>  支持的ios最低版本</p>
-</li>
-<li><p>spec.license</p>
-<p>  许可证,一般MIT,这里提醒一下,根目录下必须要有LICENSE这个文件,可以直接把我项目中的copy一份,改下作者名字即可.一般github创建仓库的时候可以选择许可为MIT,会自动帮你生成该文件.</p>
-</li>
-<li><p>spec.homepage</p>
-<p>  项目主页地址,要求必须能访问</p>
-</li>
-<li><p>spec.author</p>
-<p>  作者信息</p>
-</li>
-<li><p>spec.summary</p>
-<p>  项目简介</p>
-</li>
-<li><p>spec.source</p>
-<p>  项目的地址,填上项目的github地址,tag =&gt; spec.version表示git项目的tag值与上面的spec的版本一致,这里是  1.0.2 .</p>
-</li>
-<li><p>spec.source_files</p>
-<p>  项目源文件,主要是.h和.m文件,</p>
-<p>  *表示匹配所有文件<br>  {.h,.m} 表示匹配所有以.h和.m结尾的文件<br>  ** 表示匹配所有子目录,以及递归子目录</p>
-</li>
-<li><p>spec.resources</p>
-<p>  项目所需的资源文件,比如图片</p>
-</li>
-<li><p>spec.frameworks</p>
-<p>  项目的依赖框架,比如UIKit,不需要后缀名</p>
-</li>
-<li><p>spec.library</p>
-<p>  项目依赖的库文件(这个是系统的库文件),不需要后缀名,比如sqlite,libz等.以lib开头的需要省略掉lib这三个字母.例如:libz需要简写为z否则报错.</p>
-</li>
-<li><p>spec.requires_arc</p>
-<p>  是否是arc,一般true</p>
-</li>
-</ul>
-<p>如果你的项目依赖了别的pod项目,可以这样写:</p>
-<pre><code>spec.dependency = &apos;AFNetworking&apos;
-</code></pre><p>提交代码,并打上tag</p>
-<pre><code>//提交代码
-git push
-
-//打tag
-git tag 1.0.2
-
-//将tag推送到远端
-git push origin --tags
-</code></pre><h2 id="验证podspec文件"><a href="#验证podspec文件" class="headerlink" title="验证podspec文件"></a>验证podspec文件</h2><pre><code>pod spec lint SGExtemnsion.podspec
-</code></pre><p>这一步如果报错,根据错误自行修改,根据大致意思能看出来个大概,终端会给出哪一行出错了.一般就是语法错误,资源找不到,git地址不对或者不能访问.指定的文件如{.h,.m}找不到,一般再检查检查基本没问题.</p>
-<h2 id="注册trunk-并提交spec文件cocoapods仓库"><a href="#注册trunk-并提交spec文件cocoapods仓库" class="headerlink" title="注册trunk,并提交spec文件cocoapods仓库"></a>注册trunk,并提交spec文件cocoapods仓库</h2><ul>
-<li><p>注册chunk,查看是否注册过</p>
-<pre><code>pod trunk me
-</code></pre></li>
-<li><p>如果没有注册,那么注册:</p>
-<pre><code>pod trunk register 747616044@qq.com &quot;iOSSinger&quot;
-</code></pre></li>
-</ul>
-<p>填上邮箱 和 用户名就可以了.注册完成之后会给你的邮箱发个邮件,进入邮箱邮件里面有个链接,需要点击确认一下.然后再查看下是否注册成功:</p>
-<pre><code>pod trunk me
-</code></pre><ul>
-<li><p>提交spec文件到 CocoaPods 中心仓库</p>
-<pre><code>pod trunk push SGExtension.podspec
-</code></pre></li>
-</ul>
-<p>如果前面都没问题,这一步基本也没啥问题.不过网速比较慢可能要等很久,这一步建议翻墙,不然有可能真的很慢.</p>
-<p>然后验证一下,是否可以查到</p>
-<pre><code>pod search SGExtension
-</code></pre><p>如果能够查到,恭喜你 !,如果查不到,往下看</p>
-<ul>
-<li>解决方案:</li>
-</ul>
-<pre><code>* 查看上一步(提交到代码仓库)是否成功,再次执行提交:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk push SGExtension.podspec</span><br></pre></td></tr></table></figure>
-
-如果出现如下信息:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Unable to accept duplicate entry for: SGExtension (1.0.2)</span><br></pre></td></tr></table></figure>
-
-那么说明已经提交到cocoapods仓库成功,那么有可能就是本地仓库没有更新.更新本地仓库:
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo update</span><br></pre></td></tr></table></figure>
-</code></pre><ul>
-<li><p>再次执行 pod search SGExtension 命令,如果还搜索不到,继续往下看:</p>
-<pre><code>rm ~/Library/Caches/CocoaPods/search_index.json
-</code></pre><p>这句话是移除已经生成的搜索目录缓存文件,移除之后,执行pod search会重新生成一份最新的缓存列表,基本到这里就差不多了.</p>
-</li>
-<li><p>如果还有问题,那就需要终极大招,但是不推荐用,时间很长,除非翻墙.</p>
-<pre><code>pod repo remove master  
-pod setup
-</code></pre><p>或者</p>
-<pre><code>sudo rm -fr ~/.cocoapods/repos/master
-pod setup
-</code></pre><p>这两种写法的意思都是移除本地cocoapods仓库,重新从官网拉取一遍.可能时间比较长,所以不建议用,如果网速度快可以考虑使用,也可以翻墙.整个仓库打下大约500M+(截止当前时间).</p>
-</li>
-</ul>
-<h2 id="集成到项目中试试"><a href="#集成到项目中试试" class="headerlink" title="集成到项目中试试"></a>集成到项目中试试</h2><pre><code>target &apos;项目名&apos; do
-pod &apos;SGExtension&apos;
-end
-</code></pre><h2 id="多人共同维护你的开源项目"><a href="#多人共同维护你的开源项目" class="headerlink" title="多人共同维护你的开源项目"></a>多人共同维护你的开源项目</h2><p>如果需要多个人维护一个库,每个人都应该有权限push提交spec文件;第一个push的人可以被认为是管理员,可以再添加子管理员,这样子管理员就有权限push了</p>
-<pre><code>pod trunk add-owner 邮箱地址
-</code></pre><p>移除某个管理员</p>
-<pre><code>pod trunk remove-owner 邮箱地址
-</code></pre><h2 id="pod-lib-lint-和-pod-spec-lint-有什么区别"><a href="#pod-lib-lint-和-pod-spec-lint-有什么区别" class="headerlink" title="pod lib lint 和 pod spec lint 有什么区别"></a>pod lib lint 和 pod spec lint 有什么区别</h2><ul>
-<li>pod lib lint 不需要联网</li>
-<li>pod spec lint 会联网检查sepc repo,并且关联tag</li>
-</ul>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="http://www.jianshu.com/p/1f70f1176727" target="_blank" rel="noopener">cocoapods系列教程—让自己的开源框架支持cocoapods</a></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>参考:<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank" rel="noopener">http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/2017-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
         </p>
       
 
@@ -1007,214 +1092,6 @@ git clean -df
 
 
   
-    <article id="post-2017-04-02-what-is-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-git/">【译文】全方位了解Git</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/02/2017-04-02-what-is-git/" class="archive-article-date">
-  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt" alt="什么是Git"></p>
-<p>到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。</p>
-<p>Git具有分布式架构，Git是DVCS（即分布式版本控制系统）的代表。在Git中，每个开发人员的代码工作副本都是一个仓库，仓库里包含所有更改的完整历史，而不是像CVS或Subversion（也称为SVN）等一般流行的版本控制系统，这些版本控制系统通常只有一个单一的位置有软件的完整版本历史。</p>
-<p>除了分布式之外，Git的设计还保证了高性能，安全性和灵活性。</p>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>相比其他的版本控制系统，Git的性能特征非常高。提交新的更改、分支、合并和比较以前的版本都针对性能进行了优化。深入了解了实际源代码文件树的常见属性，它们如何通常随时间进行修改以及访问模式是如何进行的，Git内部实现的算法利用了这些优势。</p>
-<p>与某些版本控制软件不同，Git在确定文件树的存储和版本历史记录时应该不会被文件的名称所愚弄，而Git则关注文件内容本身。毕竟，源代码文件经常被重命名，拆分和重构。Git仓库文件使用了增量编码（存储内容差异），压缩和显式存储目录内容和版本元数据对象的组合。</p>
-<p>分布式还可显着提升性能。例如，像开发人员Alice一样，更改源代码，为即将发布的2.0版本添加功能，然后使用描述性消息提交这些更改。然后，她还工作了第二个功能，并提交了这些更改。自然地，这些在版本历史中被存储为单独的工作。Alice然后切换到相同软件的1.3版本，以修复仅影响旧版本的错误。这样做的目的是让Alice的团队在版本2.0准备就绪之前发布了一个版本1.3.1的错误修复版本。然后，Alice可以返回到2.0分支，继续处理2.0的新功能，所有这些都可以在没有任何网络访问的情况下发生，因此可以快速可靠进行。她甚至可以在飞机上做。当她准备好将所有提交的更改时，并准备发送到远程存储库时，Alice可以使用一条命令推送他们到远程仓库。</p>
-<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><p>Git设计时优先考虑被托管源代码的完整性。文件的内容以及文件和目录的关联，版本，标签和提交，Git存储库中的所有这些对象，都使用了称为SHA1的加密安全散列算法进行安全保护。这样可以保护代码和变更历史，防止意外和恶意更改，并确保历史记录完全可追溯。</p>
-<p>使用Git，您可以确保您具有源代码的真实内容历史。</p>
-<p>一些其他版本控制系统没有对后面秘密更改的保护。对于依赖于软件开发的任何组织来说，这可能是一个严重的信息安全漏洞。</p>
-<h2 id="灵活性"><a href="#灵活性" class="headerlink" title="灵活性"></a>灵活性</h2><p>Git的关键设计目标之一是灵活性。Git在几个方面具有灵活性：支持各种非线性开发工作流，在小型和大型项目中的效率以及与对许多现有版本控制系统和协议的兼容性。</p>
-<p>Git被设计为支持分支和标记作为一流的公民（不同于SVN），影响分支和标签的操作（如合并或还原）也被存储为变更历史的一部分。并非所有版本控制系统都具有此级别的跟踪功能。</p>
-<h2 id="选择Git作为版本控制系统"><a href="#选择Git作为版本控制系统" class="headerlink" title="选择Git作为版本控制系统"></a>选择Git作为版本控制系统</h2><p>Git是当今大多数软件团队的最佳选择。虽然每个团队是不同的，应该有他们自己的判断，下面介绍使用Git版本控制系统优于其它方案的主要原因：</p>
-<h3 id="Git非常棒"><a href="#Git非常棒" class="headerlink" title="Git非常棒"></a>Git非常棒</h3><p>Git具有大多数团队和个人开发人员所需的功能，性能，安全性和灵活性。前面介绍了Git的这些属性。与大多数其他替代方案并列比较，许多团队发现Git非常有优势。</p>
-<h3 id="Git是一个事实上的标准"><a href="#Git是一个事实上的标准" class="headerlink" title="Git是一个事实上的标准"></a>Git是一个事实上的标准</h3><p>Git是最广泛采用的同类工具。在Atlassian，我们几乎所有的项目源代码都是在Git中管理的。由于如下原因，使得Git对开发者非常有吸引力。</p>
-<p>大量开发人员已经有Git经验，相当一部分大学毕业生可能只有Git的经验。虽然一些组织在从另一个版本控制系统迁移到Git时可能需要比较难的学习曲线，但是许多现有的和未来的开发人员将不需要接受Git的培训。</p>
-<p>除了大型人才库的优势外，Git的优势还意味着许多第三方软件工具和服务已经与Git（包括IDE）集成在一起，以及我们自己的工具，如DVCS桌面客户端<a href="https://www.atlassian.com/software/sourcetree" target="_blank" rel="noopener">SourceTree</a>，问题和项目跟踪软件<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>和代码托管服务<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>。</p>
-<p>如果您是一位缺乏经验的开发人员，希望在软件开发工具中建立有价值的技能，那么在使用版本控制时，Git应该在您的掌握技能列表中。</p>
-<h3 id="Git是一个优质的开源项目"><a href="#Git是一个优质的开源项目" class="headerlink" title="Git是一个优质的开源项目"></a>Git是一个优质的开源项目</h3><p>Git是一个拥有强大支持的开放源码项目，拥有十多年的稳定的管理维护经验。项目维护者已经拥有综合的判断力和成熟的方法来满足其用户的长期需求，并提供可扩展性和功能性的定期发布。无数企业要求开源项目的质量，因此开放源码软件的质量很容易被仔细检查。</p>
-<p>Git享有极好的社区支持和庞大的用户群。文档非常丰富，包括书籍，教程和专用网站。还有播客和视频教程。</p>
-<p>开源软件可以降低业余兴趣开发者的成本，因为他们可以使用Git而不需要支付费用。对于在开源项目中使用，Git无疑是前几代成功开源版本控制系统SVN和CVS的继承者。</p>
-<h3 id="对Git的批评"><a href="#对Git的批评" class="headerlink" title="对Git的批评"></a>对Git的批评</h3><p>对Git的一个常见批评可能是它难以学习。Git中的一些术语对于新手和其他系统的用户来说将是新颖的，Git术语可能不同，例如，revert在Git中具有与SVN或CVS不同的含义。然而，Git提供非常强大的能力，能为用户提供了大量的功能。学习使用这种功能可能需要一些时间，但一旦学会，该团队可以利用这种能力来提高其开发速度。</p>
-<p>对于那些来自非分布式版本管理系统（VCS）的团队来说，拥有一个中央存储库可能看起来好像是不想丢失的东西。然而，虽然Git被设计为分布式版本控制系统（DVCS），但是您仍然可以采用一个严格规范的正式仓库，在其中存储对软件的所有更改。使用Git，每个开发人员的仓库是完整的，因此它们的工作不需要受到“中央”服务器的可用性和性能的束缚。在停电或离线时，开发人员仍然可以查阅完整的项目历史。由于Git具有灵活性和分布式的特性，您可以按照自己使用其他版本控制系统的习惯的方式去工作，但这不能获得Git的其他优势，其中一些您甚至可能无法意识到你错过了。</p>
-<p>现在，您了解什么版本控制是什么，Git是什么以及为什么软件团队应该使用它，请继续阅读来发现Git的优势。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
-  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
-<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
-<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
-<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
-<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
-<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
-<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
-<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
-<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
-<ol>
-<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
-</li>
-<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
-</li>
-</ol>
-<ol start="3">
-<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
-<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2017-04-02-setting-up-a-repository" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1380,19 +1257,19 @@ git config --global alias.ci commit
 
 
   
-    <article id="post-2017-04-02-saving-changes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-saving-changes/">【译文】Git命令基础：保存更改</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
     </h1>
   
 
         
-        <a href="/2017/04/02/2017-04-02-saving-changes/" class="archive-article-date">
+        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
   	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
@@ -1400,57 +1277,28 @@ git config --global alias.ci commit
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:75f75cb6-a6ab-4f0b-ab29-e366914f513c/hero.svg?cdnVersion=dt" alt="保存更改"></p>
-<h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>git add命令将工作目录中的更改添加到暂存区。它告诉Git你想在下一个提交中包含特定文件的更新。但是，git add并不会以任何重大的方式影响仓库 - 在运行<a href="https://www.atlassian.com/git/tutorials/saving-changes/git-commit" target="_blank" rel="noopener">git commit
-</a>之前，实际上并不会记录更改。</p>
-<p>这些命令，您还结合需要<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status</a>命令查看工作目录和暂存区的状态。</p>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git add &lt;file&gt; 
-</code></pre><p>为下一次提交暂存<file>下的所有修改。</file></p>
-<pre><code>git add &lt;directory&gt;
-</code></pre><p>对下一次提交暂存<directory>目录下的所有更改。</directory></p>
-<pre><code>git add -p
-</code></pre><p>开始交互式登台会话，让您选择要添加需要暂存到下一个提交的文件哪些部分。这将提供一系列修改块，并提示您进行命令。使用y暂存这个修改块，使用n来忽略该块，使用s将其拆分成较小的块，e手动编辑该块，然后q退出。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>命令git add和git commit命令组成了基本的Git工作流程。这些是每个Git用户需要了解的两个命令，不管他们的团队合作模式如何。它们是将项目的版本记录到仓库历史记录中的方法。</p>
-<p>开发项目基本围绕编辑/暂存/提交模式。首先，在工作目录中编辑文件。当您准备保存项目当前状态的副本时，您可以使用git add暂存更改。在您对暂存的快照感到满意之后，您就可以使用git commit将其提交到项目历史记录中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:0f27e004-f2f5-4890-921d-65fa77ba2774/01.svg?cdnVersion=dt" alt="Git教程：git add Snapshot"></p>
-<p>git add命令不应该被混淆svn add，svn add将文件添加到仓库。相反，git add在修改的更抽象的层面上工作。这意味着git add每次更改文件时都需要调用，而svn add只需要为每个文件调用一次。这可能听起来是冗余的，但是这个工作流使得项目的组织变得更加容易。</p>
-<h3 id="暂存区"><a href="#暂存区" class="headerlink" title="暂存区"></a>暂存区</h3><p>暂存区是Git更独特的功能之一，如果您有来自SVN（甚至Mercurial）背景，可能需要一些时间才能将其理解。可以将其视为工作目录和项目历史记录之间的缓冲区。</p>
-<p>不提交自上次提交以来所做的所有更改，您可以在提交到项目历史记录之前，选择相关的更改暂存到高度聚焦的快照中。这意味着您可以对不相关的文件进行各种编辑，然后返回并将其分解为逻辑提交，再将相关更改添加到暂存区中并逐个提交。与任何版本控制系统一样，重要的是创建原子提交，以便轻松地跟踪错误并恢复更改，同时对项目的其余部分影响最小。</p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>当您开始一个新项目时，git add具有与svn import相同的功能。要创建当前目录的初始提交，请使用以下两个命令：</p>
-<pre><code>git add .
-git commit
-</code></pre><p>一旦你的项目运行正常，可以通过将路径传递给git add：</p>
-<pre><code>git add hello.py
-git commit
-</code></pre><p>上述命令也可用于记录对现有文件的更改。再次强调，Git并不区分新文件中的暂存更改与已经添加到仓库的文件的更改。</p>
-<h2 id="git提交"><a href="#git提交" class="headerlink" title="git提交"></a>git提交</h2><p>git commit命令将暂存的快照提交到项目历史记录。提交的快照可以被认为是项目的“安全”版本 - 除非你明确地要求，否则Git永远不会改变它们。结合git add，这是最重要的Git命令之一。<br>虽然他们共享相同的名字，但这个命令并不是什么svn commit。快照将致力于本地仓库，并且这绝对不需要与其他Git仓库进行交互。</p>
-<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git commit
-</code></pre><p>提交暂存快照。这将启动一个文本编辑器，提示您提交提交消息。输入消息后，保存文件并关闭编辑器以创建实际提交。</p>
-<pre><code>git commit -m &quot;&lt;message&gt;&quot;
-</code></pre><p>提交暂存快照，而不是启动文本编辑器，<message>用作提交消息。</message></p>
-<pre><code>git commit -a
-</code></pre><p>提交工作目录中所有更改的快照。这仅包括对跟踪文件的修改（git add在历史记录中的某个时刻添加的文件）。</p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>快照一直是在<em>本地</em>仓库。这与SVN基本不同，其中工作副本被提交到中央仓库。相比之下，Git不会强制您在准备好之前与中央仓库进行交互。正如暂存区是工作目录和项目历史记录之间的缓冲区一样，每个开发人员的本地仓库都是它们的贡献和中央仓库之间的缓冲区。</p>
-<p>这改变了Git用户的基本开发模式。Git开发者不用改变，直接将其直接交给中央仓库，而是有机会在本地仓库中累积提交。与SVN风格的协作相比，它具有许多优点：它可以将功能分解为原子提交，将相关的提交分组在一起，并在发布到中央仓库之前清理本地历史记录。它还使开发人员在孤立的环境中工作，推迟合并，直到它们处于方便的时候。</p>
-<h3 id="快照，而不是差异"><a href="#快照，而不是差异" class="headerlink" title="快照，而不是差异"></a>快照，而不是差异</h3><p>除了SVN和Git之间的实际区别之外，它们的基本实现也遵循完全不同的设计理念。而SVN跟踪文件的<em>差异</em>，Git的版本控制模型基于<em>快照</em>。例如，SVN提交包含与添加到仓库的原始文件相比较的diff。另一方面，Git 在每个提交中记录每个文件的<em>全部内容</em>。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:7406fe56-d36d-44cf-92e3-b28e4bae36f8/02.svg?cdnVersion=dt" alt="Git教程：快照，而不是差异"></p>
-<p>这使得许多Git操作比SVN快得多，因为特定版本的文件不需要从其diffs“组装” - 每个文件的完整版本可以立即从Git的内部数据库获得。</p>
-<p>Git的快照模型对其版本控制模型的几乎每个方面都有深远的影响，影响了从分支和合并工具到协作工作流程的所有内容。</p>
-<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>以下示例假设您已在一个文件中编辑了一些内容，hello.py并准备将其提交给项目历史记录。首先，您需要对文件进行git add暂存，然后可以提交暂存快照。</p>
-<pre><code>git add hello.py
-git commit
-</code></pre><p>这将打开一个文本编辑器（可自定义通过git config）请求提交消息，以及正在提交的内容的列表：</p>
-<pre><code># Please enter the commit message for your changes. Lines starting
-# with &apos;#&apos; will be ignored, and an empty message aborts the commit.
-# On branch master
-# Changes to be committed:
-# (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
-#
-#modified: hello.py
-</code></pre><p>Git不需要提交消息来遵循任何特定的格式化约束，但是规范格式是以不超过50个字符的方式总结第一行上的整个提交，留下空行，然后详细说明已更改的内容。例如：</p>
-<pre><code>Change the message displayed by hello.py
-- Update the sayHello() function to output the user&apos;s name
-- Change the sayGoodbye() function to a friendlier message
-</code></pre><p>请注意，许多开发人员也喜欢在其提交消息中使用现在时态。这使得它们更像是在仓库中的操作，这使得许多历史重写操作更加直观。</p>
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
+<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
+<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
+<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
+<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
+<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
+<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
+<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
+<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
+<ol>
+<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
+</li>
+<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
+</li>
+</ol>
+<ol start="3">
+<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
+<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
 
       
 
@@ -1482,7 +1330,112 @@ git commit
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-saving-changes/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-04-02-what-is-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-git/">【译文】全方位了解Git</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-what-is-git/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt" alt="什么是Git"></p>
+<p>到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。</p>
+<p>Git具有分布式架构，Git是DVCS（即分布式版本控制系统）的代表。在Git中，每个开发人员的代码工作副本都是一个仓库，仓库里包含所有更改的完整历史，而不是像CVS或Subversion（也称为SVN）等一般流行的版本控制系统，这些版本控制系统通常只有一个单一的位置有软件的完整版本历史。</p>
+<p>除了分布式之外，Git的设计还保证了高性能，安全性和灵活性。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>相比其他的版本控制系统，Git的性能特征非常高。提交新的更改、分支、合并和比较以前的版本都针对性能进行了优化。深入了解了实际源代码文件树的常见属性，它们如何通常随时间进行修改以及访问模式是如何进行的，Git内部实现的算法利用了这些优势。</p>
+<p>与某些版本控制软件不同，Git在确定文件树的存储和版本历史记录时应该不会被文件的名称所愚弄，而Git则关注文件内容本身。毕竟，源代码文件经常被重命名，拆分和重构。Git仓库文件使用了增量编码（存储内容差异），压缩和显式存储目录内容和版本元数据对象的组合。</p>
+<p>分布式还可显着提升性能。例如，像开发人员Alice一样，更改源代码，为即将发布的2.0版本添加功能，然后使用描述性消息提交这些更改。然后，她还工作了第二个功能，并提交了这些更改。自然地，这些在版本历史中被存储为单独的工作。Alice然后切换到相同软件的1.3版本，以修复仅影响旧版本的错误。这样做的目的是让Alice的团队在版本2.0准备就绪之前发布了一个版本1.3.1的错误修复版本。然后，Alice可以返回到2.0分支，继续处理2.0的新功能，所有这些都可以在没有任何网络访问的情况下发生，因此可以快速可靠进行。她甚至可以在飞机上做。当她准备好将所有提交的更改时，并准备发送到远程存储库时，Alice可以使用一条命令推送他们到远程仓库。</p>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><p>Git设计时优先考虑被托管源代码的完整性。文件的内容以及文件和目录的关联，版本，标签和提交，Git存储库中的所有这些对象，都使用了称为SHA1的加密安全散列算法进行安全保护。这样可以保护代码和变更历史，防止意外和恶意更改，并确保历史记录完全可追溯。</p>
+<p>使用Git，您可以确保您具有源代码的真实内容历史。</p>
+<p>一些其他版本控制系统没有对后面秘密更改的保护。对于依赖于软件开发的任何组织来说，这可能是一个严重的信息安全漏洞。</p>
+<h2 id="灵活性"><a href="#灵活性" class="headerlink" title="灵活性"></a>灵活性</h2><p>Git的关键设计目标之一是灵活性。Git在几个方面具有灵活性：支持各种非线性开发工作流，在小型和大型项目中的效率以及与对许多现有版本控制系统和协议的兼容性。</p>
+<p>Git被设计为支持分支和标记作为一流的公民（不同于SVN），影响分支和标签的操作（如合并或还原）也被存储为变更历史的一部分。并非所有版本控制系统都具有此级别的跟踪功能。</p>
+<h2 id="选择Git作为版本控制系统"><a href="#选择Git作为版本控制系统" class="headerlink" title="选择Git作为版本控制系统"></a>选择Git作为版本控制系统</h2><p>Git是当今大多数软件团队的最佳选择。虽然每个团队是不同的，应该有他们自己的判断，下面介绍使用Git版本控制系统优于其它方案的主要原因：</p>
+<h3 id="Git非常棒"><a href="#Git非常棒" class="headerlink" title="Git非常棒"></a>Git非常棒</h3><p>Git具有大多数团队和个人开发人员所需的功能，性能，安全性和灵活性。前面介绍了Git的这些属性。与大多数其他替代方案并列比较，许多团队发现Git非常有优势。</p>
+<h3 id="Git是一个事实上的标准"><a href="#Git是一个事实上的标准" class="headerlink" title="Git是一个事实上的标准"></a>Git是一个事实上的标准</h3><p>Git是最广泛采用的同类工具。在Atlassian，我们几乎所有的项目源代码都是在Git中管理的。由于如下原因，使得Git对开发者非常有吸引力。</p>
+<p>大量开发人员已经有Git经验，相当一部分大学毕业生可能只有Git的经验。虽然一些组织在从另一个版本控制系统迁移到Git时可能需要比较难的学习曲线，但是许多现有的和未来的开发人员将不需要接受Git的培训。</p>
+<p>除了大型人才库的优势外，Git的优势还意味着许多第三方软件工具和服务已经与Git（包括IDE）集成在一起，以及我们自己的工具，如DVCS桌面客户端<a href="https://www.atlassian.com/software/sourcetree" target="_blank" rel="noopener">SourceTree</a>，问题和项目跟踪软件<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>和代码托管服务<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>。</p>
+<p>如果您是一位缺乏经验的开发人员，希望在软件开发工具中建立有价值的技能，那么在使用版本控制时，Git应该在您的掌握技能列表中。</p>
+<h3 id="Git是一个优质的开源项目"><a href="#Git是一个优质的开源项目" class="headerlink" title="Git是一个优质的开源项目"></a>Git是一个优质的开源项目</h3><p>Git是一个拥有强大支持的开放源码项目，拥有十多年的稳定的管理维护经验。项目维护者已经拥有综合的判断力和成熟的方法来满足其用户的长期需求，并提供可扩展性和功能性的定期发布。无数企业要求开源项目的质量，因此开放源码软件的质量很容易被仔细检查。</p>
+<p>Git享有极好的社区支持和庞大的用户群。文档非常丰富，包括书籍，教程和专用网站。还有播客和视频教程。</p>
+<p>开源软件可以降低业余兴趣开发者的成本，因为他们可以使用Git而不需要支付费用。对于在开源项目中使用，Git无疑是前几代成功开源版本控制系统SVN和CVS的继承者。</p>
+<h3 id="对Git的批评"><a href="#对Git的批评" class="headerlink" title="对Git的批评"></a>对Git的批评</h3><p>对Git的一个常见批评可能是它难以学习。Git中的一些术语对于新手和其他系统的用户来说将是新颖的，Git术语可能不同，例如，revert在Git中具有与SVN或CVS不同的含义。然而，Git提供非常强大的能力，能为用户提供了大量的功能。学习使用这种功能可能需要一些时间，但一旦学会，该团队可以利用这种能力来提高其开发速度。</p>
+<p>对于那些来自非分布式版本管理系统（VCS）的团队来说，拥有一个中央存储库可能看起来好像是不想丢失的东西。然而，虽然Git被设计为分布式版本控制系统（DVCS），但是您仍然可以采用一个严格规范的正式仓库，在其中存储对软件的所有更改。使用Git，每个开发人员的仓库是完整的，因此它们的工作不需要受到“中央”服务器的可用性和性能的束缚。在停电或离线时，开发人员仍然可以查阅完整的项目历史。由于Git具有灵活性和分布式的特性，您可以按照自己使用其他版本控制系统的习惯的方式去工作，但这不能获得Git的其他优势，其中一些您甚至可能无法意识到你错过了。</p>
+<p>现在，您了解什么版本控制是什么，Git是什么以及为什么软件团队应该使用它，请继续阅读来发现Git的优势。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-git/">展开全文 >></a>
         </p>
       
 
@@ -1616,6 +1569,138 @@ git commit
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/04/02/2017-04-02-why-git/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-04-02-saving-changes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-saving-changes/">【译文】Git命令基础：保存更改</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-saving-changes/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:75f75cb6-a6ab-4f0b-ab29-e366914f513c/hero.svg?cdnVersion=dt" alt="保存更改"></p>
+<h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>git add命令将工作目录中的更改添加到暂存区。它告诉Git你想在下一个提交中包含特定文件的更新。但是，git add并不会以任何重大的方式影响仓库 - 在运行<a href="https://www.atlassian.com/git/tutorials/saving-changes/git-commit" target="_blank" rel="noopener">git commit
+</a>之前，实际上并不会记录更改。</p>
+<p>这些命令，您还结合需要<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status</a>命令查看工作目录和暂存区的状态。</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git add &lt;file&gt; 
+</code></pre><p>为下一次提交暂存<file>下的所有修改。</file></p>
+<pre><code>git add &lt;directory&gt;
+</code></pre><p>对下一次提交暂存<directory>目录下的所有更改。</directory></p>
+<pre><code>git add -p
+</code></pre><p>开始交互式登台会话，让您选择要添加需要暂存到下一个提交的文件哪些部分。这将提供一系列修改块，并提示您进行命令。使用y暂存这个修改块，使用n来忽略该块，使用s将其拆分成较小的块，e手动编辑该块，然后q退出。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>命令git add和git commit命令组成了基本的Git工作流程。这些是每个Git用户需要了解的两个命令，不管他们的团队合作模式如何。它们是将项目的版本记录到仓库历史记录中的方法。</p>
+<p>开发项目基本围绕编辑/暂存/提交模式。首先，在工作目录中编辑文件。当您准备保存项目当前状态的副本时，您可以使用git add暂存更改。在您对暂存的快照感到满意之后，您就可以使用git commit将其提交到项目历史记录中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:0f27e004-f2f5-4890-921d-65fa77ba2774/01.svg?cdnVersion=dt" alt="Git教程：git add Snapshot"></p>
+<p>git add命令不应该被混淆svn add，svn add将文件添加到仓库。相反，git add在修改的更抽象的层面上工作。这意味着git add每次更改文件时都需要调用，而svn add只需要为每个文件调用一次。这可能听起来是冗余的，但是这个工作流使得项目的组织变得更加容易。</p>
+<h3 id="暂存区"><a href="#暂存区" class="headerlink" title="暂存区"></a>暂存区</h3><p>暂存区是Git更独特的功能之一，如果您有来自SVN（甚至Mercurial）背景，可能需要一些时间才能将其理解。可以将其视为工作目录和项目历史记录之间的缓冲区。</p>
+<p>不提交自上次提交以来所做的所有更改，您可以在提交到项目历史记录之前，选择相关的更改暂存到高度聚焦的快照中。这意味着您可以对不相关的文件进行各种编辑，然后返回并将其分解为逻辑提交，再将相关更改添加到暂存区中并逐个提交。与任何版本控制系统一样，重要的是创建原子提交，以便轻松地跟踪错误并恢复更改，同时对项目的其余部分影响最小。</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>当您开始一个新项目时，git add具有与svn import相同的功能。要创建当前目录的初始提交，请使用以下两个命令：</p>
+<pre><code>git add .
+git commit
+</code></pre><p>一旦你的项目运行正常，可以通过将路径传递给git add：</p>
+<pre><code>git add hello.py
+git commit
+</code></pre><p>上述命令也可用于记录对现有文件的更改。再次强调，Git并不区分新文件中的暂存更改与已经添加到仓库的文件的更改。</p>
+<h2 id="git提交"><a href="#git提交" class="headerlink" title="git提交"></a>git提交</h2><p>git commit命令将暂存的快照提交到项目历史记录。提交的快照可以被认为是项目的“安全”版本 - 除非你明确地要求，否则Git永远不会改变它们。结合git add，这是最重要的Git命令之一。<br>虽然他们共享相同的名字，但这个命令并不是什么svn commit。快照将致力于本地仓库，并且这绝对不需要与其他Git仓库进行交互。</p>
+<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git commit
+</code></pre><p>提交暂存快照。这将启动一个文本编辑器，提示您提交提交消息。输入消息后，保存文件并关闭编辑器以创建实际提交。</p>
+<pre><code>git commit -m &quot;&lt;message&gt;&quot;
+</code></pre><p>提交暂存快照，而不是启动文本编辑器，<message>用作提交消息。</message></p>
+<pre><code>git commit -a
+</code></pre><p>提交工作目录中所有更改的快照。这仅包括对跟踪文件的修改（git add在历史记录中的某个时刻添加的文件）。</p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>快照一直是在<em>本地</em>仓库。这与SVN基本不同，其中工作副本被提交到中央仓库。相比之下，Git不会强制您在准备好之前与中央仓库进行交互。正如暂存区是工作目录和项目历史记录之间的缓冲区一样，每个开发人员的本地仓库都是它们的贡献和中央仓库之间的缓冲区。</p>
+<p>这改变了Git用户的基本开发模式。Git开发者不用改变，直接将其直接交给中央仓库，而是有机会在本地仓库中累积提交。与SVN风格的协作相比，它具有许多优点：它可以将功能分解为原子提交，将相关的提交分组在一起，并在发布到中央仓库之前清理本地历史记录。它还使开发人员在孤立的环境中工作，推迟合并，直到它们处于方便的时候。</p>
+<h3 id="快照，而不是差异"><a href="#快照，而不是差异" class="headerlink" title="快照，而不是差异"></a>快照，而不是差异</h3><p>除了SVN和Git之间的实际区别之外，它们的基本实现也遵循完全不同的设计理念。而SVN跟踪文件的<em>差异</em>，Git的版本控制模型基于<em>快照</em>。例如，SVN提交包含与添加到仓库的原始文件相比较的diff。另一方面，Git 在每个提交中记录每个文件的<em>全部内容</em>。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:7406fe56-d36d-44cf-92e3-b28e4bae36f8/02.svg?cdnVersion=dt" alt="Git教程：快照，而不是差异"></p>
+<p>这使得许多Git操作比SVN快得多，因为特定版本的文件不需要从其diffs“组装” - 每个文件的完整版本可以立即从Git的内部数据库获得。</p>
+<p>Git的快照模型对其版本控制模型的几乎每个方面都有深远的影响，影响了从分支和合并工具到协作工作流程的所有内容。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>以下示例假设您已在一个文件中编辑了一些内容，hello.py并准备将其提交给项目历史记录。首先，您需要对文件进行git add暂存，然后可以提交暂存快照。</p>
+<pre><code>git add hello.py
+git commit
+</code></pre><p>这将打开一个文本编辑器（可自定义通过git config）请求提交消息，以及正在提交的内容的列表：</p>
+<pre><code># Please enter the commit message for your changes. Lines starting
+# with &apos;#&apos; will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+# (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+#
+#modified: hello.py
+</code></pre><p>Git不需要提交消息来遵循任何特定的格式化约束，但是规范格式是以不超过50个字符的方式总结第一行上的整个提交，留下空行，然后详细说明已更改的内容。例如：</p>
+<pre><code>Change the message displayed by hello.py
+- Update the sayHello() function to output the user&apos;s name
+- Change the sayGoodbye() function to a friendlier message
+</code></pre><p>请注意，许多开发人员也喜欢在其提交消息中使用现在时态。这使得它们更像是在仓库中的操作，这使得许多历史重写操作更加直观。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-saving-changes/">展开全文 >></a>
         </p>
       
 
@@ -2030,15 +2115,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2058,11 +2139,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2126,6 +2211,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -2135,34 +2228,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2182,11 +2247,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2206,6 +2287,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
               </li>
              
@@ -2218,11 +2303,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2239,34 +2352,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2298,6 +2383,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
@@ -2307,14 +2400,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2338,19 +2423,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">SVN到Git</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2394,14 +2479,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
@@ -2418,6 +2495,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">投资</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">all in</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
@@ -2431,14 +2524,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
               </li>
              
               <li class="article-tag-list-item">
