@@ -160,6 +160,124 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-06-18-loving-unit-test-series-one-rumen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/">爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门</a>
+    </h1>
+  
+
+        
+        <a href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/" class="archive-article-date">
+  	<time datetime="2016-06-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>对于单元测试一开始我是拒绝的。单元测试是一个什么东东，因为我喜欢做iOS开发是因为喜欢写APP的啊，一切和这一目标不相干的东西我没兴趣啊，所以从事iOS开发几年都没去深入学习过单元测试（主要是之前单位没这要求）。看到我的优点木有：目标性很强，嗯，记住我的优点，请忽略我拒绝学习边缘知识的缺点。但是最近被总监要求负责单元测试的探索和落地，我义（勉）不（为）容（其）辞（难）地扛起了夺取桥头堡的重任。我愿意把单元测试比作一位好姑娘，随着对这个姑娘的不断的了解和接触，我发现自己逐渐爱上了她，她有着独立知性的气质，有着完美丰满的身材，有着自我成长过程中不断丰富而且深刻的阅历。她是如此地完美的，让我神魂颠倒，夜不能寐，我想为她写诗（可惜没有文学细胞），我想为她写歌（可惜没有艺术细胞），我想为她写书立传（可惜没有写作天赋）。讲真：有木有有眼无珠的出版社愿意邀约？我真的想写一本单元测试的书，我先写几篇关于的她的文章，您看看我有没有出这本书的潜力。</p>
+<p> 我先来给你介绍下这位姑娘。</p>
+<h3 id="单元测试的魅力"><a href="#单元测试的魅力" class="headerlink" title="单元测试的魅力"></a>单元测试的魅力</h3><p> 每个男人都有过自己喜欢的女孩，可能还有多个，他们可能有你喜欢的共同特质，比如有人喜欢个子高的，有人喜欢小巧的，也有喜欢丰满的，有人喜欢可爱的，有人喜欢野蛮的，也有喜欢……此处省略各种奇葩极端偏好，毕竟人各有所好嘛。但身为一名合格的程序员，你理想的中的女神，如果她有如下优点，一定会让你爱的无法自拔：</p>
+<p> <strong>1.她能让你更自信。帮助你编写高质量代码、减少bug。</strong></p>
+<p> 如果大家分析一下我们bug原因的构成，我想有会有一部分bug的原因是开发人员在编写工作代码的时候没有考虑到某些case或者边际条件。造成这种问题的原因很多，其中很重要的一个原因是我们对工作代码所要完成的功能思考不足，而编写单元测试，特别是先写单元测试再写工作代码就可以帮助开发人员思考编写的代码到底要实现哪些功能。例如实现一个简单的用户注册功能的业务类方法，用单元测试再写工作代码的方式来工作的话开发人员就会先考虑各种场景相关，例如正常注册、用户名重复、没有满足必要的填写内容……等等，之后就会编写相关的测试用例。编写单元测试代码的过程就是促使开发人员思考工作代码实现内容和逻辑的过程，之后实现工作代码的时候，开发人员思路会更清晰，实现代码的质量也会有相应的提升。</p>
+<p> <strong>2.她能提提升你的战斗力。帮助你提升代码的反馈速度，减少重复工作，提高开发效率。</strong></p>
+<p> 开发人员实现某个功能或者修补了某个bug，如果有相应的单元测试支持的话，开发人员可以马上通过运行单元测试来验证之前完成的代码是否正确，而不需要反复通过编译运行simulator、等待应用启动、通过输入数据等繁琐的步骤来验证所完成的功能。用单元测试代码来验证代码和通过发布应用以人工的方式来验证代码这两者的效率差很多，所以单元测试其实还能节约人力成本。</p>
+<p>  <strong>3.她的存在让你轻松愉快。保证你最后的代码修改不会破坏之前代码的功能。</strong></p>
+<p> 项目越做越大，代码越来越多，特别涉及到一些公用接口之类的代码或是底层的基础库，谁也不敢保证这次修改的代码不会破坏之前的功能，所以与此相关的需求会被搁置或推迟，由于不敢改进代码，代码也变得越来越难以维护，质量也越来越差。而单元测试就是解决这种问题的很好方法（不敢说最好的）。由于代码的历史功能都有相应的单元测试保证，修改了某些代码以后，通过运行相关的单元测试就可以验证出新调整的功能是否有影响到之前的功能。当然要实现到这种程度需要很大的付出，不但要能够达到比较高的测试覆盖率，而且单元测试代码的编写质量也要有保证。 </p>
+<p>  <strong>4.她能为你排忧解难，永远做你的依靠。让你的代码维护更容易。</strong></p>
+<p> 由于给代码写很多单元测试，相当于给代码加上了规格说明书，开发人员通过读单元测试代码也能够帮助开发人员理解现有代码。很有Open Source的项目(如，AFNetworking, FMDB,喵神的VVDoucment等)都有相当量的单元测试代码，通过读这些测试代码会有助于理解生产源代码。</p>
+<p>  <strong>5.她甘心做你坚强的后盾，在你卖命打拼时无后顾之忧。她有助于改进代码质量和设计。</strong></p>
+<p> 除了那些大拿们编写的代码，我相信很多易于维护、设计良好的代码都是通过不断的重构才得到的。虽然说单元测试本身不能直接改进生产代码的质量，但它为生产代码提供了“安全网”，让开发人员可以勇敢地改进代码，从而让代码的clean和beautiful不再是梦想。</p>
+<p> 我这么辛苦把它吹的这么有魅力，要是你作为程序员还不想见见她，wakao,我猜你不正常，有必要做个自身能力检查。如果你跟我一样是一个正常人，下面我就暂不收费，带你远远的瞧上一瞧这位美女，看看她到底长什么样子。</p>
+<h3 id="iOS单元测试初探"><a href="#iOS单元测试初探" class="headerlink" title="iOS单元测试初探"></a>iOS单元测试初探</h3><p> 维基百科上的对她解释：“在计算机编程中，单元测试（又称为模块测试, Unit Testing）是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。程序单元是应用的最小可测试部件。在过程化编程中，一个单元就是单个程序、函数、过程等；对于面向对象编程，最小单元就是方法，包括基类（超类）、抽象类、或者派生类（子类）中的方法。”。</p>
+<p> 通常来说，程序员每修改一次代码就会修改某个单元，那我们就可以对这个单元做修改的验证（单元测试），在编写程序的过程中前后很可能要进行多次单元测试，以证实程序达到软件规格书（产品需求）要求的工作目标，而且没有程序错误。虽然单元测试不是什么必须的，但也不坏，这牵涉到项目管理的政策决定（说白了，你没有她也能活，但是只能自己左手写代码，右手……当然也是写代码，作为程序员怎么可以一只手敲代码呢）。</p>
+<p>  <strong>1.了解XCode中的单元测试</strong></p>
+<p>在XCode7中新建一个工程的时候，会默认带一个用于单元测试的target，其名字为工程名加Test后缀，并且文件名也以Test结尾。你会发现已经有了一个默认的测试用例。<br><img src="/img/in-post/unit-test/unit_test_05.png" alt=""></p>
+<p><img src="/img/in-post/unit-test/unit_test_01.png" alt=""></p>
+<p> 创建项目后，默认会给我们创建一个和bundle名称+Tests.m的测试类，它包含的默认代码含义如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">  - (void)setUp &#123;</span><br><span class="line">       [super setUp];</span><br><span class="line">       // Put setup code here. This method <span class="keyword">is</span> called before the  invo cation of each test method <span class="keyword">in</span> the <span class="class"><span class="keyword">class</span>.</span></span><br><span class="line"><span class="class">      //初始化的代码，在测试方法调用之前调用</span></span><br><span class="line"><span class="class">&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line">- (void)tearDown &#123;</span><br><span class="line">        // Put teardown code here. This method <span class="keyword">is</span> called after the invocation of each test method <span class="keyword">in</span> the <span class="class"><span class="keyword">class</span>.</span></span><br><span class="line"><span class="class">       // 释放测试用例的资源代码，这个方法会每个测试用例执行后调用</span></span><br><span class="line">       [super tearDown];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testExample &#123;</span><br><span class="line">           // This <span class="keyword">is</span> an example of a functional test case.</span><br><span class="line">           // Use XCTAssert <span class="keyword">and</span> related functions to verify your tests produce the correct results.</span><br><span class="line">           // 测试用例的例子，注意测试用例一定要test开头</span><br><span class="line">       </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testPerformanceExample &#123;</span><br><span class="line">         // This <span class="keyword">is</span> an example of a performance test case.</span><br><span class="line">         // 测试性能例子，有Instrument调试工具之后，其实这个没毛用。</span><br><span class="line">         [self measureBlock:^&#123;</span><br><span class="line">         // Put the code you want to measure the time of here.</span><br><span class="line">         // 需要测试性能的代码</span><br><span class="line">          &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2.写一个简单的测试用例</strong></p>
+<p>在testExample方法中输入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (void)testExample &#123;</span><br><span class="line">    // This <span class="keyword">is</span> an example of a functional test case.</span><br><span class="line">    // Use XCTAssert <span class="keyword">and</span> related functions to verify your tests produce the correct results.</span><br><span class="line">    NSLog(@<span class="string">"开始爱上单元测试的第一个单元测试测试"</span>);</span><br><span class="line">    NSString *test = @<span class="string">"这是我的第一个单元测试"</span>;</span><br><span class="line">    XCTAssertTrue([test isEqualToString:@<span class="string">"初来乍到，就想测试成功，没门"</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后按快捷键Command + U进行单元测试，这个快捷键是全部测试。可以看到如下结果界面： </p>
+<p><img src="/img/in-post/unit-test/unit_test_04.png" alt=""></p>
+<p> 由于我们使用了断言XCTAssetTrue,它用来比较一个表达式是否为真，显然这个表达式是返回false的，所以这个测试用例肯定通过不了嘛。</p>
+<p> 我们也可以点击播放按钮，测试某个测试用例。</p>
+<p><img src="/img/in-post/unit-test/unit_test_03.png" alt=""></p>
+<p> <img src="/img/in-post/unit-test/unit_test_02.png" alt=""></p>
+<p><strong>3.XCTest常见的断言</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">XCTFail(format…) 生成一个失败的测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNil(a1, format...)为空判断，a1为空时通过，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotNil(a1, format…)不为空判断，a1不为空时通过，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssert(expression, format...)当expression求值为TRUE时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertTrue(expression, format...)当expression求值为TRUE时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertFalse(expression, format...)当expression求值为<span class="keyword">False</span>时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqualObjects(a1, a2, format...)判断相等，[a1 isEqual:a2]值为TRUE时通过，其中一个不为空时，不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqualObjects(a1, a2, format...)判断不等，[a1 isEqual:a2]值为<span class="keyword">False</span>时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqual(a1, a2, format...)判断相等（当a1和a2是 C语言标量、结构体或联合体时使用,实际测试发现NSString也可以）；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqual(a1, a2, format...)判断不等（当a1和a2是 C语言标量、结构体或联合体时使用）；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqualWithAccuracy(a1, a2, accuracy, format...)判断相等，（double或float类型）提供一个误差范围，当在误差范围（+/-accuracy）以内相等时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqualWithAccuracy(a1, a2, accuracy, format...) 判断不等，（double或float类型）提供一个误差范围，当在误差范围以内不等时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertThrows(expression, format...)异常测试，当expression发生异常时通过；反之不通过；（很变态） XCTAssertThrowsSpecific(expression, specificException, format...) 异常测试，当expression发生specificException异常时通过；反之发生其他异常或不发生异常均不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertThrowsSpecificNamed(expression, specificException, exception_name, format...)异常测试，当expression发生具体异常、具体异常名称的异常时通过测试，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrow(expression, format…)异常测试，当expression没有发生异常时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrowSpecific(expression, specificException, format...)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrowSpecificNamed(expression, specificException, exception_name, format...)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过</span><br></pre></td></tr></table></figure>
+<p>特别注意下XCTAssertEqualObjects和XCTAssertEqual。<br>XCTAssertEqualObjects(a1, a2, format…)的判断条件是[a1 isEqual:a2]是否返回一个YES。XCTAssertEqual(a1, a2, format…)的判断条件是a1 == a2是否返回一个YES。对于后者，如果a1和a2都是基本数据类型变量，那么只有a1 == a2才会返回YES。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p> 点到为止，入门就是入门，让你稍微有个了解。就像给你介绍一个美女，我会给她带朦胧的面纱，等你开个好价钱（点个赞）之后我才会一步一步揭开它的面纱，(bie四声)着急，好东西就要一点点的看看才有味道嘛。后面我会陆续推出单元测试进阶，单元测试实战，单元测试中的各种技巧等系列的文章。</p>
+<p>参考文章：</p>
+<p><a href="https://developer.apple.com/library/ios/documentation/ToolsLanguages/Conceptual/Xcode_Overview/UnitTesting.html" target="_blank" rel="noopener">《Using Unit Tests》</a></p>
+<p><a href="http://www.cnblogs.com/ziyi--caolu/p/4893847.html" target="_blank" rel="noopener">《iOS开发：XCTest单元测试（附上一个单例的测试代码》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单元测试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">unit test</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-05-18-How-to-use-injectionforxode-to-improve-your-coding-efficiency" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -631,6 +749,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -644,14 +770,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -679,18 +797,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
@@ -708,6 +814,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bug调试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">reveal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -743,14 +869,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
@@ -760,6 +878,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">分布式版本管理管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -819,14 +945,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -836,14 +954,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -863,6 +973,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
@@ -875,11 +1001,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -888,10 +1018,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -904,22 +1030,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -967,11 +1077,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -983,7 +1101,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -992,18 +1122,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1020,14 +1138,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Nas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1072,6 +1182,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
