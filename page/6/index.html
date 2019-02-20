@@ -160,34 +160,112 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-token-earning-program-fifteen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-02-05-Merging-vs-Rebasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/09/token-earning-program-fifteen/">【币赚量化带你躺赚】实盘直播第15天：今日盈利0.49%，折合425元</a>
+      <a class="article-title" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">【译文】Git merge 和 Git rebase比较</a>
     </h1>
   
 
         
-        <a href="/2018/10/09/token-earning-program-fifteen/" class="archive-article-date">
-  	<time datetime="2018-10-09T12:17:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-09</time>
+        <a href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/" class="archive-article-date">
+  	<time datetime="2017-02-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月9号。行情依然会在btc的带领下震荡向上。。。赶紧上车。。。</p>
-<p>昨天说了一句真特么觉得有道理的一句p话：量化是未来炒币的正确姿势。</p>
-<p>欧美国家的股民基本不自己炒股，都是委托给专业投资机构操作，量化则是机构重要的投资方式，据说60%以上的炒股都是通过量化进行。市场经济越发达的地区拼的就是实力，金融和科技的实力。</p>
-<p>而在数字货币市场，因为它的全球化，因此会越来越市场化，所以未来量化会在数字货币领域占据主导的投资操盘方式。</p>
-<p>欢迎大家了解<a href="https://www.bluecatbot.com/" target="_blank" rel="noopener">蓝猫量化</a>，如果也希望跟我一起稳定赚币赚钱，可以联系我，我带你了解更多。</p>
-        
-          <a class="article-more-a" href="/2018/10/09/token-earning-program-fifteen/#more">more >></a>
-        
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:15447956-9d33-4817-9dc6-fd6c86f24240/hero.svg?cdnVersion=da" alt="Merging vs rebasing"></p>
+<p><code>git rebase</code> 这个命令经常被人认为是一种Git巫术，初学者应该避而远之。但如果使用得当的话，它能给你的团队开发省去太多烦恼。在这篇文章中，我们会比较<code>git rebase</code>和类似的<code>git merge</code>命令，找到Git工作流中rebase的所有用法。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p> 你要知道的第一件事是，<code>git rebase</code> 和<code>git merge</code> 做的事其实是一样的。它们都被设计来将一个分支的更改并入另一个分支，只不过他们实现方式有些不同。</p>
+<p>想象一下，你刚创建了一个专门的分支开发新功能，然后团队中另一个成员在master分支上添加了新的提交。这就会造成提交历史被分叉（Fork）了一份，对于用Git来协作的开发者来说这样的情况应该很常见。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:01b0b04e-64f3-4659-af21-c4d86bc7cb0b/01.svg?cdnVersion=da" alt="A forked commit history"></p>
+<p>现在，如果master中新的提交和你的工作功能开发是相关的。为了将新的提交并入你的分支，你有两个选项：merge或rebase。 </p>
+<h3 id="Merger选项"><a href="#Merger选项" class="headerlink" title="Merger选项"></a>Merger选项</h3><p>将master分支合并到feature分支最简单的办法就是用下面这些命令：</p>
+<pre><code>git checkout feature 
+git merge master
+</code></pre><p>或者，你也可以把它们压减成一行：</p>
+<pre><code>git merge master feature
+</code></pre><p>这会在功能（feature）分支中创建一个新的合并提交(merge commit)将两个分支的历史链接一起。你会得到下面这样的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e229fef6-2c2f-4a4f-b270-e1e1baa94055/02.svg?cdnVersion=da" alt="Merging master into the feature branch"></p>
+<p>Merge好在它是一个安全的操作。现有的分支不会被更改，避免了rebase潜在的缺点（后面会说）。</p>
+<p>另一方面，这同样意味着每次合并上游更改时feature分支都会引入一个无关的合并提交。如果master非常活跃的话，这或多或少会污染你的分支历史。虽然高级的<code>git log</code>选项可以减轻这个问题，但对于开发者来说，还是会增加理解项目历史的难度。</p>
+<h3 id="Rebase-选项"><a href="#Rebase-选项" class="headerlink" title="Rebase 选项"></a>Rebase 选项</h3><p>作为merge的替代选择，你可以像下面这样将feature分支并入master分支：</p>
+<pre><code>git checkout feature 
+git rebase master
+</code></pre><p>它会有效地把所有master分支上新的提交并入过来，并把整个feature分支移动到master分支的后面。但是，rebase会重写项目历史，它并不会带来合并提交，但会在原分支上为每一个提交创建一个新的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:5b153a22-38be-40d0-aec8-5f2fffc771e5/03.svg?cdnVersion=da" alt="Rebasing the feature branch onto master"></p>
+<p>rebase最大的好处是你的项目提交历史会非常整洁。首先，它不像git merge 那样引入不必要的合并提交。其次，如上图所示，rebase导致最后的项目历史呈现出完美的线性——你可以从项目终点到起点浏览而没有任何的分叉。这让你更容易使用<code>git log</code> 、<code>git bisect</code> 和gitk 来查看项目历史。</p>
+<p>不过，这种简单的提交历史会带来两个问题：安全性和可跟踪性。如果你违反了<a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing" target="_blank" rel="noopener">Rebase黄金法则</a>，重写项目历史可能会给你的开发工作流带来灾难性的影响。此外，rebase操作不回增加合并提交——因此你看不到什么时候上游分支合进来feature分支的。</p>
+<h3 id="交互式的rebase"><a href="#交互式的rebase" class="headerlink" title="交互式的rebase"></a>交互式的rebase</h3><p>交互式的rebase允许你更改并入新分支的提交。这比自动的rebase更加强大，因为它提供了对分支上提交历史完整的控制。一般来说，这被用于将feature分支并入master分支之前，清理混乱的历史。</p>
+<p>把-i 传入git rebase 选项来开始一个交互式的rebase过程：</p>
+<pre><code>git checkout feature 
+git rebase -i master
+</code></pre><p>它会打开一个文本编辑器，显示所有将被移动的提交：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+pick 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>这个列表定义了rebase将被执行后分支会是什么样的。更改pick 命令或者重新排序，这个分支的历史就能根据你的想法改变。比如说，如果第二个提交修复了第一个提交中的小问题，你可以用fixup 命令把它们合到一个提交中：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+fixup 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>保存后关闭文件，Git会根据你的指令来执行rebase，项目历史看上去会是这样：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:fe6942b4-7a60-4464-9181-b67e59e50788/04.svg?cdnVersion=da" alt="Squashing a commit with an interactive rebase"></p>
+<p>忽略不重要的提交会让你的feature分支的历史更清晰易读。这是<code>git merge</code> 做不到的。</p>
+<h2 id="Rebase的黄金法则"><a href="#Rebase的黄金法则" class="headerlink" title="Rebase的黄金法则"></a>Rebase的黄金法则</h2><p>当你理解rebase是什么的时候，最重要的就是什么时候 不能 用rebase。<code>git rebase</code> 的黄金法则：绝不要在公共的分支上使用它。</p>
+<p>比如说，如果你把master分支rebase到你的feature分支上会发生什么：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:1d22f018-b2c7-4096-9db1-c54940cf4f4e/05.svg?cdnVersion=da" alt="Rebasing the master branch"></p>
+<p>这次rebase将master分支上的所有提交都移到了feature分支后面。问题是它只发生在你的代码仓库中，其他所有的开发者还在原来的master上工作。因为rebase引起了新的提交，Git会认为你的master分支和其他人的master已经分叉了。</p>
+<p>同步两个master分支的唯一办法是把它们merge到一起，导致一个额外的合并提交和两堆包含同样更改的提交。不用说，这会让人非常困惑。</p>
+<p>所以，在你运行git rebase 之前，一定要问问你自己“有没有别人正在这个分支上工作？”。如果答案是肯定的，那么把你的爪子放回去，重新找到一个无害的方式（如git revert）来提交你的更改。不然的话，你可以随心所欲地重写历史。</p>
+<h3 id="强制推送"><a href="#强制推送" class="headerlink" title="强制推送"></a>强制推送</h3><p>如果你想把rebase之后的master分支推送到远程仓库，Git会阻止你这么做，因为两个分支包含冲突。但你可以传入–force 标记来强行推送。就像下面一样：</p>
+<pre><code># 小心使用这个命令！
+git push --force
+</code></pre><p>它会重写远程的master分支来匹配你仓库中rebase之后的master分支，对于团队中其他成员来说这看上去很诡异。所以，务必小心这个命令，只有当你知道你在做什么的时候再使用。</p>
+<p>仅有的几个强制推送的使用场景之一是，当你在想向远程仓库推送了一个私有分支之后，执行了一个本地的清理（比如说为了回滚）。这就像是在说“哦，其实我并不想推送之前那个feature分支的。用我现在的版本替换掉吧。”同样，你要注意没有别人正在这个feature分支上工作。</p>
+<h2 id="应用到开发工作流"><a href="#应用到开发工作流" class="headerlink" title="应用到开发工作流"></a>应用到开发工作流</h2><p>rebase可以或多或少应用在你们团队的Git工作流中。在这一节中，我们来看看在feature分支开发的各个阶段中，rebase有哪些好处。</p>
+<p>在工作流中平衡git rebase负面作用的第一步是创建一个功能开发的专门feature分支。这让你拥有安全使用rebase的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6af9de07-088b-4f8b-97a7-b66569a9e4ac/06.svg?cdnVersion=da" alt="Developing a feature in a dedicated branch"></p>
+<h3 id="本地清理"><a href="#本地清理" class="headerlink" title="本地清理"></a>本地清理</h3><p>在你工作流中使用rebase最好的用法之一就是清理本地正在开发的分支。隔一段时间执行一次交互式rebase，你可以保证你feature分支中的每一个提交都是具体而且有意义的。你在写代码时不用担心造成松散的提交——你可以使用rebase解决这个问题。</p>
+<p>调用<code>git rebase</code> 的时候，你有两个选项要去考虑：上游分支（比如master）或者你feature分支中早先的一个提交。我们在“交互式rebase”一节看到了第一种的例子。后一种在当你只需要修改最新几次提交时也很有用。比如说，下面的命令对最新的3次提交进行了交互式rebase：</p>
+<pre><code>git checkout feature 
+git rebase -i HEAD~3
+</code></pre><p>通过指定HEAD~3作为新的基提交，你实际上没有移动分支——你只是将之后的3次提交重写了。注意它不会把上游分支的更改并入到feature分支中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:079532c4-2594-40ed-a5c4-0e3621b9edff/07.svg?cdnVersion=da" alt="Rebasing onto Head~3"></p>
+<p>如果你想用这个方法重写整个feature分支，git merge-base 命令非常方便地找出feature分支开始分叉的基。下面这段命令返回基提交的ID，你可以接下来将它传给git rebase：</p>
+<pre><code>git merge-base feature master
+</code></pre><p>交互式rebase是在你工作流中引入git rebase 的的好办法，因为它只影响本地分支。其他开发者只能看到你已经完成的结果，那就是一个非常整洁、易于追踪的分支历史。</p>
+<p>但同样的，这只能用在私有分支上。如果你在同一个feature分支和其他开发者合作的话，这个分支是公开的，你不能重写这个历史。</p>
+<p>用带有交互式的rebase清理本地提交，这是无法用git merge 命令代替的。</p>
+<h3 id="将上游分支上的更改并入feature分支"><a href="#将上游分支上的更改并入feature分支" class="headerlink" title="将上游分支上的更改并入feature分支"></a>将上游分支上的更改并入feature分支</h3><p>在概览一节，我们看到了feature分支如何通过git merge 或git rebase 来并入上游分支。merge是保留你完整历史的安全选择，rebase将你的feature分支移动到master分支后面，创建一个线性的历史。</p>
+<p>git rebase 的用法和本地清理非常类似（而且可以同时使用），但之间并入了master上的上游更改。</p>
+<p>记住，rebase到远程分支而不是master也是完全合法的。当你和另一个开发者在同一个feature分之上协作的时候，你会用到这个用法，将他们的更改并入你的项目。</p>
+<p>比如说，如果你和另一个开发者——John——往feature分支上添加了几个提交，在从John的仓库中fetch之后，你的仓库可能会像下面这样：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:0bb661aa-361d-47ba-8c7b-00b3be0546cb/08.svg?cdnVersion=da" alt="Collaborating on the same feature branch"></p>
+<p>就和并入master上的上游更改一样，你可以这样解决这个Fork：要么merge你的本地分支和John的分支，要不把你的本地分支rebase到John的分支后面。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1896adb1-5d49-419a-9b50-3a36adac186c/09.svg?cdnVersion=da" alt="Merging vs. rebasing onto a remote branch"></p>
+<p>注意，这里的rebase没有违反Rebase黄金法则，因为只有你的本地分支上的commit被移动了，之前的所有东西都没有变。这就像是在说“把我的改动加到John的后面去”。在大多数情况下，这比通过合并提交来同步远程分支更符合直觉。</p>
+<p>默认情况下，git pull 命令会执行一次merge，但你可以传入–rebase 来强制它通过rebase来整合远程分支。</p>
+<h3 id="用Pull-Request进行审查"><a href="#用Pull-Request进行审查" class="headerlink" title="用Pull Request进行审查"></a>用Pull Request进行审查</h3><p>如果你将pull request作为你代码审查过程中的一环，你需要避免在创建pull request之后使用git rebase。只要你发起了pull request，其他开发者能看到你的代码，也就是说这个分支变成了公共分支。重写历史会造成Git和你的同事难以找到这个分支接下来的任何提交。</p>
+<p>来自其他开发者的任何更改都应该用git merge 而不是git rebase 来并入。</p>
+<p>因此，在提交pull request前用交互式的rebase进行代码清理通常是一个好的做法。</p>
+<h3 id="并入通过的功能分支"><a href="#并入通过的功能分支" class="headerlink" title="并入通过的功能分支"></a>并入通过的功能分支</h3><p>如果某个功能被你们团队通过了，你可以选择将这个分支rebase到master分支之后，或是使用git merge 来将这个功能并入主代码库中。</p>
+<p>这和将上游改动并入feature分支很相似，但是你不可以在master分支重写提交，你最后需要用git merge 来并入这个feature。但是，在merge之前执行一次rebase，你可以确保merge是一直向前的，最后生成的是一个完全线性的提交历史。这样你还可以加入pull request之后的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:df39b1f1-2686-4ee5-90bf-9836783342ce/10.svg?cdnVersion=da" alt="Integrating a feature into master with and without a rebase"></p>
+<p>如果你还没有完全熟悉git rebase，你还可以在一个临时分支中执行rebase。这样的话，如果你意外地弄乱了你feature分支的历史，你还可以查看原来的分支然后重试。</p>
+<p>比如说：</p>
+<pre><code>git checkout feature
+git checkout -b temporary-branch
+git rebase -i master
+# [清理目录]
+git checkout master
+git merge temporary-branch
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>你使用rebase之前需要知道的知识点都在这了。如果你想要一个干净的、线性的提交历史，没有不必要的合并提交，你应该使用git rebase 而不是git merge 来并入其他分支上的更改。</p>
+<p>另一方面，如果你想要保存项目完整的历史，并且避免重写公共分支上的commit， 你可以使用git merge。两种选项都很好用，但至少你现在多了git rebase这个选择。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing" target="_blank" rel="noopener">Merging vs. Rebasing</a></p>
+
       
 
       
@@ -195,11 +273,34 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 合并</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git merge</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git rebase</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/09/token-earning-program-fifteen/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">展开全文 >></a>
         </p>
       
 
@@ -229,33 +330,121 @@
 
 
   
-    <article id="post-token-earning-program-forteen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-02-03-Git-Reset-Checkout-and-Revert" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/08/token-earning-program-forteen/">【币赚量化带你躺赚】实盘直播第14天：今日盈利0.25%，折合217元</a>
+      <a class="article-title" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">【译文】代码回滚之Reset, Checkout, and Revert命令比较</a>
     </h1>
   
 
         
-        <a href="/2018/10/08/token-earning-program-forteen/" class="archive-article-date">
-  	<time datetime="2018-10-08T12:55:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-08</time>
+        <a href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/" class="archive-article-date">
+  	<time datetime="2017-02-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月8号。晚间，趁我去打篮球的时候，行情如我所料的那样，开始疯狂上涨，比特币已经上涨了一个多点，站上了6600，我判断这次会慢慢先突破6800，并会站稳，以后的底部就在这里了。韭菜的信心满满会起来，然后在年底某个时间点会有小牛市。</p>
-<p>今天我做出了另外一个决定，我准备加入蓝猫量化，准备成为他们的合伙人。和一帮优秀的朋友一起把BTC量化做好，为btc投资者带来稳定收益。</p>
-<p>量化是未来炒币的正确姿势。</p>
-<p>欢迎大家了解<a href="https://www.bluecatbot.com/" target="_blank" rel="noopener">蓝猫量化</a>，如果也希望跟我一起稳定赚币赚钱，可以联系我，我带你了解更多。</p>
-        
-          <a class="article-more-a" href="/2018/10/08/token-earning-program-forteen/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/hero.svg" alt=""></p>
+<p><strong>git reset</strong>、<strong>git checkout</strong> 和 <strong>git revert</strong> 是Git中的常用工具。他们都可以用来撤销仓库中的修改。而前两个命令不仅可以作用于提交，还可以作用于特定文件。</p>
+<p>因为它们非常相似，所以我们经常会搞混，不知道什么场景下该用哪个命令。在这篇文章中，我们会比较<strong>git reset</strong>、<strong>git checkout</strong>和<strong>git revert</strong>最常见的用法。希望你在看完后能游刃有余地使用这些命令来管理你的仓库。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/01.svg" alt="The main components of a Git repository"></p>
+<p>Git仓库有三个主要组成——工作目录，暂存区和提交历史。这张图有助于理解每个命令对仓库产生作用的三个区：工作目录，暂存区、提交历史。当你阅读的时候，牢记这三个区。</p>
+<h2 id="提交层面的操作"><a href="#提交层面的操作" class="headerlink" title="提交层面的操作"></a>提交层面的操作</h2><p>你传给git reset 和 git checkout的参数决定他们的作用范围。如果参数里不包括一个文件路径，他们将作用于整个提交历史。这节内容我们主要探讨这个。注意git revert没有文件层面的操作。</p>
+<h4 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h4><p>在提交层面上，<code>reset</code>将一个分支的末端指向另一个提交。这可以用来移除当前分支的一些提交。比如，下面这两条命令让<code>hotfix</code>分支向后回退了两个提交。</p>
+<pre><code>git checkout hotfix
+git reset HEAD~2
+</code></pre><p><code>hotfix</code>分支末端的两个提交现在变成了悬挂（dangling）提交。也就是说，下次Git执行垃圾回收的时候，这两个提交会被删除。换句话说，如果你想扔掉这两个提交，你可以这么做。reset操作如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/02.svg" alt="Resetting the hotfix branch to HEAD~2"></p>
+<p>如果更改还没有共享给其他人并且你乡撤销这些更改，<code>git reset</code>是非常方便你达到这个目的的方法。当你开发一个功能的时候发现『糟糕，我做了什么？我应该重新来过！』时，reset就像是go-to命令一样。</p>
+<p>除了在当前分支上操作，你还可以通过传入这些标记来修改你的暂存区或工作目录：</p>
+<ul>
+<li>–soft    – 暂存区和工作目录都不会被改变</li>
+<li>–mixed   – 默认选项。暂存区和你指定的提交同步，但工作目录不受影响</li>
+<li>–hard    – 暂存区和工作目录都同步到你指定的提交</li>
+</ul>
+<p>把这些参数想成定义<code>git reset</code>操作的作用域就容易理解多了。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/03.svg" alt="The scope of `git reset`’s modes"></p>
+<p>这些标记往往和HEAD作为参数一起使用。比如，<code>git reset --mixed HEAD</code> 将你当前的改动从暂存区中移除，但是这些改动还留在工作目录中。另一方面，如果你想完全舍弃你没有提交的改动，你可以使用<code>git reset --hard HEAD</code>。这是git reset最常用的两种用法。</p>
+<p>当你传入HEAD以外的其他提交的时候要格外小心，因为reset操作会重写当前分支的历史。正如<a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting/summary" target="_blank" rel="noopener">Rebase黄金法则</a>所说的，在公共分支上这样做可能会引起严重的后果。</p>
+<h4 id="Checkout"><a href="#Checkout" class="headerlink" title="Checkout"></a>Checkout</h4><p>你应该已经非常熟悉提交层面的git checkout。当传入分支名时，可以切换到那个分支。</p>
+<pre><code>git checkout hotfix
+</code></pre><p> 上面这个命令做的不过是将HEAD移到一个新的分支，然后更新工作目录。因为这可能会覆盖本地的修改，Git强制你提交或者隐藏工作目录中的所有更改，不然在checkout的时候这些更改都会丢失。和<code>git reset</code>不一样的是，<code>git checkout</code>没有移动这些分支。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/04.svg" alt="Moving `HEAD` from `master` to `hotfix`"></p>
+<p> 除了分支之外，你还可以传入提交的引用来checkout到任意的提交。这和checkout到另一个分支是完全一样的：把HEAD移动到特定的提交。比如，下面这个命令会checkout到当前提交的祖父提交。</p>
+<pre><code>git checkout HEAD~2
+</code></pre><p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/05.svg" alt="Moving `HEAD` to an arbitrary commit"></p>
+<p>这对于快速查看项目旧版本来说非常有用。但如果你当前的HEAD没有任何分支引用，那么这会造成HEAD分离。这是非常危险的，如果你接着添加新的提交，然后切换到别的分支之后就没办法回到之前添加的这些提交。因此，在为分离的HEAD添加新的提交的时候你应该创建一个新的分支。</p>
+<h4 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h4><p>Revert撤销一个提交的同时会创建一个新的提交。这是一个安全的方法，因为它不会重写提交历史。比如，下面的命令会找出倒数第二个提交，然后创建一个新的提交来撤销这些更改，然后把这个提交加入项目中。</p>
+<pre><code>git checkout hotfix
+git revert HEAD~2
+</code></pre><p>如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/06.svg" alt="Reverting the 2nd to last commit"></p>
+<p>相比<code>git reset</code>，它不会改变现在的提交历史。因此，<code>git revert</code>可以用在公共分支上，<code>git reset</code>应该用在私有分支上。</p>
+<p>你也可以把<code>git revert</code>当作撤销已经提交的更改，而<code>git reset HEAD</code>用来撤销没有提交的更改。</p>
+<p>就像<code>git checkout</code> 一样，<code>git revert</code> 也有可能会重写文件。所以，Git会在你执行revert之前要求你提交或者缓存你工作目录中的更改。</p>
+<h2 id="文件层面的操作"><a href="#文件层面的操作" class="headerlink" title="文件层面的操作"></a>文件层面的操作</h2><p><code>git reset</code>和<code>git checkout</code>命令也接受文件路径作为参数。这时它的行为就大为不同了。它不会作用于整份提交，参数将它限制于特定文件。</p>
+<h4 id="Reset-1"><a href="#Reset-1" class="headerlink" title="Reset"></a>Reset</h4><p>当检测到文件路径时，git reset 将暂存区同步到你指定的那个提交。比如，下面这个命令会将倒数第二个提交中的foo.py加入到暂存区中，供下一个提交使用。</p>
+<pre><code>git reset HEAD~2 foo.py
+</code></pre><p>和提交层面的<code>git reset</code>一样，通常我们使用HEAD而不是某个特定的提交。运行<code>git reset HEAD foo.py</code> 会将当前的foo.py从暂存区中移除出去，而不会影响工作目录中对foo.py的更改。<br>暂存区<br><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/07.svg" alt="Moving a file from the commit history into the staged snapshot"></p>
+<p><em>–soft</em>、<em>–mixed</em>和<em>–hard</em>对文件层面的<code>git reset</code>毫无作用，因为暂存区中的文件一定会变化，而工作目录中的文件一定不变。</p>
+<h4 id="Checkout-1"><a href="#Checkout-1" class="headerlink" title="Checkout"></a>Checkout</h4><p>Checkout一个文件和带文件路径<code>git reset</code> 非常像，除了它更改的是工作目录而不是缓存区。不像提交层面的checkout命令，它不会移动HEAD引用，也就是你不会切换到别的分支上去。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/08.svg" alt="Moving a file from the commit history into the working directory"></p>
+<p>比如，下面这个命令将工作目录中的foo.py同步到了倒数第二个提交中的foo.py。</p>
+<pre><code>git checkout HEAD~2 foo.py
+</code></pre><p>和提交层面相同的是，它可以用来检查项目的旧版本，但作用域被限制到了特定文件。</p>
+<p>如果你缓存并且提交了checkout的文件，它具备将某个文件回撤到之前版本的效果。注意它撤销了这个文件后面所有的更改，而git revert 命令只撤销某个特定提交的更改。</p>
+<p>和<code>git reset</code> 一样，这个命令通常和HEAD一起使用。比如<code>git checkout HEAD foo.py</code>等同于舍弃foo.py没有缓存的更改。这个行为和git <code>reset HEAD --hard</code>很像，但只影响特定文件。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>你现在已经掌握了Git仓库中撤销更改的所有工具。git reset、git checkout、和 git revert命令比较容易混淆，但当你想起它们对工作目录、缓存区和提交历史的不同影响，就会容易判断现在应该用哪个命令。</p>
+<p>下面这个表格总结了这些命令最常用的使用场景。记得经常对照这个表格，因为你使用Git时一定会经常用到。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令</th>
+<th style="text-align:center">作用域</th>
+<th style="text-align:center">常用情景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在私有分支上舍弃一些没有提交的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">将文件从缓存区中移除</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">切换分支或查看旧版本</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">舍弃工作目录中的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在公共分支上回滚更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">（然而并没有）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting" target="_blank" rel="noopener">Reset, Checkout, and Revert</a></p>
+
       
 
       
@@ -263,11 +452,38 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 撤销</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git Reset</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Revert</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git Checkout</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/08/token-earning-program-forteen/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">展开全文 >></a>
         </p>
       
 
@@ -297,30 +513,35 @@
 
 
   
-    <article id="post-token-earning-program-thirteen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-01-01-from-2016-to-2017" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/07/token-earning-program-thirteen/">【币赚量化带你躺赚】实盘直播第13天：今日盈利0.32%，折合269元</a>
+      <a class="article-title" href="/2017/01/01/2017-01-01-from-2016-to-2017/">借2016的东风，冲向2017的浪潮</a>
     </h1>
   
 
         
-        <a href="/2018/10/07/token-earning-program-thirteen/" class="archive-article-date">
-  	<time datetime="2018-10-07T12:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-07</time>
+        <a href="/2017/01/01/2017-01-01-from-2016-to-2017/" class="archive-article-date">
+  	<time datetime="2016-12-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月7号。在忙着看量化的东西，就不废话了。。。😜</p>
-        
-          <a class="article-more-a" href="/2018/10/07/token-earning-program-thirteen/#more">more >></a>
-        
+        <p>2016年很忙很苦逼，6月份跳槽加入中国平安。上半年在老东家做了一个全新的App（亚程旅游），下半场在新东家从零开始又做了一个全新的App（平安健康），这一年工作强度之大，是近四五年没有的，前段时间一直杠杠的身体都发出超负荷警报，最近才算自我恢复过来。2016年的主旋律就是苦并享受着，之所以享受主要是成长了。</p>
+<h2 id="记录2016"><a href="#记录2016" class="headerlink" title="记录2016"></a>记录2016</h2><p>2016年开始写文章记录自己在技术上的成长，先是在简书（<a href="http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。" target="_blank" rel="noopener">http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。</a></p>
+<p>2016年我主要在研究移动App的架构以及Git代码管理技术上，并把自己学习到技术运用到了我今年做的两个App上，平安健康App算是我架构设计的最佳实践作品。</p>
+<h3 id="关注架构"><a href="#关注架构" class="headerlink" title="关注架构"></a>关注架构</h3><p>好的架构师，首先是有丰富的研发经验，只有经过多个项目的洗礼，你才知道技术研发过程中的各个环节的痛点，项目需要的技术选型有哪些，对项目各个环节需要的技术了如指掌；比经验更重要的人性，架构师要有一颗正直善良的内心，时刻想着用技术手段为领导分忧解难，时刻想着用合理的技术运用为工程师兄弟们服务，优秀的架构是润物细无声的；有了善良的内心，架构师不断学习新的技术就变成自然而然的事情了，因为他总想用更好的技术为团队贡献力量。关于技术规范对于有两三年工作经验的人来说也许会不屑一顾，但对于我这种有工匠精神人则依然不放过一丝改善的机会，精益求精是原则，关于代码规范我总结了《iOS架构师之路：工程文件组织结构设计》、《iOS架构师之路：制定代码规范》、《iOS开发插件推荐（2）：自动化代码规范神器ClangFormat-Xcode》等多篇文章，为的就是能让代码规范满足项目高质量的同时却不会给开发带来多少负担，有自动化的手段的就自动化，能通人性的规范就通人性，代码规范方面已经积累了一套代码规范管理体系。网络层属于App项目的最顶层，网络层架构对于App来说尤为重要，在网络层架构方面我主要借鉴了casa大神的架构思路，参考我以前做的项目经验，总结了一套网络层架构解决方案，总结一片网络层架构设计的文章《iOS架构师之路：大型APP应用网络层架构思考》，我做的网络层架构大致解决了数据传输安全问题、性能问题（请求缓存和暂停取消等）、mock网络请求问题、数据标准化问题、交付问题、数据校验问题等，在网络架构方面我已经算是略有建树。关于项目内存管理，我也一套解决方案，比如项目的内存管理如何自动化，设计一套方案能减少开发工程师关注iOS内存的时间，又能有效的解决项目内存问题，为此我总结了《iOS架构师之路：项目内存管理方案》、《【译文】在iOS上自动检测内存泄漏》，这方面技术有运用到了平安健康App，这方面我还有需要学习和发掘的空间，目前我的一套内存管理方案也许能快速发现内存泄露，但如何能帮助开发定位内存泄露的代码方面还不成熟。关于提高项目效率方面，我总结了《iOS架构师之路：利用代码片段（XCodeSnippets）助力团队开发和项目质量管理》、《iOS比优鸡调试技巧篇（一）：reveal视图调试》，有一整理和设计了一套工具类，来帮助开发更有效率的写代码、搞定项目常用功能、提高调试效率等。在项目其他质量方面，我也有许多的思考，如何提倡减少继承来提高项目的可维护性，提倡瘦身控制器来提高项目可读性，为此总结和翻几篇文章，如《iOS架构师之路：控制器（View Controller）瘦身设计》、《iOS架构师之路：慎用继承》。缓存持久化方案方面，我也有较深的涉猎，总结了《iOS架构师之路：本地持久化方案》。关于架构未来还有很多可以发挥和学习的空间，如动态方案、组件化方案等，这些架构设计也会陆续运用到项目中。在关注最擅长的iOS领域的架构外，由于自己有过后端开发经验，也有过多年的网络，数据库，系统管理经验，2017希望自己能涉猎更多前后端知识，成为一个技术领域的的顶层设计者掌舵者。</p>
+<h3 id="学习Git"><a href="#学习Git" class="headerlink" title="学习Git"></a>学习Git</h3><p>2016年由于要带团队也关注项目管理方面的工作，因此学习过一些项目管理的方面的知识，后来对Git技术产生了兴趣，所以深入学习了Git技术。从不太懂git，到经过一年的学习和运用，在git技术运用上有收获不少，创作或者翻译了多篇git有关的文章。希望在2017年能至少集合出一本关于Git电子书吧，希望为git技术的推广贡献个人力量。</p>
+<h2 id="冲向2017年"><a href="#冲向2017年" class="headerlink" title="冲向2017年"></a>冲向2017年</h2><p>2016年对于技术人来说是非凡的一年，有许多革命性的技术诞生，大数据、移动互联网、云计算的高温还在持续的时候，随着今年alpha Go战胜李世石，人工智能开始站在了风口。在年末张小龙的一席演讲，小程序的崛起似乎也有很多可能性，未来可穿戴设备应用将改变人们的生活习惯。还有随着区块链成长起来的比特币交易。我们处在一个又一个技术革命的时代。未来人类社会的形态，将发生颠覆性的变化。旧的社会结构正在肢解，社会底层的机会将会被人工智能替代，未来会怎么发展即值得期待又让人忧心。作为技术人，未来依然大有可为是一定的。</p>
+<p>2016年看了一本书，是吴军写的《浪潮之巅》，书主要从技术和商业的角度介绍了借着技术革命的浪潮诞生的科技巨头，如软件时代的微软，互联网时代的Google、阿里巴巴，社交网络时代的腾讯，Facebook。2017年又是浪潮卷起的又一个元年，大风已起，想不被波及都不太可能。作为变革时代的人——要么get busy living ，要么get busy dying。</p>
+<p>2016年收获很多，2016年已经翻篇，借着2016年的势头，再接再厉，持续学习，持续改变，在2017年，发现一些适合自己的机会，去做一些想做的事情。</p>
+
       
 
       
@@ -328,11 +549,34 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">生活感悟</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">年度总结</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2016</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2017</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/07/token-earning-program-thirteen/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/01/2017-01-01-from-2016-to-2017/">展开全文 >></a>
         </p>
       
 
@@ -362,30 +606,37 @@
 
 
   
-    <article id="post-token-earning-program-twelve" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-12-16-Skating-And-Me" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/06/token-earning-program-twelve/">【币赚量化带你躺赚】实盘直播第12天：今日盈利0.28%，折合238元</a>
+      <a class="article-title" href="/2016/12/16/2016-12-16-Skating-And-Me/">滑雪运动和我</a>
     </h1>
   
 
         
-        <a href="/2018/10/06/token-earning-program-twelve/" class="archive-article-date">
-  	<time datetime="2018-10-06T12:49:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-06</time>
+        <a href="/2016/12/16/2016-12-16-Skating-And-Me/" class="archive-article-date">
+  	<time datetime="2016-12-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月5号。今天陪家人一天，困的不行，没时间瞎Hoo说了。。。</p>
-        
-          <a class="article-more-a" href="/2018/10/06/token-earning-program-twelve/#more">more >></a>
-        
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上周末TB去了张家口滑雪，距离我上一次滑雪已经快三年了，大致是转行做iOS开发的三年，为什么会我在28岁的年纪会做一些不太容易的改变，也许从我在滑雪这项运动中学到的不无关系。这篇文章是我三年前最后一次滑完雪写的，时间是2014年2月19日，这次滑雪回来之后想起这篇文章，今天翻出来读了读，自我感觉良好，就收录起来。</p>
+<h2 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h2><p>昨天我们一行四人去了北京较好的渔阳滑雪场滑雪一天，我的三位朋友都是初次滑雪，一上午下来，他们闷闷不乐，表示老摔跤却还没学会下初级道，下午和他们碰头回去的时候，各个脸上都挂着喜洋洋，我能想到他们会找到滑雪的乐趣，不过还是被这前后反差给吃惊。能让他们玩的开心，也算我不虚此行。</p>
+<p>朋友和我去滑雪，我想是他们因为喜欢雪的缘故，才把初次交给我的吧。我以前以为只有我特别喜欢雪，我的确是因为北方有大雪才来这，也因此更享受在北京的日子，这几年雪季也去到北方的一些城市逛了逛，但是后来我才明白几乎每个人都喜欢雪，目前我还没听说有谁不喜欢，每年下雪的时候兴奋的不只是我而是所有人，后来看了一本书《新世界》，我才明白，原来我们喜欢雪，花，阳光等是因为他们代表生命的源头和本质。而滑雪的时候更能感受到雪的美，你站在雪场或者和缆车一起飘在空中，都可以看着一条条洁白宽敞的雪道，心中自发涌出一种愉悦的心情。</p>
+<p>我第一次滑雪是在12年元旦去黑龙江旅行的时候，是和驴友在雪乡附近一个农民自建的简陋的滑雪场玩了不到一个小时。和我的朋友们一样也摔了很多跤，但是摔完之后并没有想象的疼，所以依然敢于一次一次地站上雪道坡顶，继续挑战。人性本来就是喜欢挑战自我，不断想要改变的，当有一项自我挑战的运动在你面前，挑战失败的后果并不像自己以为以及别人以为的那样严重，当然会觉得很有乐趣，因此我喜欢上了这项运动，回来之后连续去了多次。对滑雪摔跤的这种感受也适用于我的生活，因为生活中，每个人也会经历许多坎坷，但是经历过后，我们还依然好好的活着，并不会像想像的失去那么多。</p>
+<p>12年的雪季我学会了“内八字”减速下滑后上了初级道然后又挑战了中级道。去年我主要在中级道学习一些技巧，比如“蛇型”，“犁式”滑雪，去年也是我滑雪最多的一年，本有很多机会去尝试高级道的，但一直不太有勇气上去。今年的雪季因为工作以及被其他事情占据，一直没有时间去滑雪，昨天去滑雪不仅没有学会什么技巧，而且明显生疏不少，在经过上午和下午熟悉初级道、中级道以及较难中级道后，我鼓足了勇气想要在最后一个小时挑战一下高级道，在上高级道的缆车上心里很忐忑，怕上去之后太陡不敢下来，又怕摔出雪道很危险，也怕在一些高手面前出丑（看看人就是这样，都被过去深深的伤过）。还好我战胜了这些杂念，上了两次高级道，一次安全滑下，一次中途摔了两次，加起来四肢自由滑行了至少30米，衣服也进了很多雪水很不舒服，手掌摩擦的发烫（现在感觉依然很光滑），但我也和我的朋友一样也很享受进步的开心，我开心不只是因为挑战高级道成功，而是因为挑战自己成功。我这三年多在雪道上的成长也大体也是我在北京四年多的缩影吧，越来越高越来越好。</p>
+<p>滑雪极大的乐趣就是滑行了，人类本性就喜欢不断追求速度，原本只会行走，后来利用车，飞机等工具让速度不断提升，滑雪是人类借助最简单的工具来提高自己的速度的工具之一，而且可以自由掌控速度和滑行弧度。在下滑的过程中行走的曲线，雪板和雪摩擦的声音和溅起来的雪花，这些美的观感，让我以及其他滑雪爱好者愿意乐此不疲的在同一雪道不停的往返。</p>
+<p>滑雪还有的乐趣就是静下来享受当下，缓慢的缆车以接近蜗牛的速度一样升起前行，而在缆车上你能做的事情不多，只能看看远方的山水，雪道上各种水平滑雪者的滑姿；呼吸郊外雪山上清新的空气；听寒风划过山间。</p>
+<p>由于工作的原因，我现在依然坚持的运动主要就篮球，网球和滑雪了。我是各种体育运动的爱好者，也清楚他们的不同。虽然他们都需要不断的突破自己，篮球和网球因为有对手所以更多的是在挑战别人，从赢球上找到乐趣，而滑雪几乎是挑战自我的运动，从突破自我中找到乐趣。在球场上有时候会有争吵和摩擦，因为会有些猛男以战胜别人为快乐而输了则大为光火，因此也需要我懂得球场上和各种猛男相处，因此并不只是享受运动本身。而滑雪不同，你更多的时候是在跟此刻的内心去博弈，因此更能享受运动本身的乐趣。我看过几本灵性成长的书籍，明白向外寻求的快乐会很容易带来相应的沮丧，因为外面的不会永远属于你，而向自己内心去寻求的快乐则相对可靠的多。</p>
+<p>我的各种运动爱好和生活一样能带给我很多感悟，滑雪也不例外。滑雪带给我和其他体育爱好不同的启发，它让我更享受自我成长，回归到生命的本质。</p>
+<p><img src="/img/in-post/skating-and_me/skating-and-me.jpeg" alt="我和勇哥"></p>
+
       
 
       
@@ -393,11 +644,30 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">生活感悟</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">滑雪</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">skating</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/06/token-earning-program-twelve/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/12/16/2016-12-16-Skating-And-Me/">展开全文 >></a>
         </p>
       
 
@@ -427,33 +697,146 @@
 
 
   
-    <article id="post-token-earning-program-eleven" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-12-03-Using-Branches" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/05/token-earning-program-eleven/">【币赚量化带你躺赚】实盘直播第11天：今日盈利0.15%，折合128元</a>
+      <a class="article-title" href="/2016/12/03/2016-12-03-Using-Branches/">【译文】玩转git分支</a>
     </h1>
   
 
         
-        <a href="/2018/10/05/token-earning-program-eleven/" class="archive-article-date">
-  	<time datetime="2018-10-05T13:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-05</time>
+        <a href="/2016/12/03/2016-12-03-Using-Branches/" class="archive-article-date">
+  	<time datetime="2016-12-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月5号。好好学习天天向上。。</p>
-<p>行情依然震荡，小币种有不少有涨幅超过10%以上，我持有的FT今天涨了20%，FT今天账面赚了4万。我觉得小庄们已经安耐不住想在年底前赚钱过年了，就等大庄搞点事情。</p>
-<p>等待时机震荡该向上了。</p>
-<p>比特币依然多空博弈的厉害，量化趋势判断会下跌，但是稳的很。</p>
-        
-          <a class="article-more-a" href="/2018/10/05/token-earning-program-eleven/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/hero.svg" alt=""></p>
+<h1 id="玩转git分支"><a href="#玩转git分支" class="headerlink" title="玩转git分支"></a>玩转git分支</h1><p>这是一篇介绍git分支的综合性教程。首先，我们会简单介绍分支的创建，它就像请求一个新项目的历史一样。然后，我们将看看如何使用<code>git checkout</code>选择分支。最后，我们将学习使用<code>git merge</code>进行各个独立的分支合并。在你阅读的时候，记住git的分支和svn的分支不同，svn的分支仅仅用来捕获偶尔大范围的开发，然后git分支却是你每日工作流必不可少的部分。</p>
+<h2 id="git分支"><a href="#git分支" class="headerlink" title="git分支"></a>git分支</h2><p>一个分支代表一个独立的开发流水线，在本教程的第一部分的<a href="https://www.atlassian.com/git/tutorials/saving-changes" target="_blank" rel="noopener">git基础（Git Basics）</a>章节中我们介绍了编辑／暂存／提交过程，分支就是这些流程的抽象。你可以把分支看作请求一个新的工作目录区、暂存区、项目提交历史的方法。新的提交会在当前分支的提交历史中记录，在项目历史中导致一个分流（fork）。</p>
+<p>git branch命令让你创建、列出、重命名和删除分支。它不会让你在不同分支中切换，也不会让你的分流开发的历史再次合并回一起。因此<code>git branch</code>和<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
+</a> 和 <a href="https://www.atlassian.com/git/tutorials/using-branches/git-merge" target="_blank" rel="noopener">git merge
+</a>命令紧密联系在一起工作。</p>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git branch
+</code></pre><p>列出仓库的分支历史</p>
+<pre><code>git branch &lt;branch&gt;
+</code></pre><p>创建一个叫做<code>&lt;branch&gt;</code>的新的分支，这个命令不会切换到这个新分支。</p>
+<pre><code>git branch -d &lt;branch&gt;
+</code></pre><p>删除指定分支。在git中这是一个安全的操作，因为如果该分支存在没有合并的修改git会阻止你删除分支。</p>
+<pre><code>git branch -D &lt;branch&gt;
+</code></pre><p>强制删除一个指定分支，不管有没有未合并的修改，当你想永久删除这个开发流水线上所有提交历史时可以使用这个命令。</p>
+<pre><code>git branch -m &lt;branch&gt;
+</code></pre><p>重命名当前分支名为<code>&lt;branch&gt;</code>。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>在git中，分支是你日常开发过程的一部分。当你想添加一个新的功能或者想修复一个bug，无论他们的大或者小，你都可以创建一个分支将他们封装起来。这可以确保不稳定的代码不会提交到主要核心代码里。并且在你合并到主分支之前让你有机会清理功能开发的历史。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/01.svg" alt="Git Tutorial: git branch"></p>
+<p>举个例子，上图形象地展示了一个包含两个独立开发的流水线的仓库，一个开发小功能，另外一个开发一个耗时较大的功能。通过将他们包含在不同分支中开发，不仅仅可以让开发工作可以并行，而且保证主分支<code>master</code>不会被有问题的代码污染。</p>
+<h3 id="分支节点（Branch-Tips）"><a href="#分支节点（Branch-Tips）" class="headerlink" title="分支节点（Branch Tips）"></a>分支节点（Branch Tips）</h3><p>git分支实现比svn要轻量级的多。git不需要拷贝目录的文件到另一个目录，git存储一个分支作为一个提交的索引。这样看来，分支代表着一系列提交的节点（tip），而不是多个提交的容器。通过提交之间的关系来推断一个分支的历史。在git合并模型中这有巨大的影响。svn中的合并是基于文件的，而在git中让使用提交进行工作，这个更加抽象。事实上在项目提交历史中你可以把合并看作是两个独立的提交历史的连接。</p>
+<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><h4 id="创建分支"><a href="#创建分支" class="headerlink" title="创建分支"></a>创建分支</h4><p>理解分支仅仅是指向提交的<strong>指针</strong>这个概念非常重要。当你创建分支，git所需要作的仅仅是一个指针——它不会对仓库造成任何修改，因此，如果你像下面这样开始在一个仓库上开发。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/02.svg" alt="Git Tutorial: repository without any branches"></p>
+<p>然后，你使用如下命令创建一个分支：</p>
+<pre><code>git branch crazy-experiment
+</code></pre><p>仓库的历史依然不会修改，你只是拥有了一个指向当前提交的指针：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/03.svg" alt="Git Tutorial: Create new branch"></p>
+<p>主要这仅仅是创建了一个新的分支。为了添加一个提交，你需要使用<code>git checkout</code>选择一个分支，然后使用标准的<code>git add</code> 和 <code>git commit</code>命令。请查看这篇文章的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
+</a>段落了解更多。</p>
+<h2 id="删除分支"><a href="#删除分支" class="headerlink" title="删除分支"></a>删除分支</h2><p>当你在一个分支上完成开发，并且把该分支的修改合并进了主要代码库，现在你不用担心丢失任何修改提交历史就可以删除分支了。</p>
+<pre><code>git branch -d crazy-experiment
+</code></pre><p>然而，如果你的分支没有合并，上面这个命令会产生如下错误信息：</p>
+<pre><code>error: The branch &apos;crazy-experiment&apos; is not fully merged.
+If you are sure you want to delete it, run &apos;git branch -D crazy-experiment&apos;.
+</code></pre><p>这可以防止你丢失对这些提交的索引，这意味着你失去了对这条分支开发流水线的访问。如果你真的想要删除这个分支（比如，这个分支开发完全是一次失败的实验），你可以使用大些的<code>-D</code>标志：</p>
+<pre><code>git branch -D crazy-experiment
+</code></pre><p>这将删除这个分支，不管这个分支是什么状态，它不会给出任何警告，所以使用这个命令要特别小心。</p>
+<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p><code>git checkout</code>命令可以让你在创建的分支上自由切换，切换一个分支会更新工作目录的文件，保持和该分支的版本控制的内容一致。它会让git记录在当前分支上的所有新的提交。把切换分支想象成你去选择一个你想从事开发工作的开发流水线。</p>
+<p>在<a href="https://www.atlassian.com/git/tutorials/undoing-changes" target="_blank" rel="noopener">前面的章节</a>，我们知道了如何使用<code>git checkout</code>查看过去的提交。切换分支和被更新到选择的分支和修改的工作目录类似，不过，新的修改会被保存到项目版本历史——意味着，这不是一个只读操作。</p>
+<h3 id="如何使用-1"><a href="#如何使用-1" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git checkout &lt;existing-branch&gt;
+</code></pre><p>切换到指定分支，这个分支应当是之前已经使用<code>git branch</code>创建过的分支，这个命令让已经存在的分支称为当前分支，并且对应会更新当前工作目录。</p>
+<pre><code>git checkout -b &lt;new-branch&gt;
+</code></pre><p>创建并切换到<code>&lt;new-branch&gt;</code>分支，<code>-b</code>选项会让git先执行<code>git branch &lt;new-branch&gt;</code>再执行<code>git checkout &lt;new-branch&gt;</code>操作。</p>
+<pre><code>git checkout -b &lt;new-branch&gt; &lt;existing-branch&gt;
+</code></pre><p>和之前的命令类似，但是不是基于当前分支创建新分支，而是基于<code>&lt;existing-branch&gt;</code>这个分支创建和切换新分支。 </p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p><code>git checkout</code>和<code>git branch</code>并肩而战，当我们想开始一个新功能开发时，我们先使用<code>git branch</code>创建分支，然后使用<code>git checkout</code>切换分支。你可以使用<code>git checkout</code>命令在一个仓库的多个功能分支上切换。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/04.svg" alt="Git Tutorial: Switch between multiple features in a single repo with git checkout."></p>
+<p>为每个功能使用一个专门分支，这是相比svn的工作流来说一个巨大的变化。它让尝试一个新实验变的极其容易，因为你完全不需要担心损坏已经存在的功能，并且让多个不相关的功能同时开发变的可能。而且，分支也让多种合作开发流工作的更顺手。</p>
+<h3 id="分离头（Detached-HEADs）"><a href="#分离头（Detached-HEADs）" class="headerlink" title="分离头（Detached HEADs）"></a>分离头（Detached HEADs）</h3><p>刚才我们介绍了 <code>git checkout</code>的三种使用方法。现在我们来聊聊我们上一章节提到过的分离头（Detached HEADs），记住头（HEAD）在git中是我们用来索引当前快照的方式。在git内部实现中，<code>git checkout</code>命令指示简单的更新指向指定分支或者提交的头（HEAD）。当指向一个分支时，Git不会有任何提示，但是当你切换提交时，git就进入了分离头（Detached HEAD）状态。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/05.svg" alt="Git Tutorial: Attached vs Detached Head"></p>
+<p>这个警告告诉你将作的所有事情已经和项目开发的其他部分分离（detached）了。如果你要在一个分离头状态下开发一个新功能，你将没有分支可以允许你回到该开发。当你切换到另外一个分支（比如，进行合并你的开发），你将没有你的功能开发的索引：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/06.svg" alt="Git Tutorial: Detached Head state"></p>
+<p>特别指出，因此你的开发应当永远在分支上进行——不要在分离头上进行。这将确保你能索引到你最新的提交。然而，如果你只是想看看以前的提交的内容，是否进入分离头模式就无所谓了。</p>
+<h3 id="举个例子-1"><a href="#举个例子-1" class="headerlink" title="举个例子"></a>举个例子</h3><p>下面歌命令展示了基本的git 分支处理过程。当你想要做一个新功能开发时，你创建一个专门的分支，切换到该分支：</p>
+<pre><code>git branch new-feature
+git checkout new-feature
+</code></pre><p>然后，我们就像之前章节讲到的一样提交新的快照。</p>
+<pre><code># Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Started work on a new feature&quot;
+# Repeat
+</code></pre><p>所有这些将被记录在新的功能分支<code>new-feature</code>上，完全和master分支分隔开来。你想提交多少次就提交多少次，完全不需要担心其他分支发生了什么。当到了需要切换到正式代码库时，只需要简单的切换到master分支即可：</p>
+<pre><code>git checkout master
+</code></pre><p>这个会告诉你仓库的状态，然后你可以选择是否合并已经完成的功能，或者创建一个新的分支开始一个另一个不相关的功能，或者在项目的稳定代码master分支上工作。</p>
+<h2 id="git-merge"><a href="#git-merge" class="headerlink" title="git merge"></a>git merge</h2><p>合并可以让一个分叉的分支历史合再次合并到一起。<code>git merge</code>命令让你将<a href="https://www.atlassian.com/git/tutorials/using-branches/git-branch" target="_blank" rel="noopener">git branch
+</a>创建的独立开发流水线集成合并进一个单一的分支。</p>
+<p>注意下面所有的命令会合并进当前分支，当前分支会拥有合并后的结果，目标分支则完全不受影响。再此强调，<code>git merge</code>总是和用于选择当前分支的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
+</a>命令结合起来使用，然后使用<code>git branch -d</code>命令用来删除无用的目标分支。</p>
+<h3 id="如何使用-2"><a href="#如何使用-2" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git merge &lt;branch&gt;
+</code></pre><p>Merge the specified branch into the current branch. Git will determine the merge algorithm automatically (discussed below).</p>
+<p>合并指定分支到当前分支，git会自动采取合并的算法（后面再讨论这个）。</p>
+<pre><code>git merge --no-ff &lt;branch&gt;
+</code></pre><p>合并指定分支到当前分支，但是总是会产生一个合并提交（甚至是线性向前（fast-forward）合并）。这个对于想归档仓库所有的发生的合并有用。</p>
+<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>单你在一个独立的分支上完成一个功能，你肯定希望合并进主要代码库，git会根据你的仓库的接口，可以采取线性向前方式或者3-way方式完成合并。</p>
+<p> 当当前分支节点到目标分支有一个线性路径时会使用<em>线性向前合并（fast-forward merge）</em>，这样它不用发生真正的合并，git仅仅会通过移动当前分支节点到目标分支节点来集成合并历史。合并非常高效，因为目标分支的所有的提交现在可以在当前分支查得到。举例来说，一个线性向前的合并<code>some-feature</code>到<code>master</code>像下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/07.svg" alt="Git Tutorial: Fast-forward merge"></p>
+<p>However, a fast-forward merge is not possible if the branches have diverged. When there is not a linear path to the target branch, Git has no choice but to combine them via a <strong>3-way merge</strong>. 3-way merges use a dedicated commit to tie together the two histories. The nomenclature comes from the fact that Git uses <em>three</em> commits to generate the merge commit: the two branch tips and their common ancestor.<br>但是，当分支之间都有分叉时线性向前和冰就不可能了。当没有线性路径到目标分支时，git别无选择只能采取<strong>3-way合并</strong>。3-way合并使用一个专门的提交来将两个分支历史捆绑在一起。这个明明源自git使用了三个提交来生成合并提交：两个分支节点和他们共同的祖先提交。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/08.svg" alt="Git Tutorial: Three way merge"></p>
+<p>你可以使用这些合并策略，然后很多开发者喜欢为小功能开发或者bug修复使用线性向前合并（通过使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase" target="_blank" rel="noopener">rebasing</a>命令可以很容易实现），同时在较大较长耗时的功能开发时使用3-way合并，在前面的例子中，产生的合并提交用来作为合并两个分支的象征性连接点。</p>
+<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><p>如果你尝试合并两个分支时，者两个分支对同一个文件的同一部分作了修改，git这时候不清楚你要运用哪个版本的修改。当这种情况发生时，它会停止合并提交，以便让你去手动解决冲突。</p>
+<p>git牛逼的地方就是合并过程中解决合并冲突就类似之前提到的编辑／暂存／提交的工作流程。当你遇到合并冲突时，执行<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status
+</a>命令，它会告诉你哪个文件冲突需要解决，例如，如果两个分支都修改了<code>hello.py</code>文件的同一部分，你将看到类似如下内容：</p>
+<pre><code># On branch master
+# Unmerged paths:
+# (use &quot;git add/rm ...&quot; as appropriate to mark resolution)## both modified: hello.py#
+</code></pre><p>然后，你就可以找到这个文件根据你的需要修复这个合并冲突，当你准备完成合并时，你只需要执行在冲突的文件上<code>git add</code>命令，告诉git冲突已经解决，然后，你可以执行<code>git commit</code>命令来生成一个合并提交。这和生成一个普通快照完全相同，因此对一般开发者来说管理他们的合并非常容易。</p>
+<p>记住，合并冲突只会发生在<code>3-way合并</code>中，不太可能在线性向前合并中发生有冲突的修改。</p>
+<h3 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h3><h4 id="线性向前合并"><a href="#线性向前合并" class="headerlink" title="线性向前合并"></a>线性向前合并</h4><p>我们的第一个例子展示一个<code>线性向前合并</code>。下面的代码先创建一个新的分支，添加了两个提交，然后将这个分支合并集成到主干线上，这是一个线性向前合并过程。</p>
+<pre><code># Start a new feature
+git checkout -b new-feature master
+# Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Start a feature&quot;# Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Finish a feature&quot;
+# Merge in the new-feature branch
+git checkout master
+git merge new-feature
+git branch -d new-feature
+</code></pre><p>在短小分支上经常使用这个工作流，比大功能开发用的多。</p>
+<p>注意这个时候可以使用<code>git branch -d</code>删除该新分支，因为新功能开发 的提交已经可以在master分支上访问得到了。</p>
+<h4 id="3-Way合并"><a href="#3-Way合并" class="headerlink" title="3-Way合并"></a>3-Way合并</h4><p>下一个例子非常类似，但是在<code>master</code>已经有修改进展，功能开发也有修改进展，所以这个时候git会使用<code>3-Way合并</code>，这个在大型功能开发时很常见，在多个开发者同时在项目上开发时也很常见。</p>
+<pre><code># Start a new feature
+git checkout -b new-feature master
+# Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Start a feature&quot;
+# Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Finish a feature&quot;
+# Develop the master branch
+git checkout master
+# Edit some files
+git add &lt;file&gt;
+git commit -m &quot;Make some super-stable changes to master&quot;
+# Merge in the new-feature branch
+git merge new-feature
+git branch -d new-feature
+</code></pre><p>注意对于这个例子git不可能执行<code>线性向前合并</code>，因为如果不原路返回（backtracking）master没法直接移动到新功能上去。在实际工作中，<code>new feature</code>很可能是一个大型耗时的项目开发，在开发它的过程中很可能已经有别的修改加到<code>master</code>上去了，但是如果是一个小的功能开发，你可以在<code>master</code>上使用<code>rebase</code>命令来执行线性向前合并，这样可以减少多余的合并提交，从而防止项目版本历史变得混乱。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/using-branches" target="_blank" rel="noopener">Using Branches</a></p>
+
       
 
       
@@ -461,11 +844,30 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 分支</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Branch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/05/token-earning-program-eleven/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/12/03/2016-12-03-Using-Branches/">展开全文 >></a>
         </p>
       
 
@@ -495,30 +897,117 @@
 
 
   
-    <article id="post-token-earning-program-ten" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-11-29-Syncing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/04/token-earning-program-ten/">【币赚量化带你躺赚】实盘直播第10天：今日盈利0.44%，折合372元</a>
+      <a class="article-title" href="/2016/11/28/2016-11-29-Syncing/">【译文】Git同步（Syncing）</a>
     </h1>
   
 
         
-        <a href="/2018/10/04/token-earning-program-ten/" class="archive-article-date">
-  	<time datetime="2018-10-04T13:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-04</time>
+        <a href="/2016/11/28/2016-11-29-Syncing/" class="archive-article-date">
+  	<time datetime="2016-11-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月4号。比特币今天拉了一个多点，最高到了6600多美金，现在回落在6500美金上方。没有突破6800压力位不改变弱势行情的局面。</p>
-        
-          <a class="article-more-a" href="/2018/10/04/token-earning-program-ten/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/hero.svg" alt=""></p>
+<h1 id="Git同步（Syncing）"><a href="#Git同步（Syncing）" class="headerlink" title="Git同步（Syncing）"></a>Git同步（Syncing）</h1><p>在SVN中开发者使用一个中央仓库来合作开发。大家通过将代码在工作区和中央仓库之间传输来合作开发。这跟git的合作模式完全不同，git中开发者拥有仓库的完整拷贝，提交历史、分支结构都是完整的。用户通常提交一系列本地提交而不是单一的修改到服务器。git可以让你在不同仓库间分享所有分支。<br>下面的命令用来管理所有仓库连接。通过push分支到中央仓库来提交修改，通过pull远程仓库到本地仓库来查看其他人的修改。</p>
+<h2 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h2><p>git remote 命令让你可以创建、查看和删除同其他仓库的连接。远程连接类似浏览器中的标签（bookmark）而不是直接链接其他仓库。git为了方便大家使用别名代替URL<br>。例如，下面的表格向你展示连接至中央仓库和其他开发者仓库的两个连接，他们在git命令中传入origin和john而不是完整的URL。<br><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/01.svg" alt="Git Tutorial: git remote"></p>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git remote
+</code></pre><p>列出你本地所有其他仓库的连接</p>
+<pre><code>git remote -v
+</code></pre><p>和之前的命令类似，不过这个命令执行结果包含每个连接的URL。</p>
+<pre><code>git remote add &lt;name&gt; &lt;url&gt;
+</code></pre><p>创建一个远程仓库的连接。在添加完连接后，你可以在其他命令中使用<name>代替URL。</name></p>
+<pre><code>git remote rm &lt;name&gt;
+</code></pre><p>删除一个叫<name>的远程连接。</name></p>
+<pre><code>git remote rename &lt;old-name&gt; &lt;new-name&gt;
+</code></pre><p>重命名一个远程连接。使用新名字代替旧名。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>Git的设计让开发者拥有完全独立的开发环境。这意味着信息不会自动在仓库之间传输。而需要开发者手动拉取上游的提交到本地仓库，或者推送回本地提交到中央仓库。git remote命令是传递URL给分享（sharing）命令的更容易的方式。</p>
+<h3 id="The-origin-Remote"><a href="#The-origin-Remote" class="headerlink" title="The origin Remote"></a>The origin Remote</h3><p>当你使用clone命令clone一个仓库时，它自动回创建一个叫做origin指向被克隆的远程仓库。这个对开发者在创建一个远程仓库拷贝非常有用，因为它为开发者提供了很容易的方式来拉取上游改变或者发布本地提交。这也是为什么大多数采取git管理源代码的远程仓库被称作origin。</p>
+<h3 id="Repository-URLs"><a href="#Repository-URLs" class="headerlink" title="Repository URLs"></a>Repository URLs</h3><p>Git支持许多连接远程仓库的方式。两个最简单的连接远程仓库的方式是通过http和ssh协议。http可以很容易的允许匿名访问，只读访问一个仓库，比如：</p>
+<pre><code>http://host/path/to/repo.git
+</code></pre><p>但是，它通常不太容易推送提交到http地址（通常我们不希望允许匿名推送）。为了拥有读写访问，你应当使用ssh协议替代：</p>
+<pre><code>ssh://user@host/path/to/repo.git
+</code></pre><p>你将需要在主机上有一个有效的ssh账号，git支持通过ssh授权访问。</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>在origin之外，也很容易添加你队友的仓库连接。比如，如果你的同事小明，维护一个对外发布的可访问仓库dev.example.com/john.git，你可以通过下面这条命令添加一个连接：</p>
+<p>git remote add john <a href="http://dev.example.com/john.git" target="_blank" rel="noopener">http://dev.example.com/john.git</a></p>
+<p>可以添加某个开发者的仓库，让git可以在中央仓库之外进行合作。这对小团队在大型项目中合作非常有用。</p>
+<h2 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a>git fetch</h2><p>git fetch命令会从远程仓库倒入提交到本地仓库。最终提交结果存储在远程分支而不是一般的本地工作分支。这让你有机会在将修改集成到你的项目拷贝前评审（review）代码。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><pre><code>git fetch &lt;remote&gt;
+</code></pre><p>获取远程仓库所有分支。这个命令同时会下载这个仓库的所有需要下载的提交和文件。</p>
+<pre><code>git fetch &lt;remote&gt; &lt;branch&gt;
+</code></pre><p>可前面的命令类似，但是它只获取指定的分支。</p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>获取(fetching)可以让你知道其他同事写了哪些代码。因为获取的内容存储在一个远程分支上。它不会影响你本地开发工作。获取可以让你将代码集成到本地仓库之前安全地评审（review）修改。这个和<em>svn update</em>类似，可以让你知道中央仓库的提交历史的进度，但是它并不强制合并这些修改到你的仓库。</p>
+<h3 id="Remote-Branches"><a href="#Remote-Branches" class="headerlink" title="Remote Branches"></a>Remote Branches</h3><p>远程仓库就像本地仓库一样，除了他们代表其他人仓库的提交。你可以像本地仓库一样 <code>检出（checkout）</code>一个远程仓库。但是这让你进入<code>分离头（detached HEAD）</code>状态（类似检出到一个以前的提交一样）。你可以把远程分支看成不可修改的分支。你可以在<code>git branch</code>命令中加上<code>-r</code>参数来查看原称分支。查看到的远程分支会在前面加上他们所属的远程仓库，这样你就不会将他们和本地分支混淆。例如，下面的命令块展示了在执行fetch命令后所有origin下的分支。</p>
+<pre><code>git branch -r
+#origin/master
+#origin/develop
+#origin/some-feature
+</code></pre><p>再说一次，你可以使用<code>git checkout</code> 和<code>git log</code>命令来查看分支内容。如果你觉得远程分支的修改没有问题，你可以使用<code>git merge</code>命令把他们合并进本地分支了。因此和SVN不同，git同步你的本地仓库和远程仓库需要两步过程：获取和合并。<code>git pull</code>命令是这两步骤的结合，让这两步变成一步。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>这个例子展示一个典型的工作流中是如何同步你的本地仓库和你中央仓库的master分支。</p>
+<pre><code>git fetch origin
+</code></pre><p>这个命令会展示下载的分支。</p>
+<pre><code>a1e8fb5..45e66a4 master -&gt; origin/master
+a1e8fb5..9e8ab1c develop -&gt; origin/develop
+* [new branch] some-feature -&gt; origin/some-feature
+</code></pre><p>下方表格中的方框代表远程分支的提交，如图所示，<code>git fetch</code>让你拥有访问其他仓库整个分支结构的权限。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/02.svg" alt="Git Tutorial: git fetch"></p>
+<p>为了查看上游的master分支增加哪些提交，你可以使用<code>git log</code> ，并使用<code>origin/master</code>作为条件。</p>
+<pre><code>git log --oneline master..origin/master
+</code></pre><p>为了通过修改并合并他们到你本地的master，你可以使用如下命令：</p>
+<pre><code>git checkout master
+git log origin/master
+</code></pre><p>然后我们能够使用<code>git merge origin/master</code></p>
+<pre><code>git merge origin/master
+</code></pre><p>这样<code>origin/master</code>分支和<code>master</code>分支就指向了同意个提交，并完成了和上游开发的同步了。</p>
+<h2 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a>git pull</h2><p>本地仓库和上游修改合并是git合作开发流的常见任务。我们已经知道了如何使用<code>git fetch</code> 加上 <code>git merge</code>来完成这项工作。但是git pull 一条命令就可以搞定。</p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><pre><code>git pull &lt;remote&gt;
+</code></pre><p>获取指定远程仓库的当前分支同名的拷贝，并立即和当前分支合并。这和<code>git fetch &lt;remote&gt;</code> 加上<code>git merge origin/&lt;current-branch&gt;</code>作用等同。</p>
+<pre><code>git pull --rebase &lt;remote&gt;
+</code></pre><p>和上面的命令类似。但是它使用<code>git rebase</code>代替<code>git merge</code>来集成合并远程分支。</p>
+<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>你可以把<code>git pull</code>看作git版的<code>svn update</code>，它让同步本地仓库和上游修改变的很容易。下图的表格展示了合并每一步的进行过程。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/03.svg" alt="Git Tutorial: git pull"></p>
+<p>刚开始你的仓库是同步的，但是在你<code>git fetch</code>之后<code>origin</code>指向的仓库跟你上一次检查已经有了新的内容。然后你使用<code>git merge</code>立即将远程<code>master</code>集成合并到本地<code>master</code>。</p>
+<h3 id="Pulling-和-Rebase对比"><a href="#Pulling-和-Rebase对比" class="headerlink" title="Pulling 和 Rebase对比"></a>Pulling 和 Rebase对比</h3><p><code>--rebase</code>能够确保线性分支历史，没有不必要的合并提交。许多开发者喜欢rebasing代替merging。因为它就好比告诉你：“我想让我的修改保持在其他人修改的上方”。从这个角度讲，使用 <code>git pull</code> 加上<code>--rebase</code>标志相比简单的<code>git pull</code>更像<code>svn update</code></p>
+<p>事实上，使用<code>--rebase</code>进行拉取非常普遍，以至于有一个它的专门的配置项：</p>
+<pre><code>git config --global branch.autosetuprebase always
+</code></pre><p>执行这个命令之后，所有的<code>git pull</code>命令将会使用git rebase命令代替<code>git merge</code>。</p>
+<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>下面这个命令展示如何和中央仓库的master分支进行同步：</p>
+<pre><code>git checkout master
+git pull --rebase origin
+</code></pre><p>这个命令会将你本地的修改追加到其他同事修改的上面。</p>
+<h2 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h2><p>推送（push）用于把本地仓库提交传输到远程仓库。它和<code>git fetch</code>作用相反。但是鉴于获取导入远程提交到本地分支，推送输出提交到远程分支，它有可能会覆盖修改，因此你需要小心的使用它。下面我们来讨论这些问题。</p>
+<h3 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h3><pre><code>git push &lt;remote&gt; &lt;branch&gt;
+</code></pre><p>推送必要的的提交和内部对象到远程指定分支。这个将在目标仓库创建一个本地分支。为了阻止重写提交，当你推送会导致远程仓库出现non-fast-forward合并，git会阻止这样的推送。</p>
+<pre><code>git push &lt;remote&gt; --force
+</code></pre><p>和上面的命令类似，但是不管是否会导致non-fast-forward合并它会强制推送。不要使用–force标志，除非你绝对清楚你这样做没有问题。</p>
+<pre><code>git push &lt;remote&gt; --all
+</code></pre><p>推送所有的本地分支到指定远程仓库。</p>
+<pre><code>git push &lt;remote&gt; --tags
+</code></pre><p>当你推送分支时标签（tags）不会自动推送，除非你使用了–tags选项。–tags将会发送所有的本地标签到远程。</p>
+<h3 id="讨论-3"><a href="#讨论-3" class="headerlink" title="讨论"></a>讨论</h3><p>git push通常用来将本地修改发布到远程中央仓库。当你在本地积累了几个提交之后并打算把他们发布出去，以便其他团队成员可以使用。你可以使用可交互的rebase精简提交，然后再推送到远程分支。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/04.svg" alt="Git Tutorial: git push"></p>
+<p>上图展示了你本地和远程master的差异。然后你通过<code>git push origin master</code>命令推送修改。注意<code>git push</code>的本质是在远程仓库内部执行了<code>git merge master</code>。</p>
+<h3 id="强制推送-Force-Pushing"><a href="#强制推送-Force-Pushing" class="headerlink" title="强制推送(Force Pushing)"></a>强制推送(Force Pushing)</h3><p>当使用git push会导致non-fast-forword合并时，git为了防止复写中央仓库提交，会拒绝推送。因此，如果远程提交历史和你的本地提交历史不同，你需要拉取远程分支，合并到到本地分支，然后才能再次尝试推送。这跟SVN类似，你需要通过<code>svn update</code>和中央仓库同步，然后才能提交修改。</p>
+<p>使用<code>--force</code>参数可以代替上面的步骤，让远程分支和本地分支匹配。在你上次推送之后，删除任何上游分支的修改有可能发生。只有当你知道你的提交有问题，然后你在本地用一个<code>git commit --amend</code>命令做了修改或者一个可交互的<code>rebase</code>之后，你可以使用强制推送（force push）。你必须确定在你使用<code>--force</code>选项之前没有其他同事拉取那些你提交的有问题的提交。</p>
+<h3 id="只推送到裸仓库"><a href="#只推送到裸仓库" class="headerlink" title="只推送到裸仓库"></a>只推送到裸仓库</h3><p>额外补充，你应当仅仅推送到使用<code>--bare</code>标志创建的仓库。因为推送会搞乱远程分支的结构。不用推送到另外一个开发者的仓库这一点很重要。但是裸仓库不包含任何工作目录，所以不太可能打断其他人的开发。</p>
+<h3 id="举例-2"><a href="#举例-2" class="headerlink" title="举例"></a>举例</h3><p>下面的例子描述一个标准的发布本地代码到中央仓库的方法。首先，通过拉取中央仓库拷贝确保你本地分支最新，然后通过<code>reabse</code>合并你的修改到分支提交历史最上面。使用交互式合并（interactive rebase)也是在对外公开你的代码前清理提交的一个好机会。然后，<code>git push</code>命令将你所有本地仓库的提交发送到远程仓库。</p>
+<pre><code>git checkout master
+git fetch origin master
+git rebase -i origin/master
+# Squash commits, fix up commit messages etc.
+git push origin master
+</code></pre><p>因为你已经确保了本地master分支是最新的，所以结果是<code>fast-forward</code>合并，<code>git push</code>不会报出任何我们之前讨论的<code>non-fast-forward</code>问题。</p>
+<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">《Syncing》</a></p>
+
       
 
       
@@ -526,11 +1015,30 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 同步</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Syncing</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/04/token-earning-program-ten/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/11/28/2016-11-29-Syncing/">展开全文 >></a>
         </p>
       
 
@@ -560,30 +1068,96 @@
 
 
   
-    <article id="post-token-earning-program-nine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-11-17-Making-a-Pull-Request" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/03/token-earning-program-nine/">【币赚量化带你躺赚】实盘直播第9天：今日盈利0.64%，折合528元</a>
+      <a class="article-title" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">【译文】Git合并申请（Pull Request）功能精讲</a>
     </h1>
   
 
         
-        <a href="/2018/10/03/token-earning-program-nine/" class="archive-article-date">
-  	<time datetime="2018-10-03T14:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-03</time>
+        <a href="/2016/11/17/2016-11-17-Making-a-Pull-Request/" class="archive-article-date">
+  	<time datetime="2016-11-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月3号。今天啥也不想Hoo说。。。</p>
-        
-          <a class="article-more-a" href="/2018/10/03/token-earning-program-nine/#more">more >></a>
-        
+        <p><strong>我打算翻译<a href="https://www.atlassian.com/git/tutorials/" target="_blank" rel="noopener">《Become a git guru》</a>系列git教程文章，欢迎有兴趣翻译这系列教程的朋友加入我一起完成翻译。</strong></p>
+<blockquote>
+<p>译者注：这篇文章很好的介绍了如何使用合并申请功能来保证项目质量可靠性和帮助团队成员交流成长。文章使用了Bitbucket（一个类似github的代码共享网站）作为远程代码管理工具，国内开发者使用github居多，公司内部可能使用gitlab更多，不过译者认为他们使用方式大同小异，原理更是相通，所以还是决定原文翻译。如果有时间我会针对gitlab单独写一份教程。</p>
+</blockquote>
+<p>使用<a href="http://www.bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>的合并申请功能让开发者之间合作变的非常的easy。你可以使用Bitbucket提供的非常nice的网页管理界面让大家探讨这些修改，然后再合并代码到正式项目。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/01.svg" alt="Git Workflows: Pull Request in Bitbucket"></p>
+<p>你可以仅仅使用合并申请功能来通知团队成员你已经完成了可一个功能开发。当开发者完成他们开发的功能后，他（她）可以登陆Bitbucket，然后发起合并申请。这可以让被通知到人去review代码并合并这些代码到master分支（译者注：应该是指团队主开发分支）。不过合并申请功能可不止发送通知这么简单——它可以用来作为讨论提出申请的功能的专用论坛。如果代码有任何问题，团队成员们可以提出反馈，甚至推送（push）提交来小小的修改代码。合并申请功能可以追踪这些事情。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/02.svg" alt="Git Workflows: Activity inside a pull request"></p>
+<p>跟其他团队合作模型相比，这个分享代码提交的方案使得开发流程更加顺畅。SVN和Git都可以通过简单脚本配置就可以自动发送邮件。然而当需要讨论修改时，如果依赖邮件，那将邮件满天飞，会让事情变的混乱，再加后续的修改提交，就更加恐怖了。合并申请把所有这些事情集合在一个web界面上。你仅仅需要请求另外一个开发者（比如，项目维护者）来从你的仓库拉取代码合并进他的仓库就可以完成一个合并申请。这意味着你发起合并申请需要提供4个信息：源仓库、源分支、目标仓库、目标分支。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/03.svg" alt="Git Workflows: Pull Requests"></p>
+<p>Bitbucket为这四个值提供了合理的默认值。然而，根据不同项目不同合作开发流，你的团队可能需要设置不同的默认值。上面的图表展示如何请求从一个功能分支合并到正式的主干分支（master）。但合并申请的功能比这要多的多。</p>
+<h2 id="如何进行"><a href="#如何进行" class="headerlink" title="如何进行"></a>如何进行</h2><p>合并申请可以被运用在<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow" target="_blank" rel="noopener">功能分支工作流（Feature Branch Workflow）</a>,<br><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow" target="_blank" rel="noopener">(GitFlow工作流(Gitflow Workflow)</a>,<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow" target="_blank" rel="noopener">Forking工作流(forking WorkFlow)</a>。但是合并申请需要在两个不同分支或者不同仓库之间进行，所以它不适用于标准意义上的<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流（Centralized Workflow）</a>。在不同开发工作流上使用合并申请略有不同，不过基本流程是一样的：</p>
+<ol>
+<li>开发者在本地仓库创建一个功能开发专用的分支。</li>
+<li>开发者将分支推送到远程仓库</li>
+<li>开发者发起合并申请</li>
+<li>团队成员review代码，展开讨论或者修改他们。</li>
+<li>项目维护者合并该分支到正式仓库然后关闭合并申请。</li>
+</ol>
+<p>后面的内容我们来聊聊合并申请是如何助力不同的合作开发工作流的。</p>
+<h2 id="功能分支工作流中的合并申请"><a href="#功能分支工作流中的合并申请" class="headerlink" title="功能分支工作流中的合并申请"></a>功能分支工作流中的合并申请</h2><p>功能分支工作流主要用于在同一项目中管理团队合作开发的，开发者们为每个开发的的功能创建分支。但是在代码合并进主干分支前，开发者需要发起合并申请，让大家讨论他开发的功能，这些完成之后才能合并到正式代码里。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/04.svg" alt="Pull Request: Feature Branch workflow"></p>
+<p>由于在功能分支工作流中只有一个公有仓库，因此合并申请的源仓库和目标仓库是一样的，一般来说开发者指定他的功能分支作为源分支，主干分支作为目标分支。</p>
+<p>项目管理者在收到合并申请后，会去查看提交的代码，如果没有问题就会合并代码到主干分支并关闭申请，但是如果在修改的代码中发现问题，他可以在合并申请界面进行反馈，对应的修改提交会显示在评论的右边。</p>
+<p>发起一个没有开发完成的功能也是允许的。比如当一个开发者在开发某个需求时遇到困难，他们可以发起包含需要提交的代码然后发起申请，其他开发者可以在合并申请界面提供建议，或者直接动手帮忙解决问题并提交修改。</p>
+<h2 id="GitFlow工作流中的合并申请"><a href="#GitFlow工作流中的合并申请" class="headerlink" title="GitFlow工作流中的合并申请"></a>GitFlow工作流中的合并申请</h2><p>Gitflow工作流类似工作分支工作流，但是在项目发布周期中严格精确地定义了一个分支模型，在GitFlow工作流中加入合并申请可以让开发者围绕他们正在工作的发布分支或者维护分支进行讨论。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/05.svg" alt="Pull Requests: Gitflow Workflow"></p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/06.svg" alt="Pull Requests: Gitflow Workflow 2"></p>
+<p>Gitflow工作流中合并申请的使用跟之前一样：一个开发者发起一个需要被review的功能、发布、热修复代码的合并申请，团队其他成员通过Bitbucket收到通知。功能开发通常合并进develop分支，然后发布分支和热修复分支通畅合并进develop和master两个分支。合并申请可以在所有这些合并中用到。</p>
+<h2 id="Forking工作流中的合并申请"><a href="#Forking工作流中的合并申请" class="headerlink" title="Forking工作流中的合并申请"></a>Forking工作流中的合并申请</h2><p>在Forking工作流中，开发者将代码先推送到自己的仓库而不是公有仓库。然后，他可以发起合并申请请求项目管理者review代码。合并申请的通知功能在这个时候就特别有用，因为这可能是当开发者向项目管理者的仓库提交代码时项目管理者知道有新代码提交的唯一方式。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/07.svg" alt="Pull Requests: Forking workflow"></p>
+<p>由于开发者有自己的公有仓库，当他们提起合并申请时候源仓库是和目标仓库不同，目标仓库是正式仓库，目标分支主干分支。</p>
+<p>合并申请也可以运用于正式项目之外，例如，当你和队友合作开发一个功能时，这个时候我们发起合并申请可以使用对方仓库作为我们的目标仓库而不是正式项目，我们可以约定同一个功能名称作为源分支和目标分支。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/08.svg" alt="Pull Requests: Forking workflow"></p>
+<p>你们可以在合并申请界面讨论和开发功能，当你们开发完后，你们中可以由一个人向正式项目发起合并申请。合并申请的这种灵活性在forking工作流中尤其有用。</p>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>下面的例子说明了如何在forking工作流中使用合并申请。对小团队以为开源项目贡献代码的个人开发者一样有效。</p>
+<p>在这个例子中，小红（Mary）是一个开发者，小明（John）是项目管理者。他们都有自己的公有仓库，并且小明拥有正式仓库。</p>
+<h3 id="小红拷贝（fork）正式仓库"><a href="#小红拷贝（fork）正式仓库" class="headerlink" title="小红拷贝（fork）正式仓库"></a>小红拷贝（fork）正式仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/09.svg" alt="Pull Requests: Fork the project"></p>
+<p>为了给小明的项目贡献代码，小红需要先拷贝小明的仓库到自己的公有仓库，她可以登录bitbucket，找到小明的仓库然后点击<strong>fork</strong>按钮即可。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/10.svg" alt="Pull Request: Fork in Bitbucket"></p>
+<p>不一小会儿她就拥有了这个项目的一份拷贝了，注意看看姓名和描述是否改变。</p>
+<h3 id="小红克隆（clone）她的公有仓库"><a href="#小红克隆（clone）她的公有仓库" class="headerlink" title="小红克隆（clone）她的公有仓库"></a>小红克隆（clone）她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/11.svg" alt="Pull Request: Clone the Bitbucket repo"></p>
+<p>然后，小红需要克隆她刚才拷贝（fork）的仓库。这样子她在自己的设备上就有了可以开发的仓库了。我们通过命令实现：</p>
+<pre><code>git clone https://user@bitbucket.org/user/repo.git
+</code></pre><p>时刻记住git clone会自动创建一个origin用来指向自己远程拷贝的分支。</p>
+<h3 id="小红开发一个新功能"><a href="#小红开发一个新功能" class="headerlink" title="小红开发一个新功能"></a>小红开发一个新功能</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/12.svg" alt="Pull Requests: develop a new feature"></p>
+<p>在小红开发新功能时，小红需要创建一个分支用于开发功能。这个分支将是她发起合并申请时的源分支。</p>
+<pre><code>git checkout -b some-feature      
+#Edit some codegit 
+commit -a -m &quot;Add first draft of some feature&quot;
+</code></pre><p>开发一个功能小红可能会有很多个提交（commit）。如果分支历史非常混乱她可以使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i" target="_blank" rel="noopener">交互式合并(interactive rebase)</a>来去除或者压缩（squash）无用的提交。在大型项目中，清理分支历史让项目的维护者更容易在合并申请里知道你的修改里做了什么事情。</p>
+<h3 id="小红将她开发的功能推送（push）到她的公有仓库"><a href="#小红将她开发的功能推送（push）到她的公有仓库" class="headerlink" title="小红将她开发的功能推送（push）到她的公有仓库"></a>小红将她开发的功能推送（push）到她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/13.svg" alt="Pull Requests: Push feature to Bitbucket repository"></p>
+<p>在她开发完功能后，小红将功能分支推送到她的远程仓库（不是别人维护的正式仓库，是她fork的仓库），她可以使用这个命令：</p>
+<pre><code>git push origin some-branch
+</code></pre><p>这个让她的修改就在公有仓库里，这样其项目维护者或者其他开发者可以获取到她的修改。</p>
+<h3 id="小红创建合并申请"><a href="#小红创建合并申请" class="headerlink" title="小红创建合并申请"></a>小红创建合并申请</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/14.svg" alt="Pull Request: Create Pull Request"></p>
+<p>在代码push完成后，小红登录Bitbucket，找到她fork的项目，然后点击右上角的<em>Pull request</em>按钮发起合并申请。弹出表达默认设置小红的仓库为源仓库，病要求她设置源分支、目标仓库和目标分枝。</p>
+<p>小红需要合并她的代码到正式项目，所以她设置她的分支为源分支，目标仓库为小明的共有正式仓库，目标分枝为主干分支master。她还需要输入标题和描述她的修改，然后在<em>Reviewers</em> 输入框选择能够同意她的修改的人（包括小明）。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-7.png" alt="Pull Request: Bitbucket"></p>
+<p>在她创建合并申请后，小明就会通过邮件或者订阅收到通知。</p>
+<h3 id="小明评审（review）代码"><a href="#小明评审（review）代码" class="headerlink" title="小明评审（review）代码"></a>小明评审（review）代码</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-8.png" alt="Pull Request: Bitbucket pull requests"></p>
+<p>小明可以在他的仓库通过点击标签 <em>Pull request</em> 来查看所有人的合并申请。点击小红的申请，他将看到小红的申请描述，她分支的提交历史，以及该分支代码包含的修改的差异对比（diff）。</p>
+<p>如果他认为功能可以合并进正式项目，他只需要点击<em>Merge</em>按钮同意合并申请，然后就会合并小红的功能代码到他的主干分支master。</p>
+<p>但是，假如小明在小红的代码里发现了小bug，需要小红在合并前修改代码，他可以在合并申请恢复，可以在大输入框里做一个整体评论，也可以选择一个具体的提交来评论。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-9.png" alt="Pull Request: Comment"></p>
+<h3 id="小红添加随后的补充提交"><a href="#小红添加随后的补充提交" class="headerlink" title="小红添加随后的补充提交"></a>小红添加随后的补充提交</h3><p>如果小红对收到的反馈有任何问题，她可以在合并申请里恢复，类似论坛一样。为了修复错误，小红添加一个新的提交到她的分支，再推送到她的仓库，就像她之前做的那样。她的合并申请自然加到了原来的合并申请里了。然后小明就可以在他评论的地方再次评审。</p>
+<h3 id="小明同意合并"><a href="#小明同意合并" class="headerlink" title="小明同意合并"></a>小明同意合并</h3><p>最后，小明同意这些修改，合并功能到master主干分支，关闭合并申请。这样功能代码就正式集成到项目了。所有这个项目的贡献者就可以使用标准的<strong>git pull</strong>拉取这些修改到他们本地的仓库了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>现在你已经掌握了所有技能和工具来帮助你使用合并申请。记住，合并申请不是其他所有<a href="https://www.atlassian.com/git/tutorials/comparing-workflows" target="_blank" rel="noopener">基于Git的工作流(Git-based collaboration workflows)</a>的替代者，而是你和其他团队成员合作开发的有利补充。</p>
+<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/making-a-pull-request" target="_blank" rel="noopener">Making a Pull Request</a></p>
+
       
 
       
@@ -591,11 +1165,42 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工作流</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码review</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">合并申请</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Pull Request</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/03/token-earning-program-nine/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">展开全文 >></a>
         </p>
       
 
@@ -625,30 +1230,52 @@
 
 
   
-    <article id="post-token-earning-program-eight" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-11-12-why-you-need-quit-SVN-and-use-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/02/token-earning-program-eight/">【币赚量化带你躺赚】实盘直播第8天：今日盈利1.03%，折合859元</a>
+      <a class="article-title" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">为什么需要抛弃SVN拥抱Git</a>
     </h1>
   
 
         
-        <a href="/2018/10/02/token-earning-program-eight/" class="archive-article-date">
-  	<time datetime="2018-10-02T14:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-02</time>
+        <a href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/" class="archive-article-date">
+  	<time datetime="2016-11-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月2号。家庭聚餐刚回来。</p>
-        
-          <a class="article-more-a" href="/2018/10/02/token-earning-program-eight/#more">more >></a>
-        
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我之前做开发一直使用SVN,从上一家单位开始使用Git，到现在大概一年多时间。使用Git让我开发工作变的更自由更快,以及Git帮助团队代码管理和review更规范，现在我已经完全放弃使用SVN全身心拥抱Git。今天整理了一些SVN和Git的对比，希望阅读到此文使用SVN的开发团队能开始迁移到Git,引用习大大最近的一句话啊：世界潮流,浩浩荡荡，顺之则昌，逆之则亡。</p>
+<h3 id="Git对比SVN的优势"><a href="#Git对比SVN的优势" class="headerlink" title="Git对比SVN的优势"></a>Git对比SVN的优势</h3><h4 id="1-Git分支功能最为强大，分支管理能力让SVN望尘莫及"><a href="#1-Git分支功能最为强大，分支管理能力让SVN望尘莫及" class="headerlink" title="1.Git分支功能最为强大，分支管理能力让SVN望尘莫及"></a>1.Git分支功能最为强大，分支管理能力让SVN望尘莫及</h4><pre><code>•    git：有本地分支
+•    svn：无本地分支
+</code></pre><p>git可以方便创建本地分支，且创建分支的时间是0(1)，即瞬间就创建好了。由于分支可以是本地的，也就不存在svn目录权限的问题。本地实验不确定的修改，可以创建分支进行，由于在Git上创建分支几乎零成本，git推荐创建分支来隔离修改。</p>
+<p>Git可以很容易地对比两个分支，知道一个分支中哪些提交尚未合并到另一分支，反之亦然。</p>
+<p>1.查看当前分支比other分支多了哪些提交<code>$ git log other..</code></p>
+<p>2.查看other分支比当前分支多了哪些提交<code>$ git log ..other</code></p>
+<p>SVN想做到这些不太容易。</p>
+<h4 id="2-Git可以实现更好的发布控制"><a href="#2-Git可以实现更好的发布控制" class="headerlink" title="2.Git可以实现更好的发布控制"></a>2.Git可以实现更好的发布控制</h4><p>针对同一个项目，Git可以设置不同层级的版本库（多版本库）， 或者通过不同的分支（多分支）实现对发布的控制。<br>    •    设置只有发布管理员才有权限推送的版本库或者分支，用于稳定发布版本的维护。<br>    •    设置只有项目经理、模块管理员才有权推送的版本库或者分支，用用于整合测试。</p>
+<h5 id="3-隔离开发，提交审核"><a href="#3-隔离开发，提交审核" class="headerlink" title="3.隔离开发，提交审核"></a>3.隔离开发，提交审核</h5><p>如何对团队中的新成员的开发进行审核呢？在Git服务器上可以实现用户自建分支和自建版本库的功能， 这样团队中的新成员既能将本地提交推送到服务器以对工作进行备份， 又能够方便团队中的其他成员对自己的提交进行审核。</p>
+<p>审核新成员提交时，从其个人版本库或个人分支获取（fetch）提交，从提交说明、代码规范、编译测试 等多方面对提交逐一审核。审核通过执行 git merge 命令合并到开发主线中。</p>
+<p>4.对合并更好的支持，更少的冲突，更好的冲突解决<br>因为Git基于对内容的追踪而非对文件名追踪，所以遇到一方或双方对文件名更改时， Git能够很好进行自动合并或提供工具辅助合并。而SVN遇到同样问题时会产生树冲突， 解决起来很麻烦。<br>Git的基于DAG（有向非环图）的设计比SVN的线性提交提供更好的合并追踪， 避免不必要的冲突，提高工作效率。这是开发者选择Git、抛弃SVN的重要理由。</p>
+<h4 id="5-版本库的安全性"><a href="#5-版本库的安全性" class="headerlink" title="5.版本库的安全性"></a>5.版本库的安全性</h4><p>SVN版本库安全性很差，是管理员头痛的问题。<br>    •    SVN版本库服务器端历史数据被篡改，或者硬盘故障导致历史数据被篡改时， 客户端很难发现。管理员的备份也会被污染。<br>    •    SVN作为集中式版本控制系统，存在单点故障的风险。备份版本库的任务非常繁重。<br>Git在这方面完胜SVN。首先Git是分布式版本控制系统，每个用户都相当于一份备份， 管理员无需为数据备份而担心。再有Git中包括提交、文件内容等都通过SHA1哈希保证数据的完整性， 任何恶意篡改历史数据都会被及时发现从而被挫败。</p>
+<h4 id="更多的十条喜欢Git的理由"><a href="#更多的十条喜欢Git的理由" class="headerlink" title="更多的十条喜欢Git的理由"></a>更多的十条喜欢Git的理由</h4><pre><code>•    异地协同工作。
+•    现场版本控制。
+•    重写提交说明。
+•    无尽的后悔药。
+•    更好用的提交列表。
+•    更好的差异比较。
+•    工作进度保存。
+•    作为SVN前端实现移动办公。
+•    无处不在的分页器。
+•    快。
+</code></pre><h3 id="什么情况推荐使用SVN"><a href="#什么情况推荐使用SVN" class="headerlink" title="什么情况推荐使用SVN"></a>什么情况推荐使用SVN</h3><p>夸了这么多Git的优点，当然事实上也是如此，做开发还是拥抱Git吧。不过对于以二进制文件 （Word文档、PPT演示稿） 为主的版本库，为避免多人同时编辑造成合并上的困难， 建议使用SVN做版本控制。因为SVN具有的悲观锁的功能，能够实现一个用户在编辑时对文件进行锁定，阻止多人同时编辑 一个文件。这一悲观锁的功能是 Git 所不具备的。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Git相比SVN优势还是挺明显的，由于SVN比Git早几年出现，在国内不少成熟(gubuzifeng)的团队还在使用SVN，Git这几年才在国内开始流行，并已经成为年轻团队代码管理必备了。SVN因为没有分支功能，所以对一般开发者而言可能使用起来更简单（对管理者而言可能会头疼），只需要GUI工具就基本能满足需求，而Git因为有强大的分支功能和修改保存功能等，团队代码管理规范的公司为了规范代码的管理需要每个开发者精确的使用Git分支能力,开发者因此需要掌握分支维护能力以及其他Git高级功能，这会增加普通开发者的学习成本。为了团队代码维护更好的，同时提高团队每个成员的开发效率，掌握git技能，放弃SVN拥抱Git是值得的。</p>
+
       
 
       
@@ -656,11 +1283,34 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">代码版本管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">分布式版本管理管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SVN</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/02/token-earning-program-eight/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">展开全文 >></a>
         </p>
       
 
@@ -690,30 +1340,102 @@
 
 
   
-    <article id="post-token-earning-program-seven" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/01/token-earning-program-seven/">【币赚量化带你躺赚】实盘直播第7天：今日盈利0.12%，折合106元</a>
+      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
     </h1>
   
 
         
-        <a href="/2018/10/01/token-earning-program-seven/" class="archive-article-date">
-  	<time datetime="2018-10-01T13:22:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-01</time>
+        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是10月1号。国庆节，祝大家节日快乐。今天上午接受点爱国教育，看了升国旗直播。下午去打打球一天就过去了。</p>
-        
-          <a class="article-more-a" href="/2018/10/01/token-earning-program-seven/#more">more >></a>
-        
+        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
+<li>加快 Reviewing Code 的过程</li>
+<li>帮助我们写好 release note</li>
+<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
+<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
+<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
+</ul>
+<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
+<blockquote>
+<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
+</blockquote>
+<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
+<p> 一个不好的例子：</p>
+<pre><code>git commit -m &quot;Fix login bug&quot;
+</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
+<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
+<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
+<li><p><strong>为什么这次修改是必要的？</strong></p>
+<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
+</li>
+<li><p><strong>如何解决的问题？</strong></p>
+</li>
+</ul>
+<p>这可不是说技术细节。看下面的两个例子：</p>
+<p><code>Introduce a red/black tree to increase search speed</code></p>
+<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
+<p>如果你的修改特别明显，就可以忽略这个。</p>
+<ul>
+<li><strong>这些变化可能影响哪些地方？</strong></li>
+</ul>
+<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
+<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
+<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
+<li>使用 fix, add, change 而不是 fixed, added, changed</li>
+<li>永远别忘了第2行是空行</li>
+<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
+<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
+</ul>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
+<pre><code>Fix bug where user can&apos;t signup.
+
+[Bug #2873942]
+
+Users were unable to register if they hadn&apos;t visited the plans 
+and pricing page because we expected that tracking    information 
+to exist for the logs we create after a user signs up.  
+I fixed this by adding a check to the logger
+to ensure that if that information was not available
+we weren&apos;t trying to write it.
+</code></pre><p>例子2.</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
+<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
+<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
+<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
+
       
 
       
@@ -721,11 +1443,34 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/01/token-earning-program-seven/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
         </p>
       
 
@@ -755,30 +1500,272 @@
 
 
   
-    <article id="post-token-earning-program-six" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2016-11-13-learniing-git-flow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/30/token-earning-program-six/">【币赚量化带你躺赚】实盘直播第6天：今日盈利0.06%，折合43元</a>
+      <a class="article-title" href="/2016/11/13/2016-11-13-learniing-git-flow/">渐进式学习Git工作流</a>
     </h1>
   
 
         
-        <a href="/2018/09/30/token-earning-program-six/" class="archive-article-date">
-  	<time datetime="2018-09-30T14:08:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-30</time>
+        <a href="/2016/11/13/2016-11-13-learniing-git-flow/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Hoo说"><a href="#Hoo说" class="headerlink" title="Hoo说"></a>Hoo说</h3><p>今天是9月30号。明天就国庆节，丈母娘大人去看孙子去了，媳妇今天还上班，今天就我爷俩相依为命，主要在带娃中度过了特别的一天，第一次完整由我负责儿子的吃喝拉撒，互捧互逗，虽然比工作还辛苦，不过今天被儿子依赖的感觉蛮好。</p>
-        
-          <a class="article-more-a" href="/2018/09/30/token-earning-program-six/#more">more >></a>
-        
+        <p>每个团队的开发流程各式各样，在工作中如何运用好git并不轻松。这个章节就尝试探究一下在公司团队中最最常用的git工作流。</p>
+<p>在你阅读的时候，记住这些开发流主要用来做参考，而不是必须严格遵守，我们只是想展示主流的各种开发工作流让你了解，你应该融汇贯通的运用它们，并形成一个适合你们团队的开发流。</p>
+<h2 id="1-集中式工作流"><a href="#1-集中式工作流" class="headerlink" title="1. 集中式工作流"></a>1. 集中式工作流</h2><p>切换到分布式版本管理系统刚开始看起来困难，但你也可以不用改变你习惯的开发流就可以使用git，你团队可以像你使用SVN那样使用git进行开发。</p>
+<p>不过使用Git作为开发的工作流，相比SVN有几个优势。 首先，每个开发者可以有整个项目的本地拷贝，隔离的环境让开发者们的工作和项目的其他部分修改独立开来 —— 开发者们可以提交代码到自己的本地仓库，可以完全忽略上游的开发，直到方便的时候再把修改推送到上游或者拉取上游的修改合并到本地。</p>
+<p>其次，Git提供了强大的分支和合并模型。不像SVN，Git的分支成可以做为一种用来在仓库之间合并代码和交叉修改的”失败安全”的机制。</p>
+<h3 id="1-1-如何进行"><a href="#1-1-如何进行" class="headerlink" title="1.1. 如何进行"></a>1.1. 如何进行</h3><p>集中式工作流以中央仓库作为项目所有修改的唯一的入口，可以像SVN一样，Git业可以这么做。相比SVN缺省的开发分支trunk，Git叫做master，所有修改提交到这个分支上。本工作流除了使用master分支外不需要其他分支。</p>
+<p>开发者先先克隆中央仓库，在自己的本地克隆项目中可以像SVN一样编辑文件和提交修改；但提交记录是存在本地的，和中央仓库是完全隔离的。开发者可以把和上游的同步延后到一个方便时间点。</p>
+<p>要发布修改到正式项目中，开发者要把本地master分支的修改推送（push）到中央仓库中，这相当于svn commit操作，不过push操作会将本地所有还没有提交到中央仓库的本地提交都推上去。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-push-local.png" alt=""></p>
+<h3 id="1-2-解决冲突"><a href="#1-2-解决冲突" class="headerlink" title="1.2. 解决冲突"></a>1.2. 解决冲突</h3><p>中央仓库代表了正式项目，所以提交历史应该被严肃对待并且不应该修改提交历史。如果开发者本地的提交历史不是中央仓库历史提交派生（译者注：即开发者历史提交需要包含中央仓库的所有提交），Git会拒绝这种push推送，因为如果不这么设计的话这会覆盖已经在中央库的正式提交。<br><img src="/img/in-post/learning-git-flow/git-workflow-svn-managingconflicts.png" alt=""></p>
+<p>在开发者推送开发的功能到中央库前，他们需要先拉取（pull）中央库的新增提交，然后合并（rebase）自己的修改到中央库并显示在提交历史最顶部。 这样做的意思是在说：”我要把自己的修改加到别人已经完成的修改上“。最终的结果是一个完美的线性提交历史，这就像以前的SVN的工作流中一样。</p>
+<p>如果本地修改和上游提交有冲突，Git会暂停rebase过程，需要你手动解决冲突。Git解决冲突非常方便，合并冲突和生成提交一样，使用git status和git add命令即可。而且，如果解决冲突时非常棘手，在Git中中止整个rebase操作轻而易举，然后重新来一次（或者找高手来帮助）。</p>
+<h3 id="1-3-举例"><a href="#1-3-举例" class="headerlink" title="1.3. 举例"></a>1.3. 举例</h3><p>让我们通过例子来一步步介绍在一个典型的小团队如何采用这个工作流来协作。有两个开发者小明（John）和小红（Mary），我们来看看他们是如何开发自己的功能然后提交到中央仓库上的。</p>
+<h4 id="1-3-1-第一步、先初始化好中央仓库"><a href="#1-3-1-第一步、先初始化好中央仓库" class="headerlink" title="1.3.1 第一步、先初始化好中央仓库"></a>1.3.1 第一步、先初始化好中央仓库</h4><p>第一步，有人在服务器上创建好中央仓库。如果是新项目，你可以初始化一个空仓库；如果不是心项目，你可以导入已有的Git或SVN仓库。</p>
+<p>中央仓库应该是个裸仓库（bare repository），即没有工作目录（working directory）的仓库。可以用下面的命令创建：</p>
+<pre><code>ssh user@host
+git init --bare /path/to/repo.git
+</code></pre><p>确保写上有效的user（SSH的用户名），host（服务器的域名或IP地址），/path/to/repo.git（你想存放仓库的位置）。 注意，为了表示是一个裸仓库，按照约定加上.git扩展名到仓库名上。</p>
+<h4 id="1-3-2-第二步、所有人需要克隆（clone）刚创建的裸仓库"><a href="#1-3-2-第二步、所有人需要克隆（clone）刚创建的裸仓库" class="headerlink" title="1.3.2. 第二步、所有人需要克隆（clone）刚创建的裸仓库"></a>1.3.2. 第二步、所有人需要克隆（clone）刚创建的裸仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-clone.png" alt=""></p>
+<p>下一步，各个开发者创建整个项目的本地拷贝。通过git clone命令完成：</p>
+<p><code>git clone ssh://user@host/path/to/repo.git</code></p>
+<p>因为猜测未来你想要和克隆的仓库进行交互，克隆仓库时Git会自动添加远程别名origin指回”父“仓库。</p>
+<h4 id="1-3-3-第三步、小明（John）着手开发新功能"><a href="#1-3-3-第三步、小明（John）着手开发新功能" class="headerlink" title="1.3.3. 第三步、小明（John）着手开发新功能"></a>1.3.3. 第三步、小明（John）着手开发新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-1.png" alt=""></p>
+<p>小明在自己的本地仓库里能够使用标准的Git提交过程开发新功能：编辑、暂存（Stage）和提交。 如果你不熟悉暂存区（Staging Area），暂存区是用来准备一个提交，它允许你不把工作目录中所有的修改内容都包含进来， 尽管你本地修改很多内容，但暂存区让你可以创建一个高度聚焦（译者注：选择你希望提交到的修改）的提交。</p>
+<pre><code>git status          # 查看本地仓库的修改状态 
+git add              # 暂存文件     
+git commit        # 提交文件
+</code></pre><p>记住，因为这些命令生成的是本地提交，小明想重复这个过程多少次就多少次，完全不用担心中央仓库发生了什么。 对较大的功能开发，我们可以将其拆分成一个一个简单的、小而完整的小功能，运用s这个过程很有用。</p>
+<h4 id="1-3-4-第四步、小红（Mary）开发功能"><a href="#1-3-4-第四步、小红（Mary）开发功能" class="headerlink" title="1.3.4. 第四步、小红（Mary）开发功能"></a>1.3.4. 第四步、小红（Mary）开发功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-2.png" alt=""></p>
+<p>与此同时，小红在自己的本地仓库中用相同的编辑、暂存和提交过程开发功能。和小明一样，她也不关心中央仓库； 也无须关心小明在他的本地仓库中的操作，因为所有本地仓库都是各玩各的。</p>
+<h4 id="1-3-5-小明发布功能"><a href="#1-3-5-小明发布功能" class="headerlink" title="1.3.5. 小明发布功能"></a>1.3.5. 小明发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-3.png" alt=""></p>
+<p>一旦小明完成了他的功能开发，会发布他的本地提交到中央仓库中，这样其它团队成员可以看到他的修改。他可以用下面的git push命令：<br><code>git push origin master</code><br>记住，origin是在小明克隆仓库时Git创建的远程中央仓库别名，master参数告诉Git推送的分支。 由于中央仓库自从小明克隆以来还没有被更新过，所以push操作不会有冲突，推送将会顺利完成。</p>
+<h4 id="1-3-6-小红试着发布功能"><a href="#1-3-6-小红试着发布功能" class="headerlink" title="1.3.6. 小红试着发布功能"></a>1.3.6. 小红试着发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-4.png" alt=""></p>
+<p>一起来看看在小明发布修改后，小红push修改会怎么样？她使用完全一样的push命令：</p>
+<p><code>git push origin master</code></p>
+<p>但她的本地历史已经和中央仓库有分歧（diverge）了，Git拒绝操作并给出下面乱七八糟的出错消息：</p>
+<pre><code>error: failed to push some refs to &apos;/path/to/repo.git&apos;
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Merge the remote changes (e.g. &apos;git pull&apos;)
+hint: before pushing again.
+hint: See the &apos;Note about fast-forwards&apos; in &apos;git push --help&apos; for details.
+</code></pre><p>这避免了小红覆写中央仓库的正式提交。她要先拉取（pull）小明的更新到她的本地仓库合，然后合并她的本地修改，再重试推送。</p>
+<h4 id="1-3-7-小红在小明的提交基础上合并（rebase）"><a href="#1-3-7-小红在小明的提交基础上合并（rebase）" class="headerlink" title="1.3.7. 小红在小明的提交基础上合并（rebase）"></a>1.3.7. 小红在小明的提交基础上合并（rebase）</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-5.png" alt=""></p>
+<p>小红用git pull合并上游的修改到自己的仓库中。 这条命令类似svn update——拉取所有上游提交命令到小红的本地仓库，并尝试和她的本地修改合并：</p>
+<p><code>git pull --rebase origin master</code></p>
+<p><em>–rebase</em>选项告诉Git把小红的提交移到同步了中央仓库修改后的master分支的顶部，如下图所示：</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-6.png" alt=""></p>
+<p>如果你忘加了这个选项，pull操作仍然可以完成，但每次pull操作要同步中央仓库中别人修改时，提交历史会以一个多余的『合并提交』结尾。 对于集中式工作流，最好是使用rebase而不是生成一个合并提交。</p>
+<h4 id="1-3-8-小红解决合并冲突"><a href="#1-3-8-小红解决合并冲突" class="headerlink" title="1.3.8. 小红解决合并冲突"></a>1.3.8. 小红解决合并冲突</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-7.png" alt=""></p>
+<p>rebase操作是把本地提交一次性地转移到已经更新过的中央仓库master分支之上。 这意味着可能要解决在转移某个提交时出现的合并冲突，而不是解决包含了所有提交的大型合并时所出现的冲突。 这样的方式让你尽可能保持每个提交的聚焦和项目历史的整洁。而且，找出引入Bug的地方也变的容易，如果有必要，可以回滚修改能保证对项目的影响最小。</p>
+<p>如果小红和小明的功能是不相关的，不大可能在rebase过程中有冲突。如果有，Git在合并有冲突的提交处暂停rebase过程，输出下面的信息并带上相关的指令：</p>
+<p><code>CONFLICT (content): Merge conflict in &lt;some-file&gt;</code></p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-svn-8.png" alt=""></p>
+<p>Git很赞的一点是，任何人可以解决他自己的冲突。在这个例子中，小红可以简单的运行git status命令来查看哪里有问题。 冲突文件列在Unmerged paths（未合并路径）一节中：</p>
+<pre><code># Unmerged paths:
+# (use &quot;git reset HEAD &lt;some-file&gt;...&quot; to unstage)
+# (use &quot;git add/rm &lt;some-file&gt;...&quot; as appropriate to mark resolution)
+# both modified: &lt;some-file&gt;
+</code></pre><p>接着小红编辑这些文件。修改完成后，用老套路暂存这些文件，并让git rebase完成剩下的事：</p>
+<pre><code>git add &lt;some-file&gt; 
+git rebase --continue
+</code></pre><p>要做的就这些了。Git会继续一个一个地合并后面的提交，如其它的提交有冲突就重复这个过程。</p>
+<p>如果你碰到了冲突，但发现搞不定，不要惊慌。只要执行下面这条命令，就可以回到你执行git pull –rebase命令前的样子：</p>
+<p><code>git rebase --abort</code></p>
+<h4 id="1-3-9-小红成功发布功能"><a href="#1-3-9-小红成功发布功能" class="headerlink" title="1.3.9. 小红成功发布功能"></a>1.3.9. 小红成功发布功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-svn-9.png" alt=""></p>
+<p>小红完成和中央仓库的同步后，就能成功发布她的修改了：</p>
+<p><code>git push origin master</code></p>
+<p>如你所见，仅使用几个Git命令我们就可以模拟出传统Subversion开发环境。对于要从SVN迁移过来的团队来说这太好了，但没有发挥出Git分布式版本管理的天然优势。<br>如果你的团队适应了集中式工作流，但想要更流畅的协作效果，绝对值得探索一下_ 功能分支工作流 _的优点。 通过为一个功能分配一个分支，这样可以让在一个新增功能合并进正式项目之前向团队发起对新功能进行深入讨论称为可能。</p>
+<h2 id="2-功能分支工作流"><a href="#2-功能分支工作流" class="headerlink" title="2. 功能分支工作流"></a>2. 功能分支工作流</h2><p><img src="/img/in-post/learning-git-flow/git-workflow-feature_branch.png" alt=""><br><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-1.png" alt=""></p>
+<p>一旦你玩转了集中式工作流，在开发过程中加上功能分支可以方便地鼓励开发者之间协作和流畅地交流。<br>功能分支工作流背后的核心思路是所有的功能开发应该在一个专门的分支，而不是在master分支上。 这个隔离可以方便多个开发者在各自的功能上开发而不会弄乱主干代码。 另外，也保证了master分支的代码一定不会是有问题的，极大有利于持续集成环境。</p>
+<p>隔离功能开发也让pull requests工作流成功可能， pull requests工作流能为每个分支合并发起一个讨论，在其它开发者有表示赞同之后才可以合并进正式项目。 另外，如果你在功能开发中有问题卡住了，可以开一个pull requests来向同学们征求建议。 这些做法的重点就是，pull requests让团队成员之间互相评论工作变成非常方便！</p>
+<h3 id="2-1-如何进行"><a href="#2-1-如何进行" class="headerlink" title="2.1. 如何进行"></a>2.1. 如何进行</h3><p>功能分支工作流仍然才用中央仓库，并且master分支还是代表了正式项目的历史。 但不是直接提交本地历史到各自的本地master分支，开发者每次在开始新功能前先创建一个新分支。 功能分支应该有个有描述性的名字，比如animated-menu-items或issue-#1061，这种做法可以让每个分支有清晰明确目的。</p>
+<p>master分支和功能分支，对Git来说没有技术上的区别，所以开发者可以用和集中式工作流中完全一样的方式编辑、暂存和提交修改到功能分支上。</p>
+<p>另外，功能分支也可以（且应该）push到中央仓库中。这样不修改正式代码就可以和其它开发者分享提交的功能。 由于master是仅有的一个特殊分支，在中央仓库上存多个功能分支不会有任何问题。当然，这样做也可以很方便地备份各自的本地提交。</p>
+<h3 id="2-2-合并申请（Pull-Requests）"><a href="#2-2-合并申请（Pull-Requests）" class="headerlink" title="2.2. 合并申请（Pull Requests）"></a>2.2. 合并申请（Pull Requests）</h3><p>功能分支除了可以隔离功能的开发，也使得通过合并申请 （Pull Requests）讨论变更成为可能。 一旦某个开发者完成一个功能，不是立即合并到master，而是推送（push）到中央仓库的对应的功能分支上，然后发起一个合并申请（Pull Request）请求合并他的修改到master分支。 在修改成为主干代码前，这让其它的开发者有机会先去Review变更。</p>
+<p>Code Review是Pull Requests的一个重要的优点，但Pull Requests设计的真正初衷是为了交流和讨论代码。 你可以把Pull Requests作为专门给某个分支的一次讨论。这意味着可以在更早的开发过程中就运用pull requests。 比如，一个开发者开发功能需要帮助时，要做的就是发起一个Pull Request，感兴趣的人就会自动收到通知，在相关的提交旁边能看到提出的问题。</p>
+<p>一旦Pull Request被接受了，发布功能要做的就和集中式工作流就很像了。 首先，确定本地的master分支和上游的master分支是同步的。然后合并功能分支到本地master分支并push已经更新的本地master分支到中央仓库。</p>
+<p>pull request 可以运用在仓库管理的产品解决方案提供商，像Bitbucket云。你可以从Bitbucket的Pull Requests文档中找找例子。</p>
+<h3 id="2-3-示例"><a href="#2-3-示例" class="headerlink" title="2.3. 示例"></a>2.3. 示例</h3><p>下面的示例演示了如何把Pull Requests作为Code Review的方式，但注意Pull Requests可以用于很多其它的目的。</p>
+<h4 id="2-3-1-小红开始开发一个新功能"><a href="#2-3-1-小红开始开发一个新功能" class="headerlink" title="2.3.1. 小红开始开发一个新功能"></a>2.3.1. 小红开始开发一个新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-2.png" alt=""></p>
+<p>在开始开发功能前，小红需要一个独立的分支。使用下面的命令新建一个分支：</p>
+<p><code>git checkout -b marys-feature master</code></p>
+<p>这个命令检出一个基于master名为marys-feature的分支，Git的-b选项表示如果分支还不存在则新建分支。 这个新分支上，小红按老套路编辑、暂存和提交修改，按需要提交以实现功能：</p>
+<pre><code>git status
+git add &lt;some-file&gt;
+git commit
+</code></pre><h4 id="2-3-2-小红要休息去吃个午饭"><a href="#2-3-2-小红要休息去吃个午饭" class="headerlink" title="2.3.2. 小红要休息去吃个午饭"></a>2.3.2. 小红要休息去吃个午饭</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-3.png" alt=""></p>
+<p>早上小红为新功能添加一些提交。 去吃午饭前，push功能分支到中央仓库是很好的做法，这样可以方便地备份，如果和其它开发协作，也让他们可以看到小红的提交。</p>
+<p><code>git push -u origin marys-feature</code></p>
+<p>这条命令push marys-feature分支到中央仓库（origin），-u选项设置本地分支去跟踪远程对应的分支。 设置好跟踪的分支后，小红就可以使用git push命令省去指定推送分支的参数。</p>
+<h4 id="2-3-3-小红完成功能开发"><a href="#2-3-3-小红完成功能开发" class="headerlink" title="2.3.3. 小红完成功能开发"></a>2.3.3. 小红完成功能开发</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-4.png" alt=""></p>
+<p>小红吃完午饭回来后，并完成了她的功能的开发。在合并到master之前， 她发起一个Pull Request让团队的其它人知道功能已经完成。但首先，她要确认中央仓库中已经有她最近的提交：</p>
+<p><code>git push</code></p>
+<p>然后，在她的Git GUI客户端中发起Pull Request，请求合并marys-feature到master，团队成员会自动收到通知。Pull Request很酷的是可以在相关的提交旁边显示评注，所以你可以对某个变更集进行提问。</p>
+<h4 id="2-3-4-小贝-Bill-收到Pull-Request"><a href="#2-3-4-小贝-Bill-收到Pull-Request" class="headerlink" title="2.3.4. 小贝(Bill)收到Pull Request"></a>2.3.4. 小贝(Bill)收到Pull Request</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-5.png" alt=""></p>
+<p>小贝收到了Pull Request后会查看marys-feature的修改。决定在合并到正式项目前是否要做些修改，且通过Pull Request和小红来回地讨论。</p>
+<h4 id="2-3-5-小红再做修改"><a href="#2-3-5-小红再做修改" class="headerlink" title="2.3.5. 小红再做修改"></a>2.3.5. 小红再做修改</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-6.png" alt=""></p>
+<p>要再做修改，小红用和功能第一个迭代完全一样的过程。编辑、暂存、提交并push更新到中央仓库。小红这些活动都会显示在Pull Request上，小黑可以继续做评注。</p>
+<p>如果小黑有需要，也可以把marys-feature分支拉到本地，自己来修改，他加的提交也会一样显示在Pull Request上。</p>
+<h4 id="2-3-6-小红发布她的功能"><a href="#2-3-6-小红发布她的功能" class="headerlink" title="2.3.6. 小红发布她的功能"></a>2.3.6. 小红发布她的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-feature-branch-7.png" alt=""></p>
+<p>一旦小黑可以的接受Pull Request，就可以合并功能到稳定项目代码中（可以由小黑或是小红来做这个操作）：</p>
+<pre><code>git checkout master
+git pull
+git pull origin marys-feature
+git push
+</code></pre><p>无论谁来做合并，首先要检出master分支并确认是它是最新的。然后执行git pull origin marys-feature合并marys-feature分支到和已经和远程一致的本地master分支。 你可以使用简单git merge marys-feature命令，但前面的命令可以保证总是最新的新功能分支。 最后更新的master分支要重新push回到origin。</p>
+<p>这个过程常常会生成一个合并提交。有些开发者喜欢有合并提交，因为它像一个新功能和原来代码基线的连通符。 但如果你偏爱线性的提交历史，可以在执行合并时rebase新功能到master分支的顶部，这样生成一个快进（fast-forward）的合并。</p>
+<p>一些GUI客户端可以只要点一下『接受』按钮执行好上面的命令来自动化Pull Request的合并过程。 如果你的客户端没有这个功能，记得在功能合并到master分支后关闭Pull Request。</p>
+<h4 id="2-3-7-与此同时，小明在做和小红一样的事"><a href="#2-3-7-与此同时，小明在做和小红一样的事" class="headerlink" title="2.3.7. 与此同时，小明在做和小红一样的事"></a>2.3.7. 与此同时，小明在做和小红一样的事</h4><p>当小红和小黑在marys-feature上工作并讨论她的Pull Request的时候，小明在自己的功能分支上做完全一样的事。</p>
+<p>通过隔离功能到独立的分支上，每个人都可以自主的工作，当然这跟在必要的时候让变更开发者之间交流分享的作用比微不足道。</p>
+<h3 id="2-4-下一步该做什么呢？"><a href="#2-4-下一步该做什么呢？" class="headerlink" title="2.4. 下一步该做什么呢？"></a>2.4. 下一步该做什么呢？</h3><p>到了这里，但愿你发现了功能分支可以成倍提高 仅有master分支的集中式工作流的实用性。 另外，功能分支还使用了Pull Request，使得可以在你的版本控制GUI客户端中讨论某个提交。</p>
+<p>功能分支工作流是开发项目异常灵活的方式。问题是，有时候太灵活了。对于大型团队，常常需要给不同分支分配一个更具体的角色。 Gitflow工作流是管理功能开发、发布准备和维护的常用模式。</p>
+<h2 id="3-Gitflow工作流"><a href="#3-Gitflow工作流" class="headerlink" title="3. Gitflow工作流"></a>3. Gitflow工作流</h2><p>Gitflow工作流通过为功能开发、发布准备和维护分配独立的分支，让发布迭代过程更流畅。严格的分支模型也为大型项目提供了一些非常必要的结构。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflows-gitflow.png" alt=""></p>
+<p>这节介绍的Gitflow工作流借鉴自Vincent Driessen写的<a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="noopener">《A successful Git branching model》</a>。</p>
+<p>Gitflow工作流定义了一个围绕项目发布的严格分支模型。虽然比功能分支工作流复杂几分，但提供了用于管理大型项目的最佳框架。</p>
+<p>Gitflow工作流没有用超出功能分支工作流的概念和命令，而是为不同的分支分配一个很明确的角色，并定义分支之间如何和什么时候进行交互。 除了使用功能分支，在准备期、维护期和予发布期各使用了单独的分支。 当然你可以用上功能分支工作流所有的好处：Pull Requests、隔离实验性开发和更高效的协作。</p>
+<h3 id="3-1-如何进行"><a href="#3-1-如何进行" class="headerlink" title="3.1 如何进行"></a>3.1 如何进行</h3><p>Gitflow工作流仍然用中央仓库作为所有开发者的交互中心。和其它的工作流一样，开发者在本地工作并push分支到要中央仓库中。</p>
+<h4 id="3-1-1-历史分支"><a href="#3-1-1-历史分支" class="headerlink" title="3.1.1 历史分支"></a>3.1.1 历史分支</h4><p>相对使用仅有的一个master分支，Gitflow工作流使用2个分支来记录项目的历史。master分支存储了正式发布的历史，而develop分支作为功能的合并汇合分支。 这样也方便master分支上的所有提交分配一个版本号。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-1historical.png" alt=""></p>
+<p>剩下要说明的问题围绕着这2个分支的区别展开。</p>
+<h4 id="3-1-2-功能分支"><a href="#3-1-2-功能分支" class="headerlink" title="3.1.2. 功能分支"></a>3.1.2. 功能分支</h4><p>每个新功能位于一个自己的分支，这样可以push到中央仓库以备份和协作。 但功能分支不是从master分支上拉出新分支，而是使用develop分支作为父分支。当新功能完成时，合并回develop分支。 新功能提交应该从不直接与master分支交互。</p>
+<p>注意：从各种含义和目的上来看，功能分支加上develop分支就是功能分支工作流的用法。但Gitflow工作流没有在这里止步。</p>
+<h4 id="3-1-3-发布分支"><a href="#3-1-3-发布分支" class="headerlink" title="3.1.3. 发布分支"></a>3.1.3. 发布分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-3release.png" alt=""></p>
+<p>一旦develop分支上有了做一次发布（或者说快到了既定的发布日）的足够功能，就从develop分支上fork一个发布分支。 新建的分支用于开始发布循环，所以从这个时间点开始之后新的功能不能再加到这个分支上—— 这个分支只应该做Bug修复、文档生成和其它面向发布任务。 一旦对外发布的工作都完成了，发布分支合并到master分支并分配一个版本号打好Tag。 另外，这些从新建发布分支以来的做的修改要合并回develop分支。</p>
+<p>使用一个用于发布准备的专门分支，使得一个团队可以在完善当前的发布版本的同时，另一个团队可以继续开发下个版本的功能。 这也打造定义良好的开发阶段（比如，可以很轻松地说，“这周我们要做准备发布版本4.0”，并且在仓库的目录结构中可以实际看到）。<br>常用的分支约定：</p>
+<p><strong>用于新建发布分支的分支: develop</strong><br><strong>用于合并的分支: master</strong><br><strong>分支命名: release-<em> 或 release/</em></strong></p>
+<h4 id="3-1-4-维护分支"><a href="#3-1-4-维护分支" class="headerlink" title="3.1.4. 维护分支"></a>3.1.4. 维护分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-4maintenance.png" alt=""></p>
+<p>维护分支或说是热修复（hotfix）分支用于生成快速给产品发布版本（production releases）打补丁，这是唯一可以直接从master分支fork出来的分支。 修复完成，修改应该马上合并回master分支和develop分支（当前的发布分支），master分支应该用新的版本号打好Tag。</p>
+<p>为紧急Bug修复使用专门分支，让团队可以处理掉问题而不用打断其它工作或是等待下一个发布循环。 你可以把维护分支想成是一个直接在master分支上处理的临时发布。</p>
+<h3 id="3-2-示例"><a href="#3-2-示例" class="headerlink" title="3.2. 示例"></a>3.2. 示例</h3><p>下面的示例演示本工作流如何用于管理单个发布循环。假设你已经创建了一个中央仓库。</p>
+<h4 id="3-2-1-创建开发分支"><a href="#3-2-1-创建开发分支" class="headerlink" title="3.2.1. 创建开发分支"></a>3.2.1. 创建开发分支</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-5createdev.png" alt=""></p>
+<p>第一步为master分支配套一个develop分支。简单来做可以本地创建一个空的develop分支，push到服务器上：</p>
+<pre><code>git branch develop
+git push -u origin develop
+</code></pre><p>以后这个分支将会包含了项目的全部历史，而master分支将只包含了部分历史。其它开发者这时应该克隆中央仓库，建好develop分支的跟踪分支：</p>
+<pre><code>git clone ssh://user@host/path/to/repo.git
+git checkout -b develop origin/develop
+</code></pre><p>现在每个开发都有了这些历史分支的本地拷贝。</p>
+<h4 id="3-2-2-小红和小明开始开发新功能"><a href="#3-2-2-小红和小明开始开发新功能" class="headerlink" title="3.2.2. 小红和小明开始开发新功能"></a>3.2.2. 小红和小明开始开发新功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-6maryjohnbeginnew.png" alt=""></p>
+<p>这个示例中，小红和小明开始各自的功能开发。他们需要为各自的功能创建相应的分支。新分支不是基于master分支，而是应该基于develop分支：</p>
+<p><code>git checkout -b some-feature develop</code></p>
+<p>他们用老套路添加提交到各自功能分支上：编辑、暂存、提交：</p>
+<pre><code>git status
+git add &lt;some-file&gt;
+git commit
+</code></pre><h4 id="3-2-3-小红完成功能开发"><a href="#3-2-3-小红完成功能开发" class="headerlink" title="3.2.3. 小红完成功能开发"></a>3.2.3. 小红完成功能开发</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-7maryfinishes.png" alt=""></p>
+<p>添加了提交后，小红觉得她的功能OK了。如果团队使用Pull Requests，这时候可以发起一个用于合并到develop分支的请求。 否则她可以直接合并到她本地的develop分支后push到中央仓库：</p>
+<pre><code>git pull origin develop
+git checkout develop
+git merge some-feature
+git push
+git branch -d some-feature
+</code></pre><p>第一条命令在合并功能前确保develop分支是最新的。注意，功能决不应该直接合并到master分支。 冲突解决方法和集中式工作流一样。</p>
+<h4 id="3-2-4-小红开始准备发布"><a href="#3-2-4-小红开始准备发布" class="headerlink" title="3.2.4 小红开始准备发布"></a>3.2.4 小红开始准备发布</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-8maryprepsrelease.png" alt=""></p>
+<p>这个时候小明正在实现他的功能，小红开始准备她的第一个项目正式发布。 像功能开发一样，她用一个新的分支来做发布准备。这一步也确定了发布的版本号：</p>
+<p><code>git checkout -b release-0.1 develop</code><br>这个分支是清理发布、执行所有测试、更新文档和其它为下个发布做准备操作的地方，像是一个专门用于改善发布的功能分支。<br>只要小红创建这个分支并push到中央仓库，这个发布就是功能冻结的。任何不在develop分支中的新功能都推到下个发布循环中。</p>
+<h4 id="3-2-5-小红完成发布"><a href="#3-2-5-小红完成发布" class="headerlink" title="3.2.5 小红完成发布"></a>3.2.5 小红完成发布</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-release-cycle-9maryfinishes.png" alt=""></p>
+<p>一旦准备好了对外发布，小红合并修改到master分支和develop分支上，删除发布分支。合并回develop分支很重要，因为在发布分支中已经提交的重要更新需要在后面的新功能中也要是可用的。 另外，如果小红的团队要求Code Review，这是一个发起Pull Request的理想时机。</p>
+<pre><code>git checkout master
+git merge release-0.1
+git push
+git checkout develop
+git merge release-0.1
+git push
+git branch -d release-0.1
+</code></pre><p>发布分支是作为功能开发（develop分支）和对外发布（master分支）间的缓冲。只要有合并到master分支，就应该打好Tag以方便跟踪。</p>
+<pre><code>git tag -a 0.1 -m &quot;Initial public release&quot; master
+git push --tags
+</code></pre><p>Git有提供各种勾子（hook），即仓库有事件发生时触发执行的脚本。 可以配置一个勾子，在你push中央仓库的master分支时，自动构建好对外发布。</p>
+<h4 id="3-2-6-终端用户发现Bug"><a href="#3-2-6-终端用户发现Bug" class="headerlink" title="3.2.6 终端用户发现Bug"></a>3.2.6 终端用户发现Bug</h4><p><img src="/img/in-post/learning-git-flow/git-workflow-gitflow-enduserbug.png" alt=""></p>
+<p>对外发布后，小红回去和小明一起做下个发布的新功能开发，直到有终端用户开了一个Ticket抱怨当前版本的一个Bug。 为了处理Bug，小红（或小明）从master分支上拉出了一个维护分支，提交修改以解决问题，然后直接合并回master分支：</p>
+<pre><code>git checkout -b issue-#001 master
+Fix the bug
+git checkout master
+git merge issue-#001
+git push
+</code></pre><p>就像发布分支，维护分支中新加这些重要修改需要包含到develop分支中，所以小红要执行一个合并操作。然后就可以安全地删除这个分支了：</p>
+<pre><code>git checkout develop
+git merge issue-#001
+git push
+git branch -d issue-#001
+</code></pre><p>到了这里，但愿你对集中式工作流、功能分支工作流和Gitflow工作流已经感觉很舒适了。 你应该也牢固的掌握了本地仓库的潜能，push/pull模式和Git健壮的分支和合并模型。</p>
+<p>记住，这里演示的工作流只是可能用法的例子，而不是在实际工作中使用Git不可违逆的条例。 所以不要畏惧按自己需要对工作流的用法做取舍。不变的目标就是让Git为你所用。</p>
+<h2 id="4-Forking工作流"><a href="#4-Forking工作流" class="headerlink" title="4. Forking工作流"></a>4. Forking工作流</h2><p>Forking工作流是分布式工作流，充分利用了Git在分支和克隆上的优势。可以安全可靠地管理大团队的开发者（developer），并能接受不信任贡献者（contributor）的提交。</p>
+<p>Forking工作流和前面讨论的几种工作流有根本的不同，这种工作流不是使用单个服务端仓库作为中央代码库，而让各个开发者都有一个服务端仓库。这意味着各个代码贡献者有2个Git仓库而不是1个：一个本地私有的，另一个服务端公开的。</p>
+<p><img src="/img/in-post/learning-git-flow/git-workflows-forking.png" alt=""></p>
+<p>Forking工作流的一个主要优势是，贡献的代码可以被合并，而不需要所有人都能push代码到仅有的中央仓库中。 开发者push到自己的服务端仓库，而只有项目维护者才能push到正式仓库。 这样项目维护者可以接受任何开发者的提交，但无需给他正式代码库的写权限。</p>
+<p>效果就是一个分布式的工作流，能为大型、自发性的团队（包括了不受信的第三方）提供灵活的方式来安全的协作。 也让这个工作流成为开源项目的理想工作流。</p>
+<h3 id="4-1-如何进行"><a href="#4-1-如何进行" class="headerlink" title="4.1 如何进行"></a>4.1 如何进行</h3><p>和其它的Git工作流一样，Forking工作流要先有一个公开的正式仓库存储在服务器上。 但一个新的开发者想要在项目上工作时，不是直接从正式仓库克隆，而是fork正式项目在自己的服务器上创建一个拷贝。</p>
+<p>这个仓库拷贝作为他个人公开仓库 —— 其它开发者不允许push到这个仓库，但可以pull修改（后面我们很快就会看这点很重要）。 在创建了自己服务端拷贝之后，和之前的工作流一样，开发者执行git clone命令克隆仓库到本地机器上，作为私有的开发环境。</p>
+<p>要提交本地修改时，push提交到自己的公开仓库中 —— 而不是正式仓库中。 然后，给正式仓库发起一个pull request，让项目维护者知道有更新已经准备好可以集成了。 对于贡献的代码，pull request也可以很方便地作为一个讨论的地方。</p>
+<p>为了集成功能到正式代码库，维护者pull贡献者的变更到自己的本地仓库中，检查变更以确保不会让项目出错， 合并变更到自己本地的master分支， 然后推送master分支到服务器的正式仓库中。 到此，贡献的提交成为了项目的一部分，其它的开发者应该执行pull操作与正式仓库同步自己本地仓库。</p>
+<h4 id="4-2-1-正式仓库"><a href="#4-2-1-正式仓库" class="headerlink" title="4.2.1. 正式仓库"></a>4.2.1. 正式仓库</h4><p>在Forking工作流中，正式仓库的叫法只是一个约定，理解这点很重要。 从技术上来看，各个开发者仓库和正式仓库在Git看来没有任何区别。 事实上，让正式仓库之所以正式的唯一原因是它是项目维护者的公开仓库。</p>
+<h4 id="4-2-2-Forking工作流的分支使用方式"><a href="#4-2-2-Forking工作流的分支使用方式" class="headerlink" title="4.2.2. Forking工作流的分支使用方式"></a>4.2.2. Forking工作流的分支使用方式</h4><p>所有的个人公开仓库实际上只是为了方便和其它的开发者共享分支。 各个开发者应该用分支隔离各个功能，就像在功能分支工作流和Gitflow工作流一样。 唯一的区别是这些分支被共享了。在Forking工作流中这些分支会被pull到另一个开发者的本地仓库中，而在功能分支工作流和Gitflow工作流中是直接被推送到正式仓库中。</p>
+<h3 id="4-3-示例"><a href="#4-3-示例" class="headerlink" title="4.3 示例"></a>4.3 示例</h3><h4 id="4-3-1-项目维护者初始化正式仓库"><a href="#4-3-1-项目维护者初始化正式仓库" class="headerlink" title="4.3.1. 项目维护者初始化正式仓库"></a>4.3.1. 项目维护者初始化正式仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-1.png" alt=""></p>
+<p>和任何使用Git项目一样，第一步是创建在服务器上一个正式仓库，让所有团队成员都可以访问到。 通常这个仓库也会作为项目维护者的公开仓库。</p>
+<p>公开仓库应该是裸仓库，不管是不是正式代码库。 所以项目维护者会运行像下面的命令来搭建正式仓库：</p>
+<pre><code>ssh user@host
+git init --bare /path/to/repo.git
+</code></pre><p>Bitbucket提供了一个方便的GUI客户端以完成上面命令行做的事。 这个搭建中央仓库的过程和前面提到的工作流完全一样。 如果有现存的代码库，维护者也要push到这个仓库中。</p>
+<h4 id="4-3-2-开发者fork正式仓库"><a href="#4-3-2-开发者fork正式仓库" class="headerlink" title="4.3.2 开发者fork正式仓库"></a>4.3.2 开发者fork正式仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-2.png" alt=""></p>
+<p>其它所有的开发需要fork正式仓库。 可以用git clone命令用SSH协议连通到服务器， 拷贝仓库到服务器另一个位置 —— 是的，fork操作基本上就只是一个服务端的克隆。 Bitbucket和Stash上可以点一下按钮就让开发者完成仓库的fork操作。</p>
+<p>这一步完成后，每个开发都在服务端有一个自己的仓库。和正式仓库一样，这些仓库应该是裸仓库。</p>
+<h4 id="4-3-3-开发者克隆自己fork出来的仓库"><a href="#4-3-3-开发者克隆自己fork出来的仓库" class="headerlink" title="4.3.3. 开发者克隆自己fork出来的仓库"></a>4.3.3. 开发者克隆自己fork出来的仓库</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-3.png" alt=""></p>
+<p>下一步，各个开发者要克隆自己的公开仓库，用熟悉的git clone命令。</p>
+<p>在这个示例中，假定用Bitbucket托管了仓库。记住，如果这样的话各个开发者需要有各自的Bitbucket账号， 使用下面命令克隆服务端自己的仓库：</p>
+<p><code>git clone https://user@bitbucket.org/user/repo.git</code></p>
+<p>相比前面介绍的工作流只用了一个origin远程别名指向中央仓库，Forking工作流需要2个远程别名 —— 一个指向正式仓库，另一个指向开发者自己的服务端仓库。别名的名字可以任意命名，常见的约定是使用origin作为远程克隆的仓库的别名 （这个别名会在运行git clone自动创建），upstream（上游）作为正式仓库的别名。</p>
+<p><code>git remote add upstream https://bitbucket.org/maintainer/repo</code></p>
+<p>需要自己用上面的命令创建upstream别名。这样可以简单地保持本地仓库和正式仓库的同步更新。 注意，如果上游仓库需要认证（比如不是开源的），你需要提供用户：</p>
+<p><code>git remote add upstream https://user@bitbucket.org/maintainer/repo.git</code></p>
+<p>这时在克隆和pull正式仓库时，需要提供用户的密码。</p>
+<h4 id="4-3-4-开发者开发自己的功能"><a href="#4-3-4-开发者开发自己的功能" class="headerlink" title="4.3.4. 开发者开发自己的功能"></a>4.3.4. 开发者开发自己的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-4.png" alt=""></p>
+<p>在刚克隆的本地仓库中，开发者可以像其它工作流一样的编辑代码、提交修改和新建分支：</p>
+<pre><code>git checkout -b some-feature
+Edit some code
+git commit -a -m &quot;Add first draft of some feature&quot;
+</code></pre><p>所有的修改都是私有的直到push到自己公开仓库中。如果正式项目已经往前走了，可以用git pull命令获得新的提交：</p>
+<p><code>git pull upstream master</code></p>
+<p>由于开发者应该都在专门的功能分支上工作，pull操作结果会都是快进合并。</p>
+<h4 id="4-3-5-开发者发布自己的功能"><a href="#4-3-5-开发者发布自己的功能" class="headerlink" title="4.3.5. 开发者发布自己的功能"></a>4.3.5. 开发者发布自己的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-5.png" alt=""></p>
+<p>一旦开发者准备好了分享新功能，需要做二件事。 首先，通过push他的贡献代码到自己的公开仓库中，让其它的开发者都可以访问到。 他的origin远程别名应该已经有了，所以要做的就是：</p>
+<p><code>git push origin feature-branch</code></p>
+<p>这里和之前的工作流的差异是，origin远程别名指向开发者自己的服务端仓库，而不是正式仓库。<br>第二件事，开发者要通知项目维护者，想要合并他的新功能到正式库中。 Bitbucket提供了Pull Request按钮，弹出表单让你指定哪个分支要合并到正式仓库。 一般你会想集成你的功能分支到上游远程仓库的master分支中。</p>
+<h4 id="4-3-6-项目维护者合并开发者的功能"><a href="#4-3-6-项目维护者合并开发者的功能" class="headerlink" title="4.3.6. 项目维护者合并开发者的功能"></a>4.3.6. 项目维护者合并开发者的功能</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-6.png" alt=""></p>
+<p>当项目维护者收到pull request，他要做的是决定是否集成它到正式代码库中。有二种方式来做：</p>
+<ol>
+<li>直接在pull request中查看代码</li>
+<li>pull代码到他自己的本地仓库，再手动合并</li>
+</ol>
+<p>第一种做法更简单，维护者可以在GUI中查看变更的差异，做评注和执行合并。 但如果出现了合并冲突，需要第二种做法来解决。这种情况下，维护者需要从开发者的服务端仓库中fetch功能分支， 合并到他本地的master分支，解决冲突：</p>
+<pre><code>git fetch https://bitbucket.org/user/repo feature-branch
+git checkout master
+git merge FETCH_HEAD
+</code></pre><p>变更集成到本地的master分支后，维护者要push变更到服务器上的正式仓库，这样其它的开发者都能访问到：</p>
+<p><code>git push origin master</code></p>
+<p>注意，维护者的origin是指向他自己公开仓库的，即是项目的正式代码库。到此，开发者的贡献完全集成到了项目中。</p>
+<h4 id="4-3-7-开发者和正式仓库做同步"><a href="#4-3-7-开发者和正式仓库做同步" class="headerlink" title="4.3.7. 开发者和正式仓库做同步"></a>4.3.7. 开发者和正式仓库做同步</h4><p><img src="/img/in-post/learning-git-flow/git-workflows-forking-7.png" alt=""></p>
+<p>由于正式代码库往前走了，其它的开发需要和正式仓库做同步：</p>
+<p><code>git pull upstream master</code></p>
+<p>如果你之前是使用SVN，Forking工作流可能看起来像是一个激进的范式切换（paradigm shift）。 但不要害怕，这个工作流实际上就是在功能分支工作流之上引入另一个抽象层。 不是直接通过单个中央仓库来分享分支，而是把贡献代码发布到开发者自己的服务端仓库中。</p>
+<p>示例中解释了，一个贡献如何从一个开发者流到正式的master分支中，但同样的方法可以把贡献集成到任一个仓库中。 比如，如果团队的几个人协作实现一个功能，可以在开发之间用相同的方法分享变更，完全不涉及正式仓库。</p>
+<p>这使得Forking工作流对于松散组织的团队来说是个非常强大的工具。任一开发者可以方便地和另一开发者分享变更，任何分支都能有效地合并到正式代码库中。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" target="_blank" rel="noopener">《Comparing Workflows》</a></p>
+
       
 
       
@@ -786,11 +1773,34 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">代码版本管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">分布式版本管理管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git Flow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git 工作流</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/30/token-earning-program-six/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-learniing-git-flow/">展开全文 >></a>
         </p>
       
 
@@ -822,7 +1832,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -834,7 +1844,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 Hoo同学的博客
+    		&copy; 2019 Hoo同学的博客
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -917,6 +1927,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -929,6 +1951,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
               </li>
              
@@ -937,19 +1963,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -977,27 +1991,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1013,6 +2011,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1025,11 +2043,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1049,27 +2079,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBRetainCycleDetector</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">FBAllocationTracker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1105,6 +2115,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
               </li>
              
@@ -1117,11 +2135,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1141,11 +2159,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+                <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2017</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1157,15 +2179,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2016</a>
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2017</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1194,26 +2224,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1289,22 +2299,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
               </li>
              
@@ -1313,11 +2307,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">all in</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">daily block</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
               </li>
              
               <li class="article-tag-list-item">
