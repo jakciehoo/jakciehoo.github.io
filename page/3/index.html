@@ -160,31 +160,43 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2018-06-27-fei-dui-cheng" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-Migrate-to-Git-from-SVN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/27/2018-06-27-fei-dui-cheng/">Hoooo和他的朋友们区块链寻宝日记（11）——— 数字货币世界有金矿，但你得先成为专业的淘金者</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">【译文】从SVN到Git：迁移到Git</a>
     </h1>
   
 
         
-        <a href="/2018/06/27/2018-06-27-fei-dui-cheng/" class="archive-article-date">
-  	<time datetime="2018-06-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-27</time>
+        <a href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>除了4月份有EOS上线主网竞选超级节点带来的假阳春，今年行情整体一直是上下震荡，比特币又重新跌回到去年牛市前的低位，EOS也打回原形。不知道这半年狗庄收割了多少韭菜，让多少新韭菜在熊市中煎熬，那些熬不住的要么已经跳楼，要么远离币圈江湖了，还留在币圈的新韭菜，恭喜你，大浪淘沙，你快成为老韭菜啦。兄弟们，只要活着，希望就还在。数字货币依然是我们普通人现在难得的实现财富大增长的机会。</p>
-<h3 id="为什么这么多新韭菜赚不到钱呢？"><a href="#为什么这么多新韭菜赚不到钱呢？" class="headerlink" title="为什么这么多新韭菜赚不到钱呢？"></a>为什么这么多新韭菜赚不到钱呢？</h3><p>我分析有两个原因：1.本身他们对在币圈赚钱这事就不认真和专注。2.对币圈投资的准备不充分、方向和目的不明确。</p>
-        
-          <a class="article-more-a" href="/2018/06/27/2018-06-27-fei-dui-cheng/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/dam/jcr:003ac8ad-493e-4a16-8096-95e7b4a4a9af/hero.svg" alt="Migrate to Git"></p>
+<p>我们将SVN迁移到Git的步骤拆解成5个简单的步骤：</p>
+<ol>
+<li>准备迁移的环境。</li>
+<li>将SVN仓库转换成本地Git仓库。 </li>
+<li>当SVN仓库发生变化时同步到本地Git仓库。</li>
+<li>通过Git服务器共享你的Git仓库给其他开发者。</li>
+<li>将你的开发工作从SVN迁移到Git仓库里。</li>
+</ol>
+<p>准备、转变、同步步骤需要一个SVN提交历史并将它转至Git仓库。操作这三部的最好方式是指定一个人做为迁移负责人（如果你读了这篇文章可能就是你了）。所有这三步应当在迁移负责人的本地电脑上执行。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:620e114f-077f-416b-aeb4-ecdb4b6c64c6/01.svg" alt="Git Migration: Prepare, clone, sync"></p>
+<p>在同步阶段完成后，迁移负责人可以很轻易的保持本地Git仓库和SVN仓库同步更新，为了共享他的Git仓库，迁移负责人需要将他的本地Git仓库推送到一个Git宿主服务器，比如Gitlab、GitHub、Bitbucket等。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:adce07b0-ef2a-4ab4-b08b-72a02d0a61fb/02.svg" alt="Git Migration: Share the git repo via bitbucket"><br>如果服务器是在Bitbucket上，其他开发者可以克隆Git仓库将代码转移至本地，使用Git命令查看历史，将该服务器用于构建代码流程中。然而我们提倡，在你们团队准备好一个纯净的Git工作流的时候，采取一步到位的方式来迁移SVN到Git。这意味着团队每个人对这个服务器是只读的，他们依旧将代码提交到SVN仓库。将这些修改的操作应当交给迁移负责人来同步、推送这些修改到Bitbucket。</p>
+<p>这让你团队在明确切换这段时间内可以熟悉Git开发工作流，而不用中断基于SVN的工作流。一旦你确信所有开发者已经准备好切换到Git，那最后的一步就是冻结你的SVN仓库，让大家开始使用Git提交代码。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:a202d2e1-bb9a-4c25-92ed-91a16a63ccde/03.svg" alt="Git migration: Migrate Active Development to Git"><br>这个切换应该是一个非常自然的过程。整个Git工作流已经开始运转，并且开发者有大把的时间去熟悉它。从这刻起，你已经成功地将你的项目从SVN迁移到Git上了。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/migrating-overview" target="_blank" rel="noopener">Migrate to Git from SVN</a></p>
+
       
 
       
@@ -197,23 +209,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">韭菜</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SVN到Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">贫穷</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">发挥</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">limit</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">迁移</a>
         		</li>
       		
 		</ul>
@@ -223,7 +227,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/27/2018-06-27-fei-dui-cheng/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">展开全文 >></a>
         </p>
       
 
@@ -253,31 +257,51 @@
 
 
   
-    <article id="post-2018-06-26-do-not-let-poor-limit-your-imagination" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-what-is-git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/26/2018-06-26-do-not-let-poor-limit-your-imagination/">Hoooo和他的朋友们区块链寻宝日记（10）——— 不要让贫穷限制了你的发挥</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-git/">【译文】全方位了解Git</a>
     </h1>
   
 
         
-        <a href="/2018/06/26/2018-06-26-do-not-let-poor-limit-your-imagination/" class="archive-article-date">
-  	<time datetime="2018-06-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-26</time>
+        <a href="/2017/04/02/2017-04-02-what-is-git/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>上周没跟朋友们请假，就回老家处理家事，老家没有上网条件，工作环境差，所以就没发文章，忘了其实我还是可以简单发一段文字跟朋友们请假的，以后万一有事一定跟朋友们请假。</p>
-<h3 id="老家轶事"><a href="#老家轶事" class="headerlink" title="老家轶事"></a>老家轶事</h3><p>这次回家当天晚上和我大哥一起吃饭，我大哥提到这次大姐在县城住院，县里的亲戚帮了不少忙，让我去拜访下他们，礼尚往来，处理下人情世故，顺便去医院把大姐出院的账给结了。我当时听，瞬间盘算了下，出院结账这事随时谁去都能办，人情世故这事，以我跟亲戚打的关系基础，我每年春节都会有拜访，觉得打个电话表示下感谢就可以吧，老家没有车开，用不着大热天去坐班车用一两天时间我去折腾吧。然后就跟我哥说：“你有空的时候你去吧，我回家这几天有更重要的事情（我妈今年左腿经常疼，现在确定是腰骨质增生导致压迫神经，我大哥二哥没想过带着我妈妈去查一下，农村大多数人眼里，老人有点小毛病正常。还有其他一些他们不会想到的事情我想趁回家办一下），拜访亲戚这事，我打个电话就可以搞得定”。我哥不乐意，可能觉得我自以为是，然后说：“你时间那么金贵？“。我没好意思多怼他，后来我去了，我在家一周我大哥有几天不忙就待在家里睡觉。在我大哥的观念里，可能觉得我的时间是跟他的一样的，回家能帮忙处理多少家事是多少。</p>
-        
-          <a class="article-more-a" href="/2018/06/26/2018-06-26-do-not-let-poor-limit-your-imagination/#more">more >></a>
-        
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt" alt="什么是Git"></p>
+<p>到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。</p>
+<p>Git具有分布式架构，Git是DVCS（即分布式版本控制系统）的代表。在Git中，每个开发人员的代码工作副本都是一个仓库，仓库里包含所有更改的完整历史，而不是像CVS或Subversion（也称为SVN）等一般流行的版本控制系统，这些版本控制系统通常只有一个单一的位置有软件的完整版本历史。</p>
+<p>除了分布式之外，Git的设计还保证了高性能，安全性和灵活性。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>相比其他的版本控制系统，Git的性能特征非常高。提交新的更改、分支、合并和比较以前的版本都针对性能进行了优化。深入了解了实际源代码文件树的常见属性，它们如何通常随时间进行修改以及访问模式是如何进行的，Git内部实现的算法利用了这些优势。</p>
+<p>与某些版本控制软件不同，Git在确定文件树的存储和版本历史记录时应该不会被文件的名称所愚弄，而Git则关注文件内容本身。毕竟，源代码文件经常被重命名，拆分和重构。Git仓库文件使用了增量编码（存储内容差异），压缩和显式存储目录内容和版本元数据对象的组合。</p>
+<p>分布式还可显着提升性能。例如，像开发人员Alice一样，更改源代码，为即将发布的2.0版本添加功能，然后使用描述性消息提交这些更改。然后，她还工作了第二个功能，并提交了这些更改。自然地，这些在版本历史中被存储为单独的工作。Alice然后切换到相同软件的1.3版本，以修复仅影响旧版本的错误。这样做的目的是让Alice的团队在版本2.0准备就绪之前发布了一个版本1.3.1的错误修复版本。然后，Alice可以返回到2.0分支，继续处理2.0的新功能，所有这些都可以在没有任何网络访问的情况下发生，因此可以快速可靠进行。她甚至可以在飞机上做。当她准备好将所有提交的更改时，并准备发送到远程存储库时，Alice可以使用一条命令推送他们到远程仓库。</p>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><p>Git设计时优先考虑被托管源代码的完整性。文件的内容以及文件和目录的关联，版本，标签和提交，Git存储库中的所有这些对象，都使用了称为SHA1的加密安全散列算法进行安全保护。这样可以保护代码和变更历史，防止意外和恶意更改，并确保历史记录完全可追溯。</p>
+<p>使用Git，您可以确保您具有源代码的真实内容历史。</p>
+<p>一些其他版本控制系统没有对后面秘密更改的保护。对于依赖于软件开发的任何组织来说，这可能是一个严重的信息安全漏洞。</p>
+<h2 id="灵活性"><a href="#灵活性" class="headerlink" title="灵活性"></a>灵活性</h2><p>Git的关键设计目标之一是灵活性。Git在几个方面具有灵活性：支持各种非线性开发工作流，在小型和大型项目中的效率以及与对许多现有版本控制系统和协议的兼容性。</p>
+<p>Git被设计为支持分支和标记作为一流的公民（不同于SVN），影响分支和标签的操作（如合并或还原）也被存储为变更历史的一部分。并非所有版本控制系统都具有此级别的跟踪功能。</p>
+<h2 id="选择Git作为版本控制系统"><a href="#选择Git作为版本控制系统" class="headerlink" title="选择Git作为版本控制系统"></a>选择Git作为版本控制系统</h2><p>Git是当今大多数软件团队的最佳选择。虽然每个团队是不同的，应该有他们自己的判断，下面介绍使用Git版本控制系统优于其它方案的主要原因：</p>
+<h3 id="Git非常棒"><a href="#Git非常棒" class="headerlink" title="Git非常棒"></a>Git非常棒</h3><p>Git具有大多数团队和个人开发人员所需的功能，性能，安全性和灵活性。前面介绍了Git的这些属性。与大多数其他替代方案并列比较，许多团队发现Git非常有优势。</p>
+<h3 id="Git是一个事实上的标准"><a href="#Git是一个事实上的标准" class="headerlink" title="Git是一个事实上的标准"></a>Git是一个事实上的标准</h3><p>Git是最广泛采用的同类工具。在Atlassian，我们几乎所有的项目源代码都是在Git中管理的。由于如下原因，使得Git对开发者非常有吸引力。</p>
+<p>大量开发人员已经有Git经验，相当一部分大学毕业生可能只有Git的经验。虽然一些组织在从另一个版本控制系统迁移到Git时可能需要比较难的学习曲线，但是许多现有的和未来的开发人员将不需要接受Git的培训。</p>
+<p>除了大型人才库的优势外，Git的优势还意味着许多第三方软件工具和服务已经与Git（包括IDE）集成在一起，以及我们自己的工具，如DVCS桌面客户端<a href="https://www.atlassian.com/software/sourcetree" target="_blank" rel="noopener">SourceTree</a>，问题和项目跟踪软件<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>和代码托管服务<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>。</p>
+<p>如果您是一位缺乏经验的开发人员，希望在软件开发工具中建立有价值的技能，那么在使用版本控制时，Git应该在您的掌握技能列表中。</p>
+<h3 id="Git是一个优质的开源项目"><a href="#Git是一个优质的开源项目" class="headerlink" title="Git是一个优质的开源项目"></a>Git是一个优质的开源项目</h3><p>Git是一个拥有强大支持的开放源码项目，拥有十多年的稳定的管理维护经验。项目维护者已经拥有综合的判断力和成熟的方法来满足其用户的长期需求，并提供可扩展性和功能性的定期发布。无数企业要求开源项目的质量，因此开放源码软件的质量很容易被仔细检查。</p>
+<p>Git享有极好的社区支持和庞大的用户群。文档非常丰富，包括书籍，教程和专用网站。还有播客和视频教程。</p>
+<p>开源软件可以降低业余兴趣开发者的成本，因为他们可以使用Git而不需要支付费用。对于在开源项目中使用，Git无疑是前几代成功开源版本控制系统SVN和CVS的继承者。</p>
+<h3 id="对Git的批评"><a href="#对Git的批评" class="headerlink" title="对Git的批评"></a>对Git的批评</h3><p>对Git的一个常见批评可能是它难以学习。Git中的一些术语对于新手和其他系统的用户来说将是新颖的，Git术语可能不同，例如，revert在Git中具有与SVN或CVS不同的含义。然而，Git提供非常强大的能力，能为用户提供了大量的功能。学习使用这种功能可能需要一些时间，但一旦学会，该团队可以利用这种能力来提高其开发速度。</p>
+<p>对于那些来自非分布式版本管理系统（VCS）的团队来说，拥有一个中央存储库可能看起来好像是不想丢失的东西。然而，虽然Git被设计为分布式版本控制系统（DVCS），但是您仍然可以采用一个严格规范的正式仓库，在其中存储对软件的所有更改。使用Git，每个开发人员的仓库是完整的，因此它们的工作不需要受到“中央”服务器的可用性和性能的束缚。在停电或离线时，开发人员仍然可以查阅完整的项目历史。由于Git具有灵活性和分布式的特性，您可以按照自己使用其他版本控制系统的习惯的方式去工作，但这不能获得Git的其他优势，其中一些您甚至可能无法意识到你错过了。</p>
+<p>现在，您了解什么版本控制是什么，Git是什么以及为什么软件团队应该使用它，请继续阅读来发现Git的优势。</p>
+
       
 
       
@@ -290,23 +314,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">韭菜</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">贫穷</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">发挥</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">limit</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
         		</li>
       		
 		</ul>
@@ -316,7 +332,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/26/2018-06-26-do-not-let-poor-limit-your-imagination/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-git/">展开全文 >></a>
         </p>
       
 
@@ -346,35 +362,234 @@
 
 
   
-    <article id="post-2018-06-16-small-leek-become-independency" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-SVN-To-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/16/2018-06-16-small-leek-become-independency/">Hoooo和他的朋友们区块链寻宝日记（9）——— 做一个独立思考的小韭菜</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-SVN-To-Git/">【译文】从SVN到Git：迁移准备工作</a>
     </h1>
   
 
         
-        <a href="/2018/06/16/2018-06-16-small-leek-become-independency/" class="archive-article-date">
-  	<time datetime="2018-06-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-16</time>
+        <a href="/2017/04/02/2017-04-02-SVN-To-Git/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>我深刻认识到我是一个小韭菜。</strong></p>
-<p>在all in区块链之前，炒币对我而言只是业余爱好，工资收入足够支撑我佛系炒币，之前我总鄙视被我带进坑的好友没有信仰，因为他们不少遇到行情变差就慌，心态不好等等，现在all in之后我也开始鄙视自己，因为我现在的收入主要靠币价了，最近行情又大跌，真的真的开始凌乱，吃饭成问题，信仰算毛线啊。</p>
-<p>小韭菜的我还是努力的，庄家不是想收割我吗，那我就努力学习，通过学习区块链，买到价值币总不会被割了吧，通过学习及时高抛低吸总不会被收割吧。</p>
-<p>于是我疯狂学习许多的区块链知识，恶补各种币圈、链圈的资讯。看了不少大佬的分享、看了不少行业大V的视频教程，关注和学习各类公众号、翻了几本区块链书籍。大佬们财务自由自不必说，混的牛逼潇洒，一颦一笑都让你觉得帅气逼人，公众号大V，年入几百万都是小数目，讲起区块链知识那是信手拈来。我又深深地被大佬大V们刺激到了，他们仿佛在告诉我：你什么都不懂，被收割是应该的，要认命，你就是小韭菜，每天要过来接受我的指点。然后他们赚了我们小韭菜的眼球，顺便卖个广告或者卖个其他增值服务。</p>
-<p>和我一样是小韭菜的朋友们，庄家在币圈收割我们的钱，大佬大V收割我们的时间，他们配合够好啊，洗钱洗脑，我一直被他们蒙在鼓里，此刻终于觉醒啊。</p>
-<p><strong>差点我就认命了，认为自己永远就是小韭菜的命，需要乖乖接受庄家的收割，需要每天接受行业大V的批评再教育啊，否则就心慌意乱。。我现在看透了。</strong></p>
-        
-          <a class="article-more-a" href="/2018/06/16/2018-06-16-small-leek-become-independency/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/dam/jcr:453f7d27-7f00-44e6-8963-cd769b145ec3/hero.svg" alt="SVN to Git"></p>
+<p>在<a href="https://www.atlassian.com/git/tutorials/why-git" target="_blank" rel="noopener">《为什么选择Git?》</a>文章里，我们探讨了如何使用Git来帮助我们团队开发更敏捷，一旦你决定做转变到使用Git，你下一步就是找出如何将你现在工作流迁移到Git上的方法。</p>
+<p>这篇文章将会介绍在你从SVN迁到Git上会遇到的一些最大的变化。在迁移过程中你需要记住一件很重要的事情就是Git和SVN是不同的。意识到Git的巨大潜力，努力脑洞大开去从一些的新的角度去考虑版本控制。</p>
+<h2 id="从管理员的角度"><a href="#从管理员的角度" class="headerlink" title="从管理员的角度"></a>从管理员的角度</h2><p>根据团队的规模的不同，使用Git需要使用几天到几个月不等的时间。这个章节我们来阐述在培训工程师使用Git和迁移仓库到Git时，工程管理者主要关心的问题。</p>
+<h3 id="Git基本命令"><a href="#Git基本命令" class="headerlink" title="Git基本命令"></a>Git基本命令</h3><p>Git被大家认为门槛其实挺高的。不过Git的维护者已经逐步地发布了一些改进版本，比如实用的默认配置以及上下文帮助信息，这些措施让我们的学习过程更加轻松愉快。</p>
+<p><strong>Atlassian</strong>提供了综合的自我学习系列课程<a href="https://www.atlassian.com/git/tutorials" target="_blank" rel="noopener">Git教程</a>，也提供了论坛和在线培训课堂。这些可以让我们的团队学习Git提供了选择。下面列出一些常见的Git基础命令来帮助你开始熟悉Git：</p>
+<table>
+<thead>
+<tr>
+<th>Git 任务</th>
+<th style="text-align:center">注意</th>
+<th style="text-align:left">Git命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config" target="_blank" rel="noopener">配置姓名</a></td>
+<td style="text-align:center">配置开发者的姓名和邮箱地址。注意Git会过滤一些姓名里的字符（比如句号）</td>
+<td style="text-align:left">git config –global user.name “Sam Smith”git config –global user.email <a href="mailto:sam@example.com" target="_blank" rel="noopener">sam@example.com</a></td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-init" target="_blank" rel="noopener">创建一个本地仓库</a></td>
+<td style="text-align:center"></td>
+<td style="text-align:left">git init</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-clone" target="_blank" rel="noopener">检出（checkout）分支</a></td>
+<td style="text-align:center">创建本地仓库的工作区副本</td>
+<td style="text-align:left">git clone /path/to/repository</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">对于远程仓库来说, 可以使用:</td>
+<td style="text-align:left">git clone username@host:/path/to/repository</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/saving-changes/git-add" target="_blank" rel="noopener">添加文件</a></td>
+<td style="text-align:center">将一个或者多个文件添加到暂存区</td>
+<td style="text-align:left">git add <filename>git add *</filename></td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/saving-changes/git-commit" target="_blank" rel="noopener">提交</a></td>
+<td style="text-align:center">提交代码到头部（还没有保存到远程仓库）</td>
+<td style="text-align:left">git commit -m “Commit message”</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">提交你使用git add命令添加的文件，也提交其他你之后修改了的文件</td>
+<td style="text-align:left">git commit -a</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">推送</a></td>
+<td style="text-align:center">将修改提交打远程仓库的master分支</td>
+<td style="text-align:left">git push origin master</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">状态</a></td>
+<td style="text-align:center">列出已经修改、需要添加到暂存区的或者需要提交的文件</td>
+<td style="text-align:left">git status</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/syncing/git-remote" target="_blank" rel="noopener">连接远程仓库</a></td>
+<td style="text-align:center">如果你本地的仓库还没有连接远程服务器，添加连接到服务器，这样你就可以推送了</td>
+<td style="text-align:left">git remote add origin <server></server></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">列出所有你配置了的远程仓库</td>
+<td style="text-align:left">git remote -v</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/using-branches" target="_blank" rel="noopener">分支</a></td>
+<td style="text-align:center">创建一个新的分支并切换过去</td>
+<td style="text-align:left">git checkout -b <branchname></branchname></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">切换分支</td>
+<td style="text-align:left">git checkout <branchname></branchname></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">列出仓库所有分支，而且让你知道你当前在哪个分支</td>
+<td style="text-align:left">git branch</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">删除功能分支</td>
+<td style="text-align:left">git branch -d <branchname></branchname></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">推送分支到远程仓库，这样其他人可以查看到</td>
+<td style="text-align:left">git push origin <branchname></branchname></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">推送所有分支到远程仓库</td>
+<td style="text-align:left">git push –all origin</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">删除你的远程分支</td>
+<td style="text-align:left">git push origin :<branchname></branchname></td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/syncing/git-pull" target="_blank" rel="noopener">从远程仓库更新本地仓库</a></td>
+<td style="text-align:center">获取以及合并远程服务器代码到工作区</td>
+<td style="text-align:left">git pull</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">合并其他分支到当前分支</td>
+<td style="text-align:left">git merge <branchname></branchname></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">查看所有的合并冲突；查看冲突；在合并前预览修改</td>
+<td style="text-align:left">git diffgit diff –base <filename>git diff <sourcebranch> <targetbranch></targetbranch></sourcebranch></filename></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">在你手动解决冲突后，你标记修改的文件</td>
+<td style="text-align:left">git add <filename></filename></td>
+</tr>
+<tr>
+<td>标签</td>
+<td style="text-align:center">你可以使用标签对重要的修改做标记，比如一个发布版本</td>
+<td style="text-align:left">git tag 1.0.0 <commitid></commitid></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">提交Id是标记这次修改的ID,必须是唯一的，查看ID使用:</td>
+<td style="text-align:left">git log</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">推送所有的标签到远程仓库</td>
+<td style="text-align:left">git push –tags origin</td>
+</tr>
+<tr>
+<td><a href="https://www.atlassian.com/git/tutorials/undoing-changes" target="_blank" rel="noopener">放弃本地修改</a></td>
+<td style="text-align:center">如果你修改不正确，你想放弃这些修改，并回到最后一次提交的前状态，不过已经添加到索引的文件，以及新文件会被保留</td>
+<td style="text-align:left">git checkout – <filename></filename></td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">如果你想放弃本地所有的修改，你可以从服务器端获取所有的提交，并奖本地的master分支指向它</td>
+<td style="text-align:left">git fetch origin git reset –hard origin/master</td>
+</tr>
+<tr>
+<td>搜索</td>
+<td style="text-align:center">在工作区域搜索包含foo(）的内容</td>
+<td style="text-align:left">git grep “foo()”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Git迁移工具"><a href="#Git迁移工具" class="headerlink" title="Git迁移工具"></a>Git迁移工具</h3><p>有很多工具可以帮助我们迁移SVN代码到Git。但在我们选择工具前，我们先确认你想如何迁移你的代码，你的选择有如下四个：</p>
+<ul>
+<li><p>迁移你的整个代码库到Git并且一起放弃使用SVN。</p>
+</li>
+<li><p>不迁移已经存在的项目到Git，但是所有新项目使用Git.</p>
+</li>
+<li><p>迁移部分项目到Git，然而其他项目使用SVN。</p>
+</li>
+<li><p>在同一项目同时使用SVN和Git.</p>
+</li>
+</ul>
+<p>完全的迁移到Git会降低你开发工作流的复杂度，因此这是一个更好的选择。但是，在成百上千的大型团队里，包含几百项目这通常不太可能。在这种情况下，混合策略是一个更安全的做法。</p>
+<p>迁移工具的选择很大程度取决于你选择哪个策略。下文我们介绍一些常见的SVN到Git的迁移工具。</p>
+<h3 id="Atlassian公司的迁移脚本"><a href="#Atlassian公司的迁移脚本" class="headerlink" title="Atlassian公司的迁移脚本"></a>Atlassian公司的迁移脚本</h3><p>如果你对快速迁移Git感兴趣，Atlassian公司的迁移脚本是一个好的选择。这些脚本提供所有你需要的工具，它们可以妥妥的将你的SVN仓库迁移到Git仓库。在迁移之后你将不需要处理SVN-to-Git的互相影响的问题。</p>
+<p>我们提供了一个完整的<a href="https://www.atlassian.com/git/tutorials/migrating-overview" target="_blank" rel="noopener">《技术演练教程》</a>,介绍如何使用这些脚本来将你整个代码库转变为一个Git仓库集。这个演练教程解释了所有关于提取SVN信息到重构不标准的SVN仓库结构的知识。</p>
+<h3 id="SVN-Mirror-for-Stash-now-Bitbucket-Server-plugin"><a href="#SVN-Mirror-for-Stash-now-Bitbucket-Server-plugin" class="headerlink" title="SVN Mirror for Stash (now Bitbucket Server) plugin"></a>SVN Mirror for Stash (now Bitbucket Server) plugin</h3><p><a href="https://marketplace.atlassian.com/plugins/org.tmatesoft.subgit.stash-svn-importer" target="_blank" rel="noopener">SVN Mirror for Stash</a> 是<a href="https://bitbucket.org/product/server" target="_blank" rel="noopener">Bitbucket Server</a> 插件，让你可以很容易的维护一个同时使用SVN和Git的混合代码库。和Atlassian公司的迁移脚本不同，<strong>SVN Mirror for Stash</strong>可以让你一直在同一仓库同时使用SVN和Git.</p>
+<p>对于大型公司这个拖鞋方案是一个最好的选择。通过让不同团队在他们的方便的时候再做迁移，它能够采用增量Git。</p>
+<h3 id="Git提交到SVN服务器"><a href="#Git提交到SVN服务器" class="headerlink" title="Git提交到SVN服务器"></a>Git提交到SVN服务器</h3><p>Git的<strong>git svn</strong>工具可以作为本地Git仓库和远程SVN仓库的接口，它让开发者可以在本地写代码然后使用Git创建本地提交，然后使用svn提交方式来推送代码到中央SVN仓库。</p>
+<p>如果你还没有确定要切换到Git并且希望有工程师可以研究一下Git命令，这时候<strong>git svn</strong>是一个好的选择。它也是很适合培训阶段，而不是突然转变的过程，你的团队可以可以很轻松地在本地使用Git命令，而不必担心团队合作工作流。</p>
+<p><strong>git svn</strong>仅仅应该作为你迁移过程中的临时阶段。因为它仍然使用SVN作为后端，因此不能充分发挥Git功能的强大，比如分支或者高级合作开发流。</p>
+<h3 id="部署策略"><a href="#部署策略" class="headerlink" title="部署策略"></a>部署策略</h3><p>迁移代码只是采用Git的一个方面。你也需要考虑培训写代码的人。在迁移你的团队到Git上，采用外部专家培训、内部培养Git高手、先锋队是三个主要的策略。</p>
+<h3 id="外部Git专家"><a href="#外部Git专家" class="headerlink" title="外部Git专家"></a>外部Git专家</h3><p>Git专家能够用合适的价格为你处理这个迁移过程。这个优势也很明显，你不用去花费时间去调研适合你团队的工作流，就可以建立适合你团队的最佳工作流。而且让你的团队可以得到学习Git的资源。<a href="https://www.atlassian.com/resources/experts/?tab=find-an-expert&amp;expertskills=SVNtoGitmigration&amp;products=*&amp;expertlocation=" target="_blank" rel="noopener">Atlassian Experts</a>是一个很好的资源，当你从SVN迁移到Git时这个非常有用。</p>
+<p>并且，由你自己去设计和实施Git工作流，可以让你的团队理解新的工作流的内部工作原理。这避免了专家离开的后的空白所带来的风险。</p>
+<h3 id="内部Git高手"><a href="#内部Git高手" class="headerlink" title="内部Git高手"></a>内部Git高手</h3><p>Git高手是你公司对Git很有热情的开发者，对于有工程师文化和强烈学习意愿的开发者发挥Git高手的价值更有用。这可以让你的一个工程师可以成为Git专家，因此他们可以设计一个Git工作流服务于公司，当团队其他人需要迁移到Git的时候这个人可以作为专家顾问的角色提供帮助。</p>
+<p>相比外部专家，这可以让你的团队有一个Git高手，然而，它可能需要更多的时间去培训那个Git高手。而且可能会选错工作流或者实施不到位的风险。</p>
+<h3 id="先锋队"><a href="#先锋队" class="headerlink" title="先锋队"></a>先锋队</h3><p>迁移到Git第三个选择就是可以在先锋队中试验。如果有个小团队在一个相对独立的项目中工作使用这个方法最佳。结合外部顾问专家和内部先锋队的Git高手在一起这样能取得更好的效果。</p>
+<p>相比外部购买的的方案这有优势也有可能选错工作流的风险，因为它是由整个团队来设计开发过程。不过，相比让顾问专家或者专家完全自己来设计新的开发工作流，它确保团队不错过任何细节。</p>
+<p>而且，使用先锋队的方式因为更多的基础培训和建立时间：由于不是一个开发者去发现新的开发工作流，而是整个团队潜在可能降低效率，因为团队可能习惯新的工作流需要时间。然后，短时间的付出相比长期的回报来说还是值得的。</p>
+<h3 id="安全和权限"><a href="#安全和权限" class="headerlink" title="安全和权限"></a>安全和权限</h3><p>在你需要重新考虑如何在Git中管理代码的时候访问权限控制是一个方面。</p>
+<p>在SVN中，我们通常将所有代码保存在一个单一的中央仓库，然后通过文件夹给不同团队或者个人限制访问权限。在Git中，这不可能：开发者必须取出整个仓库来从事开发，通常不能只活去仓库的一部分代码，而在SVN中是可的。权限授权是针对整个Git仓库进行的。</p>
+<p>这意味着你必须拆分你巨大的SVN仓库为几个不同的Git仓库。当我们将<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>开发团队迁移到Git时，我们事实上在Atlassian经历过一次这样的情况。我们所有的JIRA插件都是存储在一个单一的SVN仓库，但是在迁移之后，我们为每个插件建立了一个仓库。</p>
+<p>Git当初设计的时候是为了保证安全的合并成千上万的Linux开发者的代码，这点我们要时刻记住。因此它当然有一些方法来设置任何你团队需要的访问权限。当然，这需要对构建周期有一个全新的视角。</p>
+<p>如果你关心保持你新仓库集的依赖，你可能发现在Git上面的一个依赖管理层非常有用。在仓库不断增大，依赖管理层将通过构建次数来提供帮助，为了加快构建时间，你需要“缓存”。这篇文章：<a href="http://blogs.atlassian.com/2014/04/git-project-dependencies/" target="_blank" rel="noopener">“Git and project dependencies”</a>，列举了为每个技术栈推荐的依赖管理层工具。</p>
+<h2 id="从开发者的角度"><a href="#从开发者的角度" class="headerlink" title="从开发者的角度"></a>从开发者的角度</h2><h3 id="所有开发者的一个仓库"><a href="#所有开发者的一个仓库" class="headerlink" title="所有开发者的一个仓库"></a>所有开发者的一个仓库</h3><p>作为开发，你需要适应和理解Git分布式的特性，相比一个单一的中央仓库，每一个开发者本地有整个仓库的备份，这极大的改变了你和同事们的合作方式。</p>
+<p>我们使用<strong>svn checkout</strong>命令来检出一个SVN仓库的代码，然后在Git中你通过<strong>git clone</strong>来克隆整个Git仓库到电脑上。</p>
+<p>合作开发经常会使用git push ,git pull或者git fetch命令在git仓库之间切换分支。在Git中经常使用在分支层面共享代码，当然也可以像SVN一样通过提交来实现。但在是在Git中，一个提交代表整个项目的状态而不是一个文件的修改。一旦你在Git和SVN中能够使用分支，他们最大的区别就是你可以使用Git提交到本地，而不用把代码提交到服务端。这可以让你更自由的实验，离线状态下更有效率的工作，几乎所有的命令操作起来更快。</p>
+<p>但是，要清楚的知道远程仓库不实直接和你的仓库关联的，它仅仅是一个书签，可以避免在你需要和远程仓库交互的时候你必须频繁输入完整的URL链接。直到你明确的拉取或者推送分支到远程仓库，你一直在自己独立的环境下工作。</p>
+<p>对于SVN使用者来说另一个很大转变就是意识到本地和远程仓库的概念。本地仓库存在于你自己的电脑上，其他的仓库都是远程仓库。远程仓库存在的主要目的就是让你的代码可以共享给其他成员。因此在远程仓库并不会有进行中的开发。你电脑上的本地仓库则你所有软件开发的场所。</p>
+<h3 id="无惧分支和合并"><a href="#无惧分支和合并" class="headerlink" title="无惧分支和合并"></a>无惧分支和合并</h3><p>SVN中，我们在工作区编辑文件然后提交，然后执行<strong>svn commit</strong>来推送代码到中央仓库。每个人可以通过<strong>svn update</strong>拉取这些修改到他们的工作区。SVN分支在大型，长时间维护的项目中不怎么使用，因为合并非常的危险，可能会破坏项目。</p>
+<p>Git的基本开发工作流则不同，分支和合并非常的容易，而不是只能一条线的开发（比如trunk/）。</p>
+<p>当你想在Git中开始工作，你可以使用<strong>git checkout -b <branch-name></branch-name></strong>来检出一个新的分支，这可以让你有一个专门的开发线，而不用担心会影响其他人。如果你对项目产生了破坏，而且没办法修复，你完全可以使用<strong>git branch -d <branch-name></branch-name></strong>丢弃这个分支。如果你开发了一些有用的功能，你可以发起一个合并申请来合并你的代码到master分支。</p>
+<h3 id="常见的开发工作流"><a href="#常见的开发工作流" class="headerlink" title="常见的开发工作流"></a>常见的开发工作流</h3><p>在选择开发工作流的时候最好考虑团队的需要。一个简单的工作流可以加快开发速度和提高灵活性，然而一个复杂的工作流可以确保更好的一致性和对开发工作的掌控。你可以结合下面介绍的常见的方法来适应你的需要以及团队的不同角色的需要，比如，一个核心的开发者可以使用功能分支而一个外包人员可以在分叉（fork）上开发。</p>
+<p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow/" target="_blank" rel="noopener">集中式开发工作流</a>提供类似SVN的工作流程，因此对于开始使用Git来说非常合适。</p>
+<p>为开发一个功能需求，使用<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow" target="_blank" rel="noopener">分支开发工作流</a> 再合适不过了，它绕过开发者的工作保持独立，而且重要的是保护公共分支。功能分支也构成了让我们能够使合并申请来管理修改的基础。</p>
+<p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow" target="_blank" rel="noopener">Git流开发工作流</a> 是一个更加正式而且是对功能分支的结构性的扩展，是大团队的一个很好的选择，因为它明确定义了产品发布的周期。</p>
+<p>最后，如果你需要最大限度的保持仓库隔离，控制代码修改，或者有许多的开发者在为仓库贡献代码，这时候你可以考虑使用<a href="https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow" target="_blank" rel="noopener">分叉（forking）开发工作流</a> 。</p>
+<p>作为一个专业团队。如果你真的想发挥Git的最大价值，你应当考虑使用分支开发工作流，它是真正的分布式开发工作流，保证了高度的安全性，极大的可扩展性，非常必要的灵活性。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>让你的团队过渡到Git不是一件容易的事情，不过也没多难。这篇文章介绍了迁移你的代码库的常见选项，向开发团队推荐Git,处理安全和权限问题。这篇文章也介绍了在迁移过程中开发者们寻药准备好接受的一些挑战。</p>
+<p>最后希望你已经掌握强有力的知识基础，来将Git分布式开发工作流介绍到你们公司，而且不管团队的大小或者当前你们是什么开发流，都可以迁移。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/svn-to-git-prepping-your-team-migration" target="_blank" rel="noopener">SVN to Git - prepping for the migration</a></p>
+
       
 
       
@@ -387,15 +602,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">韭菜</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SVN到Git</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">独立思考</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">迁移</a>
         		</li>
       		
 		</ul>
@@ -405,7 +620,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/16/2018-06-16-small-leek-become-independency/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-SVN-To-Git/">展开全文 >></a>
         </p>
       
 
@@ -435,33 +650,318 @@
 
 
   
-    <article id="post-2018-06-15-small-leek-become-strongger" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-03-18-Git-LFS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/2018-06-15-small-leek-become-strongger/">Hoooo和他的朋友们区块链寻宝日记（8）——— 做一个不断成长的小韭菜</a>
+      <a class="article-title" href="/2017/03/18/2017-03-18-Git-LFS/">【译文】Git大文件处理系统（Git LFS）</a>
     </h1>
   
 
         
-        <a href="/2018/06/15/2018-06-15-small-leek-become-strongger/" class="archive-article-date">
-  	<time datetime="2018-06-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
+        <a href="/2017/03/18/2017-03-18-Git-LFS/" class="archive-article-date">
+  	<time datetime="2017-03-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这几天学习了许多的区块链知识，恶补各种币圈、链圈的资讯。看了不少大佬的分享、看音视频教程，看各类文章、看了些书籍，深刻认识到自己在区块链行业自己是有多无知，绝对的小韭菜啊。一个不懂投资，不懂区块链按行业的过去现在和未来，不懂区块链技术的小韭菜，区块链行业我真的小白，什么都不懂啊。</p>
-<p>区块链行业由于和钱走的太近，行业依然处于婴儿期，许多表层的东西会影响到一个小韭菜的判断。大家都在忙着去赚钱，忙着炒币，忙着关注各种资讯，忙着捡便宜空投币，不知不觉时间和精力就溜走了。</p>
-<p>佛系炒币在我业余搞搞的时候还蛮容易，但当自己all in进来发现做不到啊。</p>
-<p><strong><em>小韭菜的我需要在烦躁的时候提醒自己：人最宝贵的是身体健康、是把生活过成越来越高的质量，做一个不断成长的小韭菜，和时间做朋友，时间会让自己变老，然后就是老韭菜了。</em></strong></p>
-        
-          <a class="article-more-a" href="/2018/06/15/2018-06-15-small-leek-become-strongger/#more">more >></a>
-        
+        <h2 id="Git-LFS是什么呢？"><a href="#Git-LFS是什么呢？" class="headerlink" title="Git LFS是什么呢？"></a><strong>Git LFS</strong>是什么呢？</h2><p>Git是分布式版本控制系统，这意味着在克隆过程中会将仓库的所有历史传输到客户端。对于包涵大文件的项目，尤其是经常被修改的大文件，这意味初始化克隆需要大量时间，因为所有的文件都需要下载到客户端。<strong>Git LFS</strong>是由Atlassian, GitHub以及其他开源贡献者开发的Git的一个扩展，它通过“惰性”地下载相关的大文件的版本来有效降低大文件的影响，尤其在大文件通过checkout下载而不是克隆和获取期间。</p>
+<p><strong>Git LFS</strong>通过用小型指针（pointer）文件，来取代仓库中的大文件。在正常使用中，你将不会看见这些指针文件，因为它们是通过<strong>Git LFS</strong>来自动处理的：</p>
+<p>当你向仓库添加一个文件，<strong>Git LFS</strong>使用一个指针来代替它的内容，并且把文件内容存储在<strong>Git LFS</strong>的缓存中。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:9abf0939-a978-4867-a751-28bd1ca318de/01.svg" alt="**Git LFS** - git add"></p>
+<p>当你推送提交到服务器时，被推送的新提交相关的<strong>Git LFS</strong>文件就会从<strong>Git LFS</strong>缓存中推送到远程的绑定你的仓库的<strong>Git LFS</strong>储备库。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:cb729dbe-3c28-4775-821d-0e2518668d8b/02.svg" alt="**Git LFS** - git push"></p>
+<p>当你切换一个包含<strong>Git LFS</strong> 指针的提交时，他们会被本地的<strong>Git LFS</strong>缓存文件取代，或者从远程<strong>Git LFS</strong>储备库下载。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:7e70a242-db91-4093-b178-c1281fe3ddbb/03.svg" alt="**Git LFS** - git checkout"></p>
+<p><strong>Git LFS</strong>对使用者是无感知的：在工作区，你总是能看到真实文件的内容，这意味着你不需要更改存在的Git 工作流就可以使用<strong>Git LFS</strong>。你可以像之前一样简单的切换、编辑、添加和提交。克隆和拉取将会非常的迅速，因为你仅仅下载你检出的提交相关的大文件，而不是该文件的所有已经存在的版本。</p>
+<p>为了使用<strong>Git LFS</strong>，你将需要一个支持<strong>Git LFS</strong>的服务器，比如<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket Cloud</a> 或者 <a href="https://www.atlassian.com/software/bitbucket/server" target="_blank" rel="noopener">Bitbucket Server</a>。仓库使用者将需要安装<a href="https://www.atlassian.com/git/tutorials/git-lfs#installing-git-lfs" target="_blank" rel="noopener"><strong>Git LFS</strong> command-line client installed</a>，或者支持<strong>Git LFS</strong>的图形化客户端，比如<a href="https://www.sourcetreeapp.com/" target="_blank" rel="noopener">SourceTree</a>。有趣的事实：Atlassian 公司的开发者Steve Streeting开发了SourceTree，他也是<strong>Git LFS</strong>项目的主要贡献者，因此<strong>SourceTree</strong>对<strong>Git LFS</strong>支持非常的棒。</p>
+<h2 id="安装-Git-LFS"><a href="#安装-Git-LFS" class="headerlink" title="安装 Git LFS"></a>安装 <strong>Git LFS</strong></h2><p>安装Git LFS的方式有三种：</p>
+<p>a.使用你最喜欢的安装包管理器，使用Homebrew，MacPorts，dnf，packagecloud都可以安装git-lfs安装包。</p>
+<p>b.从项目的的官网上下载和安装Git LFS。</p>
+<p>c.安装SourceTree,它是免费的Git图形化客户端，自带了Git LFS。</p>
+<p>一旦git-lfs已经在你你的电脑上，你可以执行<strong>git lfs install</strong>初始化<strong>Git LFS</strong>（你如果你安装了SourceTree可以跳过这步）。</p>
+<pre><code>$ git lfs install
+Git LFS initialized.
+</code></pre><p>你只需要执行一次<strong>git lfs install</strong>命令，一旦你初始化了你的仓库，<strong>Git LFS</strong>将在你执行克隆包含<strong>Git LFS</strong>的内容时仓库自动引导启用。</p>
+<h2 id="创建一个新的-Git-LFS仓库"><a href="#创建一个新的-Git-LFS仓库" class="headerlink" title="创建一个新的 Git LFS仓库"></a>创建一个新的 Git LFS仓库</h2><p>为了创建一个Git LFS支持的仓库，你需要在创建仓库之后执行<strong>git lfs install</strong>命令：</p>
+<pre><code># initialize Git
+$ mkdir Atlasteroids
+$ cd Atlasteroids
+$ git init
+Initialized empty Git repository in /Users/tpettersen/Atlasteroids/.git/
+
+# initialize Git LFS
+$ git lfs install
+Updated pre-push hook.
+Git LFS initialized.
+</code></pre><p>这个命令会你安装<strong>推送前hook（pre-push Git hook）</strong>，它们将在你执行git push命令时传输<strong>Git LFS</strong>文件。</p>
+<p>Git LFS对于所有的Bitbucket Cloud 仓库自动可用，对Bitbucket Server，你需要在你的仓库设置中启用Git LFS：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:2d4bd71b-5205-4297-aec9-f0c91bfb6ad2/05.png?cdnVersion=dj" alt="Bitbucket Server **Git LFS**"></p>
+<p>一旦<strong>Git LFS</strong>在你的仓库中被初始化后，你可以指定哪些文件使用<a href="https://www.atlassian.com/git/tutorials/git-lfs#tracking-files" target="_blank" rel="noopener"><strong>Git LFS</strong> track
+</a>追踪。</p>
+<h2 id="克隆一个已经包含Git-LFS的仓库"><a href="#克隆一个已经包含Git-LFS的仓库" class="headerlink" title="克隆一个已经包含Git LFS的仓库"></a>克隆一个已经包含<strong>Git LFS</strong>的仓库</h2><p>在<strong>Git LFS</strong>安装后，你可以像往常一样使用<strong>git clone</strong>命令克隆<strong>Git LFS</strong>仓库。在克隆过程的最后，Git会自动切换到默认的分支（通常是master),完成这次切换过程需要的所有<strong>Git LFS</strong>文件都会被下载下来，比如：</p>
+<pre><code>$ git clone git@bitbucket.org:tpettersen/Atlasteroids.gitCloning into &apos;Atlasteroids&apos;...
+remote: Counting objects: 156, done.
+remote: Compressing objects: 100% (154/154), done.
+remote: Total 156 (delta 87), reused 0 (delta 0)Receiving objects: 100% (156/156), 54.04 KiB | 31.00 KiB/s, done.
+Resolving deltas: 100% (87/87), done.
+Checking connectivity... done.
+Downloading Assets/Sprites/projectiles-spritesheet.png (21.14 KB)
+Downloading Assets/Sprites/productlogos_cmyk-spritesheet.png (301.96 KB)Downloading Assets/Sprites/shuttle2.png (1.62 KB)
+Downloading Assets/Sprites/space1.png (1.11 MB)Checking out files: 100% (81/81), done.
+</code></pre><p>仓库里的有四个PNG文件被<strong>Git LFS</strong>追踪，当执行git clone时，<strong>Git LFS</strong>文件一个一个被下载下来，因为指向他们的指针文件已经被切换到你的仓库了。</p>
+<h2 id="加快克隆速度"><a href="#加快克隆速度" class="headerlink" title="加快克隆速度"></a>加快克隆速度</h2><p>如果你正在克隆包含大量LFS文件的仓库，明确表明你在使用<strong>Git LFS</strong>命令可以提高响应能力： </p>
+<pre><code>$ git lfs clone git@bitbucket.org:tpettersen/Atlasteroids.gitCloning into &apos;Atlasteroids&apos;...
+remote: Counting objects: 156, done.
+remote: Compressing objects: 100% (154/154), done.
+remote: Total 156 (delta 87), reused 0 (delta 0)
+Receiving objects: 100% (156/156), 54.04 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (87/87), done.
+Checking connectivity... done.**
+Git LFS**: (4 of 4 files) 1.14 MB / 1.15 MB
+</code></pre><p>相比<strong>Git LFS</strong>逐个下载，<strong>git lfs clone</strong>等待切换完成，然后把必需的<strong>Git LFS</strong>文件打包下载，这利用并行下载的优势，明显减少了HTTP请求的数量和进程的陡增（这尤其在Windows中作用明显）。</p>
+<h2 id="拉取以及切换（Pulling-and-checking-out）"><a href="#拉取以及切换（Pulling-and-checking-out）" class="headerlink" title="拉取以及切换（Pulling and checking out）"></a>拉取以及切换（Pulling and checking out）</h2><p>像克隆一样，你可以正常使用git pull拉取<strong>Git LFS</strong> 仓库，在pull完成后，自动执行切换过程时，任何需要的<strong>Git LFS</strong>文件会被下载。</p>
+<pre><code>$ git pull
+Updating 4784e9d..7039f0a
+Downloading Assets/Sprites/powerup.png (21.14 KB)
+Fast-forwardAssets/Sprites/powerup.png | 3 +
+Assets/Sprites/powerup.png.meta | 4133 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++2 files changed, 4136 insertions(+)
+create mode 100644 Assets/Sprites/projectiles-spritesheet.png
+create mode 100644 Assets/Sprites/projectiles-spritesheet.png.meta
+</code></pre><p>不需要明确的命令来检索<strong>Git LFS</strong>内容，然后如果切换因为未知的原因失败，你可以使用<strong>git lfs pull</strong>为当前的提交下载所有丢失的<strong>Git LFS</strong>内容：</p>
+<pre><code>$ git lfs pull
+Git LFS: (4 of 4 files) 1.14 MB / 1.15 MB
+</code></pre><h2 id="加快拉取速度"><a href="#加快拉取速度" class="headerlink" title="加快拉取速度"></a>加快拉取速度</h2><p>像<strong>git lfs clone</strong>类似，<strong>git lfs pull</strong>可以将<strong>Git LFS</strong> 文件打包下载，如果你明确知道自从上次拉取，已经有大量文件被修改了，你可能希望在切换过程中关闭自动Git LFS自动下载，然后使用<strong>git lfs pull</strong>命令将Git LFS内容打包下载。在你调用<strong>git pull</strong>时可以通过重写带<strong>-c</strong>参数的Git config来实现：</p>
+<pre><code>$ git -c filter.lfs.smudge= -c filter.lfs.required=false pull &amp;&amp; git lfs pull
+</code></pre><p>因为这条命令太长，你可能希望使用Git别名来快速运用 <strong>Git LFS pull</strong>命令：</p>
+<pre><code>$ git config --global alias.plfs &quot;\!git -c filter.lfs.smudge= -c filter.lfs.required=false pull &amp;&amp; git lfs pull&quot;
+
+$ git plfs
+</code></pre><p>当需要下载大量Git LFS 文件时，这会大大提高响应能力（再重申一遍，尤其在Window上）。</p>
+<h2 id="使用Git-LFS跟踪文件"><a href="#使用Git-LFS跟踪文件" class="headerlink" title="使用Git LFS跟踪文件"></a>使用<strong>Git LFS</strong>跟踪文件</h2><p>当你在仓库中添加一个大文件时，你需要告诉<strong>Git LFS</strong>追踪它，可以通过<strong>git lfs track</strong>命令实现：</p>
+<pre><code>$ git lfs track &quot;*.ogg&quot;
+Tracking *.ogg
+</code></pre><p>注意”*.ogg”的双引号非常重要，如果遗漏了会导致你shell的未知问题发生，在你当前仓库将会为每个.ogg文件创建单独的入口：</p>
+<pre><code># probably not what you want
+$ git lfs track *.ogg
+Tracking explode.ogg
+Tracking music.ogg
+Tracking phaser.ogg
+</code></pre><p><strong>Git LFS</strong>支持的模型和<a href="https://www.atlassian.com/git/tutorials/gitignore" target="_blank" rel="noopener">.gitignore
+</a>一模一样，比如：</p>
+<pre><code># track all .ogg files in any directory
+$ git lfs track &quot;*.ogg&quot;
+
+# track files named music.ogg in any directory
+$ git lfs track &quot;music.ogg&quot;
+
+# track all files in the Assets directory and all subdirectories
+$ git lfs track &quot;Assets/&quot;
+
+# track all files in the Assets directory but *not* subdirectories
+$ git lfs track &quot;Assets/*&quot;
+
+# track all ogg files in Assets/Audio
+$ git lfs track &quot;Assets/Audio/*.ogg&quot;
+
+# track all ogg files in any directory named Music
+$ git lfs track &quot;**/Music/*.ogg&quot;
+
+# track png files containing &quot;xxhdpi&quot; in their name, in any directory
+$ git lfs track &quot;*xxhdpi*.png
+</code></pre><p>These patterns are relative to the directory in which you ran the git lfs track command. To keep things simple, it is best to run git lfs track from the root of your repository. Note that Git LFS does not support negative patterns like .gitignore does.</p>
+<p>After running git lfs track, you’ll notice a new file named .gitattributes in the directory you ran the command from. .gitattributes is a Git mechanism for binding special behaviors to certain file patterns. Git LFS automatically creates or updates .gitattributes files to bind tracked file patterns to the Git LFS filter. However, you will need to commit any changes to the .gitattributes file to your repository yourself:</p>
+<pre><code>$ git lfs track &quot;*.ogg&quot;
+Tracking *.ogg
+
+$ git add .gitattributes
+
+$ git diff --cached
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..b6dd0bb
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1 @@
++*.ogg filter=lfs diff=lfs merge=lfs -text
+
+$ git commit -m &quot;Track ogg files with Git LFS&quot;
+</code></pre><p>For ease of maintenance, it is simplest to keep all Git LFS patterns in a single .gitattributes file by always running git lfs track from the root of your repository. However, you can display a list of all patterns that are currently tracked by Git LFS (and the .gitattributes files they are defined in) by invoking git lfs track with no arguments:</p>
+<pre><code>$ git lfs track
+Listing tracked paths
+ *.stl (.gitattributes)
+ *.png (Assets/Sprites/.gitattributes)
+ *.ogg (Assets/Audio/.gitattributes)
+</code></pre><p>You can stop tracking a particular pattern with Git LFS by simply removing the appropriate line from your .gitattributes file, or by running the git lfs untrack command:</p>
+<pre><code>$ git lfs untrack &quot;*.ogg&quot;
+Untracking *.ogg
+$ git diff
+diff --git a/.gitattributes b/.gitattributes
+index b6dd0bb..e69de29 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -1 +0,0 @@
+-*.ogg filter=lfs diff=lfs merge=lfs -text
+</code></pre><p>After running git lfs untrack you will again have to commit the changes to .gitattributes yourself.</p>
+<h2 id="提交和推送（Committing-and-pushing）"><a href="#提交和推送（Committing-and-pushing）" class="headerlink" title="提交和推送（Committing and pushing）"></a>提交和推送（Committing and pushing）</h2><p>你可以像通常一样提交和推送到一个包含<strong>Git LFS</strong>内容的的仓库，如果你提交被<strong>Git LFS</strong>追踪管理的文件，你将会看到通过git push推送的内容传输的服务器端时候输出一些附加的信息：</p>
+<pre><code>$ git push
+Git LFS: (3 of 3 files) 4.68 MB / 4.68 MB 
+Counting objects: 8, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (8/8), 1.16 KiB | 0 bytes/s, done.
+Total 8 (delta 1), reused 0 (delta 0)
+To git@bitbucket.org:tpettersen/atlasteroids.git
+ 7039f0a..b3684d3 master -&gt; master
+</code></pre><p>如果因为某些原因推送失败，推送会取消并且你可以完全放心地再次尝试。像Git,<strong>Git LFS</strong>存储的内容是可以寻址的：内容是通过本身的<strong>SHA-256</strong>格式的哈希值作为key来存储的，这意味重新传输<strong>Git LFS</strong>文件是安全可行的。你不会用错误的版本的文件内容重写<strong>Git LFS</strong>文件。</p>
+<h3 id="在不同主机间转移Git-LFS仓库"><a href="#在不同主机间转移Git-LFS仓库" class="headerlink" title="在不同主机间转移Git LFS仓库"></a>在不同主机间转移<strong>Git LFS</strong>仓库</h3><p>为了把一个<strong>Git LFS</strong>仓库迁移到另外一台服务器，你可以结合使用带有<strong>–all</strong>参数的<strong>git lfs fetch</strong>和<strong>git lfs push</strong>命令来实现。</p>
+<p>比如，为了将一个叫做<strong>github</strong>的远程仓库移动到<strong>bitbucket</strong>远程仓库，你可以这样做😉：</p>
+<pre><code># create a bare clone of the GitHub repository
+$ git clone --bare git@github.com:kannonboy/atlasteroids.git
+$ cd atlasteroids
+
+# set up named remotes for Bitbucket and GitHub
+$ git remote add bitbucket git@bitbucket.org:tpettersen/atlasteroids.git
+$ git remote add github git@github.com:kannonboy/atlasteroids.git
+
+# fetch all Git LFS content from GitHub
+$ git lfs fetch --all github
+
+# push all Git and Git LFS content to Bitbucket
+$ git push --mirror bitbucket
+$ git lfs push --all bitbucket
+</code></pre><h2 id="获取附加的Git-LFS历史"><a href="#获取附加的Git-LFS历史" class="headerlink" title="获取附加的Git LFS历史"></a>获取附加的<strong>Git LFS</strong>历史</h2><p>Git LFS一般仅仅下载本地切换需要的提交的文件。但是，你可以使用<strong>git lfs fetch –recent</strong>强制<strong>Git LFS</strong>下载附加的内容，因为其他人最近修改了分支。</p>
+<pre><code>$ git lfs fetch --recent
+Fetching master
+Git LFS: (0 of 0 files, 14 skipped) 0 B / 0 B, 2.83 MB skipped Fetching recent branches within 7 days
+Fetching origin/power-ups
+Git LFS: (8 of 8 files, 4 skipped) 408.42 KB / 408.42 KB, 2.81 MB skipped
+Fetching origin/more-music
+Git LFS: (1 of 1 files, 14 skipped) 1.68 MB / 1.68 MB, 2.83 MB skipped
+</code></pre><p>当你要出去吃饭的时候批处理要下载的文件这招很有用，或者你准备评审你同事的代码，但因为你不能在随后网络差的情况下下载，比如，你可能希望执行<strong>git lfs fetch –recent</strong>在登机之前下载最新的内容！</p>
+<p>Git LFS认为任何分支和标签如果包含一周只能得提交就是最近。你可以通过设置<strong>lfs.fetchrecentrefsdays</strong>来配置这个天数数字。</p>
+<pre><code># download Git LFS content for branches or tags updated in the last 10 days
+$ git config lfs.fetchrecentrefsdays 10
+</code></pre><p>默认，<strong>git lfs fetch –recent</strong>将会仅仅下载一个最近分支或者标签的Git LFS内容。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:ce62b78b-dc55-49aa-9b4e-33158f7a0d51/06.svg?cdnVersion=dj" alt="**Git LFS** - **Git LFS** fetch --recent"></p>
+<p>然而你可以配置Git LFS下载早于最近分支和标签的提交，这可以通过配置<strong>lfs.fetchrecentcommitsdays</strong>属性来实现：</p>
+<pre><code># download the latest 3 days of Git LFS content for each recent branch or tag
+$ git config lfs.fetchrecentcommitsdays 3
+</code></pre><p>小心使用这个配置：如果你拥有快速变化的分支，这可能导致有大量的数据需要被下载。然而如果你需要评审分支上插入的修改，比如从其他分支挑选（cherry pick）的提交，或者重写了提交历史。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:4909bcee-61de-4b76-bc7a-b924e84e2695/07.svg?cdnVersion=dj" alt="**Git LFS** - **Git LFS** fetch --recent commits"></p>
+<p>像我们在<strong>在不同主机间转移</strong>Git LFS<strong>仓库</strong>这部分讲的那样，你也可以使用<strong>git lfs fetch –all</strong>命令来选择获取所有的<strong>Git LFS</strong>内容：</p>
+<pre><code>$ git lfs fetch --all
+Scanning for all objects ever referenced...
+✔ 23 objects found 
+Fetching objects...
+Git LFS: (9 of 9 files, 14 skipped) 2.06 MB / 2.08 MB, 2.83 MB skipped
+</code></pre><h2 id="删除-Git-LFS-文件"><a href="#删除-Git-LFS-文件" class="headerlink" title="删除 Git LFS 文件"></a>删除 <strong>Git LFS</strong> 文件</h2><p>你可以使用<strong>git lfs prune</strong>命令删除本地的<strong>Git LFS</strong>缓存中的文件。</p>
+<pre><code>$ git lfs prune
+✔ 4 local objects, 33 retained 
+Pruning 4 files, (2.1 MB)
+✔ Deleted 4 files
+</code></pre><p>这会删除认为过旧的本地 Git LFS文件，没有被引用的文件被认为是过旧的文件：</p>
+<ul>
+<li>当前切换的提交</li>
+</ul>
+<p>一个还没有被推送的提交（到远程，或者任何在<strong>lfs.pruneremotetocheck</strong>设置的）</p>
+<ul>
+<li>一个最近的提交</li>
+</ul>
+<p>默认，一个最近的提交是过去十天的任何一个提交，这是通过添加如下内容计算的：</p>
+<ul>
+<li><p>在获取附加的<strong>Git LFS</strong>历史部分讨论过的<strong>lfs.fetchrecentrefsdays</strong>属性的值。</p>
+</li>
+<li><p><strong>lfs.pruneoffsetdays</strong>属性的值（默认为3）。</p>
+</li>
+</ul>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:fda8acc7-67bc-4af0-b047-f6a226aa68bb/08.svg?cdnVersion=dj" alt="git lfs prune"></p>
+<p>你可以为配置一个持用<strong>Git LFS</strong>内容更长的时间：</p>
+<pre><code># don&apos;t prune commits younger than four weeks (7 + 21)
+$ git config lfs.pruneoffsetdays 21
+</code></pre><p>不像Git内置的垃圾回收， Git LFS内容不会自动删除，因此定期执行<strong>git lfs prune</strong>来保留你本地的仓库文件大小是很正确的做法。</p>
+<p>你可以测试在<strong>git lfs prune –dry-run</strong>命令执行后有什么效果：</p>
+<pre><code>$ git lfs prune --dry-run
+✔ 4 local objects, 33 retained 
+4 files would be pruned (2.1 MB)
+</code></pre><p>更精确地查看哪个Git LFS对象被删除可以使用<strong>git lfs prune –verbose –dry-run</strong>命令：</p>
+<pre><code>$ git lfs prune --dry-run --verbose
+✔ 4 local objects, 33 retained 
+4 files would be pruned (2.1 MB)
+ * 4a3a36141cdcbe2a17f7bcf1a161d3394cf435ac386d1bff70bd4dad6cd96c48 (2.0 MB)
+ * 67ad640e562b99219111ed8941cb56a275ef8d43e67a3dac0027b4acd5de4a3e (6.3 KB)
+ * 6f506528dbf04a97e84d90cc45840f4a8100389f570b67ac206ba802c5cb798f (1.7 MB)
+ * a1d7f7cdd6dba7307b2bac2bcfa0973244688361a48d2cebe3f3bc30babcf1ab (615.7 KB)
+</code></pre><p>通过使用<strong>–verbose</strong>模式输出的十六进制的字符串是被删除的<strong>Git LFS</strong>对象的<strong>SHA-256</strong>哈希值（也被称作对象ID,或者OIDs）。你可以使用在<strong>找到引用某个</strong>Git LFS<strong>对象的路径或者提交</strong>章节介绍的技巧去找到其他想要删除的对象。</p>
+<p>作为一个额外安全检查工作，你可以使用<strong>–verify-remote</strong>选项来检查Git LFS store是否存在想要删除的Git LFS对象的拷贝。</p>
+<pre><code>$ git lfs prune --verify-remote
+✔ 16 local objects, 2 retained, 12 verified with remote 
+Pruning 14 files, (1.7 MB)
+✔ Deleted 14 files
+</code></pre><p>这让删除过程非常的非常的缓慢，但是这可以帮助你明白所有删除的对象都是可以从服务器端恢复的。你可以为你的系统用久开启<strong>–verify-remote</strong> 选项，这可以通过全局配置<strong>lfs.pruneverifyremotealways</strong>属性来实现。</p>
+<pre><code>$ git config --global lfs.pruneverifyremotealways true
+</code></pre><p>或者你可以通过去掉<strong>–global</strong>选项来仅仅为当前会话的仓库开启远程验证。</p>
+<h2 id="删除远程服务器的Git-LFS文件"><a href="#删除远程服务器的Git-LFS文件" class="headerlink" title="删除远程服务器的Git LFS文件"></a>删除远程服务器的<strong>Git LFS</strong>文件</h2><p><strong>Git LFS </strong>命令行客户端工具不支持删除服务器文件，那如何实现删除他们就得依靠你的服务器提供方了。</p>
+<p>在<strong>Bitbucket Cloud</strong>上，你可以通过仓库设置&gt;Git LFS查看和删除<strong>Git LFS</strong>文件。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:46218516-f4aa-490a-9afc-c36ca863c98f/09.png?cdnVersion=dj" alt="Bitbucket Cloud - delete lfs from server"></p>
+<p>记住每个<strong>Git LFS</strong>文件通过<strong>SHA-256 OID</strong>索引，通过界面是看到不到文件路径的。这是因为在不同的提交中对一个给定的对象会有不同的路径，因此找到他们会很慢。</p>
+<p>确定一个给定的<strong>Git LFS</strong>文件的具体内容，你有三个选择：</p>
+<ul>
+<li><p>通过查看<strong>Bitbucket Git LFS</strong>界面的左侧的文件缩略图图标和文件类型</p>
+</li>
+<li><p>使用右侧链接中查找到文件的<strong>SHA-256 OID</strong>，然后使用下面章节讨论的方法下载文件。</p>
+</li>
+</ul>
+<h2 id="找到引用某个Git-LFS对象的路径或者提交"><a href="#找到引用某个Git-LFS对象的路径或者提交" class="headerlink" title="找到引用某个Git LFS对象的路径或者提交"></a>找到引用某个<strong>Git LFS</strong>对象的路径或者提交</h2><p>If you have a Git LFS SHA-256 OID, you can determine which commits reference it with git log –all -p -S <oid>:</oid></p>
+<p>如果你有一个<strong>Git LFS</strong>的<strong>SHA-256 OID</strong>，你可以确定引用它的提交，使用<strong>git log –all -p -S <oid></oid></strong>即可：</p>
+<pre><code>$ git log --all -p -S 3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
+commit 22a98faa153d08804a63a74a729d8846e6525cb0
+Author: Tim Pettersen &lt;tpettersen@atlassian.com&gt;
+Date: Wed Jul 27 11:03:27 2016 +1000
+
+ Projectiles and exploding asteroids
+
+diff --git a/Assets/Sprites/projectiles-spritesheet.png
+new file mode 100755
+index 0000000..49d7baf
+--- /dev/null
++++ b/Assets/Sprites/projectiles-spritesheet.png
+@@ -0,0 +1,3 @@
++version https://git-lfs.github.com/spec/v1
++oid sha256:3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
++size 21647
+</code></pre><p><strong>git log</strong>魔法会为所有的分支(-all)的所有提交生成一个补丁（-p），添加和删除一行(-S)包含特定字符串(一个Git LFS SHA-256 OID)。</p>
+<p>这个补丁展示了LFS对象的提交和路径，以及查看到谁添加了它，什么时候被提交的。你可以简单的切换分支，如果需要Git LFS会下载这个文件，并出现在你的工作区。</p>
+<p>如果你在你当前的HEAD，或者特定的分支中怀疑有一个特定的Git LFS对象，你可以使用<strong>git grep</strong>来找到文件路径来索引它：</p>
+<pre><code># find a particular object by OID in HEAD
+$ git grep 3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc HEAD
+HEAD:Assets/Sprites/projectiles-spritesheet.png:oid sha256:3b6124b8b01d601fa20b47f5be14e1be3ea7759838c1aac8f36df4859164e4cc
+
+# find a particular object by OID on the &quot;power-ups&quot; branch
+$ git grep e88868213a5dc8533fc9031f558f2c0dc34d6936f380ff4ed12c2685040098d4 power-ups
+power-ups:Assets/Sprites/shield2.png:oid sha256:e88868213a5dc8533fc9031f558f2c0dc34d6936f380ff4ed12c2685040098d4
+</code></pre><p>你可以用任意包含Git LFS对象的引用，提交，树来替代HEAD,或者power-up。</p>
+<h2 id="包含或者排除Git-LFS文件"><a href="#包含或者排除Git-LFS文件" class="headerlink" title="包含或者排除Git LFS文件"></a>包含或者排除<strong>Git LFS</strong>文件</h2><p>在某些条件中，你可能想仅仅下载某个特定提交的Git LFS内容。比如，当配置一个持续化集成进行单元测试，你可能仅仅需要你的源代码，因此为了构建代码可能想去除不必要的大文件。</p>
+<p>你可以通过使用<strong>git lfs fetch -X (或者 –exclude)</strong>排除一个通配模式或者一个目录：</p>
+<pre><code>$ git lfs fetch -X &quot;Assets/**&quot;
+</code></pre><p>可替代的，你可能想仅仅包含一个特定的模式或者子目录。比如，一个音频工程仅仅想使用<strong>git lfs fetch -I (或者 –include)</strong>获取ogg和wav格式的文件。</p>
+<pre><code>$ git lfs fetch -I &quot;*.ogg,*.wav&quot;
+</code></pre><p>如果你兼顾包含和排除需求。符合包含通配模式的文件和不匹配排除通配模式的文件会被获取。比如，你可以除了gifs目录，获取Assets目录的所有内容。</p>
+<pre><code>$ git lfs fetch -I &quot;Assets/**&quot; -X &quot;*.gif&quot;
+</code></pre><p>排除和包含支持相同的模式，比如<strong>git lfs track</strong>和<strong>.gitignore</strong>。你可以为特定的仓库，通过设置<strong>lfs.fetchinclude</strong>和<strong>lfs.fetchexclude</strong> 配置属性让这些模式永久有效。</p>
+<pre><code>$ git config lfs.fetchinclude &quot;Assets/**&quot;
+$ git config lfs.fetchexclude &quot;*.gif&quot;
+</code></pre><p>这些配置可以通过加上<strong>–global</strong>选项，让其也可以运用在你系统的所有仓库中。</p>
+<h2 id="给Git-LFS文件加锁"><a href="#给Git-LFS文件加锁" class="headerlink" title="给Git LFS文件加锁"></a>给<strong>Git LFS</strong>文件加锁</h2><p>不幸的是，没有好的方式来解决二进制文件的合并冲突。在版本控制系统中传统解决避免这类合并冲突的方式是给文件加锁。<strong>Git LFS</strong>目前还不支持给文件加锁。然而已经有一些用来实施具体文件加锁的具体建议而且一些实现工作已经在开始做，因此让我们期待Git LFS发布它的那一天。</p>
+<p>在这之前，最好的避免这类冲突的办法就是在你修改二进制文件的时候，通知团队成员，尤其当他们也可能修改的时候。</p>
+<h2 id="Git-LFS是如何工作的"><a href="#Git-LFS是如何工作的" class="headerlink" title="Git LFS是如何工作的"></a><strong>Git LFS</strong>是如何工作的</h2><p>如果你对清理、模糊过滤、推送前hook以及其他关于 Git LFS的有趣的科学问题，你可以查看<strong>LinuxCon 2016</strong>上的来自<strong>Atlassian</strong>的<strong>Git LFS</strong>演讲。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/git-lfs" target="_blank" rel="noopener">Git LFS</a></p>
+
       
 
       
@@ -474,23 +974,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">韭菜</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">成长</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git LFS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">时间</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">行动计划</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 大文件处理系统</a>
         		</li>
       		
 		</ul>
@@ -500,7 +996,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/15/2018-06-15-small-leek-become-strongger/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/03/18/2017-03-18-Git-LFS/">展开全文 >></a>
         </p>
       
 
@@ -530,31 +1026,153 @@
 
 
   
-    <article id="post-2018-06-14-a-chif-learn-from-tycoon" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-03-12-Refs-and-the-Reflog" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/14/2018-06-14-a-chif-learn-from-tycoon/">Hoooo和他的朋友们区块链寻宝日记（7）——— 小韭菜向大佬致敬</a>
+      <a class="article-title" href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/">【译文】Git之Refs and the Reflog</a>
     </h1>
   
 
         
-        <a href="/2018/06/14/2018-06-14-a-chif-learn-from-tycoon/" class="archive-article-date">
-  	<time datetime="2018-06-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
+        <a href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/" class="archive-article-date">
+  	<time datetime="2017-03-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天在tokenclub看了许多币圈链圈大佬的分享，比如宝二爷、老猫、井通CEO武源文、菩提创始人林吓洪、起源资本韩智其等的分享。</p>
-<p>这些大佬很早就接触并参与到区块链，早早实现了财务自由时间自由，他们都说他们很忙，小韭菜的我好像也理解啊，人总是得找事情干的，否则闲着也无聊。但是。。。</p>
-        
-          <a class="article-more-a" href="/2018/06/14/2018-06-14-a-chif-learn-from-tycoon/#more">more >></a>
-        
+        <p># </p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:8d62148d-ba03-4762-bd3a-06ddc465b07f/hero.svg?cdnVersion=dj" alt="Refs and the Reflog"></p>
+<p>Git主要用来管理提交的：你准备提交，创建提交，查看旧的提交，并且使用其他Git命令来在仓库间迁移提交。大多数这些命令都是在某种形式上用来操作一个提交的，这些命令一般接受提交引用作为他们的参数，比如，你可以通过传入提交的哈希值来<strong>git checkout</strong>查看一个旧的提交，或者你可以传入一个分支名在分支间切换。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:62440330-6153-4f43-9554-b94c7b205e62/01.svg?cdnVersion=dj" alt="Many ways of referring to a commit"></p>
+<p>有很多的方式方法来找到某个提交，理解这点会让这些明亮更强大。在这篇文章，我们将通过研究找到某个提交的各种方法来揭示<strong>git checkout</strong>,<strong>git branch</strong>以及<strong>git push</strong>这些常用命令的内部工作机制。</p>
+<p>我们将学习通过Git的reflog方法来访问“丢失”的提交来重新找到会他们。</p>
+<h2 id="哈希值（Hashes）"><a href="#哈希值（Hashes）" class="headerlink" title="哈希值（Hashes）"></a>哈希值（Hashes）</h2><p>最直接访问一个提交的方法就是通过它的<strong>SHA-1</strong>哈希值了，它是每个提交的唯一ID，你可以使用<strong>git log</strong>的输出找到所有的提交的哈希值。</p>
+<pre><code>commit 0c708fdec272bc4446c6cabea4f0022c2b616eba
+Author: Mary Johnson &lt;mary@example.com&gt;
+Date: Wed Jul 9 16:37:42 2014 -0500
+Some commit message
+</code></pre><p>当你需要把这个提交作为参数传递给其他Git命令时，你仅仅需要确定足够识别唯一代表这个提交的的字符数就行，比如，你想了解上面这个提交的详细信息，你可以使用如下命令：</p>
+<pre><code>git show 0c708f
+</code></pre><p>有时候我们需要提交的哈希值来处理一个分支、标签或者另外一个非简介的引用。这个时候，你可以使用<strong>git rev-parse</strong>命令，下面这个命令返回指向master分支的哈希值：</p>
+<pre><code>git rev-parse master
+</code></pre><p>对于写一些需要接受提交引用作为参数的自定义脚本这非常有用。你可以使用<strong>git rev-parse</strong>来自动生成提交引用，而不是手动解析出提交引用。</p>
+<h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><p>一个ref间接指向一个提交。你可以把它看做是提交哈希值的别名，它对用户来说可读性更友好。在Git内部实现机制里它代表分支或者标签。</p>
+<p>Refs采用一般的文本文件存放在<strong>.git/refs</strong>目录。可以进入.git/refs目录，来深入研究你仓库的refs。你会看到如下结构，它会因为你仓库拥有什么分支、标签、远程仓库而包含不同的文件：</p>
+<pre><code>.git/refs/
+heads/
+master
+some-feature
+remotes/
+origin/
+master
+tags/
+v0.9
+</code></pre><p>heads目录定义了仓库所有的本地分支。每个文件对应一个相关的分支，在文件内你可以找到一个提交哈希值。这个提交哈希值代表分支所在的末端位置。为了验证所说，可以试着执行如下两个命令：</p>
+<pre><code># Output the contents of `refs/heads/master` file:
+cat .git/refs/heads/master
+# Inspect the commit at the tip of the `master` branch:
+git log -1 master
+</code></pre><p><strong>cat</strong>命令返回的哈希值应该是和<strong>git log</strong>命令返回的提交ID的值是一样的。</p>
+<p>为了修改master分支的位置，在Git中可以仅仅通过修改<strong>refs/heads/master</strong>即可。类似的，创建一个分支也可以简单的在这个目录添加一个新文件，并在文件中写入一个提交哈希值就可以了。这部分解释了相比SVN，Git为什么如此轻量级。</p>
+<p>tags目录也是如此，但是它包含的是标签而不是分支。remotes目录则列出了你使用<strong>git remote</strong>命令创建的远程仓库的子目录，在每个目录中，你将找到所有你获取（fetch）到本地仓库的远程分支。</p>
+<h3 id="Specifying-Refs"><a href="#Specifying-Refs" class="headerlink" title="Specifying Refs"></a>Specifying Refs</h3><p>当传入一个ref引用给Git命令时，你可以使用ref的全名，也可以使用短名称，然后让Git去查找一个匹配的ref。你应当已经非常熟悉refs的短名了，因为你每次都会使用的分支名称。</p>
+<pre><code>git show some-feature
+</code></pre><p><strong>some-feature</strong>参数实际上就是分支的短名，Git会在使用它之前自动指向<strong>refs/heads/some-feature</strong>，你也可以在命令行明确写出完整的ref，像这样：</p>
+<pre><code>git show refs/heads/some-feature
+</code></pre><p>加上ref所在位置可以避免出现歧义。有时候这是必要的，比如，如果你有个分支和标签都叫做<strong>some-feature</strong>，那是用短名就会存在歧义了。不过，如果你遵守正确的命名传统，标签和分支的歧义通畅不会发生。</p>
+<p>我们在<strong>Refspecs</strong>章节会更多的介绍ref完整命名。</p>
+<h2 id="Packed-Refs"><a href="#Packed-Refs" class="headerlink" title="Packed Refs"></a>Packed Refs</h2><p>对于大型仓库，为了性能Git会定期执行垃圾回收来移除不必要的对象并压缩refs到一个文件中。你可以使用如下垃圾回收命令强制执行压缩:</p>
+<pre><code>git gc
+</code></pre><p>这会将refs文件夹下的每个分支和标签文件移到.git目录下的<strong>packed-refs</strong>文件中。如果打开这个文件，你将会看到提交哈希值和refs的对应关系表：</p>
+<pre><code>00f54250cf4e549fdfcafe2cf9a2c90bc3800285 refs/heads/feature
+0e25143693cfe9d5c2e83944bbaf6d3c4505eb17 refs/heads/master
+bb883e4c91c870b5fed88fd36696e752fb6cf8e6 refs/tags/v0.9
+</code></pre><p>在外部看来，Git功能的通畅不会受到任何影响，但是，如果你想知道为什么<strong>.git/refs</strong>为什么是空的，这就是原因。</p>
+<h2 id="特殊引用（Special-Refs）"><a href="#特殊引用（Special-Refs）" class="headerlink" title="特殊引用（Special Refs）"></a>特殊引用（Special Refs）</h2><p>作为refs目录的补充，在.git目录会有一些特殊的refs，如下列表所示：</p>
+<ul>
+<li>HEAD – 当前切换到的分支或者提交。</li>
+<li>FETCH_HEAD – 从远程仓库获取到的最新分支。</li>
+<li>ORIG_HEAD – 在严重修改前HEAD的备份。</li>
+<li>MERGE_HEAD – 使用git merge命令合并进当前分支的提交。</li>
+<li>CHERRY_PICK_HEAD – 你执行<strong>cherry-pick</strong>的提交。</li>
+</ul>
+<p>这鞋refs都是由Git创建和更新的。比如，<strong>git pull</strong> 命令首先会执行<strong>git fetch</strong>,这就会更新<strong>FETCH_HEAD</strong>引用，然后它会执行<strong>git merge FETCH_HEAD</strong>来完成拉取获取到的分支到分支到仓库。当然你可以像其他ref一样使用所有这些ref，和我们处理HEAD一样。</p>
+<p>这些文件会根据他们不同的类型已经不同状态而包含不同的内容。HEAD要么包含一个符号链接的ref，它指向另外一个ref而不是一个提交哈希值，或者就是包含一个提交哈希值。比如，如果你在master分支上是看看HEAD的内容吧：</p>
+<pre><code>git checkout master
+cat .git/HEAD
+</code></pre><p>内容将会是<strong>ref: refs/heads/master</strong>，这意味着HEAD指向<strong>refs/heads/master</strong>ref，Git根据这个知道它当前切换到的是master分支。如果你切换到另外一个分支，HEAD的内容会更新内容来对应新的分支。但是，如果你切换到是一个非分支的提交时，HEAD的内容则是包含一个提交的哈希值而不是一个符号链接ref，这样Git就知道它处于分离HEAD状态。</p>
+<p>大多数时候，HEAD仅仅代表你直接使用的引用，其他的通畅在写底层的脚本时候有用，比如hook到Git内部去修改Git的一些默认工作。</p>
+<h2 id="Refspecs"><a href="#Refspecs" class="headerlink" title="Refspecs"></a>Refspecs</h2><p><strong>refspec</strong>是本地仓库一个分支到远程仓库分支的关系表。这让我们可以使用本地Git命令来管理远程分支，来配置一些高级命令如<strong>git push</strong> 和<strong>git fetch</strong>的行为。</p>
+<p><strong>refspec</strong>使用<strong>[+]<src>:<dst></dst></src></strong>来表示，<strong><src> </src></strong>参数代表本地的源分支，而<strong><dst> </dst></strong>代表远程仓库的目的分支。 可选的<strong>+</strong>正数符号用来强制远程仓库执行非线型更新。</p>
+<p><strong>Refspecs</strong>可以通过给以不同名称的远程分支来和<strong>git push</strong>命令一起使用。比如，下面的命令会推送master分支到远程仓库，像一般的git push一样。但是它使用qa-master作为远程分支名。这对QA团队非常有用，他们可以推送他们的分支到远程仓库。</p>
+<pre><code>git push origin master:refs/heads/qa-master
+</code></pre><p>你也能够使用<strong>refspecs</strong>来删除远程分支，这在功能分支开发工作流中是一个常见情形，你会推送本地功能分支到远程仓库（或者为了备份目的）。远程功能分支如果在本地该分支删除还存在的话，这导致你有一个没用的功能分支。你可以通过传入空的<src>参数来推送refspec的方法来删除它们，如下所示：</src></p>
+<pre><code>git push origin :some-feature
+</code></pre><p>这个是非常方便的，因为这样你不需要登陆到远程仓库，然后手动删除远程仓库。注意在Git v1.7.0版本中你能够使用<strong>–delete</strong>标志来删除分支。下面的命令会有相同的效果：</p>
+<pre><code>git push origin --delete some-feature
+</code></pre><p>通过在配置文件中添加几行命令，你能够使用<strong>refspecs</strong>来修改<strong>git fetch</strong>的行为。默认<strong>git fetch</strong>会获取远程仓库的所有分支，原因是因为<strong>.git/config</strong>文件的配置导致：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/*:refs/remotes/origin/*
+</code></pre><p><strong>fetch</strong>那一行高速<strong>git fetch</strong>会从<strong>origin</strong>仓库下载所有的分支。举例，许多持续集成工作流仅仅关注master分支。为了仅仅获取master分支，我们可以修改fetch那一行内容如下：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/master:refs/remotes/origin/master
+</code></pre><p>你也可以为<strong>git push </strong>做相似的配置修改。举例，如果希望总是推送master到qa-master上。你可以做这样的的修改：</p>
+<pre><code>[remote &quot;origin&quot;]
+url = https://git@github.com:mary/example-repo.git
+fetch = +refs/heads/master:refs/remotes/origin/master
+push = refs/heads/master:refs/heads/qa-master
+</code></pre><p><strong>refspecs</strong>让你可以完全控制许多git命令在仓库之间如何转移。它们让你可以从本地删除远程分支，重命名远程分支，使用不同的名称<strong>fetch/push</strong>分支，配置<strong>git fetch</strong>和<strong>git push</strong>来选择你想工作的分支。</p>
+<h2 id="相关引用（Relative-Refs）"><a href="#相关引用（Relative-Refs）" class="headerlink" title="相关引用（Relative Refs）"></a>相关引用（Relative Refs）</h2><p>你也可以查找一个提交有有关系的提交。～字符让你可以查找父提交，比如，下面这个命令可以查找HEAD的祖父：</p>
+<pre><code>git show HEAD~2
+</code></pre><p>But, when working with merge commits, things get a little more complicated. Since merge commits have more than one parent, there is more than one path that you can follow. For 3-way merges, the first parent is from the branch that you were on when you performed the merge, and the second parent is from the branch that you passed to the git merge command.<br>但是，当有合并提交时，这个情况就有点复杂。因为合并提交会有多个父提交，你有不止一个查找路径。在<strong>3-way</strong>合并中，第一个父提交是当你执行合并所在分支，第二个父提交是你传给<strong>git merge</strong>命令的分支。</p>
+<p>～字符总是会查找到合并提交的第一个父提交，如果你想查找另一个父提交，你需要使用^字符来明确指出来，比如，如果HEAD是一个合并提交，下面这个命令会找到HEAD的第二个父提交：</p>
+<pre><code>git show HEAD^2
+</code></pre><p>你可以使用多个^字符字符来移动不止一代的提交，举例，下面个这命令会查找HEAD（假设它是个合并提交）第二个父提交路径上的祖父提交.</p>
+<pre><code>git show HEAD^2^1
+</code></pre><p>可以使用下图来帮助我们搞清楚~ 和 ^的工作原理，图中介绍了如何从A这个commit查找其他相关提交引用，在某些情况下，有许多方法可以找到一个提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:cb2ce970-3ef4-4eda-96a9-fe990745f5a7/02.svg?cdnVersion=dj" alt="Accessing commits using relative refs"></p>
+<p>相关refs可以结合其他命令一起使用，就像一般的引用中的一样。比如，所有下面的命令可以用在相关引用中：</p>
+<pre><code># Only list commits that are parent of the second parent of a merge commit
+git log HEAD^2
+# Remove the last 3 commits from the current branch
+git reset HEAD~3
+# Interactively rebase the last 3 commits on the current branch
+git rebase -i HEAD~3
+</code></pre><h2 id="The-Reflog"><a href="#The-Reflog" class="headerlink" title="The Reflog"></a>The Reflog</h2><p>reflog是Git的安全屏障，它记录了仓库中几乎所有的变化，不管你是否提交了快照。你可以把它看作是本地仓库所有操作的记录历史。执行<strong>git reflog</strong>命令查看reflog，它会输出类似如下内容：</p>
+<pre><code>400e4b7 HEAD@{0}: checkout: moving from master to HEAD~2
+0e25143 HEAD@{1}: commit (amend): Integrate some awesome feature into `master`
+00f5425 HEAD@{2}: commit (merge): Merge branch &apos;;feature&apos;;
+ad8621a HEAD@{3}: commit: Finish the feature
+</code></pre><p>他们的含义如下：</p>
+<ul>
+<li>你刚刚从master切换到 HEAD~2</li>
+<li>在此之前你修改了提交信息</li>
+<li>在此之前你合并了功能分支到master</li>
+<li>提交了一个功能</li>
+<li>The HEAD{<n>} syntax lets you reference commits stored in the reflog. It works a lot like the HEAD~<n> references from the previous section, but the <n> refers to an entry in the reflog instead of the commit history.</n></n></n></li>
+</ul>
+<p>You can use this to revert to a state that would otherwise be lost. For example, lets say you just scrapped a new feature with git reset. Your reflog might look something like this:</p>
+<p>你可以使用这个命令来回滚到已经丢失的状态，比如，你使用了<strong>git reset</strong>撤销了一个功能，你的reflog可能如下所示：</p>
+<pre><code>ad8621a HEAD@{0}: reset: moving to HEAD~3
+298eb9f HEAD@{1}: commit: Some other commit message
+bbe9012 HEAD@{2}: commit: Continue the feature
+9cb79fa HEAD@{3}: commit: Start a new feature
+</code></pre><p><strong>git reset</strong>之前的三个提交获取不到了，除了使用reflog没有其他方法找到他们。现在，你确认想找回你这三个提交的工作，你仅仅需要切换到<strong>HEAD@{1}</strong>来找回你执行<strong>git reset</strong>前的状态。</p>
+<pre><code>git checkout HEAD@{1}
+</code></pre><p>这让你进入了分离HEAD的状态，这时候，你可以创建一个新的分支来继续开发你的功能。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过本文，你应该很轻松滴就可以找到仓库提交了。我们学习了分支和标签是如何存储在.git目录的，如何读取<strong>packed-refs</strong>文件的，HEAD的作用，如何在进阶的推送和获取命令中使用refspecs。如果使用相关的～和^操作符号来横跨一个分支结构。</p>
+<p>我们也介绍了reflog,它是引用提交的一种方式，这种方式其他手段实现不了。它是后悔药。当你做了不该做的操作时，可以使用它来恢复。</p>
+<p>在任何开发场景中所有这些能精确挑出你想要的提交。从本文中学到的技巧可以帮助你使用好Git，比如常见的命令都需要refs作为参数，包括，<strong>git log</strong> , <strong>git show</strong>, <strong>git checkout</strong>, <strong>git reset</strong>, <strong>git revert</strong>, <strong>git rebase</strong>等等。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/refs-and-the-reflog" target="_blank" rel="noopener">Refs and the Reflog</a></p>
+
       
 
       
@@ -567,23 +1185,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">百倍币</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">星云链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Refs and the Reflog</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Nebulas</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Nas</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 引用和引用日志</a>
         		</li>
       		
 		</ul>
@@ -593,7 +1207,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/14/2018-06-14-a-chif-learn-from-tycoon/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/03/12/2017-03-12-Refs-and-the-Reflog/">展开全文 >></a>
         </p>
       
 
@@ -623,39 +1237,298 @@
 
 
   
-    <article id="post-2018-06-13-hundred-times-treasure-nebulas" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-03-11-Git-Hooks" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/13/2018-06-13-hundred-times-treasure-nebulas/">Hoooo和他的朋友们区块链寻宝日记（6）——— 百倍币：星云链</a>
+      <a class="article-title" href="/2017/03/11/2017-03-11-Git-Hooks/">【译文】Git Hooks（钩子）精讲</a>
     </h1>
   
 
         
-        <a href="/2018/06/13/2018-06-13-hundred-times-treasure-nebulas/" class="archive-article-date">
-  	<time datetime="2018-06-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-13</time>
+        <a href="/2017/03/11/2017-03-11-Git-Hooks/" class="archive-article-date">
+  	<time datetime="2017-03-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天发现一个宝贝——星云链（Nebulas，交易所代号Nas）。</p>
-<h3 id="团队情况"><a href="#团队情况" class="headerlink" title="团队情况"></a>团队情况</h3><p>团队的背景资料</p>
-<p><a href="https://nebulas.io/cn/team.html" target="_blank" rel="noopener">团队资料</a></p>
-<p>我们再来看看两位创始人的分享。</p>
-<p>1.创始人徐义吉的演讲</p>
-<p><a href="https://www.youtube.com/watch?v=u2aDwjOLSd4" target="_blank" rel="noopener">《区块链世界和新维度建设》</a></p>
-<p>2.联合创始人王冠的分享</p>
-<p><a href="http://tokenclub.com/#/room/10037" target="_blank" rel="noopener">《2018公链大战，星云链如何一鸣惊人》
-</a></p>
-<p>徐义吉给我的感觉就是年轻气盛，想干事情，有梦想。王冠看起来有艺术范儿，但是说话低调内敛。搭配起来就很有干事团队的感觉了。</p>
-        
-          <a class="article-more-a" href="/2018/06/13/2018-06-13-hundred-times-treasure-nebulas/#more">more >></a>
-        
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:c5d250fd-b2ab-446a-9a5a-f7dec86abed8/hero.svg?cdnVersion=di" alt="Git hooks"></p>
+<p>Git hooks工具是一些命令脚本，当仓库发生变化时会自动执行。这让你在开发周期内可以定制Git内在行为并触发想要的操作。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:ac22adee-d740-4216-a92a-33c14b5623e5/01.svg?cdnVersion=di" alt="Hooks executing during the commit creation process"></p>
+<p>Git hooks常用场景包括鼓励一个提交准则，根据仓库环境更改项目环境，实施持续集成工作流。但是，因为脚本可以无限制定制，因此实际上你可以使用Git hooks自动化和优化工作流的各个方面。</p>
+<p>在这篇文章里，我们将开始介绍如何使用Git hooks.然后，我们将探究在本地和远程仓库常用的hooks方法。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>所有的Git hooks工具都是当仓库中特定事件发生时执行的脚本命令。因此安装和配置他们其实很容易。Hooks（钩子）要么放在本地要么放在远程仓库，而且只响应所在仓库的行为。这篇文章稍后会讲到hooks的分类。本章节剩下的部分讨论的配置可以用在本地和服务端hooks.</p>
+<h2 id="安装钩子（Hooks）"><a href="#安装钩子（Hooks）" class="headerlink" title="安装钩子（Hooks）"></a>安装钩子（Hooks）</h2><p>Hooks放在仓库的.git/hooks目录下。当你初始化仓库时，Git自动安装了示例脚本。如果你进入.git/hooks目录，你会看到如下文件：</p>
+<pre><code>applypatch-msg.sample 
+pre-push.sample
+commit-msg.sample 
+pre-rebase.sample
+post-update.sample 
+prepare-commit-msg.sample
+pre-applypatch.sample 
+update.sample
+pre-commit.sample
+</code></pre><p>大多数可用的hooks就是这些，但是.sample后缀默认不能执行。为了安装一个hook，你仅仅需要移除.sample后缀。或者，如果你写了一个新脚本，你只需要使用上面这些文件名，去除.sample后缀创建一个文件即可。</p>
+<p>举个例子，为了安装<strong>prepare-commit-msg</strong>这个hook，你可以移除这个脚本的<strong>.sample</strong>后缀，然后在文件中添加如下内容：</p>
+<pre><code>#!/bin/sh
+echo &quot;# Please include a useful commit message!&quot; &gt; $1
+</code></pre><p>Hooks执行，需要修改创建的脚本的执行权限，比如，为了确保<strong>prepare-commit-msg</strong>可执行，你需要执行如下命令修改它的执行权限：</p>
+<pre><code>chmod +x prepare-commit-msg
+</code></pre><p>你将在执行<strong>git commit </strong>命令时看到这句话，而不是默认的消息。我们将在<em>Prepare Commit Message</em>章节详细探讨这个脚本是如何工作的。现在我们已经清楚我们可以定制Git的内部功能这个事实。</p>
+<p>内置的样例脚本是非常有参考价值的，因为他们标注了每个hook需要传入的参数（每个hook有所不同）。</p>
+<h2 id="脚本语言"><a href="#脚本语言" class="headerlink" title="脚本语言"></a>脚本语言</h2><p>每个脚本的第一句（#!/bin/sh）定义了脚本如何解析。因此，如果你使用其他语言，你需要修改它指向你的解析器</p>
+<p>内置的脚本几乎都是<strong>shell</strong>和<strong>perl</strong>脚本。但是你可以使用任何可以执行的脚本语言。</p>
+<p>比如，我们可以在<strong>prepare-commit-msg</strong>中写一个可执行的Python脚本，而不是使用shell命令。下面的hook将实现之前章节同样的效果。</p>
+<pre><code>#!/usr/bin/env python
+import sys, os
+commit_msg_filepath = sys.argv[1]
+with open(commit_msg_filepath, &apos;w&apos;) as f:
+f.write(&quot;# Please include a useful commit message!&quot;)
+</code></pre><p>注意第一行代码指向Python解析器。并且没有使用<strong><code>$1</code></strong>传递第一个参数给脚本，我们使用<strong>sys.argv[1]</strong>传参（多理解下这句话）。这是<strong>Git hooks</strong>非常有用的功能，因为它可以让你使用你熟悉的语言。</p>
+<h2 id="Hooks的作用范围"><a href="#Hooks的作用范围" class="headerlink" title="Hooks的作用范围"></a>Hooks的作用范围</h2><p>Hooks作用于当前仓库，当你执行<strong>git clone</strong>时他们不会被复制到新仓库。并且，因为他们是作用于存在于所在仓库，所以有权访问仓库就能修改hooks。</p>
+<p>这对团队开发者而言有大的影响。首先，你需要确保所有团队成员都能确保hooks最新，其次，你不能强制所开发者们按照指定的方式创建提交，你仅仅可以鼓励他们这么做。</p>
+<p>维护开发者们的hooks需要一点技巧，因为<strong>.git/hooks</strong>目录不会和项目一起被克隆，也不受版本控制。一个解决这个问题的简单的方案就是把hooks放在真正的项目目录（放在<strong>.git</strong>目录外面）。这让你可以像一般版本控制的文件一样编辑他们。为了安装hook，你可选择创建一个符号链接指向<strong>.git/hooks</strong>，也可以当hook文件更新时将它拷贝到<strong>.git/hooks</strong>。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e068ea71-a552-4d07-9917-49104f4d382e/02.svg?cdnVersion=di" alt="Hooks executing during the commit creation process"></p>
+<p>作为替代方案，Git也提供一个<a href="http://git-scm.com/docs/git-init#_template_directory" target="_blank" rel="noopener">模版目录</a>的方法来让你更容易自动化安装hooks。在模版文件下的所有文件和目录，在你使用<strong>git init</strong> 和 <strong>git clone</strong>命令时时都会拷贝到.git目录中。</p>
+<p>所有下面讲到的<a href="https://www.atlassian.com/git/tutorials/git-hooks/local-hooks" target="_blank" rel="noopener">本地hooks</a>都会被修改，或者被仓库所有者卸载。这完全看开发者是否使用了hook。我们应该清楚的意识到，最好把<strong>Git hooks</strong>看作帮助开发者的工具而不是严格限制开发的规定。当然，使用<a href="https://www.atlassian.com/git/tutorials/git-hooks/server-side-hooks" target="_blank" rel="noopener">服务器端的hooks</a>拒绝一些不准收标准的提交是可以做到的。我们将在文章中继续探讨这个话题。</p>
+<h2 id="本地hooks"><a href="#本地hooks" class="headerlink" title="本地hooks"></a>本地hooks</h2><p>本地hooks只能作用于当前仓库，当你在读这个章节的时候，记住每个开发者可以修改它本地的hooks，因此你不能把它作为一个强制提交规定。当然，他们可以让开发者更倾向去特定指导规范。在本章节，我们将探讨六个常用的本地hooks：</p>
+<pre><code>pre-commit
+
+prepare-commit-msg
+
+commit-msg
+
+post-commit
+
+post-checkout
+
+pre-rebase
+</code></pre><p>前4个hook让你可以为整个提交生命周期插入行为，而最后面2个hook则可以让你分别为<strong>git checkout </strong>和 <strong>git rebase</strong>命令添加额外行为或者安全检查。</p>
+<p>所有pre-开头的hook可以让你在即将发生的事情上修改行为，而post-开头的hook用来发出通知。</p>
+<p>我们也将了解一些用来分析hook参数和利用底层的git命令请求仓库信息的技巧。</p>
+<h3 id="提交前（Pre-Commit）"><a href="#提交前（Pre-Commit）" class="headerlink" title="提交前（Pre-Commit）"></a>提交前（Pre-Commit）</h3><p>在你每次执行<strong>git commit</strong>命令时，<strong>pre-commit</strong>脚本会在Git请求你输入提交日志或者生成提交对象前执行。你可以使用这个hook监控即将被提交的快照。比如，你可以使用它执行一些自动测试，来确保新的提交不会破话已经存在的功能。</p>
+<p>没有参数传递给<strong>pre-commit</strong>脚本，并且非零状态时候退出会暂停整个提交。让我们看一个内置的<strong>pre-commit</strong> hook的简单版本。这个脚本会在遇到空白错误时终止提交，就像git diff-index命令定义的那样（末尾空格、只有空格的行、起始行使用tab产的空格都被默认认为是错误的）。</p>
+<pre><code>#!/bin/sh
+# Check if this is the initial commit
+if git rev-parse --verify HEAD &gt;/dev/null 2&gt;&amp;1
+then
+echo &quot;pre-commit: About to create a new commit...&quot;
+against=HEAD
+else
+echo &quot;pre-commit: About to create the first commit...&quot;
+against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+# Use git diff-index to check for whitespace errors
+echo &quot;pre-commit: Testing for whitespace errors...&quot;
+if ! git diff-index --check --cached $against
+then
+echo &quot;pre-commit: Aborting commit due to whitespace errors&quot;
+exit 1
+else
+echo &quot;pre-commit: No whitespace errors :)&quot;
+exit 0
+fi
+</code></pre><p>为了使用git diff-index,你需要找出要对比的索引的对象引用，通常是HEAD，然而，如果是初次提交则没有HEAD，因此我们首先要找出这种边界情况。我们通过<strong>git rev-parse –verify</strong>命令来检查参数（HEAD）是否是一个有效的引用。<strong>&gt;/dev/null 2&gt;&amp;1</strong>部分会输出<strong>git rev-parse</strong>命令的结果。要么HEAD要么空对象会复制给<strong>git diff-index</strong>需要的against变量。<strong>4b825d…</strong>这个hash值是一个特殊的提交ID，代表一个空提交。</p>
+<p><strong>git diff-index –cached </strong>命令用来比较一个提交而不是索引。通过传入<strong>–check</strong> 选项来告诉它当有空白错误引入时需要给我们发送警告。如果有空白警告，我们通过返回一个为1的状态中止提交，或者我们返回0并且让提交正常进行。</p>
+<p>这是<strong>pre-commit</strong>hook的其中一个例子，一般我们用它来结合其它Git命令工具来对提交的修改运行测试，但是你也可以在<strong>pre-commit</strong>hook中做任何你想做的事情，包括执行其他脚本，运行第三方测试工具，或者用Lint检查代码风格。</p>
+<h3 id="准备提交信息（Prepare-Commit-Message）"><a href="#准备提交信息（Prepare-Commit-Message）" class="headerlink" title="准备提交信息（Prepare Commit Message）"></a>准备提交信息（Prepare Commit Message）</h3><p><strong>prepare-commit-msg</strong>hook 在<strong>pre-commit</strong>hook执行后操作输入提交信息的文本编辑器后调用，这是为压缩（squashed）或者合并提交时修改自动生成提交信息的最佳时机。</p>
+<p>One to three arguments are passed to the prepare-commit-msg script:<br>1到3个参数需要传递给<strong>prepare-commit-msg</strong>hook的脚本：</p>
+<ol>
+<li>包含提交信息的临时文件名称。你通过修改这个文件来修改提交信息。</li>
+<li>提交类型。可能是消息提交(使用了-m or -F选型)，模板提交（-t选项），合并提交（该提交是一个merge合并提交），或者压缩（squash）提交（该提交是压缩其他提交）。</li>
+<li>相关提交的SHA1哈希值，仅仅当被提供-c, -C, 或者 –amend选项时候需要加入这个参数。</li>
+</ol>
+<p>和<strong>pre-commit</strong>一样，当非零状态退出时中止提交。</p>
+<p>我们已经看见一个简单编辑提交日志的例子，但是让我们看一些更有用的脚本。当使用问题追踪时，一个通常有用的做法是把每个问题放在一个单独的分支。如果你在分支名上包含问题的追踪代号，你可以使用<strong>prepare-commit-msg</strong> hook来自动包含代号到分支的每个提交上。</p>
+<pre><code>#!/usr/bin/env python
+import sys, os, re
+from subprocess import check_output
+# Collect the parameters
+commit_msg_filepath = sys.argv[1]
+if len(sys.argv) &gt; 2:
+commit_type = sys.argv[2]
+else:
+commit_type = &apos;&apos;
+if len(sys.argv) &gt; 3:
+commit_hash = sys.argv[3]
+else:
+commit_hash = &apos;&apos;
+print &quot;prepare-commit-msg: File: %s\nType: %s\nHash: %s&quot; % (commit_msg_filepath, commit_type, commit_hash)
+# Figure out which branch we&apos;re on
+branch = check_output([&apos;git&apos;, &apos;symbolic-ref&apos;, &apos;--short&apos;, &apos;HEAD&apos;]).strip()
+print &quot;prepare-commit-msg: On branch &apos;%s&apos;&quot; % branch
+# Populate the commit message with the issue #, if there is one
+if branch.startswith(&apos;issue-&apos;):
+print &quot;prepare-commit-msg: Oh hey, it&apos;s an issue branch.&quot;
+result = re.match(&apos;issue-(.*)&apos;, branch)
+issue_number = result.group(1)
+with open(commit_msg_filepath, &apos;r+&apos;) as f:
+content = f.read()
+f.seek(0, 0)
+f.write(&quot;ISSUE-%s %s&quot; % (issue_number, content))
+</code></pre><p>首先，上面<strong>prepare-commit-msg</strong> hook能够收集所有传入脚本的参数，然后，它调用<strong>git symbolic-ref –short HEAD</strong>命令来获取分支名称，如果分支名以issure-开头，它会重写提交日志，在第一行包含issure代号。因此，如果你的分支名为<strong>issue-224</strong>，这将产生如下的提交日志：</p>
+<pre><code>ISSUE-224
+# Please enter the commit message for your changes. Lines starting
+# with &apos;#&apos; will be ignored, and an empty message aborts the commit.
+# On branch issue-224
+# Changes to be committed:
+# modified: test.txt
+</code></pre><p>在使用<strong>prepare-commit-msg</strong> hook时记住它甚至会在你使用<strong>git commit</strong>的<code>-m</code>选项来提交时会运行。这意味着上面的脚本会自动插入<strong>ISSUE-[#]</strong>字符串，而不管是否让你编辑提交日志。你可以通过看看第二个参数（commit_type）是否合消息一致来处理这个情况。</p>
+<p>然后，没有<code>-m</code>选项，<strong>prepare-commit-msg</strong> hook允许用户在生成<strong>ISSUE-[#]</strong>字符串后编辑提交日志，使用者可能会删掉者些内容，因此这对使用者来说变成一种方便，而不是强制的提交日志的规定。因此，你需要下一章节的<strong>commit-msg </strong> hook。</p>
+<h3 id="提交日志（Commit-Message）"><a href="#提交日志（Commit-Message）" class="headerlink" title="提交日志（Commit Message）"></a>提交日志（Commit Message）</h3><p><strong>commit-msg </strong> hook跟<strong>prepare-commit-msg</strong> hook类似，但是它是在用户输入提交日志时调用。在这里提示团队成员，他提交的日志不符合团队的标准更合适。</p>
+<p>这个hook唯一需要传入的参数是包含这个日志的文件的名称，如果你不喜欢使用者输入的日志信息，它会修改这个文件（跟<strong>prepare-commit-msg</strong> 类似）或者它通过非零退出来中止提交。</p>
+<p>比如，下面的脚本用来确保使用者没有删除前面章节提到的<strong>prepare-commit-msg</strong> hook生成的<strong>ISSUE-[#]</strong>字符串。</p>
+<pre><code>#!/usr/bin/env python
+import sys, os, re
+from subprocess import check_output
+# Collect the parameters
+commit_msg_filepath = sys.argv[1]
+# Figure out which branch we&apos;re on
+branch = check_output([&apos;git&apos;, &apos;symbolic-ref&apos;, &apos;--short&apos;, &apos;HEAD&apos;]).strip()
+print &quot;commit-msg: On branch &apos;%s&apos;&quot; % branch
+# Check the commit message if we&apos;re on an issue branch
+if branch.startswith(&apos;issue-&apos;):
+print &quot;commit-msg: Oh hey, it&apos;s an issue branch.&quot;
+result = re.match(&apos;issue-(.*)&apos;, branch)
+issue_number = result.group(1)
+required_message = &quot;ISSUE-%s&quot; % issue_number
+with open(commit_msg_filepath, &apos;r&apos;) as f:
+content = f.read()
+if not content.startswith(required_message):
+print &quot;commit-msg: ERROR! The commit message must start with &apos;%s&apos;&quot; % required_message
+sys.exit(1)
+</code></pre><p>但是使用者每次创建提交时都会调用这个脚本，你应该除了检查提交日志外避免做太多事情，如果你需要通知其他服务提交已经发生，你应带使用<strong>commit-msg</strong> hook。</p>
+<h3 id="提交后（Post-Commit）"><a href="#提交后（Post-Commit）" class="headerlink" title="提交后（Post-Commit）"></a>提交后（Post-Commit）</h3><p>提交后hook在<strong>commit-msg</strong> hook后立即执行，它不能改变<strong>git commit</strong>操作的结果，所以它主要用来发送通知。</p>
+<p>这个脚本不需要传参，它的退出状态完全不会影响提交结果。大部分提交后hook的脚本，会去访问刚刚创建的新提交。你能使用<strong>git rev-parse HEAD</strong> 去获取这个新的提交的SHA1哈希值，或者你能使用<strong>git log -1 HEAD</strong>获取新提交的所有信息。</p>
+<p>比如，如果你想在每次提交一个新的快照时候邮件通知你的老板（不过对大多数工作流来说很可能没意义），你可以使用如下的<strong>post-commit</strong>hook：</p>
+<pre><code>#!/usr/bin/env python
+import smtplib
+from email.mime.text import MIMEText
+from subprocess import check_output
+# Get the git log --stat entry of the new commit
+log = check_output([&apos;git&apos;, &apos;log&apos;, &apos;-1&apos;, &apos;--stat&apos;, &apos;HEAD&apos;])
+# Create a plaintext email message
+msg = MIMEText(&quot;Look, I&apos;m actually doing some work:\n\n%s&quot; % log)
+msg[&apos;Subject&apos;] = &apos;Git post-commit hook notification&apos;
+msg[&apos;From&apos;] = &apos;mary@example.com&apos;
+msg[&apos;To&apos;] = &apos;boss@example.com&apos;
+# Send the message
+SMTP_SERVER = &apos;smtp.example.com&apos;
+SMTP_PORT = 587
+session = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+session.ehlo()
+session.starttls()
+session.ehlo()
+session.login(msg[&apos;From&apos;], &apos;secretPassword&apos;)
+session.sendmail(msg[&apos;From&apos;], msg[&apos;To&apos;], msg.as_string())
+session.quit()
+</code></pre><p>使用<strong>post-commit</strong>hook来触发本地的持续集成是可能的，但是多数时候你会想在<strong>post-receive</strong> hook时候做持续集成，这会在服务器端执行而不是开发者主机上，<strong>post-receive</strong> hook也会在每次开发者执行推送的时候执行，这让它更适合用来做持续集成。</p>
+<h3 id="切换后（Post-Checkout）"><a href="#切换后（Post-Checkout）" class="headerlink" title="切换后（Post-Checkout）"></a>切换后（Post-Checkout）</h3><p>切换后hook跟提交后hook类似，但是它在执行<strong>git checkout</strong>命令切换一个引用成功后执行。这个时候如果用它来清理你工作目录生成的文件非常有必要，否则会导致一些困扰。</p>
+<p>This hook accepts three parameters, and its exit status has no affect on the git checkout command.</p>
+<p>这个hook接受三个参数，它的输出状态不影响<strong>git checkout</strong>命令的执行。</p>
+<ol>
+<li><p>切换前的HEAD的引用</p>
+</li>
+<li><p>切换后的新的HEAD的引用</p>
+</li>
+<li><p>一个标志，判断这次切换是针对分支还是文件的标志。这个标志分别为1和0.</p>
+</li>
+</ol>
+<p>对于Python的一个常见问题是当切换分支时，会生成.pyc文件，解析器有时候会使用.pyc文件而不是.py的源文件。为了避免这个问题，你可以在切换到一个新的分支时候运用如下<strong>post-checkout</strong>脚本删除所有的.pyc文件：</p>
+<pre><code>#!/usr/bin/env python
+import sys, os, re
+from subprocess import check_output
+# Collect the parameters
+previous_head = sys.argv[1]
+new_head = sys.argv[2]
+is_branch_checkout = sys.argv[3]
+if is_branch_checkout == &quot;0&quot;:
+print &quot;post-checkout: This is a file checkout. Nothing to do.&quot;
+sys.exit(0)
+print &quot;post-checkout: Deleting all &apos;.pyc&apos; files in working directory&quot;
+for root, dirs, files in os.walk(&apos;.&apos;):
+for filename in files:
+ext = os.path.splitext(filename)[1]
+if ext == &apos;.pyc&apos;:
+os.unlink(os.path.join(root, filename))
+</code></pre><p>hook脚本的当前工作目录总是仓库的根目录，所以<code>os.walk(&#39;.&#39;)</code>会遍历出仓库所有的文件，然后我们删除.pyc后缀的文件。</p>
+<p>你可以使用<strong>post-checkout</strong>hook根据你切换后的分支去修改工作目录的内容，比如，你可能在主要代码库中使用了插件分支存储所有的插件。如果这些插件需要许多其他分支不需要的二进制数据，当你在插件分支上时你能选择性地构建他们。</p>
+<h3 id="rebase合并前（Pre-Rebase）"><a href="#rebase合并前（Pre-Rebase）" class="headerlink" title="rebase合并前（Pre-Rebase）"></a>rebase合并前（Pre-Rebase）</h3><p><strong>pre-rebase</strong>hook在<code>git rebase</code>修改之前调用，可以用它防止一些严重的事情发生。</p>
+<p>hook使用2个参数：这个系列分叉出来的上游分支，以及正在rebase合并的分支。当rebase发生在当前分支第二个参数为空。非零状态退出中止rebase合并。</p>
+<p>比如，如果你想禁止在你的仓库rebase合并，你可以使用下面的<strong>pre-rebase</strong>脚本：</p>
+<pre><code>#!/bin/sh
+# Disallow all rebasing
+echo &quot;pre-rebase: Rebasing is dangerous. Don&apos;t do it.&quot;
+exit 1
+</code></pre><p>现在，每次你执行git rebase，你将看到如下信息：</p>
+<pre><code>pre-rebase: Rebasing is dangerous. Don&apos;t do it.
+The pre-rebase hook refused to rebase.
+</code></pre><p>举一个更有深度的例子，仔细看看<strong>pre-rebase.sample</strong>脚本，这个脚本更加的聪明，它能判断什么时候不允许rebase合并。它检查看你想要执行rebase的当前分枝是否已经合并入锅下一个分支（通常是主干分支），如果已经合并了，那如果执行rebase的会就会带来问题，所以这个脚本中止这样的rebase合并.</p>
+<h2 id="服务端hooks"><a href="#服务端hooks" class="headerlink" title="服务端hooks"></a>服务端hooks</h2><p>服务端hooks跟本地的基本一样，他们只是放在服务端仓库（也叫做中央仓库，或者开发者公共仓库）而已。当hooks放在正式仓库中，那他们就可以用来作为拒绝某些提交的规定的方法了。</p>
+<p>文章后面的内容我们来讨论三个服务端的hooks：</p>
+<ol>
+<li>推送接受前（pre-receive）</li>
+<li>推送更新中（update）</li>
+<li>推送接受后（post-receive）</li>
+</ol>
+<p>所有这些hooks可以在推送过程中的不同环节发挥作用。</p>
+<p>服务端hooks将结果输出到客户端控制台，因此很容返回信息给开发者。但是，你要记住这些脚本不会返回终端的控制权给开发者，除非他们执行完成，因此你最好不要执行耗时操作。</p>
+<h3 id="推送接受前（Pre-Receive）"><a href="#推送接受前（Pre-Receive）" class="headerlink" title="推送接受前（Pre-Receive）"></a>推送接受前（Pre-Receive）</h3><p>当有人使用<strong>git push</strong>命令推送提交到仓库时，<strong>pre-receive</strong>hook就会执行。它总是存放在远程仓库（推送目标仓库），而不是推送发起仓库。</p>
+<p>这个hook在提交引用被更新前执行，因此可以在这里添加任何你想要的开发规定。如果你不希望某个人推送，不喜欢某些格式写的提交信息，或者不喜欢提交里所做的修改，你可以拒绝这个推送。当然你不能限制开发者生成不合格的提交，但是你可以在<strong>pre-receive</strong>hook中阻止他们推送不合规的提交到正式仓库。</p>
+<p>这个脚本不需要入参，但是每个被推送的引用都会按照如下所示的标准输入格式，以一个独立的一行传递给脚本：</p>
+<pre><code>&lt;old-value&gt; &lt;new-value&gt; &lt;ref-name&gt;
+</code></pre><p>你可以看到<strong>pre-receive</strong>脚本是如何简单读取推送的索引并打印出结果的。</p>
+<pre><code>#!/usr/bin/env python
+import sys
+import fileinput
+# Read in each ref that the user is trying to update
+for line in fileinput.input():
+print &quot;pre-receive: Trying to push ref: %s&quot; % line
+# Abort the push
+# sys.exit(1)
+</code></pre><p>再次，这跟其他的hooks不同，信息是通过标准输入而不是命令行参数传递给脚本的。当你将上面的脚本放在远程仓库的<strong>.git/hooks</strong>目录后，然后推送master分支到远程分支，你将在控制台看到如下输出：</p>
+<pre><code>b6b36c697eb2d24302f89aa22d9170dfe609855b 85baa88c22b52ddd24d71f05db31f4e46d579095 refs/heads/master
+</code></pre><p>你可以使用这些SHA1哈希值，以及一些Git的底层命令，来查看发生了哪些修改，常用的场景如下：</p>
+<ul>
+<li><p>拒绝包含上游rebase合并的修改。</p>
+</li>
+<li><p>阻止非线性合并（non-fast-forward merges）</p>
+</li>
+<li><p>检查用户是否有正确的权限去修改（大多数时候用语集中式的工作流）</p>
+</li>
+</ul>
+<p>如果多个提交引用被推送， <strong>pre-receive</strong>返回了非零状态会中止所有的引用推送。如果你想要一个一个地接受或者拒绝分支，你需要使用更新推送hook。</p>
+<h3 id="更新推送（Update）"><a href="#更新推送（Update）" class="headerlink" title="更新推送（Update）"></a>更新推送（Update）</h3><p>The update hook is called after pre-receive, and it works much the same way. It’s still called before anything is actually updated, but it’s called separately for each ref that was pushed. That means if the user tries to push 4 branches, update is executed 4 times. Unlike pre-receive, this hook doesn’t need to read from standard input. Instead, it accepts the following 3 arguments:</p>
+<p>更新推送hook在<strong>pre-receive</strong>之后，并且类似，它也是在推送接受前（实际更新前）被调用，但是它分别被每个提交引用被推送合并前调用。这意味着如果尝试推送4个分支，更新推送hook会执行4次。和<strong>pre-receive</strong>不同，更新推送hook不需要读取标准输入，而是接受三个参数：</p>
+<ul>
+<li><p>正在更新的引用的名称</p>
+</li>
+<li><p>存储在引用里的旧的对象名</p>
+</li>
+<li><p>存储在引用里的新的对象名</p>
+</li>
+</ul>
+<p>这和<strong>pre-receive</strong>传入的类似，但是更新推送会分别被每个引用调用，因此你可以拒绝一些引用而允许另外一些引用。</p>
+<pre><code>#!/usr/bin/env python
+import sys
+branch = sys.argv[1]
+old_commit = sys.argv[2]
+new_commit = sys.argv[3]
+print &quot;Moving &apos;%s&apos; from %s to %s&quot; % (branch, old_commit, new_commit)
+# Abort pushing only this branch
+# sys.exit(1)
+</code></pre><p>上面的更新推送hook会输出分支以及新旧提交的哈希值。当推送多个分支到远程仓库时，你将看到每个分支执行的打印状态。</p>
+<h3 id="接受推送后（Post-Receive）"><a href="#接受推送后（Post-Receive）" class="headerlink" title="接受推送后（Post-Receive）"></a>接受推送后（Post-Receive）</h3><p><strong>post-receive</strong>hook在推送操作成功后调用，这使得它是发出成功后通知的最佳地方，在许多工作流中，这比<strong>post-commit</strong>更适合用来发送通知，因为这个时候公共服务器已经有更新的代码，而不是仅仅存在于本地个人的机器上。接受推送后hook通常用来给其他开发者发送邮件或者触发持续集成系统。</p>
+<p>这个脚本不需要参数，但是和<strong>pre-receive</strong>一样需要通过标准输入被发送相同的信息。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章，我们学习了git hooks 是如何用来修改内部行为以及在当仓库发生某些事件时如何发送通知的。 hooks脚本通常是存放在<strong>.git/hooks</strong>目录中，安装和定制他们非常容易。</p>
+<p>我们也了解了最常见的本地和服务端hooks，他们使得我们可以介入整个开发周期。我们可以在提交创建和推送过程的所有环节定制化发生的行为。只要学会一点脚本知识，我们就可以在git仓库中做任何事情。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/git-hooks" target="_blank" rel="noopener">Git Hooks</a></p>
+
       
 
       
@@ -668,23 +1541,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">百倍币</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git Hook</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">星云链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 钩子</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Nebulas</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Nas</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 高级</a>
         		</li>
       		
 		</ul>
@@ -694,7 +1563,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/13/2018-06-13-hundred-times-treasure-nebulas/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/03/11/2017-03-11-Git-Hooks/">展开全文 >></a>
         </p>
       
 
@@ -724,33 +1593,140 @@
 
 
   
-    <article id="post-2018-06-12-coin-investment-technique" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-02-11-Advance-Git-log" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/12/2018-06-12-coin-investment-technique/">Hoooo和他的朋友们区块链寻宝日记（5）——— 炒币策略</a>
+      <a class="article-title" href="/2017/02/11/2017-02-11-Advance-Git-log/">【译文】Git log使用进阶</a>
     </h1>
   
 
         
-        <a href="/2018/06/12/2018-06-12-coin-investment-technique/" class="archive-article-date">
-  	<time datetime="2018-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
+        <a href="/2017/02/11/2017-02-11-Advance-Git-log/" class="archive-article-date">
+  	<time datetime="2017-02-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这些天的熊出没着实吓人。连最稳的比特币昨天都一次跌了十几个点，EOS直接掉了20多个点。前几个月工作太忙，疏于炒币。而且资金分散在各个交易所，导致操作不便，基本靠天吃饭的状态。</p>
-<p>现在要专业的炒币搞事情了。</p>
-<p>今天在看一位炒币大神的文章<a href="https://mp.weixin.qq.com/s/pQrdTs4hWK1ayyP8mfEKwA" target="_blank" rel="noopener">《李要控记李技几》</a>，关于炒币的几个要点要摘抄下来记录下,然后准备执行计划了。</p>
-<h3 id="第一条：控制你自己的心态"><a href="#第一条：控制你自己的心态" class="headerlink" title="第一条：控制你自己的心态"></a>第一条：控制你自己的心态</h3><p>投资上最忌讳的四个字：贪、懒、骄、慌</p>
-        
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-coin-investment-technique/#more">more >></a>
-        
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:613277ed-3b4b-4c45-8657-869f9bc3d23e/hero.svg?cdnVersion=db" alt="Detecting a fork in the history using ranges"></p>
+<p>版本控制的目的就是为了记录代码的修改历史。这让你可以查看别人写了什么代码，什么时候bug出现，回滚有问题的修改。如果你不知道在通过git浏览所有的修改历史，那他们就毫无价值，<code>git log</code>命令的作用就在于此。</p>
+<p>到目前为止，你应该已经知道<code>git log</code>命令可以用来查看提交历史了。其实你还可以通过不同的参数传给<code>git log</code> 来改变打印输出。</p>
+<p>git log进阶特性可以划分成两分类：格式化每个提交的展示、过滤输出的提交。结合者两个特性技巧你可以从项目中查看任何你需要的信息。</p>
+<h2 id="格式化日志输出"><a href="#格式化日志输出" class="headerlink" title="格式化日志输出"></a>格式化日志输出</h2><p>首先，这篇文章将会介绍许多格式化<code>git log</code>输出的方法。大部分介绍的参数标志用来展示比git log本本更多或者更少的信息。</p>
+<p>如果你不喜欢git log默认的格式，你可以使用git config的别名功能为任何即将介绍的格式化选项设置快捷方式。请查看<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository#git-config" target="_blank" rel="noopener">git config 命令介绍</a>查看如何设置别名。</p>
+<h3 id="Oneline"><a href="#Oneline" class="headerlink" title="Oneline"></a>Oneline</h3><p><strong>–oneline</strong>参数将提交日志精减为一行，它默认仅仅展示提交ID和第一行提交信息。通常<code>git log --oneline</code>输出就像这个样子：<br>        0e25143 Merge branch ‘feature’<br>        ad8621a Fix a bug in the feature<br>        16b36c6 Add a new feature<br>        23ad9ad Add the initial code base</p>
+<p>这个参数对于查看项目主要概况非常有用。</p>
+<h3 id="Decorating"><a href="#Decorating" class="headerlink" title="Decorating"></a>Decorating</h3><p>很多时候如果能查看每个提交相关的分支或标签信息非常有用。<strong>–decorate</strong>参数让<code>git log</code>可以展示指向提交的所有的相关信息（例如：分支，标签信息等）。</p>
+<p>它可以和其他参数一起使用。比如，执行<code>git log --oneline --decorate</code>将会输出像下面这样的格式化提交历史：</p>
+<pre><code>0e25143 (HEAD, master) Merge branch &apos;feature&apos; 
+ad8621a (feature) Fix a bug in the feature 
+16b36c6 Add a new feature 
+23ad9ad (tag: v0.9) Add the initial code base
+</code></pre><p>我们可以看到最顶上的提交是被checkout 过来的（注意HEAD），并且在master分枝上。第二个提交有另外一个叫做feature的分支指向它。第四个提交被标记为v0.9。</p>
+<p>分支、标签、头（HEAD）以及提交历史是Git仓库包含几乎所有的信息。因此这让你能够完整的查看仓库的逻辑结构。</p>
+<h3 id="Diffs"><a href="#Diffs" class="headerlink" title="Diffs"></a>Diffs</h3><p>git log包含查看每个提交不同的参数选项。通常使用的选项有 <strong><code>--stat</code></strong> 和 <strong><code>-p</code></strong>。</p>
+<p><strong><code>--stat</code></strong>选项展示每个文件被提交被每个提交插入和删除的数量（注意修改一行被看作为插入一行或者删除一行）。这对于想查看每个条修改一个文件的概述非常有用。例如下面的提交被添加67行和删除了38行到hello.by文件中:</p>
+<pre><code>commit f2a238924e89ca1d4947662928218a06d39068c3 
+Author: John &lt;john@example.com&gt; 
+Date: Fri Jun 25 17:30:28 2014 -0500 
+Add a new feature hello.py | 105 ++++++++++++++++++++++++----------------- 
+1 file changed, 67 insertion(+), 38 deletions(-)
+</code></pre><p>+号和-号的数量展示该提交修改的每个文件的相关修改数量。这可以让你对找到每个提交的修改有个思路。如果你知道每个提交的真实修改。你可以传入<strong><code>-p</code></strong>参数给<code>git log</code>。这将输出该提交的所有修补：</p>
+<pre><code>commit 16b36c697eb2d24302f89aa22d9170dfe609855b 
+Author: Mary &lt;mary@example.com&gt; 
+Date: Fri Jun 25 17:31:57 2014 -0500 
+
+    Fix a bug in the feature 
+    diff --git a/hello.py b/hello.py 
+    index 18ca709..c673b40 100644 
+    --- a/hello.py 
+    +++ b/hello.py 
+    @@ -13,14 +13,14 
+    @@ B -print(&quot;Hello, World!&quot;) +print(&quot;Hello, Git!&quot;)
+</code></pre><p>对于改动很多的提交来说，这个输出会变得又长又繁琐。一般来说，当你输出所有修补的时候，你可能想要查找某一具体的改动，这时你就要用到<strong><code>pickaxe</code></strong> 选项。</p>
+<h3 id="短日志（Shortlog）"><a href="#短日志（Shortlog）" class="headerlink" title="短日志（Shortlog）"></a>短日志（Shortlog）</h3><p>git shortlog是一种特殊的git log ，它是为创建发布声明设计的。它把每个提交按作者分类，显示提交信息的第一行。这样可以容易地看到谁做了什么。</p>
+<p>比如说，两个开发者为项目贡献了5个提交，那么git shortlog 输出会是这样的：</p>
+<pre><code>Mary (2): 
+    Fix a bug in the feature 
+    Fix a serious security hole in our framework 
+
+John (3): 
+    Add the initial code base 
+    Add a new feature 
+    Merge branch &apos;feature&apos;
+</code></pre><p>默认情况下，git shortlog把输出按作者名字排序，但你可以传入-n选项来按每个作者提交数量排序。</p>
+<h3 id="图表格式（Graphs）"><a href="#图表格式（Graphs）" class="headerlink" title="图表格式（Graphs）"></a>图表格式（Graphs）</h3><p> –graph 选项绘制一个ASCII图像来展示提交历史的分支结构。它经常和 –oneline和 –decorate两个选项一起使用，这样会更容易查看哪个提交属于哪个分支:</p>
+<pre><code>git log --graph --oneline --decorate
+</code></pre><p>对于一个只有两个分支的仓库来说，这个命令将输出如下结果：</p>
+<pre><code>*   0e25143 (HEAD, master) Merge branch &apos;feature&apos;
+|\  
+| * 16b36c6 Fix a bug in the new feature
+| * 23ad9ad Start a new feature
+* | ad8621a Fix a critical security issue
+|/  
+* 400e4b7 Fix typos in the documentation
+* 160e224 Add the initial code base
+</code></pre><p>星号表明这个提交所在的分支，所以上图的意思是23ad9ad和16b36c6这两个提交在feature分支上，其余的在master分支上。</p>
+<p>虽然这对简单的项目来说是个很好用的选择，但你可能会更喜欢<code>gitk</code>或<a href="https://www.atlassian.com/software/sourcetree/overview" target="_blank" rel="noopener"><code>SourceTree</code></a>这些更强大的可视化工具来分析大型项目。</p>
+<h3 id="自定义格式"><a href="#自定义格式" class="headerlink" title="自定义格式"></a>自定义格式</h3><p>对于其他的git log格式需求，你都可以使用<strong><code>--pretty=format:&quot;&lt;string&gt;&quot;</code></strong>选项。它允许你使用像printf一样的占位符来输出提交。<br>比如，下面命令中的%cn、%h 和%cd这三种占位符会被分别替换为作者名字、缩略标识和提交日期。</p>
+<pre><code>git log --pretty=format:&quot;%cn committed %h on %cd&quot;
+</code></pre><p>This results in the following format for each commit:<br>每个提交日志输出格式如下：</p>
+<pre><code>John committed 400e4b7 on Fri Jun 24 12:30:04 2014 -0500
+John committed 89ab2cf on Thu Jun 23 17:09:42 2014 -0500
+Mary committed 180e223 on Wed Jun 22 17:21:19 2014 -0500
+John committed f12ca28 on Wed Jun 22 13:50:31 2014 -0500
+</code></pre><p>完整的占位符清单可以在git log 操作文档（manual page）<a href="https://www.kernel.org/pub/software/scm/git/docs/git-log.html#_pretty_formats" target="_blank" rel="noopener">Pretty Formats</a> 片段找到.</p>
+<p>除了让你只看到关注的信息，这个–pretty=format:”<string>“ 选项在你想要在另一个命令中使用日志内容是尤为有用的。</string></p>
+<h2 id="过滤提交历史"><a href="#过滤提交历史" class="headerlink" title="过滤提交历史"></a>过滤提交历史</h2><p>Formatting how each commit gets displayed is only half the battle of learning git log<br>. The other half is understanding how to navigate the commit history. The rest of this article introduces some of the advanced ways to pick out specific commits in your project history using git log<br>. All of these can be combined with any of the formatting options discussed above.<br>格式化提交输出只是学习git log一半任务。另一半是理解如何浏览整个提交历史。接下来的文章会介绍如何用git log选择项目历史中的特定提交。所有的用法都可以和上面讨论过的格式化选项结合起来。</p>
+<h3 id="按数量"><a href="#按数量" class="headerlink" title="按数量"></a>按数量</h3><p>git log最基础的过滤选项是限制显示的提交数量。当你只对最近几次提交感兴趣时，它可以节省你一页一页查看的时间。</p>
+<p>你可以在后面加上-<n>选项。比如说，下面这个命令会显示最新的3次提交：</n></p>
+<pre><code>git log -3
+</code></pre><h3 id="按日期"><a href="#按日期" class="headerlink" title="按日期"></a>按日期</h3><p>如果你想要查看某一特定时间段内的提交，你可以使用<strong><code>--after</code></strong> 或 <strong><code>--before</code></strong> 标记来按日期筛选。它们都接受好几种日期格式作为参数。比如说，下面的命令会显示2014年7月1日后（含）的提交：</p>
+<pre><code>git log --after=&quot;2014-7-1&quot;
+</code></pre><p>你也可以传入相对的日期，比如一周前（”1 week ago”）或者昨天（”yesterday”）：</p>
+<pre><code>git log --after=&quot;yesterday&quot;
+</code></pre><p>你可以同时提供–before 和 –after 来检索两个日期之间的提交。比如，为了显示2014年7月1日到2014年7月4日之间的提交，你可以这么写：</p>
+<pre><code>git log --after=&quot;2014-7-1&quot; --before=&quot;2014-7-4&quot;
+</code></pre><p>注意<strong><code>--since</code></strong> 、<strong><code>--until</code></strong> 标记和<strong><code>--after</code></strong> 、<strong><code>--before</code></strong>标记的作用分别是相似的。</p>
+<h3 id="按作者"><a href="#按作者" class="headerlink" title="按作者"></a>按作者</h3><p>当你只想看某一特定作者的提交的时候，你可以使用<strong><code>--author</code></strong>标记。它接受正则表达式，返回所有作者名字满足这个规则的提交。如果你知道那个作者的确切名字你可以直接传入文本字符串：</p>
+<pre><code>git log --author=&quot;John&quot;
+</code></pre><p>它会显示所有作者叫John的提交。作者名不一定是全匹配，只要包含那个子串就会匹配。</p>
+<p>你也可以用正则表达式来创建更复杂的检索。比如，下面这个命令检索名叫Mary或John的作者的提交。</p>
+<pre><code>git log --author=&quot;John\|Mary&quot;
+</code></pre><p>注意作者的邮箱地址也算作是作者的名字，所以你也可以用这个选项来按邮箱检索。</p>
+<p>如果你的工作流区分提交者和作者，<code>--committer</code>也能以相同的方式使用。</p>
+<h3 id="按提交日志信息"><a href="#按提交日志信息" class="headerlink" title="按提交日志信息"></a>按提交日志信息</h3><p>按提交信息来过滤提交，你可以使用–grep标记。它和上面的–author标记差不多，只不过它搜索的是提交信息而不是作者。</p>
+<p>比如说，你的团队规范要求在提交信息中包括相关的issue编号，你可以用下面这个命令来显示这个issue相关的所有提交：</p>
+<pre><code>git log --grep=&quot;JRA-224:&quot;
+</code></pre><p>你也可以传入<strong><code>-i</code></strong>参数来忽略大小写匹配。</p>
+<h3 id="按文件"><a href="#按文件" class="headerlink" title="按文件"></a>按文件</h3><p>很多时候，你只对某个特定文件的更改感兴趣。为了显示某个特定文件的历史，你只需要传入文件路径。比如说，下面这个命令返回所有和foo.py和bar.py文件相关的提交：</p>
+<pre><code>git log -- foo.py bar.py
+</code></pre><p>–告诉git log接下来的参数是文件路径而不是分支名。如果分支名和文件名不可能冲突，你可以省略–。</p>
+<h3 id="按文件内容"><a href="#按文件内容" class="headerlink" title="按文件内容"></a>按文件内容</h3><p>我们还可以根据源代码中某一行的增加和删除来搜索提交。这被称为pickaxe，它接受形如-S”<string>“的参数。比如说，当你想要知道Hello, World!字符串是什么时候加到项目中哪个文件中去的，你可以使用下面这个命令：</string></p>
+<pre><code>git log -S &quot;Hello, World!&quot;
+</code></pre><p>如果你想用正则表达式而不是字符串来搜索，你可以使用-G “<regex>“标记。</regex></p>
+<p>这是一个非常强大的调试工具，它能让你定位到所有影响代码中特定一行的提交。它甚至可以让你看到某一行是什么时候复制或者移动到另一个文件中去的。</p>
+<h3 id="按范围"><a href="#按范围" class="headerlink" title="按范围"></a>按范围</h3><p>你可以传入范围来筛选提交。这个范围由下面这样的格式指定，其中<since>和<until>是提交的引用：</until></since></p>
+<pre><code>git log &lt;since&gt;..&lt;until&gt;
+</code></pre><p>这个命令在你使用分支引用作为参数时特别有用。这是显示两个分支之间区别最简单的方式。看看下面这个命令：</p>
+<pre><code>git log master..feature
+</code></pre><p>其中的master..feature范围包含了在feature分支而不在master分支中所有的提交。换句话说，这个命令可以看出从master分支fork到feature分支后发生了哪些变化。它可以这样可视化：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:b443a307-2df4-4080-948b-f5b9a1f8fd40/01.svg?cdnVersion=db" alt="Detecting a fork in the history using ranges"><br>注意如果你更改范围的前后顺序(feature..master)，你会获取到master分支而非feature分支上的所有提交。如果git log输出了全部两个分支的提交，这说明你的提交历史已经分叉了。</p>
+<h2 id="过滤合并提交"><a href="#过滤合并提交" class="headerlink" title="过滤合并提交"></a>过滤合并提交</h2><p>git log输出时默认包括合并提交。但是，如果你的团队采用强制合并策略（意思是merge你修改的上游分支而不是将你的分支rebase到上游分支），你的项目历史中会有很多外来的提交。</p>
+<p>你可以通过<strong><code>--no-merges</code></strong>标记来排除这些提交：</p>
+<pre><code>git log --no-merges
+</code></pre><p>另一方面，如果你只对合并提交感兴趣，你可以使用<strong><code>--merges</code></strong>标记：</p>
+<pre><code>git log --merges
+</code></pre><p>它会返回所有包含两个父节点的提交。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>你现在应该对使用git log来格式化输出和选择你要显示的提交的用法比较熟悉了。它允许你查看你项目历史中任何需要的内容。</p>
+<p>这些技巧是你Git工具箱中重要的部分，不过注意git log往往和其他Git命令连着使用。当你找到了你要的提交，你把它传给<code>git checkout</code> 、<code>git revert</code> 或是其他控制提交历史的工具。所以，请继续坚持Git高级用法的学习。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/git-log" target="_blank" rel="noopener">Advanced Git log</a></p>
+
       
 
       
@@ -763,15 +1739,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">确定寻宝方向</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git log</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">中国</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git 日志打印</a>
         		</li>
       		
 		</ul>
@@ -781,7 +1757,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-coin-investment-technique/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/02/11/2017-02-11-Advance-Git-log/">展开全文 >></a>
         </p>
       
 
@@ -811,31 +1787,112 @@
 
 
   
-    <article id="post-2018-06-11-ensure-orientation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-02-05-Merging-vs-Rebasing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/11/2018-06-11-ensure-orientation/">Hoooo和他的朋友们区块链寻宝日记（4）——— 确定寻宝方向</a>
+      <a class="article-title" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">【译文】Git merge 和 Git rebase比较</a>
     </h1>
   
 
         
-        <a href="/2018/06/11/2018-06-11-ensure-orientation/" class="archive-article-date">
-  	<time datetime="2018-06-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-11</time>
+        <a href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/" class="archive-article-date">
+  	<time datetime="2017-02-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天仍然主要是在补习区块链知识，重读《区块链，从数字货币到信用社会》，顺便在想，区块链项目那么多，哪些才是好的投资标，未来的趋势方向。有一个关键字在我脑子一直出现：中国。中国必然成为世界第一大国,这是我原因相信的趋势，那区块链就是我们国家不可失去的主要战场，作为我党洗脑长大的小民，与国家共进退，一荣俱荣吧。所以未来寻宝方向锁定中国项目。</p>
-<h3 id="1-区块链1-0，数字货币领域"><a href="#1-区块链1-0，数字货币领域" class="headerlink" title="1.区块链1.0，数字货币领域"></a>1.区块链1.0，数字货币领域</h3>
-        
-          <a class="article-more-a" href="/2018/06/11/2018-06-11-ensure-orientation/#more">more >></a>
-        
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:15447956-9d33-4817-9dc6-fd6c86f24240/hero.svg?cdnVersion=da" alt="Merging vs rebasing"></p>
+<p><code>git rebase</code> 这个命令经常被人认为是一种Git巫术，初学者应该避而远之。但如果使用得当的话，它能给你的团队开发省去太多烦恼。在这篇文章中，我们会比较<code>git rebase</code>和类似的<code>git merge</code>命令，找到Git工作流中rebase的所有用法。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p> 你要知道的第一件事是，<code>git rebase</code> 和<code>git merge</code> 做的事其实是一样的。它们都被设计来将一个分支的更改并入另一个分支，只不过他们实现方式有些不同。</p>
+<p>想象一下，你刚创建了一个专门的分支开发新功能，然后团队中另一个成员在master分支上添加了新的提交。这就会造成提交历史被分叉（Fork）了一份，对于用Git来协作的开发者来说这样的情况应该很常见。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:01b0b04e-64f3-4659-af21-c4d86bc7cb0b/01.svg?cdnVersion=da" alt="A forked commit history"></p>
+<p>现在，如果master中新的提交和你的工作功能开发是相关的。为了将新的提交并入你的分支，你有两个选项：merge或rebase。 </p>
+<h3 id="Merger选项"><a href="#Merger选项" class="headerlink" title="Merger选项"></a>Merger选项</h3><p>将master分支合并到feature分支最简单的办法就是用下面这些命令：</p>
+<pre><code>git checkout feature 
+git merge master
+</code></pre><p>或者，你也可以把它们压减成一行：</p>
+<pre><code>git merge master feature
+</code></pre><p>这会在功能（feature）分支中创建一个新的合并提交(merge commit)将两个分支的历史链接一起。你会得到下面这样的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e229fef6-2c2f-4a4f-b270-e1e1baa94055/02.svg?cdnVersion=da" alt="Merging master into the feature branch"></p>
+<p>Merge好在它是一个安全的操作。现有的分支不会被更改，避免了rebase潜在的缺点（后面会说）。</p>
+<p>另一方面，这同样意味着每次合并上游更改时feature分支都会引入一个无关的合并提交。如果master非常活跃的话，这或多或少会污染你的分支历史。虽然高级的<code>git log</code>选项可以减轻这个问题，但对于开发者来说，还是会增加理解项目历史的难度。</p>
+<h3 id="Rebase-选项"><a href="#Rebase-选项" class="headerlink" title="Rebase 选项"></a>Rebase 选项</h3><p>作为merge的替代选择，你可以像下面这样将feature分支并入master分支：</p>
+<pre><code>git checkout feature 
+git rebase master
+</code></pre><p>它会有效地把所有master分支上新的提交并入过来，并把整个feature分支移动到master分支的后面。但是，rebase会重写项目历史，它并不会带来合并提交，但会在原分支上为每一个提交创建一个新的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:5b153a22-38be-40d0-aec8-5f2fffc771e5/03.svg?cdnVersion=da" alt="Rebasing the feature branch onto master"></p>
+<p>rebase最大的好处是你的项目提交历史会非常整洁。首先，它不像git merge 那样引入不必要的合并提交。其次，如上图所示，rebase导致最后的项目历史呈现出完美的线性——你可以从项目终点到起点浏览而没有任何的分叉。这让你更容易使用<code>git log</code> 、<code>git bisect</code> 和gitk 来查看项目历史。</p>
+<p>不过，这种简单的提交历史会带来两个问题：安全性和可跟踪性。如果你违反了<a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing#the-golden-rule-of-rebasing" target="_blank" rel="noopener">Rebase黄金法则</a>，重写项目历史可能会给你的开发工作流带来灾难性的影响。此外，rebase操作不回增加合并提交——因此你看不到什么时候上游分支合进来feature分支的。</p>
+<h3 id="交互式的rebase"><a href="#交互式的rebase" class="headerlink" title="交互式的rebase"></a>交互式的rebase</h3><p>交互式的rebase允许你更改并入新分支的提交。这比自动的rebase更加强大，因为它提供了对分支上提交历史完整的控制。一般来说，这被用于将feature分支并入master分支之前，清理混乱的历史。</p>
+<p>把-i 传入git rebase 选项来开始一个交互式的rebase过程：</p>
+<pre><code>git checkout feature 
+git rebase -i master
+</code></pre><p>它会打开一个文本编辑器，显示所有将被移动的提交：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+pick 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>这个列表定义了rebase将被执行后分支会是什么样的。更改pick 命令或者重新排序，这个分支的历史就能根据你的想法改变。比如说，如果第二个提交修复了第一个提交中的小问题，你可以用fixup 命令把它们合到一个提交中：</p>
+<pre><code>pick 33d5b7a Message for commit #1 
+fixup 9480b3d Message for commit #2 
+pick 5c67e61 Message for commit #3
+</code></pre><p>保存后关闭文件，Git会根据你的指令来执行rebase，项目历史看上去会是这样：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:fe6942b4-7a60-4464-9181-b67e59e50788/04.svg?cdnVersion=da" alt="Squashing a commit with an interactive rebase"></p>
+<p>忽略不重要的提交会让你的feature分支的历史更清晰易读。这是<code>git merge</code> 做不到的。</p>
+<h2 id="Rebase的黄金法则"><a href="#Rebase的黄金法则" class="headerlink" title="Rebase的黄金法则"></a>Rebase的黄金法则</h2><p>当你理解rebase是什么的时候，最重要的就是什么时候 不能 用rebase。<code>git rebase</code> 的黄金法则：绝不要在公共的分支上使用它。</p>
+<p>比如说，如果你把master分支rebase到你的feature分支上会发生什么：<br><img src="https://wac-cdn.atlassian.com/dam/jcr:1d22f018-b2c7-4096-9db1-c54940cf4f4e/05.svg?cdnVersion=da" alt="Rebasing the master branch"></p>
+<p>这次rebase将master分支上的所有提交都移到了feature分支后面。问题是它只发生在你的代码仓库中，其他所有的开发者还在原来的master上工作。因为rebase引起了新的提交，Git会认为你的master分支和其他人的master已经分叉了。</p>
+<p>同步两个master分支的唯一办法是把它们merge到一起，导致一个额外的合并提交和两堆包含同样更改的提交。不用说，这会让人非常困惑。</p>
+<p>所以，在你运行git rebase 之前，一定要问问你自己“有没有别人正在这个分支上工作？”。如果答案是肯定的，那么把你的爪子放回去，重新找到一个无害的方式（如git revert）来提交你的更改。不然的话，你可以随心所欲地重写历史。</p>
+<h3 id="强制推送"><a href="#强制推送" class="headerlink" title="强制推送"></a>强制推送</h3><p>如果你想把rebase之后的master分支推送到远程仓库，Git会阻止你这么做，因为两个分支包含冲突。但你可以传入–force 标记来强行推送。就像下面一样：</p>
+<pre><code># 小心使用这个命令！
+git push --force
+</code></pre><p>它会重写远程的master分支来匹配你仓库中rebase之后的master分支，对于团队中其他成员来说这看上去很诡异。所以，务必小心这个命令，只有当你知道你在做什么的时候再使用。</p>
+<p>仅有的几个强制推送的使用场景之一是，当你在想向远程仓库推送了一个私有分支之后，执行了一个本地的清理（比如说为了回滚）。这就像是在说“哦，其实我并不想推送之前那个feature分支的。用我现在的版本替换掉吧。”同样，你要注意没有别人正在这个feature分支上工作。</p>
+<h2 id="应用到开发工作流"><a href="#应用到开发工作流" class="headerlink" title="应用到开发工作流"></a>应用到开发工作流</h2><p>rebase可以或多或少应用在你们团队的Git工作流中。在这一节中，我们来看看在feature分支开发的各个阶段中，rebase有哪些好处。</p>
+<p>在工作流中平衡git rebase负面作用的第一步是创建一个功能开发的专门feature分支。这让你拥有安全使用rebase的分支结构：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:6af9de07-088b-4f8b-97a7-b66569a9e4ac/06.svg?cdnVersion=da" alt="Developing a feature in a dedicated branch"></p>
+<h3 id="本地清理"><a href="#本地清理" class="headerlink" title="本地清理"></a>本地清理</h3><p>在你工作流中使用rebase最好的用法之一就是清理本地正在开发的分支。隔一段时间执行一次交互式rebase，你可以保证你feature分支中的每一个提交都是具体而且有意义的。你在写代码时不用担心造成松散的提交——你可以使用rebase解决这个问题。</p>
+<p>调用<code>git rebase</code> 的时候，你有两个选项要去考虑：上游分支（比如master）或者你feature分支中早先的一个提交。我们在“交互式rebase”一节看到了第一种的例子。后一种在当你只需要修改最新几次提交时也很有用。比如说，下面的命令对最新的3次提交进行了交互式rebase：</p>
+<pre><code>git checkout feature 
+git rebase -i HEAD~3
+</code></pre><p>通过指定HEAD~3作为新的基提交，你实际上没有移动分支——你只是将之后的3次提交重写了。注意它不会把上游分支的更改并入到feature分支中。<br><img src="https://wac-cdn.atlassian.com/dam/jcr:079532c4-2594-40ed-a5c4-0e3621b9edff/07.svg?cdnVersion=da" alt="Rebasing onto Head~3"></p>
+<p>如果你想用这个方法重写整个feature分支，git merge-base 命令非常方便地找出feature分支开始分叉的基。下面这段命令返回基提交的ID，你可以接下来将它传给git rebase：</p>
+<pre><code>git merge-base feature master
+</code></pre><p>交互式rebase是在你工作流中引入git rebase 的的好办法，因为它只影响本地分支。其他开发者只能看到你已经完成的结果，那就是一个非常整洁、易于追踪的分支历史。</p>
+<p>但同样的，这只能用在私有分支上。如果你在同一个feature分支和其他开发者合作的话，这个分支是公开的，你不能重写这个历史。</p>
+<p>用带有交互式的rebase清理本地提交，这是无法用git merge 命令代替的。</p>
+<h3 id="将上游分支上的更改并入feature分支"><a href="#将上游分支上的更改并入feature分支" class="headerlink" title="将上游分支上的更改并入feature分支"></a>将上游分支上的更改并入feature分支</h3><p>在概览一节，我们看到了feature分支如何通过git merge 或git rebase 来并入上游分支。merge是保留你完整历史的安全选择，rebase将你的feature分支移动到master分支后面，创建一个线性的历史。</p>
+<p>git rebase 的用法和本地清理非常类似（而且可以同时使用），但之间并入了master上的上游更改。</p>
+<p>记住，rebase到远程分支而不是master也是完全合法的。当你和另一个开发者在同一个feature分之上协作的时候，你会用到这个用法，将他们的更改并入你的项目。</p>
+<p>比如说，如果你和另一个开发者——John——往feature分支上添加了几个提交，在从John的仓库中fetch之后，你的仓库可能会像下面这样：</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:0bb661aa-361d-47ba-8c7b-00b3be0546cb/08.svg?cdnVersion=da" alt="Collaborating on the same feature branch"></p>
+<p>就和并入master上的上游更改一样，你可以这样解决这个Fork：要么merge你的本地分支和John的分支，要不把你的本地分支rebase到John的分支后面。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:1896adb1-5d49-419a-9b50-3a36adac186c/09.svg?cdnVersion=da" alt="Merging vs. rebasing onto a remote branch"></p>
+<p>注意，这里的rebase没有违反Rebase黄金法则，因为只有你的本地分支上的commit被移动了，之前的所有东西都没有变。这就像是在说“把我的改动加到John的后面去”。在大多数情况下，这比通过合并提交来同步远程分支更符合直觉。</p>
+<p>默认情况下，git pull 命令会执行一次merge，但你可以传入–rebase 来强制它通过rebase来整合远程分支。</p>
+<h3 id="用Pull-Request进行审查"><a href="#用Pull-Request进行审查" class="headerlink" title="用Pull Request进行审查"></a>用Pull Request进行审查</h3><p>如果你将pull request作为你代码审查过程中的一环，你需要避免在创建pull request之后使用git rebase。只要你发起了pull request，其他开发者能看到你的代码，也就是说这个分支变成了公共分支。重写历史会造成Git和你的同事难以找到这个分支接下来的任何提交。</p>
+<p>来自其他开发者的任何更改都应该用git merge 而不是git rebase 来并入。</p>
+<p>因此，在提交pull request前用交互式的rebase进行代码清理通常是一个好的做法。</p>
+<h3 id="并入通过的功能分支"><a href="#并入通过的功能分支" class="headerlink" title="并入通过的功能分支"></a>并入通过的功能分支</h3><p>如果某个功能被你们团队通过了，你可以选择将这个分支rebase到master分支之后，或是使用git merge 来将这个功能并入主代码库中。</p>
+<p>这和将上游改动并入feature分支很相似，但是你不可以在master分支重写提交，你最后需要用git merge 来并入这个feature。但是，在merge之前执行一次rebase，你可以确保merge是一直向前的，最后生成的是一个完全线性的提交历史。这样你还可以加入pull request之后的提交。</p>
+<p><img src="https://wac-cdn.atlassian.com/dam/jcr:df39b1f1-2686-4ee5-90bf-9836783342ce/10.svg?cdnVersion=da" alt="Integrating a feature into master with and without a rebase"></p>
+<p>如果你还没有完全熟悉git rebase，你还可以在一个临时分支中执行rebase。这样的话，如果你意外地弄乱了你feature分支的历史，你还可以查看原来的分支然后重试。</p>
+<p>比如说：</p>
+<pre><code>git checkout feature
+git checkout -b temporary-branch
+git rebase -i master
+# [清理目录]
+git checkout master
+git merge temporary-branch
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>你使用rebase之前需要知道的知识点都在这了。如果你想要一个干净的、线性的提交历史，没有不必要的合并提交，你应该使用git rebase 而不是git merge 来并入其他分支上的更改。</p>
+<p>另一方面，如果你想要保存项目完整的历史，并且避免重写公共分支上的commit， 你可以使用git merge。两种选项都很好用，但至少你现在多了git rebase这个选择。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing" target="_blank" rel="noopener">Merging vs. Rebasing</a></p>
+
       
 
       
@@ -848,15 +1905,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">确定寻宝方向</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 合并</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">中国</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git merge</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git rebase</a>
         		</li>
       		
 		</ul>
@@ -866,7 +1927,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/11/2018-06-11-ensure-orientation/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/02/05/2017-02-05-Merging-vs-Rebasing/">展开全文 >></a>
         </p>
       
 
@@ -896,31 +1957,121 @@
 
 
   
-    <article id="post-2018-06-10-blockchain-to-value-intenet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-02-03-Git-Reset-Checkout-and-Revert" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/10/2018-06-10-blockchain-to-value-intenet/">Hoooo和他的朋友们区块链寻宝日记（3）——— 区块链，价值互联网的高速公路</a>
+      <a class="article-title" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">【译文】代码回滚之Reset, Checkout, and Revert命令比较</a>
     </h1>
   
 
         
-        <a href="/2018/06/10/2018-06-10-blockchain-to-value-intenet/" class="archive-article-date">
-  	<time datetime="2018-06-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-10</time>
+        <a href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/" class="archive-article-date">
+  	<time datetime="2017-02-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天没想好写点什么，在重新读《区块链，从数字货币到信用社会》这本书，这本书对我认识区块链有很大的启发。</p>
-<p>今天在细读的一篇文章，也是上面这本书的一篇序文《区块链，建设互联网的价值高速公路》。里面有一段话：</p>
-        
-          <a class="article-more-a" href="/2018/06/10/2018-06-10-blockchain-to-value-intenet/#more">more >></a>
-        
+        <p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/hero.svg" alt=""></p>
+<p><strong>git reset</strong>、<strong>git checkout</strong> 和 <strong>git revert</strong> 是Git中的常用工具。他们都可以用来撤销仓库中的修改。而前两个命令不仅可以作用于提交，还可以作用于特定文件。</p>
+<p>因为它们非常相似，所以我们经常会搞混，不知道什么场景下该用哪个命令。在这篇文章中，我们会比较<strong>git reset</strong>、<strong>git checkout</strong>和<strong>git revert</strong>最常见的用法。希望你在看完后能游刃有余地使用这些命令来管理你的仓库。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/01.svg" alt="The main components of a Git repository"></p>
+<p>Git仓库有三个主要组成——工作目录，暂存区和提交历史。这张图有助于理解每个命令对仓库产生作用的三个区：工作目录，暂存区、提交历史。当你阅读的时候，牢记这三个区。</p>
+<h2 id="提交层面的操作"><a href="#提交层面的操作" class="headerlink" title="提交层面的操作"></a>提交层面的操作</h2><p>你传给git reset 和 git checkout的参数决定他们的作用范围。如果参数里不包括一个文件路径，他们将作用于整个提交历史。这节内容我们主要探讨这个。注意git revert没有文件层面的操作。</p>
+<h4 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h4><p>在提交层面上，<code>reset</code>将一个分支的末端指向另一个提交。这可以用来移除当前分支的一些提交。比如，下面这两条命令让<code>hotfix</code>分支向后回退了两个提交。</p>
+<pre><code>git checkout hotfix
+git reset HEAD~2
+</code></pre><p><code>hotfix</code>分支末端的两个提交现在变成了悬挂（dangling）提交。也就是说，下次Git执行垃圾回收的时候，这两个提交会被删除。换句话说，如果你想扔掉这两个提交，你可以这么做。reset操作如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/02.svg" alt="Resetting the hotfix branch to HEAD~2"></p>
+<p>如果更改还没有共享给其他人并且你乡撤销这些更改，<code>git reset</code>是非常方便你达到这个目的的方法。当你开发一个功能的时候发现『糟糕，我做了什么？我应该重新来过！』时，reset就像是go-to命令一样。</p>
+<p>除了在当前分支上操作，你还可以通过传入这些标记来修改你的暂存区或工作目录：</p>
+<ul>
+<li>–soft    – 暂存区和工作目录都不会被改变</li>
+<li>–mixed   – 默认选项。暂存区和你指定的提交同步，但工作目录不受影响</li>
+<li>–hard    – 暂存区和工作目录都同步到你指定的提交</li>
+</ul>
+<p>把这些参数想成定义<code>git reset</code>操作的作用域就容易理解多了。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/03.svg" alt="The scope of `git reset`’s modes"></p>
+<p>这些标记往往和HEAD作为参数一起使用。比如，<code>git reset --mixed HEAD</code> 将你当前的改动从暂存区中移除，但是这些改动还留在工作目录中。另一方面，如果你想完全舍弃你没有提交的改动，你可以使用<code>git reset --hard HEAD</code>。这是git reset最常用的两种用法。</p>
+<p>当你传入HEAD以外的其他提交的时候要格外小心，因为reset操作会重写当前分支的历史。正如<a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting/summary" target="_blank" rel="noopener">Rebase黄金法则</a>所说的，在公共分支上这样做可能会引起严重的后果。</p>
+<h4 id="Checkout"><a href="#Checkout" class="headerlink" title="Checkout"></a>Checkout</h4><p>你应该已经非常熟悉提交层面的git checkout。当传入分支名时，可以切换到那个分支。</p>
+<pre><code>git checkout hotfix
+</code></pre><p> 上面这个命令做的不过是将HEAD移到一个新的分支，然后更新工作目录。因为这可能会覆盖本地的修改，Git强制你提交或者隐藏工作目录中的所有更改，不然在checkout的时候这些更改都会丢失。和<code>git reset</code>不一样的是，<code>git checkout</code>没有移动这些分支。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/04.svg" alt="Moving `HEAD` from `master` to `hotfix`"></p>
+<p> 除了分支之外，你还可以传入提交的引用来checkout到任意的提交。这和checkout到另一个分支是完全一样的：把HEAD移动到特定的提交。比如，下面这个命令会checkout到当前提交的祖父提交。</p>
+<pre><code>git checkout HEAD~2
+</code></pre><p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/05.svg" alt="Moving `HEAD` to an arbitrary commit"></p>
+<p>这对于快速查看项目旧版本来说非常有用。但如果你当前的HEAD没有任何分支引用，那么这会造成HEAD分离。这是非常危险的，如果你接着添加新的提交，然后切换到别的分支之后就没办法回到之前添加的这些提交。因此，在为分离的HEAD添加新的提交的时候你应该创建一个新的分支。</p>
+<h4 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h4><p>Revert撤销一个提交的同时会创建一个新的提交。这是一个安全的方法，因为它不会重写提交历史。比如，下面的命令会找出倒数第二个提交，然后创建一个新的提交来撤销这些更改，然后把这个提交加入项目中。</p>
+<pre><code>git checkout hotfix
+git revert HEAD~2
+</code></pre><p>如下图所示：</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/06.svg" alt="Reverting the 2nd to last commit"></p>
+<p>相比<code>git reset</code>，它不会改变现在的提交历史。因此，<code>git revert</code>可以用在公共分支上，<code>git reset</code>应该用在私有分支上。</p>
+<p>你也可以把<code>git revert</code>当作撤销已经提交的更改，而<code>git reset HEAD</code>用来撤销没有提交的更改。</p>
+<p>就像<code>git checkout</code> 一样，<code>git revert</code> 也有可能会重写文件。所以，Git会在你执行revert之前要求你提交或者缓存你工作目录中的更改。</p>
+<h2 id="文件层面的操作"><a href="#文件层面的操作" class="headerlink" title="文件层面的操作"></a>文件层面的操作</h2><p><code>git reset</code>和<code>git checkout</code>命令也接受文件路径作为参数。这时它的行为就大为不同了。它不会作用于整份提交，参数将它限制于特定文件。</p>
+<h4 id="Reset-1"><a href="#Reset-1" class="headerlink" title="Reset"></a>Reset</h4><p>当检测到文件路径时，git reset 将暂存区同步到你指定的那个提交。比如，下面这个命令会将倒数第二个提交中的foo.py加入到暂存区中，供下一个提交使用。</p>
+<pre><code>git reset HEAD~2 foo.py
+</code></pre><p>和提交层面的<code>git reset</code>一样，通常我们使用HEAD而不是某个特定的提交。运行<code>git reset HEAD foo.py</code> 会将当前的foo.py从暂存区中移除出去，而不会影响工作目录中对foo.py的更改。<br>暂存区<br><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/07.svg" alt="Moving a file from the commit history into the staged snapshot"></p>
+<p><em>–soft</em>、<em>–mixed</em>和<em>–hard</em>对文件层面的<code>git reset</code>毫无作用，因为暂存区中的文件一定会变化，而工作目录中的文件一定不变。</p>
+<h4 id="Checkout-1"><a href="#Checkout-1" class="headerlink" title="Checkout"></a>Checkout</h4><p>Checkout一个文件和带文件路径<code>git reset</code> 非常像，除了它更改的是工作目录而不是缓存区。不像提交层面的checkout命令，它不会移动HEAD引用，也就是你不会切换到别的分支上去。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/08.svg" alt="Moving a file from the commit history into the working directory"></p>
+<p>比如，下面这个命令将工作目录中的foo.py同步到了倒数第二个提交中的foo.py。</p>
+<pre><code>git checkout HEAD~2 foo.py
+</code></pre><p>和提交层面相同的是，它可以用来检查项目的旧版本，但作用域被限制到了特定文件。</p>
+<p>如果你缓存并且提交了checkout的文件，它具备将某个文件回撤到之前版本的效果。注意它撤销了这个文件后面所有的更改，而git revert 命令只撤销某个特定提交的更改。</p>
+<p>和<code>git reset</code> 一样，这个命令通常和HEAD一起使用。比如<code>git checkout HEAD foo.py</code>等同于舍弃foo.py没有缓存的更改。这个行为和git <code>reset HEAD --hard</code>很像，但只影响特定文件。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>你现在已经掌握了Git仓库中撤销更改的所有工具。git reset、git checkout、和 git revert命令比较容易混淆，但当你想起它们对工作目录、缓存区和提交历史的不同影响，就会容易判断现在应该用哪个命令。</p>
+<p>下面这个表格总结了这些命令最常用的使用场景。记得经常对照这个表格，因为你使用Git时一定会经常用到。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">命令</th>
+<th style="text-align:center">作用域</th>
+<th style="text-align:center">常用情景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在私有分支上舍弃一些没有提交的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git reset</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">将文件从缓存区中移除</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">切换分支或查看旧版本</td>
+</tr>
+<tr>
+<td style="text-align:center">git checkout</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">舍弃工作目录中的更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">提交层面</td>
+<td style="text-align:center">在公共分支上回滚更改</td>
+</tr>
+<tr>
+<td style="text-align:center">git revert</td>
+<td style="text-align:center">文件层面</td>
+<td style="text-align:center">（然而并没有）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting" target="_blank" rel="noopener">Reset, Checkout, and Revert</a></p>
+
       
 
       
@@ -933,15 +2084,23 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">价值高速公路</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 撤销</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">value intenet</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git Reset</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Revert</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git Checkout</a>
         		</li>
       		
 		</ul>
@@ -951,7 +2110,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/10/2018-06-10-blockchain-to-value-intenet/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">展开全文 >></a>
         </p>
       
 
@@ -981,31 +2140,35 @@
 
 
   
-    <article id="post-2018-06-09-how-to-achieve-ten-million-small-goal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-01-01-from-2016-to-2017" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/09/2018-06-09-how-to-achieve-ten-million-small-goal/">Hoooo和他的朋友们区块链寻宝日记（2）——— 如何实现一千万的小目标</a>
+      <a class="article-title" href="/2017/01/01/2017-01-01-from-2016-to-2017/">借2016的东风，冲向2017的浪潮</a>
     </h1>
   
 
         
-        <a href="/2018/06/09/2018-06-09-how-to-achieve-ten-million-small-goal/" class="archive-article-date">
-  	<time datetime="2018-06-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-09</time>
+        <a href="/2017/01/01/2017-01-01-from-2016-to-2017/" class="archive-article-date">
+  	<time datetime="2016-12-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今年的区块链资产的目标是一千万，意味着自己手里的币资产要翻五倍才能达到，在传统行业要翻五倍简直不可想象，但是在区块链领域，更神奇的事情都能发生，导致我真的坚信年底能到1000万，我说万一，真的万一实现不了，朋友们一定给我筹够1000万，明年我们搞个小目标一个亿。</p>
-<p>为了给自己壮壮胆，打打气，我找下历史上在币市要实现1000万这个目标要怎么做。</p>
-        
-          <a class="article-more-a" href="/2018/06/09/2018-06-09-how-to-achieve-ten-million-small-goal/#more">more >></a>
-        
+        <p>2016年很忙很苦逼，6月份跳槽加入中国平安。上半年在老东家做了一个全新的App（亚程旅游），下半场在新东家从零开始又做了一个全新的App（平安健康），这一年工作强度之大，是近四五年没有的，前段时间一直杠杠的身体都发出超负荷警报，最近才算自我恢复过来。2016年的主旋律就是苦并享受着，之所以享受主要是成长了。</p>
+<h2 id="记录2016"><a href="#记录2016" class="headerlink" title="记录2016"></a>记录2016</h2><p>2016年开始写文章记录自己在技术上的成长，先是在简书（<a href="http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。" target="_blank" rel="noopener">http://www.jianshu.com/users/902105722a5a/latest_articles）上写；后来开通微信公众号：丁丁的coding日记，也会同步写的文章上去；后来又搞了一个博客站点http://jackiehoo.com/，写的文章首发会放在这里。今年累计发文30余篇，文字将近10万。在没有怎么认真打理这些平台的情况下，圈粉累计上千，能得到的读者的鼓励，这是非常让我感觉开心的。有几篇文章，比如《iOS比优鸡调试技巧篇（一）：reveal视图调试》、《iOS开发插件推荐（1）：利用神插件injectionforxcode倍增你的开发效率》、《爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门》获得了简书编辑、开发者头条等媒体的推荐，都有过千的阅读量，我深感荣幸外加内心一点点得意。</a></p>
+<p>2016年我主要在研究移动App的架构以及Git代码管理技术上，并把自己学习到技术运用到了我今年做的两个App上，平安健康App算是我架构设计的最佳实践作品。</p>
+<h3 id="关注架构"><a href="#关注架构" class="headerlink" title="关注架构"></a>关注架构</h3><p>好的架构师，首先是有丰富的研发经验，只有经过多个项目的洗礼，你才知道技术研发过程中的各个环节的痛点，项目需要的技术选型有哪些，对项目各个环节需要的技术了如指掌；比经验更重要的人性，架构师要有一颗正直善良的内心，时刻想着用技术手段为领导分忧解难，时刻想着用合理的技术运用为工程师兄弟们服务，优秀的架构是润物细无声的；有了善良的内心，架构师不断学习新的技术就变成自然而然的事情了，因为他总想用更好的技术为团队贡献力量。关于技术规范对于有两三年工作经验的人来说也许会不屑一顾，但对于我这种有工匠精神人则依然不放过一丝改善的机会，精益求精是原则，关于代码规范我总结了《iOS架构师之路：工程文件组织结构设计》、《iOS架构师之路：制定代码规范》、《iOS开发插件推荐（2）：自动化代码规范神器ClangFormat-Xcode》等多篇文章，为的就是能让代码规范满足项目高质量的同时却不会给开发带来多少负担，有自动化的手段的就自动化，能通人性的规范就通人性，代码规范方面已经积累了一套代码规范管理体系。网络层属于App项目的最顶层，网络层架构对于App来说尤为重要，在网络层架构方面我主要借鉴了casa大神的架构思路，参考我以前做的项目经验，总结了一套网络层架构解决方案，总结一片网络层架构设计的文章《iOS架构师之路：大型APP应用网络层架构思考》，我做的网络层架构大致解决了数据传输安全问题、性能问题（请求缓存和暂停取消等）、mock网络请求问题、数据标准化问题、交付问题、数据校验问题等，在网络架构方面我已经算是略有建树。关于项目内存管理，我也一套解决方案，比如项目的内存管理如何自动化，设计一套方案能减少开发工程师关注iOS内存的时间，又能有效的解决项目内存问题，为此我总结了《iOS架构师之路：项目内存管理方案》、《【译文】在iOS上自动检测内存泄漏》，这方面技术有运用到了平安健康App，这方面我还有需要学习和发掘的空间，目前我的一套内存管理方案也许能快速发现内存泄露，但如何能帮助开发定位内存泄露的代码方面还不成熟。关于提高项目效率方面，我总结了《iOS架构师之路：利用代码片段（XCodeSnippets）助力团队开发和项目质量管理》、《iOS比优鸡调试技巧篇（一）：reveal视图调试》，有一整理和设计了一套工具类，来帮助开发更有效率的写代码、搞定项目常用功能、提高调试效率等。在项目其他质量方面，我也有许多的思考，如何提倡减少继承来提高项目的可维护性，提倡瘦身控制器来提高项目可读性，为此总结和翻几篇文章，如《iOS架构师之路：控制器（View Controller）瘦身设计》、《iOS架构师之路：慎用继承》。缓存持久化方案方面，我也有较深的涉猎，总结了《iOS架构师之路：本地持久化方案》。关于架构未来还有很多可以发挥和学习的空间，如动态方案、组件化方案等，这些架构设计也会陆续运用到项目中。在关注最擅长的iOS领域的架构外，由于自己有过后端开发经验，也有过多年的网络，数据库，系统管理经验，2017希望自己能涉猎更多前后端知识，成为一个技术领域的的顶层设计者掌舵者。</p>
+<h3 id="学习Git"><a href="#学习Git" class="headerlink" title="学习Git"></a>学习Git</h3><p>2016年由于要带团队也关注项目管理方面的工作，因此学习过一些项目管理的方面的知识，后来对Git技术产生了兴趣，所以深入学习了Git技术。从不太懂git，到经过一年的学习和运用，在git技术运用上有收获不少，创作或者翻译了多篇git有关的文章。希望在2017年能至少集合出一本关于Git电子书吧，希望为git技术的推广贡献个人力量。</p>
+<h2 id="冲向2017年"><a href="#冲向2017年" class="headerlink" title="冲向2017年"></a>冲向2017年</h2><p>2016年对于技术人来说是非凡的一年，有许多革命性的技术诞生，大数据、移动互联网、云计算的高温还在持续的时候，随着今年alpha Go战胜李世石，人工智能开始站在了风口。在年末张小龙的一席演讲，小程序的崛起似乎也有很多可能性，未来可穿戴设备应用将改变人们的生活习惯。还有随着区块链成长起来的比特币交易。我们处在一个又一个技术革命的时代。未来人类社会的形态，将发生颠覆性的变化。旧的社会结构正在肢解，社会底层的机会将会被人工智能替代，未来会怎么发展即值得期待又让人忧心。作为技术人，未来依然大有可为是一定的。</p>
+<p>2016年看了一本书，是吴军写的《浪潮之巅》，书主要从技术和商业的角度介绍了借着技术革命的浪潮诞生的科技巨头，如软件时代的微软，互联网时代的Google、阿里巴巴，社交网络时代的腾讯，Facebook。2017年又是浪潮卷起的又一个元年，大风已起，想不被波及都不太可能。作为变革时代的人——要么get busy living ，要么get busy dying。</p>
+<p>2016年收获很多，2016年已经翻篇，借着2016年的势头，再接再厉，持续学习，持续改变，在2017年，发现一些适合自己的机会，去做一些想做的事情。</p>
+
       
 
       
@@ -1018,19 +2181,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">生活感悟</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">1000万</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">年度总结</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小目标1000万</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2016</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">daily blog</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2017</a>
         		</li>
       		
 		</ul>
@@ -1040,7 +2203,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/09/2018-06-09-how-to-achieve-ten-million-small-goal/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/01/01/2017-01-01-from-2016-to-2017/">展开全文 >></a>
         </p>
       
 
@@ -1072,7 +2235,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -1167,18 +2330,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1203,15 +2354,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+                <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1231,11 +2382,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1263,14 +2418,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS比优鸡调试</a>
               </li>
              
@@ -1280,6 +2427,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1303,6 +2458,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
@@ -1315,15 +2478,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1363,26 +2526,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -1399,6 +2542,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -1411,11 +2574,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1428,14 +2603,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1452,18 +2619,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1519,18 +2674,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">投资</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">财富增长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">货币</a>
               </li>
              
@@ -1539,99 +2682,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">价值高速公路</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">value intenet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">all in</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">daily block</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小目标1000万</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">daily blog</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">确定寻宝方向</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">中国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">百倍币</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">星云链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Nebulas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Nas</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">韭菜</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">成长</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">时间</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行动计划</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">独立思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">贫穷</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">发挥</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">limit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">通证经济</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">token economy</a>
+                <a href="javascript:void(0)" class="js-tag color4">新时代</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1639,7 +2690,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">区块链, 通证经济</a>
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
             
             <div class="clearfix"></div>
