@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://jakciehoo.github.io">
-  <title>多币种DMI+EMA趋势跟踪策略（现货版） | Hoooo同学的博客</title>
+  <title>我对趋势跟踪策略的认识和思考 | Hoooo同学的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
 <meta name="keywords" content="区块链,通证经济,生活,移动开发,Git">
 <meta property="og:type" content="article">
-<meta property="og:title" content="多币种DMI+EMA趋势跟踪策略（现货版）">
+<meta property="og:title" content="我对趋势跟踪策略的认识和思考">
 <meta property="og:url" content="https://jakciehoo.github.io/2019/03/03/new-trend-quant-strategy/index.html">
 <meta property="og:site_name" content="Hoooo同学的博客">
 <meta property="og:description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://jakciehoo.github.io/img/in-post/quant/trend_strategy_01.png">
-<meta property="og:updated_time" content="2019-03-03T15:02:52.942Z">
+<meta property="og:updated_time" content="2019-03-03T15:09:56.657Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="多币种DMI+EMA趋势跟踪策略（现货版）">
+<meta name="twitter:title" content="我对趋势跟踪策略的认识和思考">
 <meta name="twitter:description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
 <meta name="twitter:image" content="https://jakciehoo.github.io/img/in-post/quant/trend_strategy_01.png">
   
@@ -168,7 +168,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      多币种DMI+EMA趋势跟踪策略（现货版）
+      我对趋势跟踪策略的认识和思考
     </h1>
   
 
@@ -182,7 +182,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指标。</p>
-<p>量化交易中趋势策略、网格策略是比较主流两类策略。有几个量化投资者问我为什么不开发个趋势策略玩，嗯，今天就把我之前做开发的趋势策略介绍出来，大改版成现货版，同时支持多品种同时运行。</p>
+<p>量化交易中趋势策略、网格策略是比较主流两类策略。有几个量化投资者问我为什么不开发个趋势策略玩。嗯，下一篇文章就把我之前做开发的趋势策略介绍出来，大改版成现货版，同时支持多品种同时运行。有时间再完善改写成期现都支持的软件版本。</p>
 <p>先晒一张回过去三个月的回测吧。后面我定期晒晒实盘。今天主要跟大家聊聊我对趋势策略认识和思考，它跟网格策略的对比。也许说的不对，量化技术学习我还在路上。</p>
 <p><img src="/img/in-post/quant/trend_strategy_01.png" alt="趋势策略"></p>
 <h3 id="趋势跟踪策略介绍"><a href="#趋势跟踪策略介绍" class="headerlink" title="趋势跟踪策略介绍"></a>趋势跟踪策略介绍</h3><p>趋势跟踪策略是希望发现交易物，如股票、比特币的价格趋势进行买卖，希望在币价在涨之前买入（做多），在跌之前卖出（做空）。趋势跟踪策略两个关键字，一个是趋势，另外一个是跟踪往往被人忽略。趋势不可以预知，勉强可以用上面提到的一些指标进行预测，当预测正确和预测失败时再跟踪情况进行止盈止损。</p>
@@ -206,7 +206,7 @@
 <p>3.最大化止盈点位。趋势策略难得趋势跟踪正确一次，如果没有在适当的位置止盈很可能就覆盖不了之前的损失。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>我最后想说的是，适合自己的量化交易策略，就是好策略。量化软件只是工具，而用好工具的永远是有挣钱需求的投资人。</p>
 <p>我优化了我的趋势策略好几个月，因为我不想花时间去看盘，不想花时间去做交易。总想着学习指标看能不能预测更准确，总想着增加一些的技术指标，一些预测方法来减少震荡预测失败的概率。或者想着通过技术去抓到最高点盈利离场的的机会。我努力这么久，基本是徒劳的，虽然学习到各种交易技术，但是还是做不到。</p>
-<p>我终于接受了现实，我只能优化那么一点点技术细节，减少一点止损的损失，增加一点盈利高点离场的可能性。但更多的还是认清显示，意识当自己是一个什么样子的交易者。如果自己能花在交易的时间只有一天一个小时，能通过自动化交易程序盈利就是福，而别想着暴富。如果能像我认识的交易大牛一样，专业炒币，专业的学习，专业的操作，那量化交易就是他很好的工具，成为他的得力助手。</p>
+<p>我终于接受了现实，我只能优化那么一点点技术细节，减少一点止损的损失，增加一点盈利高点离场的可能性。但更多的还是认清现实，介绍自己不是一个什么样子的投资者。如果自己能花在交易的时间只有一天一个小时，能通过自动化交易程序盈利就是福，而别想着暴富。如果能像我认识的交易大牛一样，专业炒币，专业的学习，专业的操作，那量化交易就是他很好的工具，成为他的得力助手。</p>
 
       
 
@@ -449,14 +449,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -465,11 +457,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -485,19 +485,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,18 +521,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS插件</a>
               </li>
              
@@ -545,11 +533,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -565,19 +557,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">译文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">译文</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,7 +585,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,6 +602,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,27 +637,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -689,6 +673,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git Branch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -701,14 +701,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
@@ -718,6 +710,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -737,26 +749,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -770,6 +762,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">迁移</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -793,6 +793,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
@@ -810,10 +814,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">新时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
               </li>
             
             <div class="clearfix"></div>
