@@ -6,22 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://jakciehoo.github.io">
-  <title>【译文】全方位了解Git | Hoooo同学的博客</title>
+  <title>多币种DMI+MACD趋势跟踪策略1.0.0介绍 | Hoooo同学的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。 Git具有分布式架构，Git是DV">
-<meta name="keywords" content="代码版本管理规范,Git,版本控制系统">
+  <meta name="description" content="策略介绍这个策略是趋势跟踪策略，目前支持现货，应该近期会增加期货支持。我之前开发过一个网格策略《BitMex单向做空法币本位对冲量化软件3.0.0介绍》,网格策略收益偏高，但是风险也偏大。趋势策略风险低，一般有明确和快速的止损点位确认，所以单次损失很小。 策略原理这篇其实不是原理，凑合理解下吧，趋势策略大同小异。而小异的部分就是难点，给我出策略的是以为交易大牛，在熊市一个月靠短线交易几十万的那种大">
+<meta name="keywords" content="区块链,通证经济,生活,移动开发,Git">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【译文】全方位了解Git">
-<meta property="og:url" content="https://jakciehoo.github.io/2017/04/02/2017-04-02-what-is-git/index.html">
+<meta property="og:title" content="多币种DMI+MACD趋势跟踪策略1.0.0介绍">
+<meta property="og:url" content="https://jakciehoo.github.io/2019/03/03/introduce-a-new-trend-strategy/index.html">
 <meta property="og:site_name" content="Hoooo同学的博客">
-<meta property="og:description" content="到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。 Git具有分布式架构，Git是DV">
+<meta property="og:description" content="策略介绍这个策略是趋势跟踪策略，目前支持现货，应该近期会增加期货支持。我之前开发过一个网格策略《BitMex单向做空法币本位对冲量化软件3.0.0介绍》,网格策略收益偏高，但是风险也偏大。趋势策略风险低，一般有明确和快速的止损点位确认，所以单次损失很小。 策略原理这篇其实不是原理，凑合理解下吧，趋势策略大同小异。而小异的部分就是难点，给我出策略的是以为交易大牛，在熊市一个月靠短线交易几十万的那种大">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt">
-<meta property="og:updated_time" content="2017-09-03T13:43:20.000Z">
+<meta property="og:updated_time" content="2019-03-03T15:26:11.886Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【译文】全方位了解Git">
-<meta name="twitter:description" content="到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。 Git具有分布式架构，Git是DV">
-<meta name="twitter:image" content="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt">
+<meta name="twitter:title" content="多币种DMI+MACD趋势跟踪策略1.0.0介绍">
+<meta name="twitter:description" content="策略介绍这个策略是趋势跟踪策略，目前支持现货，应该近期会增加期货支持。我之前开发过一个网格策略《BitMex单向做空法币本位对冲量化软件3.0.0介绍》,网格策略收益偏高，但是风险也偏大。趋势策略风险低，一般有明确和快速的止损点位确认，所以单次损失很小。 策略原理这篇其实不是原理，凑合理解下吧，趋势策略大同小异。而小异的部分就是难点，给我出策略的是以为交易大牛，在熊市一个月靠短线交易几十万的那种大">
   
     <link rel="alternative" href="/atom.xml" title="Hoooo同学的博客" type="application/atom+xml">
   
@@ -161,50 +159,46 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-2017-04-02-what-is-git" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-introduce-a-new-trend-strategy" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      【译文】全方位了解Git
+      多币种DMI+MACD趋势跟踪策略1.0.0介绍
     </h1>
   
 
         
-        <a href="/2017/04/02/2017-04-02-what-is-git/" class="archive-article-date">
-  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+        <a href="/2019/03/03/introduce-a-new-trend-strategy/" class="archive-article-date">
+  	<time datetime="2019-03-03T15:11:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:f6948a92-f446-466f-8783-1dd1cbcc661a/hero.svg?cdnVersion=dt" alt="什么是Git"></p>
-<p>到目前为止，当今世界使用最广泛的现代版控制系统是Git。Git是一个成熟的，积极维护的开源项目，最初由Linus Torvalds于2005年开发，他是Linux操作系统内核的著名创始人。大多数的软件项目，包括商业项目以及开放源码，依靠Git进行版本控制。使用过Git的开发人员被认为软件开发人才，Git支持大多数操作系统和在IDE（集成开发环境）中也运行良好。</p>
-<p>Git具有分布式架构，Git是DVCS（即分布式版本控制系统）的代表。在Git中，每个开发人员的代码工作副本都是一个仓库，仓库里包含所有更改的完整历史，而不是像CVS或Subversion（也称为SVN）等一般流行的版本控制系统，这些版本控制系统通常只有一个单一的位置有软件的完整版本历史。</p>
-<p>除了分布式之外，Git的设计还保证了高性能，安全性和灵活性。</p>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>相比其他的版本控制系统，Git的性能特征非常高。提交新的更改、分支、合并和比较以前的版本都针对性能进行了优化。深入了解了实际源代码文件树的常见属性，它们如何通常随时间进行修改以及访问模式是如何进行的，Git内部实现的算法利用了这些优势。</p>
-<p>与某些版本控制软件不同，Git在确定文件树的存储和版本历史记录时应该不会被文件的名称所愚弄，而Git则关注文件内容本身。毕竟，源代码文件经常被重命名，拆分和重构。Git仓库文件使用了增量编码（存储内容差异），压缩和显式存储目录内容和版本元数据对象的组合。</p>
-<p>分布式还可显着提升性能。例如，像开发人员Alice一样，更改源代码，为即将发布的2.0版本添加功能，然后使用描述性消息提交这些更改。然后，她还工作了第二个功能，并提交了这些更改。自然地，这些在版本历史中被存储为单独的工作。Alice然后切换到相同软件的1.3版本，以修复仅影响旧版本的错误。这样做的目的是让Alice的团队在版本2.0准备就绪之前发布了一个版本1.3.1的错误修复版本。然后，Alice可以返回到2.0分支，继续处理2.0的新功能，所有这些都可以在没有任何网络访问的情况下发生，因此可以快速可靠进行。她甚至可以在飞机上做。当她准备好将所有提交的更改时，并准备发送到远程存储库时，Alice可以使用一条命令推送他们到远程仓库。</p>
-<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><p>Git设计时优先考虑被托管源代码的完整性。文件的内容以及文件和目录的关联，版本，标签和提交，Git存储库中的所有这些对象，都使用了称为SHA1的加密安全散列算法进行安全保护。这样可以保护代码和变更历史，防止意外和恶意更改，并确保历史记录完全可追溯。</p>
-<p>使用Git，您可以确保您具有源代码的真实内容历史。</p>
-<p>一些其他版本控制系统没有对后面秘密更改的保护。对于依赖于软件开发的任何组织来说，这可能是一个严重的信息安全漏洞。</p>
-<h2 id="灵活性"><a href="#灵活性" class="headerlink" title="灵活性"></a>灵活性</h2><p>Git的关键设计目标之一是灵活性。Git在几个方面具有灵活性：支持各种非线性开发工作流，在小型和大型项目中的效率以及与对许多现有版本控制系统和协议的兼容性。</p>
-<p>Git被设计为支持分支和标记作为一流的公民（不同于SVN），影响分支和标签的操作（如合并或还原）也被存储为变更历史的一部分。并非所有版本控制系统都具有此级别的跟踪功能。</p>
-<h2 id="选择Git作为版本控制系统"><a href="#选择Git作为版本控制系统" class="headerlink" title="选择Git作为版本控制系统"></a>选择Git作为版本控制系统</h2><p>Git是当今大多数软件团队的最佳选择。虽然每个团队是不同的，应该有他们自己的判断，下面介绍使用Git版本控制系统优于其它方案的主要原因：</p>
-<h3 id="Git非常棒"><a href="#Git非常棒" class="headerlink" title="Git非常棒"></a>Git非常棒</h3><p>Git具有大多数团队和个人开发人员所需的功能，性能，安全性和灵活性。前面介绍了Git的这些属性。与大多数其他替代方案并列比较，许多团队发现Git非常有优势。</p>
-<h3 id="Git是一个事实上的标准"><a href="#Git是一个事实上的标准" class="headerlink" title="Git是一个事实上的标准"></a>Git是一个事实上的标准</h3><p>Git是最广泛采用的同类工具。在Atlassian，我们几乎所有的项目源代码都是在Git中管理的。由于如下原因，使得Git对开发者非常有吸引力。</p>
-<p>大量开发人员已经有Git经验，相当一部分大学毕业生可能只有Git的经验。虽然一些组织在从另一个版本控制系统迁移到Git时可能需要比较难的学习曲线，但是许多现有的和未来的开发人员将不需要接受Git的培训。</p>
-<p>除了大型人才库的优势外，Git的优势还意味着许多第三方软件工具和服务已经与Git（包括IDE）集成在一起，以及我们自己的工具，如DVCS桌面客户端<a href="https://www.atlassian.com/software/sourcetree" target="_blank" rel="noopener">SourceTree</a>，问题和项目跟踪软件<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA</a>和代码托管服务<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>。</p>
-<p>如果您是一位缺乏经验的开发人员，希望在软件开发工具中建立有价值的技能，那么在使用版本控制时，Git应该在您的掌握技能列表中。</p>
-<h3 id="Git是一个优质的开源项目"><a href="#Git是一个优质的开源项目" class="headerlink" title="Git是一个优质的开源项目"></a>Git是一个优质的开源项目</h3><p>Git是一个拥有强大支持的开放源码项目，拥有十多年的稳定的管理维护经验。项目维护者已经拥有综合的判断力和成熟的方法来满足其用户的长期需求，并提供可扩展性和功能性的定期发布。无数企业要求开源项目的质量，因此开放源码软件的质量很容易被仔细检查。</p>
-<p>Git享有极好的社区支持和庞大的用户群。文档非常丰富，包括书籍，教程和专用网站。还有播客和视频教程。</p>
-<p>开源软件可以降低业余兴趣开发者的成本，因为他们可以使用Git而不需要支付费用。对于在开源项目中使用，Git无疑是前几代成功开源版本控制系统SVN和CVS的继承者。</p>
-<h3 id="对Git的批评"><a href="#对Git的批评" class="headerlink" title="对Git的批评"></a>对Git的批评</h3><p>对Git的一个常见批评可能是它难以学习。Git中的一些术语对于新手和其他系统的用户来说将是新颖的，Git术语可能不同，例如，revert在Git中具有与SVN或CVS不同的含义。然而，Git提供非常强大的能力，能为用户提供了大量的功能。学习使用这种功能可能需要一些时间，但一旦学会，该团队可以利用这种能力来提高其开发速度。</p>
-<p>对于那些来自非分布式版本管理系统（VCS）的团队来说，拥有一个中央存储库可能看起来好像是不想丢失的东西。然而，虽然Git被设计为分布式版本控制系统（DVCS），但是您仍然可以采用一个严格规范的正式仓库，在其中存储对软件的所有更改。使用Git，每个开发人员的仓库是完整的，因此它们的工作不需要受到“中央”服务器的可用性和性能的束缚。在停电或离线时，开发人员仍然可以查阅完整的项目历史。由于Git具有灵活性和分布式的特性，您可以按照自己使用其他版本控制系统的习惯的方式去工作，但这不能获得Git的其他优势，其中一些您甚至可能无法意识到你错过了。</p>
-<p>现在，您了解什么版本控制是什么，Git是什么以及为什么软件团队应该使用它，请继续阅读来发现Git的优势。</p>
+        <h3 id="策略介绍"><a href="#策略介绍" class="headerlink" title="策略介绍"></a>策略介绍</h3><p>这个策略是趋势跟踪策略，目前支持现货，应该近期会增加期货支持。我之前开发过一个网格策略<a href="https://jakciehoo.github.io/2018/11/29/token-earning-bitmex-one-direction-robot/">《BitMex单向做空法币本位对冲量化软件3.0.0介绍》</a>,网格策略收益偏高，但是风险也偏大。趋势策略风险低，一般有明确和快速的止损点位确认，所以单次损失很小。</p>
+<h3 id="策略原理"><a href="#策略原理" class="headerlink" title="策略原理"></a>策略原理</h3><p>这篇其实不是原理，凑合理解下吧，趋势策略大同小异。而小异的部分就是难点，给我出策略的是以为交易大牛，在熊市一个月靠短线交易几十万的那种大牛。</p>
+<p><a href="https://jakciehoo.github.io/2019/03/03/new-trend-quant-strategy/">《我对趋势跟踪策略的认识和思考》</a></p>
+<p>有机会再写一篇策略原理文章吧。</p>
+<h3 id="亮点"><a href="#亮点" class="headerlink" title="亮点"></a>亮点</h3><ol>
+<li>可以24小时无人值守</li>
+<li>支持多交易所，多品种同时运行</li>
+<li>资深交易者可在必要时关闭机器人自动判断高位止盈，根据自己的判断在更好的位置止盈。</li>
+<li>支持各K线周期，包含自动合成K线模块</li>
+<li>支持各类参数灵活配置</li>
+</ol>
+<h3 id="策略收费"><a href="#策略收费" class="headerlink" title="策略收费"></a>策略收费</h3><p>1.策略出租：0.07BTC/月<br>2.API代管：0.07BTC/月或每月0.01BTC+30%收益分成</p>
+<h3 id="支持交易所和交易对"><a href="#支持交易所和交易对" class="headerlink" title="支持交易所和交易对"></a>支持交易所和交易对</h3><ol>
+<li>当前支持现货</li>
+<li>后续版本会支持期货</li>
+</ol>
+<h3 id="升级"><a href="#升级" class="headerlink" title="升级"></a>升级</h3><p>策略会根据用户反馈完善支持永久免费升级</p>
+<h3 id="技术和策略支持"><a href="#技术和策略支持" class="headerlink" title="技术和策略支持"></a>技术和策略支持</h3><p>策略问题可以加我的微信Hoo_tongxue联系。</p>
+<h3 id="加入社区"><a href="#加入社区" class="headerlink" title="加入社区"></a>加入社区</h3><p>如果您对量化交易感兴趣、想学习或交流，欢迎加入社群。</p>
+<p>关注公众号”胡同学和朋友们的成长日记”， 回复【币赚】两字即可。</p>
 
       
 
@@ -244,25 +238,6 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
@@ -313,7 +288,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://qr.liantu.com/api.php?text=https://jakciehoo.github.io/2017/04/02/2017-04-02-what-is-git/" alt="微信分享二维码">
+      <img src="http://qr.liantu.com/api.php?text=https://jakciehoo.github.io/2019/03/03/introduce-a-new-trend-strategy/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -328,18 +303,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/04/02/2017-04-02-setting-up-a-repository/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          【译文】Git基础命令：初始化一个Git仓库
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/04/02/2017-04-02-what-is-version-control/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">【译文】版本控制系统介绍</div>
+    <a href="/2019/03/03/new-trend-quant-strategy/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">我对趋势跟踪策略的认识和思考</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -369,7 +335,7 @@
   
 
   
-  <div id="SOHUCS" sid="2017-04-02-what-is-git" ></div> 
+  <div id="SOHUCS" sid="introduce-a-new-trend-strategy" ></div> 
 <script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js" ></script>
 <script type="text/javascript">
     window.changyan.api.config({

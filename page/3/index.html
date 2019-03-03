@@ -265,6 +265,109 @@
 
 
   
+    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
+<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
+<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
+<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
+<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
+<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
+<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
+<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
+<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
+<ol>
+<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
+</li>
+<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
+</li>
+</ol>
+<ol start="3">
+<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
+<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">版本控制系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2017-04-02-saving-changes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -2089,189 +2192,6 @@ git merge temporary-branch
 
 
   
-    <article id="post-2017-02-03-Git-Reset-Checkout-and-Revert" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">【译文】代码回滚之Reset, Checkout, and Revert命令比较</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/" class="archive-article-date">
-  	<time datetime="2017-02-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/hero.svg" alt=""></p>
-<p><strong>git reset</strong>、<strong>git checkout</strong> 和 <strong>git revert</strong> 是Git中的常用工具。他们都可以用来撤销仓库中的修改。而前两个命令不仅可以作用于提交，还可以作用于特定文件。</p>
-<p>因为它们非常相似，所以我们经常会搞混，不知道什么场景下该用哪个命令。在这篇文章中，我们会比较<strong>git reset</strong>、<strong>git checkout</strong>和<strong>git revert</strong>最常见的用法。希望你在看完后能游刃有余地使用这些命令来管理你的仓库。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/01.svg" alt="The main components of a Git repository"></p>
-<p>Git仓库有三个主要组成——工作目录，暂存区和提交历史。这张图有助于理解每个命令对仓库产生作用的三个区：工作目录，暂存区、提交历史。当你阅读的时候，牢记这三个区。</p>
-<h2 id="提交层面的操作"><a href="#提交层面的操作" class="headerlink" title="提交层面的操作"></a>提交层面的操作</h2><p>你传给git reset 和 git checkout的参数决定他们的作用范围。如果参数里不包括一个文件路径，他们将作用于整个提交历史。这节内容我们主要探讨这个。注意git revert没有文件层面的操作。</p>
-<h4 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h4><p>在提交层面上，<code>reset</code>将一个分支的末端指向另一个提交。这可以用来移除当前分支的一些提交。比如，下面这两条命令让<code>hotfix</code>分支向后回退了两个提交。</p>
-<pre><code>git checkout hotfix
-git reset HEAD~2
-</code></pre><p><code>hotfix</code>分支末端的两个提交现在变成了悬挂（dangling）提交。也就是说，下次Git执行垃圾回收的时候，这两个提交会被删除。换句话说，如果你想扔掉这两个提交，你可以这么做。reset操作如下图所示：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/02.svg" alt="Resetting the hotfix branch to HEAD~2"></p>
-<p>如果更改还没有共享给其他人并且你乡撤销这些更改，<code>git reset</code>是非常方便你达到这个目的的方法。当你开发一个功能的时候发现『糟糕，我做了什么？我应该重新来过！』时，reset就像是go-to命令一样。</p>
-<p>除了在当前分支上操作，你还可以通过传入这些标记来修改你的暂存区或工作目录：</p>
-<ul>
-<li>–soft    – 暂存区和工作目录都不会被改变</li>
-<li>–mixed   – 默认选项。暂存区和你指定的提交同步，但工作目录不受影响</li>
-<li>–hard    – 暂存区和工作目录都同步到你指定的提交</li>
-</ul>
-<p>把这些参数想成定义<code>git reset</code>操作的作用域就容易理解多了。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/03.svg" alt="The scope of `git reset`’s modes"></p>
-<p>这些标记往往和HEAD作为参数一起使用。比如，<code>git reset --mixed HEAD</code> 将你当前的改动从暂存区中移除，但是这些改动还留在工作目录中。另一方面，如果你想完全舍弃你没有提交的改动，你可以使用<code>git reset --hard HEAD</code>。这是git reset最常用的两种用法。</p>
-<p>当你传入HEAD以外的其他提交的时候要格外小心，因为reset操作会重写当前分支的历史。正如<a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting/summary" target="_blank" rel="noopener">Rebase黄金法则</a>所说的，在公共分支上这样做可能会引起严重的后果。</p>
-<h4 id="Checkout"><a href="#Checkout" class="headerlink" title="Checkout"></a>Checkout</h4><p>你应该已经非常熟悉提交层面的git checkout。当传入分支名时，可以切换到那个分支。</p>
-<pre><code>git checkout hotfix
-</code></pre><p> 上面这个命令做的不过是将HEAD移到一个新的分支，然后更新工作目录。因为这可能会覆盖本地的修改，Git强制你提交或者隐藏工作目录中的所有更改，不然在checkout的时候这些更改都会丢失。和<code>git reset</code>不一样的是，<code>git checkout</code>没有移动这些分支。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/04.svg" alt="Moving `HEAD` from `master` to `hotfix`"></p>
-<p> 除了分支之外，你还可以传入提交的引用来checkout到任意的提交。这和checkout到另一个分支是完全一样的：把HEAD移动到特定的提交。比如，下面这个命令会checkout到当前提交的祖父提交。</p>
-<pre><code>git checkout HEAD~2
-</code></pre><p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/05.svg" alt="Moving `HEAD` to an arbitrary commit"></p>
-<p>这对于快速查看项目旧版本来说非常有用。但如果你当前的HEAD没有任何分支引用，那么这会造成HEAD分离。这是非常危险的，如果你接着添加新的提交，然后切换到别的分支之后就没办法回到之前添加的这些提交。因此，在为分离的HEAD添加新的提交的时候你应该创建一个新的分支。</p>
-<h4 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h4><p>Revert撤销一个提交的同时会创建一个新的提交。这是一个安全的方法，因为它不会重写提交历史。比如，下面的命令会找出倒数第二个提交，然后创建一个新的提交来撤销这些更改，然后把这个提交加入项目中。</p>
-<pre><code>git checkout hotfix
-git revert HEAD~2
-</code></pre><p>如下图所示：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/06.svg" alt="Reverting the 2nd to last commit"></p>
-<p>相比<code>git reset</code>，它不会改变现在的提交历史。因此，<code>git revert</code>可以用在公共分支上，<code>git reset</code>应该用在私有分支上。</p>
-<p>你也可以把<code>git revert</code>当作撤销已经提交的更改，而<code>git reset HEAD</code>用来撤销没有提交的更改。</p>
-<p>就像<code>git checkout</code> 一样，<code>git revert</code> 也有可能会重写文件。所以，Git会在你执行revert之前要求你提交或者缓存你工作目录中的更改。</p>
-<h2 id="文件层面的操作"><a href="#文件层面的操作" class="headerlink" title="文件层面的操作"></a>文件层面的操作</h2><p><code>git reset</code>和<code>git checkout</code>命令也接受文件路径作为参数。这时它的行为就大为不同了。它不会作用于整份提交，参数将它限制于特定文件。</p>
-<h4 id="Reset-1"><a href="#Reset-1" class="headerlink" title="Reset"></a>Reset</h4><p>当检测到文件路径时，git reset 将暂存区同步到你指定的那个提交。比如，下面这个命令会将倒数第二个提交中的foo.py加入到暂存区中，供下一个提交使用。</p>
-<pre><code>git reset HEAD~2 foo.py
-</code></pre><p>和提交层面的<code>git reset</code>一样，通常我们使用HEAD而不是某个特定的提交。运行<code>git reset HEAD foo.py</code> 会将当前的foo.py从暂存区中移除出去，而不会影响工作目录中对foo.py的更改。<br>暂存区<br><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/07.svg" alt="Moving a file from the commit history into the staged snapshot"></p>
-<p><em>–soft</em>、<em>–mixed</em>和<em>–hard</em>对文件层面的<code>git reset</code>毫无作用，因为暂存区中的文件一定会变化，而工作目录中的文件一定不变。</p>
-<h4 id="Checkout-1"><a href="#Checkout-1" class="headerlink" title="Checkout"></a>Checkout</h4><p>Checkout一个文件和带文件路径<code>git reset</code> 非常像，除了它更改的是工作目录而不是缓存区。不像提交层面的checkout命令，它不会移动HEAD引用，也就是你不会切换到别的分支上去。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/advanced/resetting-checking-out-and-reverting/08.svg" alt="Moving a file from the commit history into the working directory"></p>
-<p>比如，下面这个命令将工作目录中的foo.py同步到了倒数第二个提交中的foo.py。</p>
-<pre><code>git checkout HEAD~2 foo.py
-</code></pre><p>和提交层面相同的是，它可以用来检查项目的旧版本，但作用域被限制到了特定文件。</p>
-<p>如果你缓存并且提交了checkout的文件，它具备将某个文件回撤到之前版本的效果。注意它撤销了这个文件后面所有的更改，而git revert 命令只撤销某个特定提交的更改。</p>
-<p>和<code>git reset</code> 一样，这个命令通常和HEAD一起使用。比如<code>git checkout HEAD foo.py</code>等同于舍弃foo.py没有缓存的更改。这个行为和git <code>reset HEAD --hard</code>很像，但只影响特定文件。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>你现在已经掌握了Git仓库中撤销更改的所有工具。git reset、git checkout、和 git revert命令比较容易混淆，但当你想起它们对工作目录、缓存区和提交历史的不同影响，就会容易判断现在应该用哪个命令。</p>
-<p>下面这个表格总结了这些命令最常用的使用场景。记得经常对照这个表格，因为你使用Git时一定会经常用到。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">命令</th>
-<th style="text-align:center">作用域</th>
-<th style="text-align:center">常用情景</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">git reset</td>
-<td style="text-align:center">提交层面</td>
-<td style="text-align:center">在私有分支上舍弃一些没有提交的更改</td>
-</tr>
-<tr>
-<td style="text-align:center">git reset</td>
-<td style="text-align:center">文件层面</td>
-<td style="text-align:center">将文件从缓存区中移除</td>
-</tr>
-<tr>
-<td style="text-align:center">git checkout</td>
-<td style="text-align:center">提交层面</td>
-<td style="text-align:center">切换分支或查看旧版本</td>
-</tr>
-<tr>
-<td style="text-align:center">git checkout</td>
-<td style="text-align:center">文件层面</td>
-<td style="text-align:center">舍弃工作目录中的更改</td>
-</tr>
-<tr>
-<td style="text-align:center">git revert</td>
-<td style="text-align:center">提交层面</td>
-<td style="text-align:center">在公共分支上回滚更改</td>
-</tr>
-<tr>
-<td style="text-align:center">git revert</td>
-<td style="text-align:center">文件层面</td>
-<td style="text-align:center">（然而并没有）</td>
-</tr>
-</tbody>
-</table>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting" target="_blank" rel="noopener">Reset, Checkout, and Revert</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 撤销</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Git Reset</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Revert</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Git Checkout</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/03/2017-02-03-Git-Reset-Checkout-and-Revert/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -2377,7 +2297,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2389,7 +2309,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2413,14 +2333,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
@@ -2429,7 +2341,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源项目</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2453,15 +2385,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发效率</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2477,19 +2405,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
+                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">译文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">iOS内存管理</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2502,14 +2430,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FBMemoryProfiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">临终协定</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">a protocol for dying</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2621,38 +2541,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
@@ -2666,6 +2554,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Hook</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 钩子</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
