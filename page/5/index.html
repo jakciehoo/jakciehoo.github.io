@@ -160,276 +160,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2016-11-12-why-you-need-quit-SVN-and-use-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">为什么需要抛弃SVN拥抱Git</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/" class="archive-article-date">
-  	<time datetime="2016-11-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我之前做开发一直使用SVN,从上一家单位开始使用Git，到现在大概一年多时间。使用Git让我开发工作变的更自由更快,以及Git帮助团队代码管理和review更规范，现在我已经完全放弃使用SVN全身心拥抱Git。今天整理了一些SVN和Git的对比，希望阅读到此文使用SVN的开发团队能开始迁移到Git,引用习大大最近的一句话啊：世界潮流,浩浩荡荡，顺之则昌，逆之则亡。</p>
-<h3 id="Git对比SVN的优势"><a href="#Git对比SVN的优势" class="headerlink" title="Git对比SVN的优势"></a>Git对比SVN的优势</h3><h4 id="1-Git分支功能最为强大，分支管理能力让SVN望尘莫及"><a href="#1-Git分支功能最为强大，分支管理能力让SVN望尘莫及" class="headerlink" title="1.Git分支功能最为强大，分支管理能力让SVN望尘莫及"></a>1.Git分支功能最为强大，分支管理能力让SVN望尘莫及</h4><pre><code>•    git：有本地分支
-•    svn：无本地分支
-</code></pre><p>git可以方便创建本地分支，且创建分支的时间是0(1)，即瞬间就创建好了。由于分支可以是本地的，也就不存在svn目录权限的问题。本地实验不确定的修改，可以创建分支进行，由于在Git上创建分支几乎零成本，git推荐创建分支来隔离修改。</p>
-<p>Git可以很容易地对比两个分支，知道一个分支中哪些提交尚未合并到另一分支，反之亦然。</p>
-<p>1.查看当前分支比other分支多了哪些提交<code>$ git log other..</code></p>
-<p>2.查看other分支比当前分支多了哪些提交<code>$ git log ..other</code></p>
-<p>SVN想做到这些不太容易。</p>
-<h4 id="2-Git可以实现更好的发布控制"><a href="#2-Git可以实现更好的发布控制" class="headerlink" title="2.Git可以实现更好的发布控制"></a>2.Git可以实现更好的发布控制</h4><p>针对同一个项目，Git可以设置不同层级的版本库（多版本库）， 或者通过不同的分支（多分支）实现对发布的控制。<br>    •    设置只有发布管理员才有权限推送的版本库或者分支，用于稳定发布版本的维护。<br>    •    设置只有项目经理、模块管理员才有权推送的版本库或者分支，用用于整合测试。</p>
-<h5 id="3-隔离开发，提交审核"><a href="#3-隔离开发，提交审核" class="headerlink" title="3.隔离开发，提交审核"></a>3.隔离开发，提交审核</h5><p>如何对团队中的新成员的开发进行审核呢？在Git服务器上可以实现用户自建分支和自建版本库的功能， 这样团队中的新成员既能将本地提交推送到服务器以对工作进行备份， 又能够方便团队中的其他成员对自己的提交进行审核。</p>
-<p>审核新成员提交时，从其个人版本库或个人分支获取（fetch）提交，从提交说明、代码规范、编译测试 等多方面对提交逐一审核。审核通过执行 git merge 命令合并到开发主线中。</p>
-<p>4.对合并更好的支持，更少的冲突，更好的冲突解决<br>因为Git基于对内容的追踪而非对文件名追踪，所以遇到一方或双方对文件名更改时， Git能够很好进行自动合并或提供工具辅助合并。而SVN遇到同样问题时会产生树冲突， 解决起来很麻烦。<br>Git的基于DAG（有向非环图）的设计比SVN的线性提交提供更好的合并追踪， 避免不必要的冲突，提高工作效率。这是开发者选择Git、抛弃SVN的重要理由。</p>
-<h4 id="5-版本库的安全性"><a href="#5-版本库的安全性" class="headerlink" title="5.版本库的安全性"></a>5.版本库的安全性</h4><p>SVN版本库安全性很差，是管理员头痛的问题。<br>    •    SVN版本库服务器端历史数据被篡改，或者硬盘故障导致历史数据被篡改时， 客户端很难发现。管理员的备份也会被污染。<br>    •    SVN作为集中式版本控制系统，存在单点故障的风险。备份版本库的任务非常繁重。<br>Git在这方面完胜SVN。首先Git是分布式版本控制系统，每个用户都相当于一份备份， 管理员无需为数据备份而担心。再有Git中包括提交、文件内容等都通过SHA1哈希保证数据的完整性， 任何恶意篡改历史数据都会被及时发现从而被挫败。</p>
-<h4 id="更多的十条喜欢Git的理由"><a href="#更多的十条喜欢Git的理由" class="headerlink" title="更多的十条喜欢Git的理由"></a>更多的十条喜欢Git的理由</h4><pre><code>•    异地协同工作。
-•    现场版本控制。
-•    重写提交说明。
-•    无尽的后悔药。
-•    更好用的提交列表。
-•    更好的差异比较。
-•    工作进度保存。
-•    作为SVN前端实现移动办公。
-•    无处不在的分页器。
-•    快。
-</code></pre><h3 id="什么情况推荐使用SVN"><a href="#什么情况推荐使用SVN" class="headerlink" title="什么情况推荐使用SVN"></a>什么情况推荐使用SVN</h3><p>夸了这么多Git的优点，当然事实上也是如此，做开发还是拥抱Git吧。不过对于以二进制文件 （Word文档、PPT演示稿） 为主的版本库，为避免多人同时编辑造成合并上的困难， 建议使用SVN做版本控制。因为SVN具有的悲观锁的功能，能够实现一个用户在编辑时对文件进行锁定，阻止多人同时编辑 一个文件。这一悲观锁的功能是 Git 所不具备的。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Git相比SVN优势还是挺明显的，由于SVN比Git早几年出现，在国内不少成熟(gubuzifeng)的团队还在使用SVN，Git这几年才在国内开始流行，并已经成为年轻团队代码管理必备了。SVN因为没有分支功能，所以对一般开发者而言可能使用起来更简单（对管理者而言可能会头疼），只需要GUI工具就基本能满足需求，而Git因为有强大的分支功能和修改保存功能等，团队代码管理规范的公司为了规范代码的管理需要每个开发者精确的使用Git分支能力,开发者因此需要掌握分支维护能力以及其他Git高级功能，这会增加普通开发者的学习成本。为了团队代码维护更好的，同时提高团队每个成员的开发效率，掌握git技能，放弃SVN拥抱Git是值得的。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">代码版本管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">分布式版本管理管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SVN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
-  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
-<li>加快 Reviewing Code 的过程</li>
-<li>帮助我们写好 release note</li>
-<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
-<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
-<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
-</ul>
-<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
-<blockquote>
-<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
-</blockquote>
-<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
-<p> 一个不好的例子：</p>
-<pre><code>git commit -m &quot;Fix login bug&quot;
-</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
-<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
-<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
-<li><p><strong>为什么这次修改是必要的？</strong></p>
-<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
-</li>
-<li><p><strong>如何解决的问题？</strong></p>
-</li>
-</ul>
-<p>这可不是说技术细节。看下面的两个例子：</p>
-<p><code>Introduce a red/black tree to increase search speed</code></p>
-<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
-<p>如果你的修改特别明显，就可以忽略这个。</p>
-<ul>
-<li><strong>这些变化可能影响哪些地方？</strong></li>
-</ul>
-<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
-<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
-<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
-<li>使用 fix, add, change 而不是 fixed, added, changed</li>
-<li>永远别忘了第2行是空行</li>
-<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
-<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
-</ul>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
-<pre><code>Fix bug where user can&apos;t signup.
-
-[Bug #2873942]
-
-Users were unable to register if they hadn&apos;t visited the plans 
-and pricing page because we expected that tracking    information 
-to exist for the logs we create after a user signs up.  
-I fixed this by adding a check to the logger
-to ensure that if that information was not available
-we weren&apos;t trying to write it.
-</code></pre><p>例子2.</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
-<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
-<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
-<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2016-11-13-learniing-git-flow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -731,6 +461,166 @@ git merge FETCH_HEAD
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/11/13/2016-11-13-learniing-git-flow/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
+<li>加快 Reviewing Code 的过程</li>
+<li>帮助我们写好 release note</li>
+<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
+<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
+<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
+</ul>
+<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
+<blockquote>
+<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
+</blockquote>
+<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
+<p> 一个不好的例子：</p>
+<pre><code>git commit -m &quot;Fix login bug&quot;
+</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
+<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
+<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
+<li><p><strong>为什么这次修改是必要的？</strong></p>
+<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
+</li>
+<li><p><strong>如何解决的问题？</strong></p>
+</li>
+</ul>
+<p>这可不是说技术细节。看下面的两个例子：</p>
+<p><code>Introduce a red/black tree to increase search speed</code></p>
+<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
+<p>如果你的修改特别明显，就可以忽略这个。</p>
+<ul>
+<li><strong>这些变化可能影响哪些地方？</strong></li>
+</ul>
+<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
+<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
+<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
+<li>使用 fix, add, change 而不是 fixed, added, changed</li>
+<li>永远别忘了第2行是空行</li>
+<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
+<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
+</ul>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
+<pre><code>Fix bug where user can&apos;t signup.
+
+[Bug #2873942]
+
+Users were unable to register if they hadn&apos;t visited the plans 
+and pricing page because we expected that tracking    information 
+to exist for the logs we create after a user signs up.  
+I fixed this by adding a check to the logger
+to ensure that if that information was not available
+we weren&apos;t trying to write it.
+</code></pre><p>例子2.</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
+<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
+<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
+<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
         </p>
       
 
@@ -1556,6 +1446,106 @@ git merge FETCH_HEAD
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2016-08-20-iOS-Plugin-Recommend-ClangFormat-Xcode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/20/2016-08-20-iOS-Plugin-Recommend-ClangFormat-Xcode/">iOS开发插件推荐（2）：自动化代码规范神器ClangFormat-Xcode</a>
+    </h1>
+  
+
+        
+        <a href="/2016/08/20/2016-08-20-iOS-Plugin-Recommend-ClangFormat-Xcode/" class="archive-article-date">
+  	<time datetime="2016-08-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
+<p>代码就是程序员的面子，你要面子波？中国人都爱面子，所以好好写一辈子优雅的代码呗。写代码这事就像生个孩子，您总不希望辛辛苦苦生的娃，被您养成了废物吧，不知道读者您是不是，反正我要是养了个废物还不如死了算了（shuoshuoeryi）。所以自觉点。</p>
+</blockquote>
+<p>上文是对个人的要求的，我相信对自己有要求的程序员是会听的。但是在团队里，每个程序员写代码的态度是不同的，写代码的风格也是不同的，即使同一个程序员也会因为心情，因为经常加导致写代码的状态不同，而写出不同风格不同格式的代码。作为团队技术管理者就头疼了，为了项目的可读性可维护性，就想出了定制代码规范这招，然后希望团队按照这个规范去写代码。想的不错，不过也想得美，程序员可是闷骚无拘无束出了名的，当面看起来很听话，背地里完全不吊你。虽然定制代码规范后团队代码质量有所起色，但各路神仙那出家的程序员，最后的结局依然是写出了各路神仙那出家的代码。您作为管理者，不太好在代码review的时候为各种简单的代码规范问题不断的给出注释。更不敢当面批评他们，这帮混蛋屌丝真的是屌丝，一不高兴就撂挑子不干了。所以技术人还是应该用技术的方式去管理程序员才是治理他们的良方，他们就服服帖帖了，所谓以技服人。<br>    前面两段请自觉剪掉，我是装逼的，嗯嗯，其实这篇文章是写给懒程序员的，谁愿意为了点代码规范花时间啊，我是来先程序的，难道为了代码规范还得操碎心吗？嗯嗯，我就是因为不想操心这种不相关的事情所以才想找方法去解决这种我不想care的事情的。嗯嗯。</p>
+<p>Dang Dang Dang,Dang Dang Dang(请脑补响起贝多芬命运交响曲第九交响曲，谢谢)..今天就给大家隆重介绍这款神器，这真不是一般的神器，是去百货摊买不到的神器，是环游世界也见识不到的神器。没错，它就是ClangFormat-Xcode。只在这里可以免费买到，只在这里可以见识到，下载地址：<a href="https://github.com/travisjeffery/ClangFormat-Xcode" target="_blank" rel="noopener">clangFormat-Xcode</a></p>
+<h3 id="ClangFormat-Xcode介绍"><a href="#ClangFormat-Xcode介绍" class="headerlink" title="ClangFormat-Xcode介绍"></a>ClangFormat-Xcode介绍</h3><p>要介绍ClangFomat-Xcode，就需要知道clang-format工具，这款工具可以用来格式化C/C++/Objective-C语言编写的代码。它会根据您的格式化配置，将代码规范成您期望的格式。clang-format工具也内置了LLVM、Google、Chromium、Mozilla、WebKit代码风格的配置。这样我们就不用完全配置所有的代码格式了，而是可以基于这些默认的集中风格，动动手指修改一些配置参数，为自己团队的代码规范所用了。关于clang-format就介绍这么多，关于更多可以参考官方文档：<a href="http://clang.llvm.org/docs/ClangFormat.html" target="_blank" rel="noopener">《Clang 4.0 documentation》</a>。</p>
+<p>而ClangFomat-Xcode就是一款为Xcode便利化使用clang-format工具的一款插件了，仅此而已，，仅此足以，为人民服务的在我心里是最伟大的。感谢大神@travisjeffery的贡献，为iOS开发没有很好的格式化代码的工具带来了福音。</p>
+<p><img src="https://camo.githubusercontent.com/0a3a8081d678c4cd6acfdc606be16916dd65e848/68747470733a2f2f7261772e6769746875622e636f6d2f7472617669736a6566666572792f436c616e67466f726d61742d58636f64652f6d61737465722f524541444d452f75736167652e706e67" alt="Clangformat-Xcode"></p>
+<p><img src="https://camo.githubusercontent.com/758d8d2c87f7ec1bb3b6882d6500fe4cf5252759/68747470733a2f2f7261772e6769746875622e636f6d2f7472617669736a6566666572792f436c616e67466f726d61742d58636f64652f6d61737465722f524541444d452f636c616e67666f726d61742d78636f64652d64656d6f2e676966" alt="Clangformat-Xcode introduction"></p>
+<h3 id="ClangFormat-Xcode安装"><a href="#ClangFormat-Xcode安装" class="headerlink" title="ClangFormat-Xcode安装"></a>ClangFormat-Xcode安装</h3><p>ClangFomat-Xcode的GitHub地址：<a href="https://github.com/travisjeffery/ClangFormat-Xcode" target="_blank" rel="noopener">戳这里</a>,你可以通过Alcatraz安装，也可以下载下来运行安装，重启下应该就可以在菜单Edit看到Clang Format选项了。这里要是还不会，就直接付费咨询我吧。<br><img src="http://static.tonyarnold.com/clang-format-menu.png" alt="install clang format menu"></p>
+<h3 id="clang-format配置"><a href="#clang-format配置" class="headerlink" title="clang format配置"></a>clang format配置</h3><p>前面我已经提到了，clang format 工具了，CLangFormat本身就内置了LLVM、Google、Chromium、Mozilla、WebKit的基础样式。而几乎比较好的代码规范大部分内容他们都包括了，所以我们完全可以基于这些基础样式来实现我们各自团队稍微差异的部分。具体配置方式，在我们的项目工程目录或者workspace目录下创建一个”.clang-format”文件。然后修改配置如下，下面我贴一下我项目中的配置吧。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># 你的项目基于的基础样式，我的项目是基于LLVM的</span><br><span class="line">BasedOnStyle: LLVM</span><br><span class="line"></span><br><span class="line"># 缩进宽度</span><br><span class="line">IndentWidth: <span class="number">4</span></span><br><span class="line"></span><br><span class="line"># 圆括号的换行方式</span><br><span class="line">BreakBeforeBraces: Attach</span><br><span class="line"></span><br><span class="line"># 支持一行的if</span><br><span class="line"></span><br><span class="line">AllowShortIfStatementsOnASingleLine: <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"># switch的case缩进</span><br><span class="line">IndentCaseLabels: <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"># 针对OC的block的缩进宽度</span><br><span class="line">ObjCBlockIndentWidth: <span class="number">4</span></span><br><span class="line"></span><br><span class="line"># 针对OC，属性名后加空格</span><br><span class="line">ObjCSpaceAfterProperty: <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"># 每行字符的长度</span><br><span class="line">ColumnLimit: <span class="number">0</span></span><br><span class="line"></span><br><span class="line"># 注释对齐</span><br><span class="line">AlignTrailingComments: <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"># 括号后加空格</span><br><span class="line">SpaceAfterCStyleCast: <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"># 不在小括号里加空格</span><br><span class="line">SpacesInParentheses: <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line"># 不在中括号里加空格</span><br><span class="line">SpacesInSquareBrackets: <span class="keyword">false</span></span><br></pre></td></tr></table></figure>
+<p>记住，如果要让这个配置管用，确认Edit -&gt; clang format -&gt; File，file是勾选状态。<br>关于clang format格式化配置个多参数介绍，推荐阅读官方文档：<a href="http://clang.llvm.org/docs/ClangFormatStyleOptions.html" target="_blank" rel="noopener">《Clang-Format Style Options》</a> </p>
+<h3 id="clang-format全局配置"><a href="#clang-format全局配置" class="headerlink" title="clang format全局配置"></a>clang format全局配置</h3><p>配置是一样的，前面一段提到把配置文件放在项目目录下，这种配置就是项目配置，如果把”.clang-format”文件放在家目录下就是全配置了嘛。嘿嘿，把全局配置单拉出来就是怕您忙注意不到，所以显摆出来。我给力吧。点个赞打赏吧。</p>
+<h3 id="Clangformat-Xcode使用"><a href="#Clangformat-Xcode使用" class="headerlink" title="Clangformat-Xcode使用"></a>Clangformat-Xcode使用</h3><p>通常我会在设置在保存command+s时候自动格式化代码。确认Edit -&gt; clang format -&gt; Enable format on save 改成 Edit -&gt; clang format -&gt; Disable format on save 。这样就开启了保存时自动格式化了。当然你也可以给格式化创建一个单独的快捷键。不过我觉得没必要啦。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>SoSo。标准化代码是如此的容易，你还有理由写出烂代码吗？我替你做主了，绝对没有,以后乖乖滴写好代码，Come on。</p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p><a href="http://tonyarnold.com/2014/05/31/autoformatting-your-code.html" target="_blank" rel="noopener">《Automatically Formatting Your Objective-C》</a></p>
+<p><a href="https://github.com/travisjeffery/ClangFormat-Xcode" target="_blank" rel="noopener">《ClangFormat-Xcode》</a></p>
+<p><a href="http://clang.llvm.org/docs/ClangFormat.html" target="_blank" rel="noopener">《Clang 4.0 documentation》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS插件</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">XCode插件</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">开发效率提升插件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/08/20/2016-08-20-iOS-Plugin-Recommend-ClangFormat-Xcode/">展开全文 >></a>
         </p>
       
 
