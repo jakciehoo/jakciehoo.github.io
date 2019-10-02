@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="https://jakciehoo.github.io">
   <title>聚合广告SDK 技术设计方案 | Hoooo同学的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据   二、广告SDK工作流程 客户端初始化SDK，SDK初始化并获取配置（基本配置（默认），流量控制配置等） 客户端传入广告位从SDK获取广告，SDK根据流量配置获取广">
+  <meta name="description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据">
 <meta name="keywords" content="APP架构,广告SDK设计,SDK设计方案">
 <meta property="og:type" content="article">
 <meta property="og:title" content="聚合广告SDK 技术设计方案">
 <meta property="og:url" content="https://jakciehoo.github.io/2019/10/02/2019-10-02-advertisement-sdk-design/index.html">
 <meta property="og:site_name" content="Hoooo同学的博客">
-<meta property="og:description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据   二、广告SDK工作流程 客户端初始化SDK，SDK初始化并获取配置（基本配置（默认），流量控制配置等） 客户端传入广告位从SDK获取广告，SDK根据流量配置获取广">
+<meta property="og:description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1112722-1cb80914a8dbc911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1112722-88c634d78ce889e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-10-02T05:16:36.544Z">
+<meta property="og:updated_time" content="2019-10-02T05:22:01.310Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="聚合广告SDK 技术设计方案">
-<meta name="twitter:description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据   二、广告SDK工作流程 客户端初始化SDK，SDK初始化并获取配置（基本配置（默认），流量控制配置等） 客户端传入广告位从SDK获取广告，SDK根据流量配置获取广">
+<meta name="twitter:description" content="一、商业化广告各方协作流程#####上游  对接基础服务端提供基础服务 对接SSP、直投等等自有广告资源 对接第三方广告SDK（广点通、百度白青藤、头条穿山甲）  #####下游  提供给集团公司各个客户端使用 为大数据分析提供数据">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1112722-1cb80914a8dbc911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="Hoooo同学的博客" type="application/atom+xml">
@@ -193,6 +193,7 @@
 <li>提供给集团公司各个客户端使用</li>
 <li>为大数据分析提供数据</li>
 </ol>
+<a id="more"></a>
 <p><img src="https://upload-images.jianshu.io/upload_images/1112722-1cb80914a8dbc911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
 <h3 id="二、广告SDK工作流程"><a href="#二、广告SDK工作流程" class="headerlink" title="二、广告SDK工作流程"></a>二、广告SDK工作流程</h3><ol>
 <li>客户端初始化SDK，SDK初始化并获取配置（基本配置（默认），流量控制配置等）</li>
