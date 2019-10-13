@@ -185,7 +185,7 @@
 <ul>
 <li>1）在启动的时候请求广告</li>
 <li>2）在品牌广告失败后去决定是否展示广告</li>
-<li>3）广告SDK是有流量分配规则的，有直投的广告，也有介入优量汇、inmobi等第三方的广告联盟，之间也许要做流量控制。</li>
+<li>3）广告SDK是有流量分配规则的，有直投的广告，也有接入优量汇、inmobi等第三方的广告联盟，之间也许要做流量控制。</li>
 </ul>
 <p>SDK为了达到这个目的，使用到了信号量<code>dispatch_semaphore</code>。信号量本来不难，但是我们研发工程师在研发中遇到过信号量控制不生效的情况，执行到下一个流量分配去了，导致展示两次开屏广告。我在协助排查的时候觉得很诡异，陷入自我怀疑：会不会是iOS的bug，在多线程中使用信号量会不会不生效。当然最后排查的结果是<code>dispatch_semaphore_wait</code>使用不当导致，它有两个入参数，一个参数是信号量对象，另一个是等待时间。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_semaphore_wait(dispatch_semaphore_t  _Nonnull dsema, dispatch_time_t timeout)</span><br></pre></td></tr></table></figure>
