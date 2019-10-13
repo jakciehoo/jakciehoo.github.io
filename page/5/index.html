@@ -160,6 +160,177 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-11-29-Syncing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/28/2016-11-29-Syncing/">【译文】Git同步（Syncing）</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/28/2016-11-29-Syncing/" class="archive-article-date">
+  	<time datetime="2016-11-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/hero.svg" alt=""></p>
+<h1 id="Git同步（Syncing）"><a href="#Git同步（Syncing）" class="headerlink" title="Git同步（Syncing）"></a>Git同步（Syncing）</h1><p>在SVN中开发者使用一个中央仓库来合作开发。大家通过将代码在工作区和中央仓库之间传输来合作开发。这跟git的合作模式完全不同，git中开发者拥有仓库的完整拷贝，提交历史、分支结构都是完整的。用户通常提交一系列本地提交而不是单一的修改到服务器。git可以让你在不同仓库间分享所有分支。<br>下面的命令用来管理所有仓库连接。通过push分支到中央仓库来提交修改，通过pull远程仓库到本地仓库来查看其他人的修改。</p>
+<h2 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h2><p>git remote 命令让你可以创建、查看和删除同其他仓库的连接。远程连接类似浏览器中的标签（bookmark）而不是直接链接其他仓库。git为了方便大家使用别名代替URL<br>。例如，下面的表格向你展示连接至中央仓库和其他开发者仓库的两个连接，他们在git命令中传入origin和john而不是完整的URL。<br><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/01.svg" alt="Git Tutorial: git remote"></p>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git remote
+</code></pre><p>列出你本地所有其他仓库的连接</p>
+<pre><code>git remote -v
+</code></pre><p>和之前的命令类似，不过这个命令执行结果包含每个连接的URL。</p>
+<pre><code>git remote add &lt;name&gt; &lt;url&gt;
+</code></pre><p>创建一个远程仓库的连接。在添加完连接后，你可以在其他命令中使用<name>代替URL。</name></p>
+<pre><code>git remote rm &lt;name&gt;
+</code></pre><p>删除一个叫<name>的远程连接。</name></p>
+<pre><code>git remote rename &lt;old-name&gt; &lt;new-name&gt;
+</code></pre><p>重命名一个远程连接。使用新名字代替旧名。</p>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>Git的设计让开发者拥有完全独立的开发环境。这意味着信息不会自动在仓库之间传输。而需要开发者手动拉取上游的提交到本地仓库，或者推送回本地提交到中央仓库。git remote命令是传递URL给分享（sharing）命令的更容易的方式。</p>
+<h3 id="The-origin-Remote"><a href="#The-origin-Remote" class="headerlink" title="The origin Remote"></a>The origin Remote</h3><p>当你使用clone命令clone一个仓库时，它自动回创建一个叫做origin指向被克隆的远程仓库。这个对开发者在创建一个远程仓库拷贝非常有用，因为它为开发者提供了很容易的方式来拉取上游改变或者发布本地提交。这也是为什么大多数采取git管理源代码的远程仓库被称作origin。</p>
+<h3 id="Repository-URLs"><a href="#Repository-URLs" class="headerlink" title="Repository URLs"></a>Repository URLs</h3><p>Git支持许多连接远程仓库的方式。两个最简单的连接远程仓库的方式是通过http和ssh协议。http可以很容易的允许匿名访问，只读访问一个仓库，比如：</p>
+<pre><code>http://host/path/to/repo.git
+</code></pre><p>但是，它通常不太容易推送提交到http地址（通常我们不希望允许匿名推送）。为了拥有读写访问，你应当使用ssh协议替代：</p>
+<pre><code>ssh://user@host/path/to/repo.git
+</code></pre><p>你将需要在主机上有一个有效的ssh账号，git支持通过ssh授权访问。</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>在origin之外，也很容易添加你队友的仓库连接。比如，如果你的同事小明，维护一个对外发布的可访问仓库dev.example.com/john.git，你可以通过下面这条命令添加一个连接：</p>
+<p>git remote add john <a href="http://dev.example.com/john.git" target="_blank" rel="noopener">http://dev.example.com/john.git</a></p>
+<p>可以添加某个开发者的仓库，让git可以在中央仓库之外进行合作。这对小团队在大型项目中合作非常有用。</p>
+<h2 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a>git fetch</h2><p>git fetch命令会从远程仓库倒入提交到本地仓库。最终提交结果存储在远程分支而不是一般的本地工作分支。这让你有机会在将修改集成到你的项目拷贝前评审（review）代码。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><pre><code>git fetch &lt;remote&gt;
+</code></pre><p>获取远程仓库所有分支。这个命令同时会下载这个仓库的所有需要下载的提交和文件。</p>
+<pre><code>git fetch &lt;remote&gt; &lt;branch&gt;
+</code></pre><p>可前面的命令类似，但是它只获取指定的分支。</p>
+<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>获取(fetching)可以让你知道其他同事写了哪些代码。因为获取的内容存储在一个远程分支上。它不会影响你本地开发工作。获取可以让你将代码集成到本地仓库之前安全地评审（review）修改。这个和<em>svn update</em>类似，可以让你知道中央仓库的提交历史的进度，但是它并不强制合并这些修改到你的仓库。</p>
+<h3 id="Remote-Branches"><a href="#Remote-Branches" class="headerlink" title="Remote Branches"></a>Remote Branches</h3><p>远程仓库就像本地仓库一样，除了他们代表其他人仓库的提交。你可以像本地仓库一样 <code>检出（checkout）</code>一个远程仓库。但是这让你进入<code>分离头（detached HEAD）</code>状态（类似检出到一个以前的提交一样）。你可以把远程分支看成不可修改的分支。你可以在<code>git branch</code>命令中加上<code>-r</code>参数来查看原称分支。查看到的远程分支会在前面加上他们所属的远程仓库，这样你就不会将他们和本地分支混淆。例如，下面的命令块展示了在执行fetch命令后所有origin下的分支。</p>
+<pre><code>git branch -r
+#origin/master
+#origin/develop
+#origin/some-feature
+</code></pre><p>再说一次，你可以使用<code>git checkout</code> 和<code>git log</code>命令来查看分支内容。如果你觉得远程分支的修改没有问题，你可以使用<code>git merge</code>命令把他们合并进本地分支了。因此和SVN不同，git同步你的本地仓库和远程仓库需要两步过程：获取和合并。<code>git pull</code>命令是这两步骤的结合，让这两步变成一步。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>这个例子展示一个典型的工作流中是如何同步你的本地仓库和你中央仓库的master分支。</p>
+<pre><code>git fetch origin
+</code></pre><p>这个命令会展示下载的分支。</p>
+<pre><code>a1e8fb5..45e66a4 master -&gt; origin/master
+a1e8fb5..9e8ab1c develop -&gt; origin/develop
+* [new branch] some-feature -&gt; origin/some-feature
+</code></pre><p>下方表格中的方框代表远程分支的提交，如图所示，<code>git fetch</code>让你拥有访问其他仓库整个分支结构的权限。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/02.svg" alt="Git Tutorial: git fetch"></p>
+<p>为了查看上游的master分支增加哪些提交，你可以使用<code>git log</code> ，并使用<code>origin/master</code>作为条件。</p>
+<pre><code>git log --oneline master..origin/master
+</code></pre><p>为了通过修改并合并他们到你本地的master，你可以使用如下命令：</p>
+<pre><code>git checkout master
+git log origin/master
+</code></pre><p>然后我们能够使用<code>git merge origin/master</code></p>
+<pre><code>git merge origin/master
+</code></pre><p>这样<code>origin/master</code>分支和<code>master</code>分支就指向了同意个提交，并完成了和上游开发的同步了。</p>
+<h2 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a>git pull</h2><p>本地仓库和上游修改合并是git合作开发流的常见任务。我们已经知道了如何使用<code>git fetch</code> 加上 <code>git merge</code>来完成这项工作。但是git pull 一条命令就可以搞定。</p>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><pre><code>git pull &lt;remote&gt;
+</code></pre><p>获取指定远程仓库的当前分支同名的拷贝，并立即和当前分支合并。这和<code>git fetch &lt;remote&gt;</code> 加上<code>git merge origin/&lt;current-branch&gt;</code>作用等同。</p>
+<pre><code>git pull --rebase &lt;remote&gt;
+</code></pre><p>和上面的命令类似。但是它使用<code>git rebase</code>代替<code>git merge</code>来集成合并远程分支。</p>
+<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>你可以把<code>git pull</code>看作git版的<code>svn update</code>，它让同步本地仓库和上游修改变的很容易。下图的表格展示了合并每一步的进行过程。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/03.svg" alt="Git Tutorial: git pull"></p>
+<p>刚开始你的仓库是同步的，但是在你<code>git fetch</code>之后<code>origin</code>指向的仓库跟你上一次检查已经有了新的内容。然后你使用<code>git merge</code>立即将远程<code>master</code>集成合并到本地<code>master</code>。</p>
+<h3 id="Pulling-和-Rebase对比"><a href="#Pulling-和-Rebase对比" class="headerlink" title="Pulling 和 Rebase对比"></a>Pulling 和 Rebase对比</h3><p><code>--rebase</code>能够确保线性分支历史，没有不必要的合并提交。许多开发者喜欢rebasing代替merging。因为它就好比告诉你：“我想让我的修改保持在其他人修改的上方”。从这个角度讲，使用 <code>git pull</code> 加上<code>--rebase</code>标志相比简单的<code>git pull</code>更像<code>svn update</code></p>
+<p>事实上，使用<code>--rebase</code>进行拉取非常普遍，以至于有一个它的专门的配置项：</p>
+<pre><code>git config --global branch.autosetuprebase always
+</code></pre><p>执行这个命令之后，所有的<code>git pull</code>命令将会使用git rebase命令代替<code>git merge</code>。</p>
+<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>下面这个命令展示如何和中央仓库的master分支进行同步：</p>
+<pre><code>git checkout master
+git pull --rebase origin
+</code></pre><p>这个命令会将你本地的修改追加到其他同事修改的上面。</p>
+<h2 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h2><p>推送（push）用于把本地仓库提交传输到远程仓库。它和<code>git fetch</code>作用相反。但是鉴于获取导入远程提交到本地分支，推送输出提交到远程分支，它有可能会覆盖修改，因此你需要小心的使用它。下面我们来讨论这些问题。</p>
+<h3 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h3><pre><code>git push &lt;remote&gt; &lt;branch&gt;
+</code></pre><p>推送必要的的提交和内部对象到远程指定分支。这个将在目标仓库创建一个本地分支。为了阻止重写提交，当你推送会导致远程仓库出现non-fast-forward合并，git会阻止这样的推送。</p>
+<pre><code>git push &lt;remote&gt; --force
+</code></pre><p>和上面的命令类似，但是不管是否会导致non-fast-forward合并它会强制推送。不要使用–force标志，除非你绝对清楚你这样做没有问题。</p>
+<pre><code>git push &lt;remote&gt; --all
+</code></pre><p>推送所有的本地分支到指定远程仓库。</p>
+<pre><code>git push &lt;remote&gt; --tags
+</code></pre><p>当你推送分支时标签（tags）不会自动推送，除非你使用了–tags选项。–tags将会发送所有的本地标签到远程。</p>
+<h3 id="讨论-3"><a href="#讨论-3" class="headerlink" title="讨论"></a>讨论</h3><p>git push通常用来将本地修改发布到远程中央仓库。当你在本地积累了几个提交之后并打算把他们发布出去，以便其他团队成员可以使用。你可以使用可交互的rebase精简提交，然后再推送到远程分支。</p>
+<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/syncing/04.svg" alt="Git Tutorial: git push"></p>
+<p>上图展示了你本地和远程master的差异。然后你通过<code>git push origin master</code>命令推送修改。注意<code>git push</code>的本质是在远程仓库内部执行了<code>git merge master</code>。</p>
+<h3 id="强制推送-Force-Pushing"><a href="#强制推送-Force-Pushing" class="headerlink" title="强制推送(Force Pushing)"></a>强制推送(Force Pushing)</h3><p>当使用git push会导致non-fast-forword合并时，git为了防止复写中央仓库提交，会拒绝推送。因此，如果远程提交历史和你的本地提交历史不同，你需要拉取远程分支，合并到到本地分支，然后才能再次尝试推送。这跟SVN类似，你需要通过<code>svn update</code>和中央仓库同步，然后才能提交修改。</p>
+<p>使用<code>--force</code>参数可以代替上面的步骤，让远程分支和本地分支匹配。在你上次推送之后，删除任何上游分支的修改有可能发生。只有当你知道你的提交有问题，然后你在本地用一个<code>git commit --amend</code>命令做了修改或者一个可交互的<code>rebase</code>之后，你可以使用强制推送（force push）。你必须确定在你使用<code>--force</code>选项之前没有其他同事拉取那些你提交的有问题的提交。</p>
+<h3 id="只推送到裸仓库"><a href="#只推送到裸仓库" class="headerlink" title="只推送到裸仓库"></a>只推送到裸仓库</h3><p>额外补充，你应当仅仅推送到使用<code>--bare</code>标志创建的仓库。因为推送会搞乱远程分支的结构。不用推送到另外一个开发者的仓库这一点很重要。但是裸仓库不包含任何工作目录，所以不太可能打断其他人的开发。</p>
+<h3 id="举例-2"><a href="#举例-2" class="headerlink" title="举例"></a>举例</h3><p>下面的例子描述一个标准的发布本地代码到中央仓库的方法。首先，通过拉取中央仓库拷贝确保你本地分支最新，然后通过<code>reabse</code>合并你的修改到分支提交历史最上面。使用交互式合并（interactive rebase)也是在对外公开你的代码前清理提交的一个好机会。然后，<code>git push</code>命令将你所有本地仓库的提交发送到远程仓库。</p>
+<pre><code>git checkout master
+git fetch origin master
+git rebase -i origin/master
+# Squash commits, fix up commit messages etc.
+git push origin master
+</code></pre><p>因为你已经确保了本地master分支是最新的，所以结果是<code>fast-forward</code>合并，<code>git push</code>不会报出任何我们之前讨论的<code>non-fast-forward</code>问题。</p>
+<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">《Syncing》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 同步</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Syncing</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/28/2016-11-29-Syncing/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-11-17-Making-a-Pull-Request" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1469,181 +1640,6 @@ git merge FETCH_HEAD
 
 
   
-    <article id="post-2016-09-12-using-reveal-to-debug" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/12/2016-09-12-using-reveal-to-debug/">iOS比优鸡调试技巧篇（一）：reveal视图调试</a>
-    </h1>
-  
-
-        
-        <a href="/2016/09/12/2016-09-12-using-reveal-to-debug/" class="archive-article-date">
-  	<time datetime="2016-09-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>深深的喜欢这篇文章《iOS各种调试技巧》的写作风格，读起来就是那么愉快，文章有内容有价值，而且作者这么用心为大家写，推荐大家阅读这篇文章。写文章就是用来读的啊。我们开发者写产品要有为用户考虑的态度才能做出好产品；写文章要有为读者服务的态度才能让读者喜欢；做好工作也要有给同事给领导排忧解难的的公仆态度才对。你可能要问了，人家写了那么好的有关调试的文章，你干嘛还要写调试的文章，多此一举啊？你要是有这想法啊，我就得说您幼稚了，作者我混迹江湖这么多年，怎么这会考虑不到呢，主要是觉得《iOS各种调试技巧》只能算是一个调试技巧的笼统介绍，其实里面的每一种调试技巧都值得深入讲解，而且有些调试技巧他的文章也没有提到，比如这篇文章要讲的reveal调试，但我希望能借鉴他这篇文章的写作风格，希望带给读者轻松的阅读体验。</p>
-<h3 id="作为iOS开发者为什么需要学会使用reveal"><a href="#作为iOS开发者为什么需要学会使用reveal" class="headerlink" title="作为iOS开发者为什么需要学会使用reveal"></a>作为iOS开发者为什么需要学会使用reveal</h3><p>1.相比xcode自带的视图调试（下文简称XcodeVD），reveal强大的不是一丁点。<br>比如，XcodeVD会有部分信息不显示，还有布局显示不精确，而reveal则表现好很多。<br>XcodeVD下的表现：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-5738a0354757ec14.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>reveal下的表现：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-9968c41345d75e42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>大家可以注意看看，XcodeVD中显示的文本被挡住了挡住了耶，这怎么受得了，如果读者您眼尖，相信您已经注意到reveal显示的视图层次结构提供的信息更丰富，比如显示了文本的内容（中文内容信息），而xcode不仅仅需要您眼尖，还需要您能智慧过人聪明绝顶的去猜测一个UILabel对应模拟器上的哪个Label,蛋疼吗？不疼只能说明您牛逼。</p>
-<p>2.相比xcodeVD只能看看之外，reveal可以修改视图的属性，并实时在模拟器（真机）上显示变化。（当然只是临时修改的属性，不会修改工程的实际代码，如果真实修改，还是需要修改的工程源代码的）。</p>
-<p>在reveal中修改UILabel的属性</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-bce6b26fc2027310.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>而XcodeVD几乎什么也干不了，只能看看，咳。</p>
-<p>3.reveal最强大的一点是可以通过它查看和分析别伦家的App视图元素构成和布局。（牛逼波？这是reveal最有价值的部分，如果您觉得这个信息有价值，你西不西应该打赏我一下）。<br>下图是我特地为了读者您去偷窥了下携程这个美妞，（如果读者您是携程的，请您留情，不要笑我太疯癫，我只笑他人看不穿（😄））。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-5284ac59643ddacc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>好了，您如果看到这里，我相信您已经迫不及待想要去学会如何使用reveal，我知道您不是因为喜欢偷窥而去学的，您只是单纯的爱好学习。</p>
-<h3 id="如何在Mac上安装Reveal"><a href="#如何在Mac上安装Reveal" class="headerlink" title="如何在Mac上安装Reveal"></a>如何在Mac上安装Reveal</h3><p><strong>1.作为国人我知道您不喜欢轻易付费</strong><br>reveal破解和安装：在简书上看到这篇文章《Reveal 1.6.2最新版 破解教程》,大家照着做就好，如果您笨到搞不定（或者聪明到想利用时间专注做好开发和产品，而不是这些非核心的学习上），您可以付费咨询我（打赏金额：￥10+）。<br><strong>2.您是愿意的付费的小众？</strong><br>直接去官网下载然后购买吧 <a href="http://revealapp.com/" target="_blank" rel="noopener">http://revealapp.com/</a> 你要是肯花钱买，我真的为您点个赞，您是有钱的主，您顺便顺个手也给我打赏打赏吧，嗯。</p>
-<h3 id="如何在项目中集成Reveal"><a href="#如何在项目中集成Reveal" class="headerlink" title="如何在项目中集成Reveal"></a>如何在项目中集成Reveal</h3><p>1.reveal官方有中文集成的教程。介绍了静态库、动态库、cocoapod的安装方法（这三种建议选这种）自行查看吧：<br><a href="http://support.revealapp.com/kb/getting-started/reveal" target="_blank" rel="noopener">http://support.revealapp.com/kb/getting-started/reveal</a><br>上面的集成方式多少需要在我们的工程项目中加入一些代码，可能有些同事并不想使用这玩意，所以应该在团队中慎用。<br>2.下面这个方法不需要在工程中加入任何代码就可以使用：<br><a href="http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/" target="_blank" rel="noopener">http://support.revealapp.com/kb/getting-started/revealxcodereveal</a><br>3.一劳永逸的最佳集成玩法：<br><a href="http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/" target="_blank" rel="noopener">http://blog.ittybittyapps.com/blog/2013/11/07/integrating-reveal-without-modifying-your-xcode-project/</a><br>第三种集成的高级玩法有点复杂，如果你只想用好reveal而不想浪费时间去学如何集成，或者同样您可能笨到没搞定（哈哈，不是侮辱您啊，我也很笨，笨有笨的优点啊，比如学习有耐性和长性，我就研究了两天才研究明白），同样可以付费咨询我：（20元打赏+）。</p>
-<h3 id="在自己的项目中使用Reveal"><a href="#在自己的项目中使用Reveal" class="headerlink" title="在自己的项目中使用Reveal"></a>在自己的项目中使用Reveal</h3><p>一、基本使用<br>本文的重点是教大家如何使用Reveal，这部分只能有请我闪亮登场（掌声响起来），亲自出马搞了，关于Reveal的中文教程真的太少，不信你搜搜看看，基本都是一些重复且看了等于没看的垃圾文章。像作者我这样认认真真给老外当搬运工的人都不多见。<br>1.如果您安装reveal顺利，打开reveal应该是看到大致如下图这样的界面：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fff63b6dbd9bebb5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>2.如果您搞定了集成，那你可以在模拟器（真机）上运行您项目程序，然后就可以reveal的左上角选择该模拟器（真机）了。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fb3fd85cbaf2ef7b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>3.刷新界面<br>当您在模拟器上操作您的APP，你可能发现reveal没有及时更新，这个它确实做不到，您可以像2提到的再选择一次模拟，或者按下Command+R,还可以点击右上角的刷新图标：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-e68545487f3a07b5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<h3 id="Reveal-界面和功能介绍"><a href="#Reveal-界面和功能介绍" class="headerlink" title="Reveal 界面和功能介绍"></a>Reveal 界面和功能介绍</h3><p>Reveal界面主要分为三个部分：<br><img src="http://upload-images.jianshu.io/upload_images/1112722-e9495e58ed14eb75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>1.左侧层级面板：界面层级关系区域，用于显示当前界面元素的结构树。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-fee15adbfd20429e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>如果你多查看几个APP，就会发现他们的根都是UIScreen,然后是UIWindow，然后还有几个我们都不了解的UIKit封装类，如：</p>
-<ul>
-<li>1）UINavigationTransitionView：导航控制器在这里发生转场行为的容器视图。</li>
-<li>2)UIViewControllerWrapperView: 包含view controller 的view属性的封装视图。<br>总之这些我们不了解的视图我们(biè)管就对了。</li>
-</ul>
-<p>2.中央可视化面板：可视化查看区域， 用于显示当前界面的布局效果（2D/3D）</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-4d0d52b8bfa4f40e.gif?imageMogr2/auto-orient/strip" alt=""><br>在顶部有是三个控件。</p>
-<ul>
-<li>1）显示样式分段控件。从左至右可以让视图显示三种状态：只显示视图边界frame，不显示内容；只显示内容不显示边界frame；边界frame和内容都显示。</li>
-<li>2）中间的选择器控制器可以选择视图尺寸大小，它的值是视图内容和模拟器内容的大小正比值。</li>
-<li>3）最右侧的开关控制可以选择显示3D效果还是2D效果。默认为3D效果。</li>
-</ul>
-<p>在3D模式下，点击空白区域然后上下左右拖动，视图也跟着您的拖动方向三地旋转和3D展示。</p>
-<p>3.右侧属性面板：控件详细参数区域，用于当前选中控件的参数展示（可以修改并 实时反应到可视化查看区域）</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1112722-1e09af593160c4bd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>如图所示，包含以下5个功能。</p>
-<ul>
-<li>1）程序观察器Application Inspector。主要显示和程序相关的全局属性。</li>
-<li>2）对象观察器Identity Inspector。主要显示选中对象的先关属性，如父类信息，自身类名信息，内存地址信息等。</li>
-<li>3）属性观察器Attributes Inspector。我知道您聪明，这些都知道。可是我就是要告诉您一遍：这里展示和选中对象相关属性的信息。您能拿我怎么着（O(∩_∩)O哈哈）。</li>
-<li>4）布局观察器Layout Inspector。这里可以查看选中对象的frame,bounds，自动布局特性相关信息。</li>
-<li>5）图层观察器Layer Inspector。</li>
-</ul>
-<h3 id="自动布局的调试（这部分的内容是从这里搬运）"><a href="#自动布局的调试（这部分的内容是从这里搬运）" class="headerlink" title="自动布局的调试（这部分的内容是从这里搬运）"></a>自动布局的调试（这部分的内容是从<a href="http://revealapp.com/blog/reveal-common-tips-cn.html" target="_blank" rel="noopener">这里</a>搬运）</h3><p>自动布局（Auto Layout）已经越来越普遍的深入千家万户了，随着iOS设备分辨率的多(sui)样(pian)化，自动布局已慢慢成为了标准配置。<br>你可能经常看到控制台输出类似这样的内容，而不知何处下手：</p>
-<p><code>Unable to simultaneously satisfy constraints.</code><br><code>Probably at least one of the constraints in the following list is one you don&#39;t want. Try this: (1) look at each constraint and try to figure out which you don&#39;t expect; (2) find the code that added the unwanted constraint or constraints and fix it. (Note: If you&#39;re seeing NSAutoresizingMaskLayoutConstraints that you don&#39;t understand, refer to the documentation for the UIView property translatesAutoresizingMaskIntoConstraints)</code><br><code>(</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d3e18a0 H:[UIView:0x7fc82aba1210(768)]&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d6369e0 H:[UIView:0x7fc82aba1210]-(0)-|   (Names: &#39;|&#39;:UIView:0x7fc82d6b9f80 )&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d636a30 H:|-(0)-[UIView:0x7fc82aba1210]   (Names: &#39;|&#39;:UIView:0x7fc82d6b9f80 )&gt;&quot;,</code><br><code>&quot;&lt;NSLayoutConstraint:0x7fc82d3e7fd0 &#39;UIView-Encapsulated-Layout-Width&#39; H:[UIView:0x7fc82d6b9f80(50)]&gt;&quot;</code><br><code>)</code><br><code></code>Will attempt to recover by breaking constraint<code></code>\&lt;NSLayoutConstraint:0x7fc82d3e18a0 H:<a href="#">UIView:0x7fc82aba1210(768)</a>><code></code><br><code>Make a symbolic breakpoint at UIViewAlertForUnsatisfiableConstraints to catch this in the debugger.</code><br><code>The methods in the UIConstraintBasedLayoutDebugging category on UIView listed in &lt;UIKit/UIView.h&gt; may also be helpful.</code></p>
-<p>除了我们在编码时自己绑定到View上的约束条件(Constraints)之外，其实许多UIKit控件还会被隐式地地设置上一些约束，而这些可能会带来一些意外的布局结果。</p>
-<p>也许曾经你需要使用LLDB来一点点调试Auto Layouts：</p>
-<p><code>(lldb) po 0x7731880</code><br><code>$0 = 124983424 &lt;UIView: 0x7731880; frame = (90 -50; 80 100);</code><br><code>layer = &lt;CALayer: 0x7731450&gt;&gt;</code><br><code></code>(lldb) po <a href="#">0x7731880 superview</a><code></code>$2 = 0x07730fe0 \&lt;UIView: 0x7730fe0; frame = (32 128; 259 604);<code></code>layer = \&lt;CALayer: 0x7731150>><code></code><br><code>(lldb) po [[0x7731880 superview] recursiveDescription]</code><br><code>$3 = 0x07117ac0 &lt;UIView: 0x7730fe0; frame = (32 128; 259 604); layer = &lt;CALayer: 0x7731150&gt;&gt;</code><br><code>| &lt;UIView: 0x7731880; frame = (90 -50; 80 100); layer = &lt;CALayer: 0x7731450&gt;&gt;</code><br><code>| &lt;UIView: 0x7731aa0; frame = (90 101; 80 100); layer = &lt;CALayer: 0x7731c60&gt;&gt;</code><br>有了Reveal，这就方便多了。Reveal对视图上的约束条件提供了相当丰富的检视与实时修改功能，具体看下面这张图，再自己摸索一下就好了。<br><img src="http://upload-images.jianshu.io/upload_images/1112722-f0ccef29956c1974.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<ul>
-<li>a显示/隐藏所有约束条件</li>
-<li>b 查看关联到此View的所有约束</li>
-<li>c 可以直接在Canvas中选中某一约束</li>
-<li>d 查看某一约束的具体信息，可以实时修改constant属性，立刻检查效果</li>
-<li>e 跳转到某一约束的详细属性页面</li>
-</ul>
-<p>给大家透露一个我摸索到的十分特别以及及其重要的知识：蓝色的约束代表系统给对象添加的约束，紫色的约束是我们开发者给对象添加的约束。恩，这个在您调试布局冲突时很重要。不谢，打赏我就对了，我不是雷锋，我不会武功，我不会飞檐走壁，也不会饿着肚子写文章。</p>
-<h3 id="实时修改View属性"><a href="#实时修改View属性" class="headerlink" title="实时修改View属性"></a>实时修改View属性</h3><p>Reveal不仅仅只是查看各种属性的工具，也支持实时的修改一些属性。如下图中的大部份属性，你都可以实时的在模拟器中看到修改后的效果。这省去了过去总是要修改代码，重新编译运行这个漫长的反馈流程。在和设计师一起尝试各种显示效果时，这个功能特别高效。</p>
-<h3 id="Reveal偷窥正确姿势"><a href="#Reveal偷窥正确姿势" class="headerlink" title="Reveal偷窥正确姿势"></a>Reveal偷窥正确姿势</h3><p>（部分内容搬运，接受鄙视，但是我是让文章有深度需要的勤快的搬运工，和普通搬运工可以区别开来好嘛，O(∩_∩)O）（您错过以下内容，我只能呵呵了）<br>温馨提示：前方高能，越过难度有点大，如果遇到头晕脑胀、眼神绝望，请尽快逃离现场。如果您依然十分想要偷窥，又不想费时费力，最好的解决办法依然是打赏我拉，小的带您坐缆车，飞速直达目的地。（打赏￥50+）。<br>1.越狱你的iOS设备：可以利用盘古、PP助手、太极等三方工具一键越狱。这部分内容请自行搜索。<br>2.iOS设备越狱完成后，需要使用Cydia<br>安装两个软件：OpenSSH 和CydiaSubstrate<br>安装OpenSSH，打开越狱后的设备上的Cydia程序，点击搜索输入OpenSSH，然后点击安装。（下面的配图是已经安装成功后搜索的显示画面）</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_33.png" alt=""></p>
-<p>SSH是一种可以保证用户加密远程登录到系统的协议，OpenSSH是一个SSH的连接传输工具。</p>
-<p>安装Cydia Substrate，打开越狱后的设备上的Cydia程序，点击搜索输入Cydia Substrate，然后点击安装。只有安装了CydiaSubstrate之后才会有MobileSubstrate目录（此目录必须存在才可以继续下面的步骤）。（下面的配图是已经安装成功后搜索的显示画面）<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_34.png" alt=""></p>
-<p>MobileSubstrate是一个公共库，可以用来动态替换内存中的代码、数 据等。基本上越狱机下比较有用的系统工具都需要这个库，是Cydia同一个作者 维护的，可以放心装。</p>
-<p>3.将libReveal.dylib上传到越狱后的设备的/Library/MobileSubstrate/DynamicLibraries下检查工作：测试OpenSSH和CydiaSubstrate是否安装成功</p>
-<ul>
-<li>1）上传libReveal.dylib文件必须使用到上面安装的OpenSSH工具。如果想要使用OpenSSH工具，那么就必须将Reveal软件所在的mac设备与越狱后的iOS设备置于同一个局域网内。</li>
-<li><p>2）首先来测试OpenSSH是否安装成功。获取越狱后的设备的局域网内的IP地址，打开“设置”->“WLAN”，连上局域网，然后再点击连接上的局域网查看iOS设备的IP地址。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_37.png" alt=""></p>
-</li>
-<li><p>3）打开mac上的终端工具(Terminal)，输入如下命令：ssh root@iOS设备IP地址。输入完成后回车，等待连接iOS设备。</p>
-</li>
-</ul>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_39.png" alt=""></p>
-<p>iOS设备的IP地址指的是越狱后的设备（iphone、ipad）的IP地址，也就是上个步骤中获取的IP地址，后面的教程中出现的地址仅仅是代表笔者测试时iOS设备的IP地址(192.168.2.2)，读者请一定要查看自己的iOS设备地址，并进行替换。</p>
-<p>4）接下来会提示你输入root用户的密码，iOS设备root用户的默认密码是alpine，在终端中输入密码时，终端不会显示你输入的字符，所以只需要输入alpine字符后回车就可以请求连接iOS设备了。（这一步请保证你的iOS设备屏幕已经解锁，不然不会出现输入密码的提示！）</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_40.png" alt=""></p>
-<p>如果出现root#字符就表示连接成功了。</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_41.png" alt=""></p>
-<p>接下来测试Cydia Substrate 是否安装成功，上一步已经连接上iOS设备的终端中输入以下命令：cd /Library/MobleSubstrate/DinamicLibraries<br>，回车查看返回结果。如果出现-sh: cd: /Library/MobileSubstrate/DynamicLibraries: No such file or directory<br>提示那就说明Cydia Substrate安装不成功，不成功请重新进入iOS设备上下载安装Cydia Substrate软件。<br>若果没出现如何错误提示信息，就说明Cydia Substrate安装成功！<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_42.png" alt=""><br>4.上传libReveal.dylib。如果上一个步骤的检查工作全部完成：OpenSSH和Cydia Substrate成功安装。<br>重新打开mac上的终端工具(Terminal)，使用如下命令进入Reveal软件的动态库所在目录：cd /Applications/Reveal.app/Contents/SharedSupport/iOS-Libraries</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_43.png" alt=""></p>
-<p>使用如下命令将libReveal.dylib上传到iOS设备的/Library/MobileSubstrate/DynamicLibraries目录下：scp libReveal.dylib root@iOS设备IP地址:/Library/MobileSubstrate/DynamicLibraries/<br>，请替换@之后的“iOS设备的IP地址”为你的iOS设备的真实地址，回车执行命令后会让你输入iOS设备的root的密码，默认是alpine，上传成功后会显示%100字样。</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_44.png" alt=""><br>5.编写并上传一份libReveal.plist<br>到iOS设备的/Library/MobileSubstrate/DynamicLibraries<br>目录中。这个文件的作用是：在Reveal中监控指定的App，不上传这个文件也是可以的，那么Reveal就会监控所有的App，只是这样速度会慢一点点。编写libReveal.plist文件，最简单的方法就是新建一个plist文件，它的内容是<br> Filter = { Bundles = ( “你要查看的app的bundle Id1”,”你要查看的app的bundle Id2” ); ; }</p>
-<p>xcode下打开这个libReveal.plist文件可以看到它的结构示例（笔者已经添加了两个Bundle ID）：<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_47.png" alt=""></p>
-<p>关于获取iOS App应用的Bundle ID：打开PP助手、iTools、itunes等工具，备份手机上安装到的程序到电脑上(或直接下载需要查看程序ipa文件)，将.ipa修改成.zip，解压后按如下路径进入info.plist文件所在目录，打开info.plist其中便有我们需要的bundle Id。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_49.png" alt=""></p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_54.png" alt=""></p>
-<p>6.上传libReveal.plist<br>到iOS设备的/Library/MobileSubstrate/DynamicLibraries<br>目录中。打开终端进入libReveal.plist所在的目录，使用如下命令上传：scp libReveal.plist root@iOS设备的IP地址:/Library/MobileSubstrate/DynamicLibraries/，请替换@之后的“iOS设备的IP地址”为你的iOS设备的真实地址，回车执行命令后会让你输入iOS设备的root的密码，默认是alpine，上传成功后会显示%100字样。<br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_55.png" alt=""></p>
-<p>7.接下来在重启你的iOS设备，连上mac电脑所在的局域网，上打开你需要在Reveal中观察的程序，此时在mac电脑上的Reveal中选择你要观察的程序。</p>
-<p><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_57.png" alt=""><br><img src="https://hurui.gitbooks.io/reveal-debug/content/images/Snip20150711_58.png" alt=""><br><em>提示：如果此时在mac上的Reveal左上方没有出现你想要调试的程序，这里给出几个检查的建议：</em></p>
-<ul>
-<li>1.手机连接的wifi是否与mac处于同一局域网（如果你在执行步骤7时是在正确执行步骤5和6之后，那就忽略这个检查，这里是针对手机重启了或者是切换了手机网络等情况）。</li>
-<li>2.查看你编写的libReveal.plist文件中写的BundleID是否与你在iOS设备上打开的应用是否匹配。甚至，请检查你的pist文件结构是否正确！</li>
-<li>3.iOS设备上想要观察的App应用必须处于前台，进入后台即使打开了，在Reveal的左上角“选择连接的应用”框中也不会显示。<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3>欢迎收藏的 <a href="http://jackiehoo.com/" target="_blank" rel="noopener">我的博客</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS比优鸡调试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">bug调试</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">reveal</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/09/12/2016-09-12-using-reveal-to-debug/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
@@ -2138,6 +2134,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构思维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">毕业10周年</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">徐徐图之</a>
               </li>
             
             <div class="clearfix"></div>

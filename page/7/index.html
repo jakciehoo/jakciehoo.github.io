@@ -160,6 +160,137 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-04-29-be-caution-of-subclassing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/29/2016-04-29-be-caution-of-subclassing/">iOS架构师之路：慎用继承</a>
+    </h1>
+  
+
+        
+        <a href="/2016/04/29/2016-04-29-be-caution-of-subclassing/" class="archive-article-date">
+  	<time datetime="2016-04-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-04-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　最近在看大神Casa的文章《<a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html" target="_blank" rel="noopener">跳出面向对象思想(一) 继承</a>》，脑洞大开。文章给我们展示了一个随着产品需求不断变化的例子，该例子中通过继承实现不同页面的搜索视图和搜索逻辑的代码复用，随着产品需求的演变，最后导致继承的搜索功能层级越来越深，相互依赖越来越严重，最后导致拔出萝卜带出泥，又随着个性化需求的发展，最后代码变得越来越混乱。相信有经验的开发人员都经历过这方面的痛苦。继承对代码复用来说非常好用，但同时继承复用的思路随着产品经理的需求变化会导致项目紧耦合，牵一发而动全身。继承做面向对象的三大特性之一，当然宅正确的时候使用它能发挥巨大价值，但如果不加思索的使用也会带来代码维护和扩展上的灾难。那我们应该在什么情况下使用继承，什么情况下又需要避免滥用继承，并能够有其他方案替代继承实现代码复用的目的呢，这是作为架构师需要掌握的内功，最终达到十八般武艺，样样精通，需要时信手拈来的境界。</p>
+<h1 id="适用继承的场合"><a href="#适用继承的场合" class="headerlink" title="适用继承的场合"></a><strong>适用继承的场合</strong></h1><pre><code>大神Chris Eidhof的文章[《subclassing》](https://www.objc.io/issues/13-architecture/subclassing/)提到需要自定义UITableViewCell等View视图的时候我们可以使用继承来创建自定义View,这些代码放入子类更合理，不光代码得到更好的封装，也能得到一个可以在工程中重用的组件。Chris Edihof还提到model可以继承来实现了 isEqual: 、hash 、 copyWithZone: 和 description 等方法的类。
+</code></pre><p>Chris Eidhof说的只是继承的几个应用场景，他没有说使用继承的界限。 Casa还提到是否使用继承需要考虑三个点：</p>
+<blockquote>
+<ul>
+<li><ol>
+<li>父类只是给子类提供服务，并不涉及子类的业务逻辑</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>层级关系明显，功能划分清晰，父类和子类各做各的。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>父类的所有变化，都需要在子类中体现，也就是说此时耦合已经成为需求</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<pre><code>在我看来一个很重要的原则就是我们不能脱离cocoa框架开发，所以我们可以继承cocoa的类，以达到快速开发的目的，但是如果没有特殊原因我们写的代码要控制在继承链不增加两层。
+</code></pre><p><strong>不适合继承的场景</strong></p>
+<pre><code>我比较同意Casa的观点。当你发现你的继承超过2层的时候，你就要好好考虑是否这个继承的方案了，第三层继承正是滥用的开端。确定有必要之后，再进行更多层次的继承。Chris Eidhof也有类似的观点：`In a lot of projects that I’ve worked on, I’ve seen deep hierarchies of subclasses. I am guilty of doing this as well. Unless the hierarchies are very shallow, you very quickly tend to hit limits.`（ 在我工作的许多项目中看到过一些深度继承的项目。当我也这么干的时候，总会感到内疚。除非继承的层次非常浅，否则你会很快发现它的局限性。）
+</code></pre><h1 id="替代继承解决复用需求的解决方案"><a href="#替代继承解决复用需求的解决方案" class="headerlink" title="替代继承解决复用需求的解决方案"></a><strong>替代继承解决复用需求的解决方案</strong></h1><p><strong> 1.协议（protocols）</strong></p>
+<p>　　我经常使用继承来使得对象能够响应某个方法，假设一个APP有播放器（player）对象，它拥有播放（play）方法播放视频，如果APP希望支持YouTube，需要相同几个播放（player）接口，但是方法的实现不同，通过继承实现的代码如下：
+　　</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface Player : NSObject</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface YouTubePlayer : Player</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　这两个类并没有太多共用的代码，它们只不过具有相同的接口。如果这样的话，使用协议可能会是更好的方案。可以这样用协议来写你的代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@protocol VideoPlayer &lt;NSObject&gt;</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface Player : NSObject &lt;VideoPlayer&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface YouTubePlayer : NSObject &lt;VideoPlayer&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　这样，YouTubePlayer类就不必知道 Player类的内部实现了。</p>
+<p><strong>2.代理（delegation）</strong> </p>
+<p>　　再以上面的例子为例，player对象希望在播放的时候执行一些自定义的行为，使用继承也可以轻易的实现：创建个player对象的子类，然后重写play方法，再调用[super play]，再跟着希望执行的行为。但是我们也可以通过的代理的方式更有优雅的实现这个需求：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@class Player;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@protocol PlayerDelegate</span></span><br><span class="line"></span><br><span class="line">- (void)playerDidStartPlaying:(Player *)player;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@interface Player : NSObject</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (nonatomic,weak) id&lt;PlayerDelegate&gt; delegate;</span></span><br><span class="line"></span><br><span class="line">- (void)play;</span><br><span class="line">- (void)pause;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　现在在player对象的play方法里，我们可以通过代理属性调用 playerDidStartPlaying：方法，任何使用Player类的对象，可以遵守代理协议，就可以实现自定义的playerDidStartPlaying：方法了，player类依然保持它的通用性和独立性，方便为对外提供服务。代理是非常强大技巧，苹果本身就经常使用。像 UITextField这样的类，有时候你还会想把几个不同的方法分组到几个单独的协议里，比如UITableView—— 它不仅有一个代理（delegate），还有一个数据源（dataSource）。</p>
+<p><strong>3.类别（category）</strong></p>
+<p>　　我们有时候会给对象添加方法，通过集成的方式当然可以实现，但是不如category的方式来的方便和容易使用，不增加新的类，可复用的价值也更高。 比如我们需要给NSArray添加一个arrayByRemovingFirstObject方法，通过category的方式我们就可以这么做：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@interface NSArray (OBJExtras)</span></span><br><span class="line"></span><br><span class="line">- (void)obj_arrayByRemovingFirstObject;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　在用类别扩展一个不是你自己的类的时候，在方法前添加前缀是个比较好的习惯做法。如果不这么做，有可能别人也用类别对此类添加了相同名字的函数。那时候程序的行为可能跟你想要的并不一样，未预期的事情可能会发生。</p>
+<p>　　使用类别还有另外一个风险，那就是，到最后你可能会使用一大堆的类别，连你自己都会失去对代码全局的认识。假如那样的话，创建自定义的类可能更简单一些。</p>
+<p><strong>4.组合（composition）</strong></p>
+<p>　　Casa提到我们尽可能用组合替代继承。组合是最强大的替代组合的选项。如果你想复用已经存在的代码，并且不想共享同样的接口，组合是最佳选择。举个例子，假设你要设计一个缓存类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@interface OBJCache : NSObject</span></span><br><span class="line"></span><br><span class="line">- (void)cacheValue:(id)value forKey:(NSString *)key;</span><br><span class="line">- (void)removeCachedValueForKey:(NSString *)key;</span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　一个简单的做法就通过继承NSDictionary并且通过调用字典的方法来实现这上面两个缓存方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface OBJCache : NSDictionary</span></span><br></pre></td></tr></table></figure>
+<p>　　但是这样做会带来一些问题。它本来是应该被详细实现的，但只是通过字典来实现。现在，在任何需要一个 NSDictionary 参数的时候，你可以直接提供一个 OBJCache 值。但如果你想把它转为其它完全不同的东西（例如你自己的库），你就可能需要重构很多代码了。
+　　</p>
+<p>　　更好的方式就是组合了。创建一个缓存类，并添加一个字典的私有属性，对外还是暴露这两个接口，实现的时候就可以通过调用字典属性的方法实现我们使用字典的方法了，这样做可以灵活改变其涉嫌，而该类的使用者恩不用进行重构。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface OBJCache :NSObject</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@property (nonmatic, strong) NSDictionary cacheDict;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@end</span></span><br></pre></td></tr></table></figure>
+<p>　　</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h1><p>　　代码复用，尽管他们都可以通过继承实现，但是我们为了在没有耦合需求的时候尽量不要使用继承，而是根据不同场景采用不同复用代码的方式。如果只是共享接口，我们可以使用协议；如果是希望共用一个方法的部分实现，但希望根据需要执行不同的其他行为，我们可以使用代理；如果是添加方法，我们可以优先使用类别（category）；如果是为了使用一个类的很多方法，我们可以使用组合来实现。，如果当初只是出于代码复用的目的而不区分类别和场景，就采用继承是不恰当的。当你发现你的继承超过2层的时候，你就要好好考虑是否这个继承的方案了，第三层继承正是滥用的开端。确定有必要之后，再进行更多层次的继承。我认同Casa的看法：万不得已不要用继承，优先考虑组合等方式。</p>
+<h1 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h1><p>《<a href="http://casatwy.com/tiao-chu-mian-xiang-dui-xiang-si-xiang-yi-ji-cheng.html" target="_blank" rel="noopener">跳出面向对象思想(一) 继承</a>》、<a href="https://www.objc.io/issues/13-architecture/subclassing/" target="_blank" rel="noopener">《subclassing》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">view层架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">subclassing</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/04/29/2016-04-29-be-caution-of-subclassing/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-04-23-light-your-view-controler" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -764,6 +895,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构思维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">毕业10周年</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">徐徐图之</a>
               </li>
             
             <div class="clearfix"></div>
