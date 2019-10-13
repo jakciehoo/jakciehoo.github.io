@@ -160,6 +160,157 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-dive-into-semaphore" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/13/dive-into-semaphore/">深入剖析信号量</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/13/dive-into-semaphore/" class="archive-article-date">
+  	<time datetime="2019-10-13T01:32:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p>国庆前我们公司的自研的广告SDK项目完成，新版b612相机已经包含该广告SDK，b612相机是一款工具类的app，广告是我们的主要收入来源，但同时用户体验的要求又非常的高。对于我们研发广告SDK带来不小的挑战，比如启动必须在1.5s完成，也就是使开屏广告必须在1.5秒就完成获取和展示（广告业界的一半建议标准是3s），别看这1.5s的优化，为这1.5秒，我们团队绞尽脑汁，深挖每行代码用的技术点，然后逐一进行优化。比如http的请求优化、代码执行耗时的优化、流量控制缓存选择的优化等等。后面有机会再去更多介绍我们采用的一些技术手段，今天只说说iOS中的信号量。</p>
+<p>在开发广告SDK的时候，发现b612的还有品牌广告在韩国团队维护，暂时不能移交给我们维护，因此广告SDK需要等待品牌广告请求失败了才能去展示广告SDK的广告，为了将开屏广告请求时间控制在1.5s这个底线，因此广告SDK必须将请求和展示拆分：</p>
+<ul>
+<li>1）在启动的时候请求广告</li>
+<li>2）在品牌广告失败后去决定是否展示广告</li>
+<li>3）广告SDK是有流量分配规则的，有直投的广告，也有介入优量汇、inmobi等第三方的广告联盟，之间也许要做流量控制。</li>
+</ul>
+<p>SDK为了达到这个目的，使用到了信号量<code>dispatch_semaphore</code>。信号量本来不难，但是我们研发工程师在研发中遇到过信号量控制不生效的情况，执行到下一个流量分配去了，导致展示两次开屏广告。我在协助排查的时候觉得很诡异，陷入自我怀疑：会不会是iOS的bug，在多线程中使用信号量会不会不生效。当然最后排查的结果是<code>dispatch_semaphore_wait</code>使用不当导致，它有两个入参数，一个参数是信号量对象，另一个是等待时间。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_semaphore_wait(dispatch_semaphore_t  _Nonnull dsema, dispatch_time_t timeout)</span><br></pre></td></tr></table></figure>
+<p>timeout的值可以有三个，<code>DISPATCH_TIME_NOW</code>（不等待）、<code>DISPATCH_TIME_FOREVER</code>（一直等待，直到信号出现并大于等于0）、自定义的<code>dispatch_time_t</code>。我们SDK为了无论如何在1.5s能释放线程资源（<code>dispatch_semaphore_wait</code> 是会创建线程池的），使用了自定义的信号，最大等待时间等于超时时间（1.5s），而我们自定义的<code>dispatch_time_t</code>使用了ms作为单位，而传入的时间是1.5,导致<code>dispatch_semaphore_wait</code>几乎不等待。</p>
+<p>解决这个问题费了点时间，因为没想到会在这个地方犯错，而排查耗时较长的原因，是因为自我怀疑，以为是系统的bug。还是自己学的不深，所以会自我怀疑，当时解决完问题后就想找个时间再次深入去学习GCD（虽然我自以为深入学习过好几次😂），今天得空看了看信号量的源码<a href="https://apple.github.io/swift-corelibs-libdispatch/" target="_blank" rel="noopener">GCD源码</a>。</p>
+<h3 id="深入剖析信号量"><a href="#深入剖析信号量" class="headerlink" title="深入剖析信号量"></a>深入剖析信号量</h3><h4 id="一、信号量的定义和作用"><a href="#一、信号量的定义和作用" class="headerlink" title="一、信号量的定义和作用"></a>一、信号量的定义和作用</h4><p>信号量：就是一种可用来控制访问资源的数量的标识，设定了一个信号量，在线程访问之前，加上信号量的处理，则可告知系统按照我们指定的信号量数量来执行多个线程。其实，这有点类似锁机制了，只不过信号量都是系统帮助我们处理了，我们只需要在执行线程之前，设定一个信号量值，并且在使用时，加上信号量处理方法就行了。</p>
+<p>也就是说系统提供信号量的方法，来帮我们开发者简化控制任务执行顺序。</p>
+<h4 id="二、苹果关于信号量的API不多，主要就3个。"><a href="#二、苹果关于信号量的API不多，主要就3个。" class="headerlink" title="二、苹果关于信号量的API不多，主要就3个。"></a>二、苹果关于信号量的API不多，主要就3个。</h4><ol>
+<li><code>dispatch_semaphore_create</code>创建信号量对象<code>dispatch_semaphore_t</code></li>
+<li><code>dispatch_semaphore_wait</code>等待一个semaphore，或者是减少semaphore的计数。每次会执行会将计数器-1.如果减完之后计数器小于0的话，会阻塞在当前线程直到接收到信号。</li>
+<li><code>dispatch_semaphore_signal</code>发送信号，或者增加一个信号量的计数。如果增加之前的信号值dsema_value大于等于0，说明没有线程因为该信号而阻塞，所以直接返回。</li>
+</ol>
+<h4 id="三、dispatch-semaphore-create"><a href="#三、dispatch-semaphore-create" class="headerlink" title="三、dispatch_semaphore_create"></a><code>三、dispatch_semaphore_create</code></h4><p>信号量在初始化（调用dispatch_semaphore_create初始化）时要指定 value，随后内部将这个 value 存储起来。实际操作时会存两个 value，一个是当前的 value，一个是记录初始 value。我们来看看源码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">dispatch_semaphore_t dispatch_semaphore_create(long value)&#123;</span><br><span class="line">    dispatch_semaphore_t dsema;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (value &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    // 申请内存</span><br><span class="line">    dsema = calloc(<span class="number">1</span>, sizeof(struct dispatch_semaphore_s));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (fastpath(dsema)) &#123;</span><br><span class="line">        // do_vtable里面主要包含了这个 dispatch_semaphore_s 的操作函数</span><br><span class="line">        dsema-&gt;do_vtable = &amp;_dispatch_semaphore_vtable;</span><br><span class="line"></span><br><span class="line">        //可以理解为链表的结尾标记</span><br><span class="line">        dsema-&gt;do_next = DISPATCH_OBJECT_LISTLESS;</span><br><span class="line"></span><br><span class="line">        // 引用计数</span><br><span class="line">        dsema-&gt;do_ref_cnt = 1;</span><br><span class="line">        dsema-&gt;do_xref_cnt = 1;</span><br><span class="line"></span><br><span class="line">        // 目标队列</span><br><span class="line">        dsema-&gt;do_targetq = dispatch_get_global_queue(0, 0);</span><br><span class="line"></span><br><span class="line">        // 信号值</span><br><span class="line">        dsema-&gt;dsema_value = value;</span><br><span class="line">        dsema-&gt;dsema_orig = value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dsema;</span><br><span class="line">    </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>首先value必须大于等于0，流程才能继续进行；</li>
+<li>申请一块<code>dispatch_semaphore_s</code>内存，并初始化为0；</li>
+<li>将dsema的<code>do_vtable</code>指向<code>_dispatch_semaphore_vtable</code>，<code>_dispatch_semaphore_vtable</code>的定义如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> struct dispatch_semaphore_vtable_s _dispatch_semaphore_vtable = &#123;</span><br><span class="line">    .do_type = DISPATCH_SEMAPHORE_TYPE,</span><br><span class="line">    .do_kind = <span class="string">"semaphore"</span>,</span><br><span class="line">    .do_dispose = _dispatch_semaphore_dispose,</span><br><span class="line">    .do_debug = _dispatch_semaphore_debug,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>_dispatch_semaphore_dispose</code>，顾名思义，销毁一个信号量，定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">_dispatch_semaphore_dispose</span><span class="params">(dispatch_semaphore_t dsema)</span></span>&#123;</span><br><span class="line">    kern_return_t kr;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (dsema-&gt;dsema_value &lt; dsema-&gt;dsema_orig) &#123;</span><br><span class="line">        DISPATCH_CLIENT_CRASH(<span class="string">"Semaphore/group object deallocated while in use"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (dsema-&gt;dsema_port) &#123;</span><br><span class="line">        kr = semaphore_destroy(mach_task_self(), dsema-&gt;dsema_port);</span><br><span class="line">        DISPATCH_SEMAPHORE_VERIFY_KR(kr);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (dsema-&gt;dsema_waiter_port) &#123;</span><br><span class="line">        kr = semaphore_destroy(mach_task_self(), dsema-&gt;dsema_waiter_port);</span><br><span class="line">        DISPATCH_SEMAPHORE_VERIFY_KR(kr);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    _dispatch_dispose(dsema);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意DISPATCH_CLIENT_CRASH这段，如果初始值dsema_orig和销毁时最终的值dsema_value不一致，会crash。这就是苹果官有这么一段警告的原因：</p>
+<blockquote>
+<p>Important</p>
+<p>Calls to dispatch_semaphore_signal must be balanced with calls to wait(). Attempting to dispose of a semaphore with a count lower than value causes an EXC_BAD_INSTRUCTION exception.</p>
+<p><a href="https://developer.apple.com/documentation/dispatch/1452955-dispatch_semaphore_create?language=objc" target="_blank" rel="noopener">https://developer.apple.com/documentation/dispatch/1452955-dispatch_semaphore_create?language=objc</a></p>
+</blockquote>
+<p>所以 <code>dispatch_semaphore_signal</code>和dispatch_semaphore_wait 请配对使用，确保在心好凉释放的时候不会crash。</p>
+<h4 id="四、dispatch-semaphore-wait"><a href="#四、dispatch-semaphore-wait" class="headerlink" title="四、dispatch_semaphore_wait"></a><code>四、dispatch_semaphore_wait</code></h4><p>先看源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">DISPATCH_NOINLINE <span class="keyword">long</span> <span class="title">dispatch_semaphore_signal</span><span class="params">(dispatch_semaphore_t dsema)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (dispatch_atomic_inc(&amp;dsema-&gt;dsema_value) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _dispatch_semaphore_signal_slow(dsema);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一行的 <code>dispatch_atomic_dec2o</code> 是一个宏，会调用 GCC 内置的函数 <code>__sync_sub_and_fetch</code>，实现减法的原子性操作。因此这一行的意思是将 dsema 的值减一，并把新的值赋给 value。</p>
+<p>如果减一后的 value 大于等于 0 就立刻返回，没有任何操作，否则进入等待状态。</p>
+<p><code>_dispatch_semaphore_wait_slow</code> 函数针对不同的 timeout 参数，分了三种情况考虑:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> DISPATCH_TIME_NOW:  </span><br><span class="line">    <span class="keyword">while</span> ((orig = dsema-&gt;dsema_value) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (dispatch_atomic_cmpxchg2o(dsema, dsema_value, orig, orig + <span class="number">1</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> KERN_OPERATION_TIMED_OUT;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这种情况下会立刻判断 dsema-&gt;dsema_value 与 orig 是否相等。如果 while 判断成立，内部的 if 判断一定也成立，此时会将 value 加一(也就是变为 0) 并返回。加一的原因是为了抵消 wait 函数一开始的减一操作。此时函数调用方会得到返回值 KERN_OPERATION_TIMED_OUT，表示由于等待时间超时而返回。</p>
+<p>实际上 while 判断一定会成立，因为如果 value 大于等于 0，在上一个函数 dispatch_semaphore_wait 中就已经返回了。</p>
+<p>第二种情况是 DISPATCH_TIME_FOREVER 这个 case:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">case</span> DISPATCH_TIME_FOREVER:  </span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        kr = semaphore_wait(dsema-&gt;dsema_port);</span><br><span class="line">    &#125; <span class="keyword">while</span> (kr == KERN_ABORTED);</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<p>进入 do-while 循环后会调用系统的 semaphore_wait 方法，KERN_ABORTED 表示调用者被一个与信号量系统无关的原因唤醒。因此一旦发生这种情况，还是要继续等待，直到收到 signal 调用。</p>
+<p>在其他情况下(default 分支)，我们指定一个超时时间，这和 DISPATCH_TIME_FOREVER 的处理比较类似，不同的是我们调用了内核提供的 semaphore_timedwait 方法可以指定超时时间。</p>
+<p>整个函数的框架如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">long</span> <span class="title">_dispatch_semaphore_wait_slow</span><span class="params">(dispatch_semaphore_t dsema, dispatch_time_t timeout)</span> </span>&#123;  </span><br><span class="line">again:  </span><br><span class="line">    <span class="keyword">while</span> ((orig = dsema-&gt;dsema_sent_ksignals)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (dispatch_atomic_cmpxchg2o(dsema, dsema_sent_ksignals, orig,</span><br><span class="line">                orig - <span class="number">1</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (timeout) &#123;</span><br><span class="line">        <span class="keyword">default</span>:  <span class="comment">/* semaphore_timedwait */</span></span><br><span class="line">        <span class="keyword">case</span> DISPATCH_TIME_NOW: <span class="comment">/* KERN_OPERATION_TIMED_OUT */</span></span><br><span class="line">        <span class="keyword">case</span> DISPATCH_TIME_FOREVER: <span class="comment">/* semaphore_wait */</span></span><br><span class="line">    &#125;</span><br><span class="line">    goto again;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可见信号量被唤醒后，会回到最开始的地方，进入 while 循环。这个判断条件一般都会成立，极端情况下由于内核存在 bug，导致 orig 和 dsema_sent_ksignals 不相等，也就是收到虚假 signal 信号时会忽略。</p>
+<p>进入 while 循环后，if 判断一定成立，因此返回 0，正如文档所说，返回 0 表示成功，否则表示超时。</p>
+<h4 id="五、dispatch-semaphore-signal"><a href="#五、dispatch-semaphore-signal" class="headerlink" title="五、dispatch_semaphore_signal"></a><code>五、dispatch_semaphore_signal</code></h4><p>发送信号量，或者增加一个信号量的计数。如果增加之前的信号值dsema_value大于等于0，说明没有线程因为该信号而阻塞，所以直接返回。简化版源码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">dispatch_semaphore_signal</span><span class="params">(dispatch_semaphore_t dsema)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">long</span> value = dispatch_atomic_inc2o(dsema, dsema_value);</span><br><span class="line">    <span class="keyword">if</span> (fastpath(value &gt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _dispatch_semaphore_signal_slow(dsema);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先会调用原子方法让 value 加1，如果大于零就立刻返回 0，否则返回 _dispatch_semaphore_signal_slow，将会唤起一个在spatch_semaphore_wait中等待的线程。（如果有多个线程在等待，iOS会根据线程的优先级来判断具体唤醒哪个线程）:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">DISPATCH_NOINLINE <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">_dispatch_semaphore_signal_slow</span><span class="params">(dispatch_semaphore_t dsema)</span></span>&#123;</span><br><span class="line">    kern_return_t kr;</span><br><span class="line">    </span><br><span class="line">    _dispatch_semaphore_create_port(&amp;dsema-&gt;dsema_port);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Before dsema_sent_ksignals is incremented we can rely on the reference</span></span><br><span class="line">    <span class="comment">// held by the waiter. However, once this value is incremented the waiter</span></span><br><span class="line">    <span class="comment">// may return between the atomic increment and the semaphore_signal(),</span></span><br><span class="line">    <span class="comment">// therefore an explicit reference must be held in order to safely access</span></span><br><span class="line">    <span class="comment">// dsema after the atomic increment.</span></span><br><span class="line">    _dispatch_retain(dsema);</span><br><span class="line">    </span><br><span class="line">    dispatch_atomic_inc(&amp;dsema-&gt;dsema_sent_ksignals);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 利用系统的信号量库实现发送信号量的功能</span></span><br><span class="line">    kr = semaphore_signal(dsema-&gt;dsema_port);</span><br><span class="line">    DISPATCH_SEMAPHORE_VERIFY_KR(kr);</span><br><span class="line"></span><br><span class="line">    _dispatch_release(dsema);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>iOS中的信号量其实蛮简单的，信号量设计的目的是阻塞然后等待执行。因此在我们开发中可以运用在很多场景中，随便列举几个：</p>
+<ol>
+<li>限制线程的最大并发数</li>
+<li>阻塞发请求的线程</li>
+<li>多个请求结束后统一操作</li>
+<li>多个请求顺序执行</li>
+</ol>
+<p>举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dispatch_semaphore_t sema = dispatch_semaphore_create(M);</span><br><span class="line"><span class="keyword">for</span> (NSInteger i = <span class="number">0</span>;i&lt;N;i++） &#123;</span><br><span class="line">     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER); </span><br><span class="line">        <span class="comment">// doing</span></span><br><span class="line">        dispatch_semaphore_signal(sema);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上述代码可知，总共异步执行N个任务，但是由于我们设置了值为M的信号量，每一次执行任务的时候都会导致信号量的减1，而在任务结束后使信号量加1，当信号量减到0的时候，说明正在执行的任务有M个，这个时候其它任务就会阻塞，直到有任务被完成时，这些任务才会执行。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>信号量虽然很简单，但用好了能帮我们简化控制任务控制逻辑。但苹果封装它的背后逻辑，如果我们清楚了，自然就更加了如指掌，也更有信心和能力运用好信号量。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">信号量</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">semaphore</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">signal</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/13/dive-into-semaphore/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2019-10-02-advertisement-sdk-design" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -796,75 +947,9 @@
 
 
   
-    <article id="post-quant-design-grid" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/10/quant-design-grid/">超低风险BTC量化策略设计方案</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/10/quant-design-grid/" class="archive-article-date">
-  	<time datetime="2018-11-10T13:34:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Okex马上也要推出永续合约。永续合约相比到期交割的合约降低部分投资的风险，因为没有交割期，这样投资者相对有更多的时间周期去应对。这几个月用Bimex交易所，对完善的设计、网站的流畅性、细节的处理真的很让惊叹。推出BTC量化两个月，量化细节在不断完善，只为两个目标：降低风险和增加盈利概率。</p>
-<p>对于自动化、量化交易策略的研究分类大致为：趋势型、 对冲型、 网格策略、 高频策略、 人工智能、 算法交易、 深度学习。其中 网格策略和对冲类型策略 可以算是比较经典的策略类型。</p>
-        
-          <a class="article-more-a" href="/2018/11/10/quant-design-grid/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/10/quant-design-grid/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -959,14 +1044,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -975,19 +1052,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -999,6 +1076,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -1007,11 +1092,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1019,7 +1100,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1103,10 +1188,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
@@ -1116,6 +1197,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1136,6 +1221,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1163,26 +1264,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
@@ -1191,11 +1272,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1208,18 +1285,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1236,6 +1301,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1259,6 +1332,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -1275,15 +1360,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1300,6 +1385,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">比特币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1323,10 +1412,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">APP架构</a>
               </li>
              
@@ -1336,6 +1421,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">SDK设计方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">信号量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">semaphore</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">signal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
               <li class="article-tag-list-item">

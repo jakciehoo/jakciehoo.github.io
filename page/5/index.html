@@ -160,6 +160,168 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-2016-11-17-Making-a-Pull-Request" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">【译文】Git合并申请（Pull Request）功能精讲</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/17/2016-11-17-Making-a-Pull-Request/" class="archive-article-date">
+  	<time datetime="2016-11-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>我打算翻译<a href="https://www.atlassian.com/git/tutorials/" target="_blank" rel="noopener">《Become a git guru》</a>系列git教程文章，欢迎有兴趣翻译这系列教程的朋友加入我一起完成翻译。</strong></p>
+<blockquote>
+<p>译者注：这篇文章很好的介绍了如何使用合并申请功能来保证项目质量可靠性和帮助团队成员交流成长。文章使用了Bitbucket（一个类似github的代码共享网站）作为远程代码管理工具，国内开发者使用github居多，公司内部可能使用gitlab更多，不过译者认为他们使用方式大同小异，原理更是相通，所以还是决定原文翻译。如果有时间我会针对gitlab单独写一份教程。</p>
+</blockquote>
+<p>使用<a href="http://www.bitbucket.org/" target="_blank" rel="noopener">Bitbucket</a>的合并申请功能让开发者之间合作变的非常的easy。你可以使用Bitbucket提供的非常nice的网页管理界面让大家探讨这些修改，然后再合并代码到正式项目。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/01.svg" alt="Git Workflows: Pull Request in Bitbucket"></p>
+<p>你可以仅仅使用合并申请功能来通知团队成员你已经完成了可一个功能开发。当开发者完成他们开发的功能后，他（她）可以登陆Bitbucket，然后发起合并申请。这可以让被通知到人去review代码并合并这些代码到master分支（译者注：应该是指团队主开发分支）。不过合并申请功能可不止发送通知这么简单——它可以用来作为讨论提出申请的功能的专用论坛。如果代码有任何问题，团队成员们可以提出反馈，甚至推送（push）提交来小小的修改代码。合并申请功能可以追踪这些事情。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/02.svg" alt="Git Workflows: Activity inside a pull request"></p>
+<p>跟其他团队合作模型相比，这个分享代码提交的方案使得开发流程更加顺畅。SVN和Git都可以通过简单脚本配置就可以自动发送邮件。然而当需要讨论修改时，如果依赖邮件，那将邮件满天飞，会让事情变的混乱，再加后续的修改提交，就更加恐怖了。合并申请把所有这些事情集合在一个web界面上。你仅仅需要请求另外一个开发者（比如，项目维护者）来从你的仓库拉取代码合并进他的仓库就可以完成一个合并申请。这意味着你发起合并申请需要提供4个信息：源仓库、源分支、目标仓库、目标分支。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/03.svg" alt="Git Workflows: Pull Requests"></p>
+<p>Bitbucket为这四个值提供了合理的默认值。然而，根据不同项目不同合作开发流，你的团队可能需要设置不同的默认值。上面的图表展示如何请求从一个功能分支合并到正式的主干分支（master）。但合并申请的功能比这要多的多。</p>
+<h2 id="如何进行"><a href="#如何进行" class="headerlink" title="如何进行"></a>如何进行</h2><p>合并申请可以被运用在<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow" target="_blank" rel="noopener">功能分支工作流（Feature Branch Workflow）</a>,<br><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow" target="_blank" rel="noopener">(GitFlow工作流(Gitflow Workflow)</a>,<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow" target="_blank" rel="noopener">Forking工作流(forking WorkFlow)</a>。但是合并申请需要在两个不同分支或者不同仓库之间进行，所以它不适用于标准意义上的<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流（Centralized Workflow）</a>。在不同开发工作流上使用合并申请略有不同，不过基本流程是一样的：</p>
+<ol>
+<li>开发者在本地仓库创建一个功能开发专用的分支。</li>
+<li>开发者将分支推送到远程仓库</li>
+<li>开发者发起合并申请</li>
+<li>团队成员review代码，展开讨论或者修改他们。</li>
+<li>项目维护者合并该分支到正式仓库然后关闭合并申请。</li>
+</ol>
+<p>后面的内容我们来聊聊合并申请是如何助力不同的合作开发工作流的。</p>
+<h2 id="功能分支工作流中的合并申请"><a href="#功能分支工作流中的合并申请" class="headerlink" title="功能分支工作流中的合并申请"></a>功能分支工作流中的合并申请</h2><p>功能分支工作流主要用于在同一项目中管理团队合作开发的，开发者们为每个开发的的功能创建分支。但是在代码合并进主干分支前，开发者需要发起合并申请，让大家讨论他开发的功能，这些完成之后才能合并到正式代码里。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/04.svg" alt="Pull Request: Feature Branch workflow"></p>
+<p>由于在功能分支工作流中只有一个公有仓库，因此合并申请的源仓库和目标仓库是一样的，一般来说开发者指定他的功能分支作为源分支，主干分支作为目标分支。</p>
+<p>项目管理者在收到合并申请后，会去查看提交的代码，如果没有问题就会合并代码到主干分支并关闭申请，但是如果在修改的代码中发现问题，他可以在合并申请界面进行反馈，对应的修改提交会显示在评论的右边。</p>
+<p>发起一个没有开发完成的功能也是允许的。比如当一个开发者在开发某个需求时遇到困难，他们可以发起包含需要提交的代码然后发起申请，其他开发者可以在合并申请界面提供建议，或者直接动手帮忙解决问题并提交修改。</p>
+<h2 id="GitFlow工作流中的合并申请"><a href="#GitFlow工作流中的合并申请" class="headerlink" title="GitFlow工作流中的合并申请"></a>GitFlow工作流中的合并申请</h2><p>Gitflow工作流类似工作分支工作流，但是在项目发布周期中严格精确地定义了一个分支模型，在GitFlow工作流中加入合并申请可以让开发者围绕他们正在工作的发布分支或者维护分支进行讨论。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/05.svg" alt="Pull Requests: Gitflow Workflow"></p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/06.svg" alt="Pull Requests: Gitflow Workflow 2"></p>
+<p>Gitflow工作流中合并申请的使用跟之前一样：一个开发者发起一个需要被review的功能、发布、热修复代码的合并申请，团队其他成员通过Bitbucket收到通知。功能开发通常合并进develop分支，然后发布分支和热修复分支通畅合并进develop和master两个分支。合并申请可以在所有这些合并中用到。</p>
+<h2 id="Forking工作流中的合并申请"><a href="#Forking工作流中的合并申请" class="headerlink" title="Forking工作流中的合并申请"></a>Forking工作流中的合并申请</h2><p>在Forking工作流中，开发者将代码先推送到自己的仓库而不是公有仓库。然后，他可以发起合并申请请求项目管理者review代码。合并申请的通知功能在这个时候就特别有用，因为这可能是当开发者向项目管理者的仓库提交代码时项目管理者知道有新代码提交的唯一方式。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/07.svg" alt="Pull Requests: Forking workflow"></p>
+<p>由于开发者有自己的公有仓库，当他们提起合并申请时候源仓库是和目标仓库不同，目标仓库是正式仓库，目标分支主干分支。</p>
+<p>合并申请也可以运用于正式项目之外，例如，当你和队友合作开发一个功能时，这个时候我们发起合并申请可以使用对方仓库作为我们的目标仓库而不是正式项目，我们可以约定同一个功能名称作为源分支和目标分支。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/08.svg" alt="Pull Requests: Forking workflow"></p>
+<p>你们可以在合并申请界面讨论和开发功能，当你们开发完后，你们中可以由一个人向正式项目发起合并申请。合并申请的这种灵活性在forking工作流中尤其有用。</p>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>下面的例子说明了如何在forking工作流中使用合并申请。对小团队以为开源项目贡献代码的个人开发者一样有效。</p>
+<p>在这个例子中，小红（Mary）是一个开发者，小明（John）是项目管理者。他们都有自己的公有仓库，并且小明拥有正式仓库。</p>
+<h3 id="小红拷贝（fork）正式仓库"><a href="#小红拷贝（fork）正式仓库" class="headerlink" title="小红拷贝（fork）正式仓库"></a>小红拷贝（fork）正式仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/09.svg" alt="Pull Requests: Fork the project"></p>
+<p>为了给小明的项目贡献代码，小红需要先拷贝小明的仓库到自己的公有仓库，她可以登录bitbucket，找到小明的仓库然后点击<strong>fork</strong>按钮即可。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/10.svg" alt="Pull Request: Fork in Bitbucket"></p>
+<p>不一小会儿她就拥有了这个项目的一份拷贝了，注意看看姓名和描述是否改变。</p>
+<h3 id="小红克隆（clone）她的公有仓库"><a href="#小红克隆（clone）她的公有仓库" class="headerlink" title="小红克隆（clone）她的公有仓库"></a>小红克隆（clone）她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/11.svg" alt="Pull Request: Clone the Bitbucket repo"></p>
+<p>然后，小红需要克隆她刚才拷贝（fork）的仓库。这样子她在自己的设备上就有了可以开发的仓库了。我们通过命令实现：</p>
+<pre><code>git clone https://user@bitbucket.org/user/repo.git
+</code></pre><p>时刻记住git clone会自动创建一个origin用来指向自己远程拷贝的分支。</p>
+<h3 id="小红开发一个新功能"><a href="#小红开发一个新功能" class="headerlink" title="小红开发一个新功能"></a>小红开发一个新功能</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/12.svg" alt="Pull Requests: develop a new feature"></p>
+<p>在小红开发新功能时，小红需要创建一个分支用于开发功能。这个分支将是她发起合并申请时的源分支。</p>
+<pre><code>git checkout -b some-feature      
+#Edit some codegit 
+commit -a -m &quot;Add first draft of some feature&quot;
+</code></pre><p>开发一个功能小红可能会有很多个提交（commit）。如果分支历史非常混乱她可以使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i" target="_blank" rel="noopener">交互式合并(interactive rebase)</a>来去除或者压缩（squash）无用的提交。在大型项目中，清理分支历史让项目的维护者更容易在合并申请里知道你的修改里做了什么事情。</p>
+<h3 id="小红将她开发的功能推送（push）到她的公有仓库"><a href="#小红将她开发的功能推送（push）到她的公有仓库" class="headerlink" title="小红将她开发的功能推送（push）到她的公有仓库"></a>小红将她开发的功能推送（push）到她的公有仓库</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/13.svg" alt="Pull Requests: Push feature to Bitbucket repository"></p>
+<p>在她开发完功能后，小红将功能分支推送到她的远程仓库（不是别人维护的正式仓库，是她fork的仓库），她可以使用这个命令：</p>
+<pre><code>git push origin some-branch
+</code></pre><p>这个让她的修改就在公有仓库里，这样其项目维护者或者其他开发者可以获取到她的修改。</p>
+<h3 id="小红创建合并申请"><a href="#小红创建合并申请" class="headerlink" title="小红创建合并申请"></a>小红创建合并申请</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/14.svg" alt="Pull Request: Create Pull Request"></p>
+<p>在代码push完成后，小红登录Bitbucket，找到她fork的项目，然后点击右上角的<em>Pull request</em>按钮发起合并申请。弹出表达默认设置小红的仓库为源仓库，病要求她设置源分支、目标仓库和目标分枝。</p>
+<p>小红需要合并她的代码到正式项目，所以她设置她的分支为源分支，目标仓库为小明的共有正式仓库，目标分枝为主干分支master。她还需要输入标题和描述她的修改，然后在<em>Reviewers</em> 输入框选择能够同意她的修改的人（包括小明）。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-7.png" alt="Pull Request: Bitbucket"></p>
+<p>在她创建合并申请后，小明就会通过邮件或者订阅收到通知。</p>
+<h3 id="小明评审（review）代码"><a href="#小明评审（review）代码" class="headerlink" title="小明评审（review）代码"></a>小明评审（review）代码</h3><p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-8.png" alt="Pull Request: Bitbucket pull requests"></p>
+<p>小明可以在他的仓库通过点击标签 <em>Pull request</em> 来查看所有人的合并申请。点击小红的申请，他将看到小红的申请描述，她分支的提交历史，以及该分支代码包含的修改的差异对比（diff）。</p>
+<p>如果他认为功能可以合并进正式项目，他只需要点击<em>Merge</em>按钮同意合并申请，然后就会合并小红的功能代码到他的主干分支master。</p>
+<p>但是，假如小明在小红的代码里发现了小bug，需要小红在合并前修改代码，他可以在合并申请恢复，可以在大输入框里做一个整体评论，也可以选择一个具体的提交来评论。</p>
+<p><img src="http://jackiehoo.com/img/in-post/make-pull-request/pull-request-9.png" alt="Pull Request: Comment"></p>
+<h3 id="小红添加随后的补充提交"><a href="#小红添加随后的补充提交" class="headerlink" title="小红添加随后的补充提交"></a>小红添加随后的补充提交</h3><p>如果小红对收到的反馈有任何问题，她可以在合并申请里恢复，类似论坛一样。为了修复错误，小红添加一个新的提交到她的分支，再推送到她的仓库，就像她之前做的那样。她的合并申请自然加到了原来的合并申请里了。然后小明就可以在他评论的地方再次评审。</p>
+<h3 id="小明同意合并"><a href="#小明同意合并" class="headerlink" title="小明同意合并"></a>小明同意合并</h3><p>最后，小明同意这些修改，合并功能到master主干分支，关闭合并申请。这样功能代码就正式集成到项目了。所有这个项目的贡献者就可以使用标准的<strong>git pull</strong>拉取这些修改到他们本地的仓库了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>现在你已经掌握了所有技能和工具来帮助你使用合并申请。记住，合并申请不是其他所有<a href="https://www.atlassian.com/git/tutorials/comparing-workflows" target="_blank" rel="noopener">基于Git的工作流(Git-based collaboration workflows)</a>的替代者，而是你和其他团队成员合作开发的有利补充。</p>
+<h2 id="英文原文出处"><a href="#英文原文出处" class="headerlink" title="英文原文出处"></a>英文原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/making-a-pull-request" target="_blank" rel="noopener">Making a Pull Request</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工作流</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码review</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">合并申请</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Pull Request</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/17/2016-11-17-Making-a-Pull-Request/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-11-12-why-you-need-quit-SVN-and-use-Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -241,166 +403,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/11/14/2016-11-12-why-you-need-quit-SVN-and-use-Git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
-  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
-<li>加快 Reviewing Code 的过程</li>
-<li>帮助我们写好 release note</li>
-<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
-<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
-<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
-</ul>
-<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
-<blockquote>
-<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
-</blockquote>
-<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
-<p> 一个不好的例子：</p>
-<pre><code>git commit -m &quot;Fix login bug&quot;
-</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
-<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
-<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
-<li><p><strong>为什么这次修改是必要的？</strong></p>
-<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
-</li>
-<li><p><strong>如何解决的问题？</strong></p>
-</li>
-</ul>
-<p>这可不是说技术细节。看下面的两个例子：</p>
-<p><code>Introduce a red/black tree to increase search speed</code></p>
-<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
-<p>如果你的修改特别明显，就可以忽略这个。</p>
-<ul>
-<li><strong>这些变化可能影响哪些地方？</strong></li>
-</ul>
-<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
-<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
-<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
-<li>使用 fix, add, change 而不是 fixed, added, changed</li>
-<li>永远别忘了第2行是空行</li>
-<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
-<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
-</ul>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
-<pre><code>Fix bug where user can&apos;t signup.
-
-[Bug #2873942]
-
-Users were unable to register if they hadn&apos;t visited the plans 
-and pricing page because we expected that tracking    information 
-to exist for the logs we create after a user signs up.  
-I fixed this by adding a check to the logger
-to ensure that if that information was not available
-we weren&apos;t trying to write it.
-</code></pre><p>例子2.</p>
-<pre><code>Redirect user to the requested page after login
-
-https://trello.com/path/to/relevant/card
-
-Users were being redirected to the home page after login, which is less
-useful than redirecting to the page they had originally requested before
-being redirected to the login form.
-
-* Store requested path in a session variable
-* Redirect to the stored location after successfully logging in the user
-</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
-<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
-<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
-<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
         </p>
       
 
@@ -760,6 +762,166 @@ git merge FETCH_HEAD
 
 
   
+    <article id="post-2016-11-13-write-good-commit-message" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/13/2016-11-13-write-good-commit-message/">写出好的提交日志</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/13/2016-11-13-write-good-commit-message/" class="archive-article-date">
+  	<time datetime="2016-11-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="为神马要关注提交信息-commit-message"><a href="#为神马要关注提交信息-commit-message" class="headerlink" title="为神马要关注提交信息(commit message)"></a>为神马要关注提交信息(commit message)</h2><ul>
+<li>加快 Reviewing Code 的过程</li>
+<li>帮助我们写好 release note</li>
+<li>5年后帮你快速想起来某个分支，tag 或者 commit 增加了什么功能，改变了哪些代码</li>
+<li>让其他的开发者在运行 git blame 的时候想跪谢</li>
+<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
+</ul>
+<h2 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h2><p><strong>1. 第一行应该少于50个字。 随后是一个空行 第一行题目也可以写成：<code>Fix issue #8976</code></strong></p>
+<blockquote>
+<p>喜欢用 vim 的哥们把下面这行代码加入 .vimrc 文件中，来检查拼写和自动折行<br>autocmd Filetype gitcommit setlocal spell textwidth=72</p>
+</blockquote>
+<p><strong>2. 永远不在 git commit 上增加 <code>-m &lt;msg&gt;</code> 或 <code>--message=&lt;msg&gt;</code> 参数，而单独写提交信息</strong></p>
+<p> 一个不好的例子：</p>
+<pre><code>git commit -m &quot;Fix login bug&quot;
+</code></pre><p> 一个推荐的 commit message 应该是这样：</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><p><strong>3. 注释最好包含一个连接指向你们项目的 <code>issue/story/card</code>。一个完整的连接比一个 issue numbers 更好</strong></p>
+<p><strong>4. 提交信息中包含一个简短的故事，能让别人更容易理解你的项目</strong></p>
+<h2 id="注释要回答如下信息"><a href="#注释要回答如下信息" class="headerlink" title="注释要回答如下信息"></a>注释要回答如下信息</h2><ul>
+<li><p><strong>为什么这次修改是必要的？</strong></p>
+<p>  要告诉 Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
+</li>
+<li><p><strong>如何解决的问题？</strong></p>
+</li>
+</ul>
+<p>这可不是说技术细节。看下面的两个例子：</p>
+<p><code>Introduce a red/black tree to increase search speed</code></p>
+<p><code>Remove &lt;troublesome gem X&gt;, which was causing &lt;specific description of issue introduced by gem&gt;</code></p>
+<p>如果你的修改特别明显，就可以忽略这个。</p>
+<ul>
+<li><strong>这些变化可能影响哪些地方？</strong></li>
+</ul>
+<p>这是你最需要回答的问题。因为它会帮你发现在某个 branch 或 commit 中的做了过多的改动。一个提交尽量只做1，2个变化。</p>
+<p>你的团队应该有一个自己的行为规则，规定每个 commit 和 branch 最多能含有多少个功能修改。</p>
+<h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><ul>
+<li>使用 fix, add, change 而不是 fixed, added, changed</li>
+<li>永远别忘了第2行是空行</li>
+<li>用 Line break 来分割提交信息，让它在某些软件里面更容易读</li>
+<li>请将每次提交限定于完成一次逻辑功能。并且可能的话，适当地分解为多次小更新，以便每次小型提交都更易于理解。</li>
+</ul>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>例子1.</p>
+<pre><code>Fix bug where user can&apos;t signup.
+
+[Bug #2873942]
+
+Users were unable to register if they hadn&apos;t visited the plans 
+and pricing page because we expected that tracking    information 
+to exist for the logs we create after a user signs up.  
+I fixed this by adding a check to the logger
+to ensure that if that information was not available
+we weren&apos;t trying to write it.
+</code></pre><p>例子2.</p>
+<pre><code>Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+* Store requested path in a session variable
+* Redirect to the stored location after successfully logging in the user
+</code></pre><h2 id="本文参考阅读"><a href="#本文参考阅读" class="headerlink" title="本文参考阅读"></a>本文参考阅读</h2><p><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></p>
+<p><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></p>
+<p><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></p>
+<p><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">提交日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">commit message</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/13/2016-11-13-write-good-commit-message/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2016-10-31-a-man-should-be-independent-at-thirty" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -894,11 +1056,11 @@ git merge FETCH_HEAD
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">产品与技术的碰撞</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">思考</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">产品与技术的碰撞</a>
         		</li>
       		
 		</ul>
@@ -1482,112 +1644,9 @@ git merge FETCH_HEAD
 
 
   
-    <article id="post-2016-08-28-iOS-Xcode-Snippets" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/">iOS架构师之路：利用代码片段（XCodeSnippets）助力团队开发和项目质量管理</a>
-    </h1>
-  
-
-        
-        <a href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/" class="archive-article-date">
-  	<time datetime="2016-08-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><blockquote>
-<p>最近哥们我比较痴迷于琢磨如何利用技术手段，提高项目代码的可维护性，不要嫌弃我烦啊，往往知识就藏在细微之中啊，现在APP的竞争那是相当的激烈，你做的比别人好那么一点点，也许剩者就是你了，有木有，想不想做王，肯定的是不是，那就好好琢磨一些别人不去关注的细节吧。</p>
-</blockquote>
-<p>前面我已经写过几篇代码规范的文章，也讲到了利用clangFormatForXcode来统一代码规范配置，从而标准格式化团队代码。如果您还没看到过，推荐你去看看，推荐理由：因为是我写的。</p>
-<p>clangFormat能解决代码一遍编写规范错误问题，比如方法的第一个括号与方面名之间有一个空格，并且不换行的这样的规范问题clangFormat能帮我们快速发现并自动处理。但是……如果写的代码如果结构和选型有问题，它就像个白痴了，一丁点忙也帮不上。所以我后面还会有几篇文章介绍一些技术手段来解决方法选型问题，比如制作代码模板 (Code Template)来帮助团队开发人员编写规范的代码结构、用OCLint给iOS代码做静态分析等，是不是迫不及待想学习这些知识呢？不过今天不能如你愿，我又没挣你的钱，所以我只负责自己写自己想写的，不好意西啦。</p>
-<p>人应该都是懒惰的吧，优秀程序员也是人好嘛。只是优秀程序员会思考如何偷懒又能达成目标，而普通程序员就是想着偷懒，甚至都懒得想，只是单纯的偷懒而已。最近哥哥我又跳了一个新坑——中国平安。TMD，好几天的生命要浪费在配置开发环境上。我决定以后不用公司电脑了，用自己的，恩，努力多挣钱。相信很多iOS开发者都多少有些自己的代码片段，但是，但是肯定不全，因为懒得去制作代码片段，也懒得去收集。作为优秀程序员的我呢，跟尔等比就是勤奋这么一点点，所以在配置新的开发环境时，我决定把自己以前的代码片段，以及网上收集了不少很不错的代码片段总结出来，分享给大家，恩，你不用说，其实我就是IT界的雷锋。github地址：<a href="https://github.com/jakciehoo/XcodeSnippetsForObjective-C" title="XcodeSnippetsForObjective-C" target="_blank" rel="noopener">《XcodeSnippetsForObjective-C》</a></p>
-<h3 id="如何使用XcodeSnippetsForObjective-C"><a href="#如何使用XcodeSnippetsForObjective-C" class="headerlink" title="如何使用XcodeSnippetsForObjective-C"></a>如何使用XcodeSnippetsForObjective-C</h3><p>需要你先装一个Xcode插件——ACCodeSnippetRepositoryPlugin插件。下载地址：<a href="https://github.com/acoomans/ACCodeSnippetRepositoryPlugin" title="ACCodeSnippetRepositoryPlugin插件" target="_blank" rel="noopener">https://github.com/acoomans/ACCodeSnippetRepositoryPlugin</a>，怎么装插件不用我教了吧，你要是不会可以付费咨询我。具体安装和使用参考github的官方介绍吧。</p>
-<p>这次你先这么使用吧，我回头有时间把这个细节的文章整理下，然后做一个脚本把这些工具和规范都自动搞定，恩。</p>
-<h3 id="XcodeSnippetsForObjective-C主要包含的代码片段介绍"><a href="#XcodeSnippetsForObjective-C主要包含的代码片段介绍" class="headerlink" title="XcodeSnippetsForObjective-C主要包含的代码片段介绍"></a>XcodeSnippetsForObjective-C主要包含的代码片段介绍</h3><p>1.常用property创建的片段</p>
-<p><img src="/img/in-post/ios_xcode_snippets/Screen%20Shot%202016-08-28%20at%205.10.14%20PM.png" alt=""></p>
-<p>2.常见的ENUM、UITableViewDataSource/Delegate、PickerViewDataSourceDelegate、UICollectionViewDataSource/Delegate等片段创建</p>
-<p><img src="/img/in-post/ios_xcode_snippets/Screen%20Shot%202016-08-28%20at%205.18.55%20PM.png" alt=""></p>
-<p>3.常见的singleton、init、initialize、kvo等方法片段的创建</p>
-<p>4.其他常用片段的创建</p>
-<h3 id="XcodeSnippetsForObjective-C的后期维护"><a href="#XcodeSnippetsForObjective-C的后期维护" class="headerlink" title="XcodeSnippetsForObjective-C的后期维护"></a>XcodeSnippetsForObjective-C的后期维护</h3><p>这个片段github仓库我会长期维护，也欢迎朋友提交你认为对大家有价值的代码片段上来。</p>
-<h3 id="关于XCode代码片段的制作和使用"><a href="#关于XCode代码片段的制作和使用" class="headerlink" title="关于XCode代码片段的制作和使用"></a>关于XCode代码片段的制作和使用</h3><p>这部分国内文章也不少，大家自行查找吧，我这顺手找了一篇：<a href="http://ios.jobbole.com/82215/" target="_blank" rel="noopener">《iOS 开发偷懒小技巧：自定义 XCode 代码片段</a><br>》<a href="#"></a></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>等着有时间制作一个脚本，把所有规范代码的技术工具，一次性用脚本在项目中部署。</strong></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="%5Bhttp://nshipster.com/xcode-snippets/%5D">《Xcode Snippets》</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">XCode snippets</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发效率</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码片段</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/08/28/2016-08-28-iOS-Xcode-Snippets/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 
@@ -1682,14 +1741,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS架构</a>
               </li>
              
@@ -1698,19 +1749,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">xcode插件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">injectionforxcode</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1722,6 +1773,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单元测试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">unit test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
               </li>
              
@@ -1730,11 +1789,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1742,7 +1797,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1826,10 +1885,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">思考</a>
               </li>
              
@@ -1839,6 +1894,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">三十而立</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">产品与技术的碰撞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1859,6 +1918,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1886,26 +1961,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 分支</a>
               </li>
              
@@ -1914,11 +1969,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git Flow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git 工作流</a>
+                <a href="javascript:void(0)" class="js-tag color5">生活感悟</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1931,18 +1982,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1959,6 +1998,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git Checkout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1982,6 +2029,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -1998,15 +2057,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Git LFS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 大文件处理系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">版本控制系统</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2023,6 +2082,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">比特币</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2046,10 +2109,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">价格预测</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">APP架构</a>
               </li>
              
@@ -2059,6 +2118,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">SDK设计方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">信号量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">semaphore</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">signal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
               <li class="article-tag-list-item">
