@@ -6,19 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://jakciehoo.github.io">
-  <title>Tag: FBAllocationTracker | Hoooo同学的博客</title>
+  <title>我对趋势跟踪策略的认识和思考 | Hoooo同学的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="做过后端，玩过移动端，在平安干过iOS负责人，前宝宝树架构师，现在区块链领域搞事">
+  <meta name="description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
 <meta name="keywords" content="区块链,通证经济,生活,移动开发,Git">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hoooo同学的博客">
-<meta property="og:url" content="https://jakciehoo.github.io/tags/FBAllocationTracker/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我对趋势跟踪策略的认识和思考">
+<meta property="og:url" content="https://jakciehoo.github.io/2018/03/03/new-trend-quant-strategy/index.html">
 <meta property="og:site_name" content="Hoooo同学的博客">
-<meta property="og:description" content="做过后端，玩过移动端，在平安干过iOS负责人，前宝宝树架构师，现在区块链领域搞事">
+<meta property="og:description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://jakciehoo.github.io/img/in-post/quant/trend_strategy_01.png">
+<meta property="og:updated_time" content="2020-03-11T09:26:29.085Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hoooo同学的博客">
-<meta name="twitter:description" content="做过后端，玩过移动端，在平安干过iOS负责人，前宝宝树架构师，现在区块链领域搞事">
+<meta name="twitter:title" content="我对趋势跟踪策略的认识和思考">
+<meta name="twitter:description" content="去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指">
+<meta name="twitter:image" content="https://jakciehoo.github.io/img/in-post/quant/trend_strategy_01.png">
   
     <link rel="alternative" href="/atom.xml" title="Hoooo同学的博客" type="application/atom+xml">
   
@@ -158,76 +161,212 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-new-trend-quant-strategy" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/09/24/2016-09-24-automatic-memory-leak-detection-on-ios/" class="archive-article-date">
-  	<time datetime="2016-09-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/09/24/2016-09-24-automatic-memory-leak-detection-on-ios/">【译文】在iOS上自动检测内存泄漏</a>
+    <h1 class="article-title" itemprop="name">
+      我对趋势跟踪策略的认识和思考
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">iOS内存管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">FBRetainCycleDetector</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">FBAllocationTracker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">FBMemoryProfiler</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        <a href="/2018/03/03/new-trend-quant-strategy/" class="archive-article-date">
+  	<time datetime="2018-03-03T13:09:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>去年12月份，认识一位短线交易大牛，他让我帮他开发了一个趋势策略，我当时按照他的策略思路做了一个量化软件，他玩的效果还可以，赚了不少钱。我自己因为没什么时间关注大盘，所以跑了不到一周就没跑了，本金0.2个BTC，赚了0.015。他给我推荐了一本《理论和指标详解》（有需要的可以找我要），春节到现在这段时间，就认真去看下这本书，认真去研读了几个技术指标，比如MACD、EMA、KDJ、RSI、BOOL指标。</p>
+<a id="more"></a>
+<p>量化交易中趋势策略、网格策略是比较主流两类策略。有几个量化投资者问我为什么不开发个趋势策略玩。嗯，下一篇文章就把我之前做开发的趋势策略介绍出来，大改版成现货版，同时支持多品种同时运行。有时间再完善改写成期现都支持的软件版本。</p>
+<p>先晒一张回过去三个月的回测吧。后面我定期晒晒实盘。今天主要跟大家聊聊我对趋势策略认识和思考，它跟网格策略的对比。也许说的不对，量化技术学习我还在路上。</p>
+<p><img src="/img/in-post/quant/trend_strategy_01.png" alt="趋势策略"></p>
+<h3 id="趋势跟踪策略介绍"><a href="#趋势跟踪策略介绍" class="headerlink" title="趋势跟踪策略介绍"></a>趋势跟踪策略介绍</h3><p>趋势跟踪策略是希望发现交易物，如股票、比特币的价格趋势进行买卖，希望在币价在涨之前买入（做多），在跌之前卖出（做空）。趋势跟踪策略两个关键字，一个是趋势，另外一个是跟踪往往被人忽略。趋势不可以预知，勉强可以用上面提到的一些指标进行预测，当预测正确和预测失败时再跟踪情况进行止盈止损。</p>
+<p>有不少投资小白，会觉得趋势策略很牛逼，他们幻想着抓住一波趋势，从此人生走向巅峰。但现实是，如果趋势这么好预测，那交易市场所有人都赚钱了。</p>
+<h3 id="趋势跟踪策略要点和难点"><a href="#趋势跟踪策略要点和难点" class="headerlink" title="趋势跟踪策略要点和难点"></a>趋势跟踪策略要点和难点</h3><p>一个完整的趋势策略至少会包含三个模块。</p>
+<ol>
+<li>趋势判断模块 </li>
+<li>趋势判断错误，止损模块</li>
+<li>趋势判断正确，止盈模块</li>
+</ol>
+<p>看似简单的逻辑，但是包罗万象。难倒多少英雄好汉，成就不少人，也毁了更多人。难点就深深藏在其中。</p>
+<p>单拿趋势判断模块来说，趋势判断，往往需要一个，更多是多个指标综合去判断可能的趋势，而这种努力仅仅是将预测成功率从百分之10%提高到百分20%而已。如何在众多技术指标中选择一个自己深入掌握的指标，本身就需要对各类指标有深刻的了解和掌握和对比。技术指标都是根据行情数据推演的来的，历史是未来的镜子，但是不可能代表未来，尤其在高度控盘的交易市场。</p>
+<h3 id="趋势跟踪策略做好不易"><a href="#趋势跟踪策略做好不易" class="headerlink" title="趋势跟踪策略做好不易"></a>趋势跟踪策略做好不易</h3><p>1.交易市场上70%-80%的交易行情是震荡行情。也就是说指标在这期间出现的预测，基本就是失败的，只能止损离场。</p>
+<p>2.更为残酷的是，震荡行情中会大量出现趋势出现的可能性，因此趋势预测的错误的次数跟预测正确次数比可能是9：1的概率。</p>
+<p>3.我认为更残酷的是让量化交易者接受现实，我们各种努力，也很难做到拒绝震荡交易预测钝化的同时，增加获得大趋势出现的机会。拒绝犯错，也就拒绝了机会。</p>
+<p>从我学习量化交易开始，非常深刻的一个词，一直记在脑子里————盈亏同源。趋势策略不是万能的，它跟网格策略一样，有它的适用场景。毫无疑问，它适合在相对有趋势机会的个股和币种交易中，尤其是在有大趋势出现的时间周期。</p>
+<p>趋势策略的好坏，不是看它的胜率，而是看它的盈亏比。胜率能有3成已经很牛逼了，单这还不重要，重要的是能否抓住一波趋势，在高盈利点位止盈，来弥补震荡行情中的损失，还有大量的盈余。</p>
+<p>要实现一个好的趋势策略无非是抓住趋势策略的特点。而且交易也是人生。抓住自己的性格特点、交易特点去做趋势量化其实更合适的。</p>
+<p>1.趋势判断指标的选择。指标的滞后性，让你很可能入场就在高点，一旦预测错误，损失其实也不小的。如果自己是风险偏好低的，可以适当增加一些指标来拒绝钝化的出现，比如我的策略是DMI搭配MACD指标。</p>
+<p>2.止损点位的的选择。止损点位设置的偏远，可能不止损错过下一次趋势预测机会，止损设置的小，那大概率快速止损离场，从而错过趋势翻转的可能性，交易市场就是如此残酷。</p>
+<p>3.最大化止盈点位。趋势策略难得趋势跟踪正确一次，如果没有在适当的位置止盈很可能就覆盖不了之前的损失。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>我最后想说的是，适合自己的量化交易策略，就是好策略。量化软件只是工具，而用好工具的永远是有挣钱需求的投资人。</p>
+<p>我优化了我的趋势策略好几个月，因为我不想花时间去看盘，不想花时间去做交易。总想着学习指标看能不能预测更准确，总想着增加一些的技术指标，一些预测方法来减少震荡预测失败的概率。或者想着通过技术去抓到最高点盈利离场的的机会。我努力这么久，基本是徒劳的，虽然学习到各种交易技术，但是还是做不到。</p>
+<p>我终于接受了现实，我只能优化那么一点点技术细节，减少一点止损的损失，增加一点盈利高点离场的可能性。但更多的还是认清现实，介绍自己不是一个什么样子的投资者。如果自己能花在交易的时间只有一天一个小时，能通过自动化交易程序盈利就是福，而别想着暴富。如果能像我认识的交易大牛一样，专业炒币，专业的学习，专业的操作，那量化交易就是他很好的工具，成为他的得力助手。</p>
 
-          
+      
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>喜欢就打赏我吃鸡吧<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/wechatpay.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://qr.liantu.com/api.php?text=https://jakciehoo.github.io/2018/03/03/new-trend-quant-strategy/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/03/03/introduce-a-new-trend-strategy/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          多币种DMI+MACD趋势跟踪策略1.0.0介绍
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/11/29/token-earning-bitmex-one-direction-robot/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">BitMex单向做空法币本位对冲量化软件3.0.0介绍</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+  <div id="SOHUCS" sid="new-trend-quant-strategy" ></div> 
+<script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+    window.changyan.api.config({
+        appid: "cytKpmvYw",
+        conf: "prod_3d60b1a27ae0f39aa5793b7bd1daf94e"
+    });
+</script>
+</script>
+  
+
+  
+
+  
 
 
           </div>
@@ -250,9 +389,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
