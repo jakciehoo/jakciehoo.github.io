@@ -183,41 +183,9 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上个月，我们B612跨国团队协作出现因为发bug-fix版本，导致我们iOS版的一个SDK版本集成了开发中的代码的事故，我们收到错误警告后，立即停止App更新，立即关闭SDK的访问入口，修复版本后通过加急审核的方式，第二天立即发版本成功修复该bug。虽然事故响应处理的及时，经过这些天后，最终还是影响了数千问题版本未升级的用户不能访问该SDK功能。</p>
 <p>为此我们团队梳理了跨国团队的版本开发发布流程管理规范，以适应多业务线多团队协作的情况，并为各个业务线提供更准确的开发发版的规范性指导。</p>
 <p>我把一些敏感的信息给替换掉，以让本规范适合一般的跨国跨团队的协作规范，方便读者参考。</p>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>B612团队是跨国协作的，团队主要由中日韩三国成员组成，其中以中韩团队为主。中方负责新业务线的开拓，也负责多个SDK的开发工作，韩国负责主app的研发维护，同时版本发布权限在韩国。中国这边项目都是以SDK的方式集成在主app当中，B612通过gitsubmoule引入中国团队的各个SDK，然后通过路由SDK去调用各个组件服务。</p>
-<h3 id="仓库关系图"><a href="#仓库关系图" class="headerlink" title="仓库关系图"></a>仓库关系图</h3><p><a href="/img/in-post/B612-SDKs.png">仓库关系图</a></p>
-<h1 id="协作流程"><a href="#协作流程" class="headerlink" title="协作流程"></a>协作流程</h1><h3 id="1-流程图"><a href="#1-流程图" class="headerlink" title="1.流程图"></a>1.流程图</h3><p><img src="/img/in-post/MobileDevelopmentFlowChart3.jpg" alt="流程图"></p>
-<h3 id="2-流程描述"><a href="#2-流程描述" class="headerlink" title="2.流程描述"></a>2.流程描述</h3><ol>
-<li>版本需求评审会议，两方产品需要邮件确认中方SDK版本和对应的B612 App版本，并在需求文档中明确。以某SDK团队举例，SDK v4.0.0 -&gt;B612 v9.1.10。如果版本对应关系未确定，开发基于先前稳定版分支进行需求开发。</li>
-<li><p>在wiki上维护版本迭代完成日期，QA完成日期，上线日期信息。双方产品需及时同步版本变更情况，共同维护该WIKI，保持同步更新，开发人员及时关注。可参考： <a href="https://wiki.navercorp.com/display/LFS/B612.SNOW.Release" target="_blank" rel="noopener">https://wiki.navercorp.com/display/LFS/B612.SNOW.Release</a></p>
-</li>
-<li><p>中国项目团队进行正常版本的开发和测试验证。</p>
-</li>
-<li>在QA进入回归的重要时间点，双方通常不应再有版本调整，进行正常的回归。但如回归前后有版本调整变化，双方产品及时同步，并周知到开发测试调整版本对应关系代码后再回归。</li>
-<li>双方Beta 版本QA signOff后，双方需邮件通知对方团队signoff，中方开发确认最终B612代码集成中方SDK项目代码版本正常，由韩方打包发布到testflight进行线上回归。如中方团队确认中发现集成异常及时与韩方沟通反馈，修改版本后，再通知韩国可以打testflight包。</li>
-<li>中韩团队对testFlight包验证，如未发现异常，可以正常发布版本。如发现异常则处理异常，补充testFlight包再发新包。</li>
-</ol>
-<p>#开发流程图</p>
-<h3 id="开发合并管理流程图"><a href="#开发合并管理流程图" class="headerlink" title="开发合并管理流程图"></a>开发合并管理流程图</h3><p><img src="B612-Git-flow.png" alt="开发流程图"></p>
-<h3 id="开发流程描述"><a href="#开发流程描述" class="headerlink" title="开发流程描述"></a>开发流程描述</h3><ol>
-<li>新版本需求评审时，初定app版本与中方团队版本对应关系。如以潮拍为例，B612 9.1.10 对应SDK4.0.0。如果版本对应关系未确定，开发基于先前稳定版分支进行需求开发。</li>
-<li>中方开发基于B612 App当前最新版本分支(如：version_cn/9.1.10)新建开发测试使用分支(如：feature /kaji_9.1.10_cp_4.0.0)。</li>
-<li>在SDK仓库的develop分支开发需求，实现需求功能。</li>
-<li>提测之前将韩国主分支version_cn/9.1.10最新代码合并到feature_cn_beta /kaji_9.1.10，基于feature /kaji_9.1.10_cp_4.0.0分支使用jenkins打包提测。</li>
-<li>QA回归SignOff完成，合并develop分支代码到master分支，并打版本tag，如4.0.0。</li>
-<li>修改feature /kaji_9.1.10_cp_4.0.0分支的cartfile文件集成SDK版本（如4.0.0）。通过GitHub走PR合并流程合并进B612分支version_cn/9.1.10，同步韩国同事review合并。</li>
-<li>韩国回归完成后，韩国通知我方开发技术确认QA Sign off，我方团队确认无异常，韩国团队正常发布版本到testflight,再通知到我方团队验收确认，确认正常，由韩国团队发布版本上线。</li>
-</ol>
-<h1 id="SDK-的Git仓库管理"><a href="#SDK-的Git仓库管理" class="headerlink" title="SDK 的Git仓库管理"></a>SDK 的Git仓库管理</h1><h3 id="分支介绍"><a href="#分支介绍" class="headerlink" title="分支介绍"></a>分支介绍</h3><ol>
-<li>develop分支（开发主分支）：开发需求过程中代码合并到该分支。</li>
-<li>master分支（版本主分支）：线上稳定版本分支，管理线上所有稳定版本代码、管理每个版本的tag。</li>
-</ol>
-<h3 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h3><ol>
-<li>需求开发过程中，开发成员更新代码到develop分支，开发成员从该分支同步最新代码。</li>
-<li>sign off 后合并develop分支代码到master分支</li>
-<li>在master分支打版本tag。如4.0.0版本，打tag：4.0.0。</li>
-<li>hotfix过程，需基于master分支（或者基于tag）创建hotfix分支。如修复4.0.0版本的bug，创建分支hotFix_4.0.0。</li>
-</ol>
-
+        
+          <a class="article-more-a" href="/2020/01/14/TransNational-Team-Development-Work-flow/#more">more >></a>
+        
       
 
       
@@ -603,6 +571,90 @@
 
 
   
+    <article id="post-2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">CocoaPods从入门到精通(三)：创建私有pod</a>
+    </h1>
+  
+
+        
+        <a href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/" class="archive-article-date">
+  	<time datetime="2018-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Cocoapods是非常好用的一个iOS依赖管理工具，使用它可以方便的管理和更新项目中所使用到的第三方库，以及将自己的项目中的公共组件交由它去管理。Cocoapods的介绍及优点本文就不在赘述，我开始使用Cocoapods还是在两年前，那个时候它刚刚出现，网上的资料还非常的少，就连他们自己的HomePage都十分的简单，我就着手尝试着使用了一下，用它管理起第三方库确实是十分的方便顺手。后来它有了更强大的功能就是自己创建podspec，更可以设置私有的库。</p>
+        
+          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -660,90 +712,6 @@ pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Podfile/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
-    </h1>
-  
-
-        
-        <a href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
-  	<time datetime="2018-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
-        
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
         </p>
       
 
@@ -857,19 +825,19 @@ pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
 
 
   
-    <article id="post-2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">CocoaPods从入门到精通(三)：创建私有pod</a>
+      <a class="article-title" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">CocoaPods从入门到精通(四)：[转载]让自己的开源框架支持cocoapods</a>
     </h1>
   
 
         
-        <a href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/" class="archive-article-date">
+        <a href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/" class="archive-article-date">
   	<time datetime="2018-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-12</time>
 </a>
         
@@ -877,9 +845,9 @@ pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Cocoapods是非常好用的一个iOS依赖管理工具，使用它可以方便的管理和更新项目中所使用到的第三方库，以及将自己的项目中的公共组件交由它去管理。Cocoapods的介绍及优点本文就不在赘述，我开始使用Cocoapods还是在两年前，那个时候它刚刚出现，网上的资料还非常的少，就连他们自己的HomePage都十分的简单，我就着手尝试着使用了一下，用它管理起第三方库确实是十分的方便顺手。后来它有了更强大的功能就是自己创建podspec，更可以设置私有的库。</p>
+        <h2 id="提交代码到代码托管平台"><a href="#提交代码到代码托管平台" class="headerlink" title="提交代码到代码托管平台"></a>提交代码到代码托管平台</h2><p>既然是开源,要求代码任何人都能够访问,这里选择github,当然也可以用其他平台如oschina等,项目必须是公开项目.比如我的这个:<a href="https://github.com/iOSSinger/SGExtension.git" target="_blank" rel="noopener">https://github.com/iOSSinger/SGExtension.git</a></p>
         
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/#more">more >></a>
+          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/#more">more >></a>
         
       
 
@@ -911,7 +879,7 @@ pod &apos;AFNetworking&apos;, &apos;~&gt; 1.0&apos;
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Private-Pod/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/06/12/2018-06-12-CocoaPods-From-Beginer-To-Master-CocoaPods-Public-Pod-md/">展开全文 >></a>
         </p>
       
 
@@ -1137,14 +1105,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
@@ -1154,6 +1114,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1169,22 +1137,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">代码版本管理</a>
               </li>
              
@@ -1193,7 +1145,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">SVN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">代码版本管理规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">提交日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">commit message</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1313,19 +1281,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1385,18 +1353,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
@@ -1413,6 +1369,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -1422,18 +1398,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构思维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1453,19 +1417,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构思维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1478,6 +1438,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">network architect design</a>
               </li>
              
               <li class="article-tag-list-item">
