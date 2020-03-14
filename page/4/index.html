@@ -160,19 +160,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2017-04-02-setting-up-a-repository" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2017-04-02-Migrate-to-Git-from-SVN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/02/2017-04-02-setting-up-a-repository/">【译文】Git基础命令：初始化一个Git仓库</a>
+      <a class="article-title" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">【译文】从SVN到Git：迁移到Git</a>
     </h1>
   
 
         
-        <a href="/2017/04/02/2017-04-02-setting-up-a-repository/" class="archive-article-date">
+        <a href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/" class="archive-article-date">
   	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
 </a>
         
@@ -180,90 +180,125 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:064b3f9e-39d1-44f2-9fd1-c4dac0f9d42e/hero.svg?cdnVersion=dt" alt="设置一个仓库"></p>
-<p>本教程将简要介绍最重要的Git命令。首先，设置仓库部分将介绍启动新版本控制项目所需的所有工具。然后，其余部分介绍您的日常Git命令。</p>
-<p>在本章结束后，您应该能够创建一个Git仓库，记录您的项目的快照以进行保管，并查看项目的历史记录。</p>
-<h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>git init命令创建一个新的Git仓库。它可以用于将已经存在、未版本化的项目转换为Git仓库或初​​始化新的空仓库。大多数其他Git命令在初始化的仓库之外不可用，因此通常这是您将在新项目中运行的第一个命令。</p>
-<p>在项目根目录中执行git init命令会创建一个.git子目录，其中包含repo所需的所有必要元数据。除了.git目录之外，现有的项目保持不变（与SVN不同，Git不需要每个子目录都有.git文件夹）。</p>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><pre><code>git init
-</code></pre><p>将当前目录转换为Git仓库。这将添加一个.git文件夹到当前目录，并可以开始记录项目的修订版本。</p>
-<pre><code>git init &lt;directory&gt;
-</code></pre><p>在指定的目录中创建一个空的Git仓库。运行此命令将创建一个新文件夹&lt;directory，该文件夹仅包含.git子目录。</p>
-<pre><code>git init --bare &lt;directory&gt;
-</code></pre><p>初始化一个空的Git仓库，但省略工作目录。应始终使用–bare标志创建共享的仓库（参见下面的讨论）。传统做法，用–bare标志初始化的仓库以.git作为结束名。例如，叫做my-project仓库的裸版本应该存储在一个名为的目录中my-project.git。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>与SVN相比，git init命令是创建新版本控制项目的一个非常简单的方法。Git不要求您创建一个仓库，导入文件和检出工作副本。所有你需要做的是cd进入你的项目文件夹并运行git init，你将有一个完全功能的Git仓库。</p>
-<p>然而，对于大多数项目，git init只需要在创建中央仓库时执行一次即可 - 开发人员通常不使用git init来创建其本地仓库。相反，它们通常用于git clone将现有仓库复制到其本地计算机上。</p>
-<h3 id="裸仓库"><a href="#裸仓库" class="headerlink" title="裸仓库"></a>裸仓库</h3><p>该–bare标志创建一个没有工作目录的仓库，使得无法在该仓库中编辑文件并提交更改。中央仓库应始终创建为裸仓库，因为将分支推送到非裸仓库有可能覆盖更改。可以将–bare将仓库标记为存储设备，与开发环境相反。这意味着对于几乎所有Git工作流程，中央仓库是裸仓库，开发人员本地仓库是非裸的。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:88f08a3d-f34e-4c8e-974c-a01f25b2eca1/01.svg?cdnVersion=dt" alt="Git教程：裸仓库"></p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>由于git clone是创建项目的本地副本的更方便的方法，最常见的用例git init是创建一个中央仓库：</p>
-<pre><code>ssh &lt;user&gt;@&lt;host&gt;
-cd path/above/repo
-git init --bare my-project.git
-</code></pre><p>首先，您将SSH插入将包含您的中央仓库的服务器。然后，您导航到要存储项目的任何地方。最后，您使用–bare标志来创建中央仓库。然后<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository#git-clone" target="_blank" rel="noopener">克隆</a> my-project.git，开发人员将在其开发机器上创建本地副本。</p>
-<h2 id="git克隆"><a href="#git克隆" class="headerlink" title="git克隆"></a>git克隆</h2><p>git clone命令复制现有的Git仓库。这是一种类似的东西svn checkout，除了“工作副本”是一个完整的Git仓库 - 它有自己的历史，管理自己的文件，对原始仓库来说是一个完全孤立的环境。</p>
-<p>为方便起见，克隆会自动创建一个名为origin的远程连接，指向原始仓库。这使得它非常容易与中央仓库进行交互。</p>
-<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><pre><code>git clone &lt;repo&gt;
-</code></pre><p>克隆位于<repo>的仓库到本地机器上当前文件夹。原始仓库可以位于本地文件系统或通过HTTP或SSH可访问的远程计算机上。</repo></p>
-<pre><code>git clone &lt;repo&gt; &lt;directory&gt;
-</code></pre><p>克隆位于<repo>的仓库到本地机器上的<directory>的文件夹中。</directory></repo></p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p>如果项目已经在中央仓库中设置，则git clone命令是用户获取开发副本的最常见方式。像<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-init" target="_blank" rel="noopener">git init
-</a>克隆通常是一次性操作 - 一旦开发人员获得了工作副本，所有的版本控制操作和协作都是通过本地仓库管理的。</p>
-<h3 id="仓库与仓库间协作"><a href="#仓库与仓库间协作" class="headerlink" title="仓库与仓库间协作"></a>仓库与仓库间协作</h3><p>了解Git对“工作副本”的概念与通过从SVN信息库中检出代码所获得的工作副本的区别很重要。与SVN不同，Git不区分工作副本和中央仓库 - 它们都是完整的Git仓库。</p>
-<p>这与Git中仓库协作与SVN几乎不同。SVN依赖于中央仓库和工作副本之间的关系，而Git的协作模型基于仓库与仓库的交互。在Git中不是像SVN一样在SVN的中央资料库检入检出到本地的工作拷贝，你<a href="https://www.atlassian.com/git/tutorials/syncing/git-push" target="_blank" rel="noopener">推</a>或<a href="https://www.atlassian.com/git/tutorials/syncing/git-pull" target="_blank" rel="noopener">拉</a>一个仓库的提交到另一个。</p>
-<p><img src="https://wac-cdn.atlassian.com/dam/jcr:e5228129-76b1-4b2c-8f10-af789f2ea6c0/03.svg?cdnVersion=dt" alt="Git教程：复制到工作副本协作"><img src="https://wac-cdn.atlassian.com/dam/jcr:5d68ce55-59a7-4840-a896-eb2014a9f17b/02.svg?cdnVersion=dt" alt="Git教程：Repo到Repo协作"></p>
-<p>当然，没有什么阻止你给予某些Git repos的特殊意义。例如，通过简单地将一个Git repo指定为“中央”仓库，可以使用Git复用<a href="https://www.atlassian.com/git/tutorials/comparing-workflows/centralized-workflow" target="_blank" rel="noopener">集中式工作流</a>。关键点是，这是通过约定而不是硬连线到VCS本身来实现。</p>
-<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>下面的示例演示了如何获取存储在example.com服务器的中央仓库，使用SSH username john访问的服务器上:</p>
-<pre><code>git clone ssh://john@example.com/path/to/my-project.git
-cd my-project
-# Start working on the project
-</code></pre><p>第一个命令在my-project本地计算机上的文件夹中初始化一个新的Git仓库，并使用中央仓库的内容进行填充。然后，您可以cd进入项目并开始编辑文件，提交快照以及与其他仓库进行交互。还要注意，<br>克隆的仓库中省略了.git扩展名。这反映了本地副本的非裸体状态。</p>
-<h2 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h2><p>git config命令允许您从命令行配置Git安装（或单个仓库）。此命令可以定义从用户信息到首选项到仓库行为的所有内容。下面列出了几个常见的配置选项。</p>
-<h3 id="用法-2"><a href="#用法-2" class="headerlink" title="用法"></a>用法</h3><pre><code>git config user.name &lt;name&gt;
-</code></pre><p>定义要用于当前仓库中的所有提交的作者名称。通常，您需要使用该–global标志为当前用户设置配置选项。</p>
-<pre><code>git config --global user.name &lt;name&gt;
-</code></pre><p>定义当前用户所有提交的作者姓名。</p>
-<pre><code>git config --global user.email &lt;email&gt;
-</code></pre><p>定义作者电子邮件用于当前用户的所有提交。</p>
-<pre><code>git config --global alias.&lt;alias-name&gt; &lt;git-command&gt;
-</code></pre><p>为Git命令创建快捷方式。</p>
-<pre><code>git config --system core.editor &lt;editor&gt;
-</code></pre><p>定义当前机器上所有用户命令（如git commit）所使用的文本编辑器。<editor>参数应该是启动所需编辑器的命令（例如vi）。</editor></p>
-<pre><code>git config --global --edit
-</code></pre><p>在文本编辑器中打开全局配置文件进行手动编辑。</p>
-<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>所有配置选项存储在明文文件中，因此该git config命令实际上只是一个方便的命令行界面。通常，您首次在新开发机器上开始工作时，您只需要配置Git安装，对于几乎所有的情况，您都需要使用–global标志。<br>Git将配置选项存储在三个单独的文件中，可以将选项范围分配到各个仓库，用户或整个系统：</p>
-<ul>
-<li><p><repo>/.git/config - 仓库特定的设置。</repo></p>
+        <p><img src="https://www.atlassian.com/dam/jcr:003ac8ad-493e-4a16-8096-95e7b4a4a9af/hero.svg" alt="Migrate to Git"></p>
+<p>我们将SVN迁移到Git的步骤拆解成5个简单的步骤：</p>
+<ol>
+<li>准备迁移的环境。</li>
+<li>将SVN仓库转换成本地Git仓库。 </li>
+<li>当SVN仓库发生变化时同步到本地Git仓库。</li>
+<li>通过Git服务器共享你的Git仓库给其他开发者。</li>
+<li>将你的开发工作从SVN迁移到Git仓库里。</li>
+</ol>
+<p>准备、转变、同步步骤需要一个SVN提交历史并将它转至Git仓库。操作这三部的最好方式是指定一个人做为迁移负责人（如果你读了这篇文章可能就是你了）。所有这三步应当在迁移负责人的本地电脑上执行。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:620e114f-077f-416b-aeb4-ecdb4b6c64c6/01.svg" alt="Git Migration: Prepare, clone, sync"></p>
+<p>在同步阶段完成后，迁移负责人可以很轻易的保持本地Git仓库和SVN仓库同步更新，为了共享他的Git仓库，迁移负责人需要将他的本地Git仓库推送到一个Git宿主服务器，比如Gitlab、GitHub、Bitbucket等。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:adce07b0-ef2a-4ab4-b08b-72a02d0a61fb/02.svg" alt="Git Migration: Share the git repo via bitbucket"><br>如果服务器是在Bitbucket上，其他开发者可以克隆Git仓库将代码转移至本地，使用Git命令查看历史，将该服务器用于构建代码流程中。然而我们提倡，在你们团队准备好一个纯净的Git工作流的时候，采取一步到位的方式来迁移SVN到Git。这意味着团队每个人对这个服务器是只读的，他们依旧将代码提交到SVN仓库。将这些修改的操作应当交给迁移负责人来同步、推送这些修改到Bitbucket。</p>
+<p>这让你团队在明确切换这段时间内可以熟悉Git开发工作流，而不用中断基于SVN的工作流。一旦你确信所有开发者已经准备好切换到Git，那最后的一步就是冻结你的SVN仓库，让大家开始使用Git提交代码。</p>
+<p><img src="https://www.atlassian.com/dam/jcr:a202d2e1-bb9a-4c25-92ed-91a16a63ccde/03.svg" alt="Git migration: Migrate Active Development to Git"><br>这个切换应该是一个非常自然的过程。整个Git工作流已经开始运转，并且开发者有大把的时间去熟悉它。从这刻起，你已经成功地将你的项目从SVN迁移到Git上了。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/migrating-overview" target="_blank" rel="noopener">Migrate to Git from SVN</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">SVN到Git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">迁移</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-Migrate-to-Git-from-SVN/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2017-04-02-what-is-version-control" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/02/2017-04-02-what-is-version-control/">【译文】版本控制系统介绍</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/02/2017-04-02-what-is-version-control/" class="archive-article-date">
+  	<time datetime="2017-04-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://wac-cdn.atlassian.com/dam/jcr:34e935dd-3108-40ef-bb3d-9ed01d977d6d/hero.svg?cdnVersion=dt" alt="什么是版本控制"></p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>版本控制系统是一类软件工具，可帮助软件团队基于时间的变化来管理源码。版本控制系统跟踪特殊类型数据库中代码的每个修改。如果发生错误，开发人员可以回到某个时间点，比较早期版本的代码，以帮助解决错误，同时最大限度地减少对所有团队成员的干扰。</p>
+<p>对于几乎所有的软件项目，源代码就是财富 - 这个珍贵的资产必须被保护。对于大多数软件团队来说，源代码是开发者们通过认真的努力工作和宝贵知识的结晶。版本控制系统保护源代码免受灾难事故、偶尔人为错误的和意外的后果的破坏。</p>
+<p>团队合作的软件开发人员不断编写新的源代码和更改现有的源代码。项目，应用程序或软件组件的代码通常组织在文件夹结构或“文件树”中。团队中的一名开发人员可能正在开发新功能，而另一位开发人员通过更改代码来修复无关的错误，每个开发人员可能会在文件树的多个部分进行更改。</p>
+<p>版本控制可帮助团队解决这些问题，跟踪每个贡献者的每一个变化，并帮助防止并发工作的冲突。在软件的一部分进行的更改可能与另一位开发人员同时进行的更改不兼容。这个问题应该有序发现和解决，而不会阻止团队其他成员的工作。此外，在所有软件开发中，任何更改都可能无意引入新的错误，并且新的软件在被测试之前是不可完全相信的。所以测试和开发同时进行，直到新版本准备就绪。</p>
+<p>良好的版本控制系统支持开发人员的喜爱的工作流程，而不强加一种特定的工作方式。理想情况下，它也适用于任何平台，而不是指定开发人员必须使用的操作系统或工具集。优秀的版本控制系统应当促进代码的流畅和持续的修改，而不是带来令人沮丧和笨拙的给文件加锁的机制 - 给一个开发人员带来绿灯，却付出阻止其他人的继续操作的代价。</p>
+<p>不使用任何形式的版本控制的软件团队经常遇到问题，例如不知道已经为用户提供了哪些更改，或者在两个不相关的工作之间创建不兼容的更改，然后必须非常痛苦地解决问题甚至重头再来一遍。如果您是从未使用版本控制的开发人员，您可能已经添加了您的文件的版本，也许使用后缀“final”或“latest”，然后再处理新的最终版本。也许你已经注释掉了代码块，因为担心以后可能会使用它。你想禁用某些功能而不删除代码。版本控制是摆脱这些困扰的一种办法。</p>
+<p>版本控制系统是现代软件团队专业实践的每一天的重要组成部分。习惯于在其团队中使用能力强大的版本控制系统的个人软件开发人员通常认识到版本控制的巨大价值，因此他们甚至在小型个人项目上也使用版本控制系统。一旦习惯了版本控制系统的强大优势，即使是非软件项目，许多开发人员也不会考虑工作。</p>
+<h2 id="版本控制系统的好处"><a href="#版本控制系统的好处" class="headerlink" title="版本控制系统的好处"></a>版本控制系统的好处</h2><p>开发软件而不使用版本控制是有风险的，就像没有备份一样。随着团队规模扩大，版本控制还可以使开发人员能够更快地开发，并允许软件团队保持效率和敏捷性。</p>
+<p>版本控制系统（VCS）在过去几十年中取得了很大的进步，一些比其他控制系统更好。VCS有时被称为SCM（源代码管理）工具或RCS（版本控制系统）。今天使用的最流行的VCS工具之一就是Git。Git是一个<em>分布式</em> 版本控制系统。像许多目前最流行的VCS系统一样，Git是免费的和开源的。不管它们被称为什么，或使用哪种系统，您应该期望从版本控制的主要好处如下：</p>
+<ol>
+<li><p>每个文件的完整的修改历史。这意味记录每个人的每一个修改，这些修改包括文件的创建和删除以及对其内容的编辑。不同的VCS工具在处理文件的重命名和移动方面有所不同。这个历史还应包括作者的日期和修改说明，以便每次更改的目的。具有完整的历史记录可以回溯到以前的版本，以帮助根本原因分析错误，并且在需要修复旧版软件的问题时至关重要。如果软件正在积极地工作，几乎所有的东西都可以被认为是软件的“旧版本”。</p>
 </li>
-<li><p>~/.gitconfig - 用户特定的设置。这是–global存储使用标志设置的选项。</p>
+<li><p>分支和合并。团队成员同时开发一个文件是不太好，但是即使个人也可以从独立的开发流中获益。在VCS工具中创建“分支”可以使多个工作流彼此独立，同时还提供将该工作合并到一起的功能，使开发人员能够验证每个分支上的更改是否都不会发生冲突。许多软件团队采用针对每个功能进行分支的做法，或者针对每个版本或两者都采用分支。当他们决定如何利用VCS中的分支和合并工具时，团队有许多不同的工作流可以选择。</p>
 </li>
-<li>$(prefix)/etc/gitconfig - 系统范围的设置。</li>
-</ul>
-<p>当这些文件中的选项发生冲突时，本地设置将覆盖用户设置，用户设置覆盖系统范围配置。如果您打开任何这些文件，您将看到如下所示：</p>
-<pre><code>[user]name = John Smith
-email = john@example.com
-[alias]st = status
-co = checkout
-br = branch
-up = rebase
-ci = commit
-[core]editor = vim
-</code></pre><p>您可以手动编辑这些值与完全相同的效果git config。</p>
-<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><p>安装Git之后，首先要做的就是告诉你你的名字/电子邮件，并自定义一些默认设置。典型的初始配置可能如下所示：</p>
-<pre><code># Tell Git who you are
-git config --global user.name &quot;John Smith&quot;git config --global user.email john@example.com
-
-# Select your favorite text editor
-git config --global core.editor vim
-
-
-# Add some SVN-like aliases
-git config --global alias.st status
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.up rebase
-git config --global alias.ci commit
-</code></pre><p>这将产生~/.gitconfig上一节中的文件。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository" target="_blank" rel="noopener">Setting up a repository</a></p>
+</ol>
+<ol start="3">
+<li>可追溯性。能够跟踪对软件的每个更改，并将其连接到项目管理和错误跟踪软件（如<a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">JIRA）</a>，并且能够通过描述更改目的的消息来注释每个更改，可以帮助根本上分析问题原因和其他取证。当您阅读代码时，将代码的注释历史记录在您的电脑，可以使开发人员尝试了解它正在做什么以及为什么这样设计，并能够据此进行正确合理的开发工作。这对于遗留代码尤其重要，并且对开发人员能够准确性估计未来工作至关重要。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然在不使用任何版本控制系统的情况下也可以开发软件，但这样做会使项目面临巨大的风险，建议专业团队必须使用版本控制系统。所以问题不在于是否使用版本控制（因为必须使用），而是使用哪个版本控制系统。</p>
+<p>版本控制系统有很多选择，但是在这里我们将专注于一个，Git。</p>
+<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/what-is-version-control" target="_blank" rel="noopener">What is version control</a></p>
 
       
 
@@ -295,7 +330,7 @@ git config --global alias.ci commit
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/02/2017-04-02-setting-up-a-repository/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/04/02/2017-04-02-what-is-version-control/">展开全文 >></a>
         </p>
       
 
@@ -1999,206 +2034,6 @@ git revert HEAD~2
 
 
   
-    <article id="post-2016-12-03-Using-Branches" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/03/2016-12-03-Using-Branches/">【译文】玩转git分支</a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/03/2016-12-03-Using-Branches/" class="archive-article-date">
-  	<time datetime="2016-12-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/hero.svg" alt=""></p>
-<h1 id="玩转git分支"><a href="#玩转git分支" class="headerlink" title="玩转git分支"></a>玩转git分支</h1><p>这是一篇介绍git分支的综合性教程。首先，我们会简单介绍分支的创建，它就像请求一个新项目的历史一样。然后，我们将看看如何使用<code>git checkout</code>选择分支。最后，我们将学习使用<code>git merge</code>进行各个独立的分支合并。在你阅读的时候，记住git的分支和svn的分支不同，svn的分支仅仅用来捕获偶尔大范围的开发，然后git分支却是你每日工作流必不可少的部分。</p>
-<h2 id="git分支"><a href="#git分支" class="headerlink" title="git分支"></a>git分支</h2><p>一个分支代表一个独立的开发流水线，在本教程的第一部分的<a href="https://www.atlassian.com/git/tutorials/saving-changes" target="_blank" rel="noopener">git基础（Git Basics）</a>章节中我们介绍了编辑／暂存／提交过程，分支就是这些流程的抽象。你可以把分支看作请求一个新的工作目录区、暂存区、项目提交历史的方法。新的提交会在当前分支的提交历史中记录，在项目历史中导致一个分流（fork）。</p>
-<p>git branch命令让你创建、列出、重命名和删除分支。它不会让你在不同分支中切换，也不会让你的分流开发的历史再次合并回一起。因此<code>git branch</code>和<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a> 和 <a href="https://www.atlassian.com/git/tutorials/using-branches/git-merge" target="_blank" rel="noopener">git merge
-</a>命令紧密联系在一起工作。</p>
-<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git branch
-</code></pre><p>列出仓库的分支历史</p>
-<pre><code>git branch &lt;branch&gt;
-</code></pre><p>创建一个叫做<code>&lt;branch&gt;</code>的新的分支，这个命令不会切换到这个新分支。</p>
-<pre><code>git branch -d &lt;branch&gt;
-</code></pre><p>删除指定分支。在git中这是一个安全的操作，因为如果该分支存在没有合并的修改git会阻止你删除分支。</p>
-<pre><code>git branch -D &lt;branch&gt;
-</code></pre><p>强制删除一个指定分支，不管有没有未合并的修改，当你想永久删除这个开发流水线上所有提交历史时可以使用这个命令。</p>
-<pre><code>git branch -m &lt;branch&gt;
-</code></pre><p>重命名当前分支名为<code>&lt;branch&gt;</code>。</p>
-<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>在git中，分支是你日常开发过程的一部分。当你想添加一个新的功能或者想修复一个bug，无论他们的大或者小，你都可以创建一个分支将他们封装起来。这可以确保不稳定的代码不会提交到主要核心代码里。并且在你合并到主分支之前让你有机会清理功能开发的历史。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/01.svg" alt="Git Tutorial: git branch"></p>
-<p>举个例子，上图形象地展示了一个包含两个独立开发的流水线的仓库，一个开发小功能，另外一个开发一个耗时较大的功能。通过将他们包含在不同分支中开发，不仅仅可以让开发工作可以并行，而且保证主分支<code>master</code>不会被有问题的代码污染。</p>
-<h3 id="分支节点（Branch-Tips）"><a href="#分支节点（Branch-Tips）" class="headerlink" title="分支节点（Branch Tips）"></a>分支节点（Branch Tips）</h3><p>git分支实现比svn要轻量级的多。git不需要拷贝目录的文件到另一个目录，git存储一个分支作为一个提交的索引。这样看来，分支代表着一系列提交的节点（tip），而不是多个提交的容器。通过提交之间的关系来推断一个分支的历史。在git合并模型中这有巨大的影响。svn中的合并是基于文件的，而在git中让使用提交进行工作，这个更加抽象。事实上在项目提交历史中你可以把合并看作是两个独立的提交历史的连接。</p>
-<h3 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h3><h4 id="创建分支"><a href="#创建分支" class="headerlink" title="创建分支"></a>创建分支</h4><p>理解分支仅仅是指向提交的<strong>指针</strong>这个概念非常重要。当你创建分支，git所需要作的仅仅是一个指针——它不会对仓库造成任何修改，因此，如果你像下面这样开始在一个仓库上开发。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/02.svg" alt="Git Tutorial: repository without any branches"></p>
-<p>然后，你使用如下命令创建一个分支：</p>
-<pre><code>git branch crazy-experiment
-</code></pre><p>仓库的历史依然不会修改，你只是拥有了一个指向当前提交的指针：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/03.svg" alt="Git Tutorial: Create new branch"></p>
-<p>主要这仅仅是创建了一个新的分支。为了添加一个提交，你需要使用<code>git checkout</code>选择一个分支，然后使用标准的<code>git add</code> 和 <code>git commit</code>命令。请查看这篇文章的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a>段落了解更多。</p>
-<h2 id="删除分支"><a href="#删除分支" class="headerlink" title="删除分支"></a>删除分支</h2><p>当你在一个分支上完成开发，并且把该分支的修改合并进了主要代码库，现在你不用担心丢失任何修改提交历史就可以删除分支了。</p>
-<pre><code>git branch -d crazy-experiment
-</code></pre><p>然而，如果你的分支没有合并，上面这个命令会产生如下错误信息：</p>
-<pre><code>error: The branch &apos;crazy-experiment&apos; is not fully merged.
-If you are sure you want to delete it, run &apos;git branch -D crazy-experiment&apos;.
-</code></pre><p>这可以防止你丢失对这些提交的索引，这意味着你失去了对这条分支开发流水线的访问。如果你真的想要删除这个分支（比如，这个分支开发完全是一次失败的实验），你可以使用大些的<code>-D</code>标志：</p>
-<pre><code>git branch -D crazy-experiment
-</code></pre><p>这将删除这个分支，不管这个分支是什么状态，它不会给出任何警告，所以使用这个命令要特别小心。</p>
-<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p><code>git checkout</code>命令可以让你在创建的分支上自由切换，切换一个分支会更新工作目录的文件，保持和该分支的版本控制的内容一致。它会让git记录在当前分支上的所有新的提交。把切换分支想象成你去选择一个你想从事开发工作的开发流水线。</p>
-<p>在<a href="https://www.atlassian.com/git/tutorials/undoing-changes" target="_blank" rel="noopener">前面的章节</a>，我们知道了如何使用<code>git checkout</code>查看过去的提交。切换分支和被更新到选择的分支和修改的工作目录类似，不过，新的修改会被保存到项目版本历史——意味着，这不是一个只读操作。</p>
-<h3 id="如何使用-1"><a href="#如何使用-1" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git checkout &lt;existing-branch&gt;
-</code></pre><p>切换到指定分支，这个分支应当是之前已经使用<code>git branch</code>创建过的分支，这个命令让已经存在的分支称为当前分支，并且对应会更新当前工作目录。</p>
-<pre><code>git checkout -b &lt;new-branch&gt;
-</code></pre><p>创建并切换到<code>&lt;new-branch&gt;</code>分支，<code>-b</code>选项会让git先执行<code>git branch &lt;new-branch&gt;</code>再执行<code>git checkout &lt;new-branch&gt;</code>操作。</p>
-<pre><code>git checkout -b &lt;new-branch&gt; &lt;existing-branch&gt;
-</code></pre><p>和之前的命令类似，但是不是基于当前分支创建新分支，而是基于<code>&lt;existing-branch&gt;</code>这个分支创建和切换新分支。 </p>
-<h3 id="讨论-1"><a href="#讨论-1" class="headerlink" title="讨论"></a>讨论</h3><p><code>git checkout</code>和<code>git branch</code>并肩而战，当我们想开始一个新功能开发时，我们先使用<code>git branch</code>创建分支，然后使用<code>git checkout</code>切换分支。你可以使用<code>git checkout</code>命令在一个仓库的多个功能分支上切换。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/04.svg" alt="Git Tutorial: Switch between multiple features in a single repo with git checkout."></p>
-<p>为每个功能使用一个专门分支，这是相比svn的工作流来说一个巨大的变化。它让尝试一个新实验变的极其容易，因为你完全不需要担心损坏已经存在的功能，并且让多个不相关的功能同时开发变的可能。而且，分支也让多种合作开发流工作的更顺手。</p>
-<h3 id="分离头（Detached-HEADs）"><a href="#分离头（Detached-HEADs）" class="headerlink" title="分离头（Detached HEADs）"></a>分离头（Detached HEADs）</h3><p>刚才我们介绍了 <code>git checkout</code>的三种使用方法。现在我们来聊聊我们上一章节提到过的分离头（Detached HEADs），记住头（HEAD）在git中是我们用来索引当前快照的方式。在git内部实现中，<code>git checkout</code>命令指示简单的更新指向指定分支或者提交的头（HEAD）。当指向一个分支时，Git不会有任何提示，但是当你切换提交时，git就进入了分离头（Detached HEAD）状态。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/05.svg" alt="Git Tutorial: Attached vs Detached Head"></p>
-<p>这个警告告诉你将作的所有事情已经和项目开发的其他部分分离（detached）了。如果你要在一个分离头状态下开发一个新功能，你将没有分支可以允许你回到该开发。当你切换到另外一个分支（比如，进行合并你的开发），你将没有你的功能开发的索引：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/06.svg" alt="Git Tutorial: Detached Head state"></p>
-<p>特别指出，因此你的开发应当永远在分支上进行——不要在分离头上进行。这将确保你能索引到你最新的提交。然而，如果你只是想看看以前的提交的内容，是否进入分离头模式就无所谓了。</p>
-<h3 id="举个例子-1"><a href="#举个例子-1" class="headerlink" title="举个例子"></a>举个例子</h3><p>下面歌命令展示了基本的git 分支处理过程。当你想要做一个新功能开发时，你创建一个专门的分支，切换到该分支：</p>
-<pre><code>git branch new-feature
-git checkout new-feature
-</code></pre><p>然后，我们就像之前章节讲到的一样提交新的快照。</p>
-<pre><code># Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Started work on a new feature&quot;
-# Repeat
-</code></pre><p>所有这些将被记录在新的功能分支<code>new-feature</code>上，完全和master分支分隔开来。你想提交多少次就提交多少次，完全不需要担心其他分支发生了什么。当到了需要切换到正式代码库时，只需要简单的切换到master分支即可：</p>
-<pre><code>git checkout master
-</code></pre><p>这个会告诉你仓库的状态，然后你可以选择是否合并已经完成的功能，或者创建一个新的分支开始一个另一个不相关的功能，或者在项目的稳定代码master分支上工作。</p>
-<h2 id="git-merge"><a href="#git-merge" class="headerlink" title="git merge"></a>git merge</h2><p>合并可以让一个分叉的分支历史合再次合并到一起。<code>git merge</code>命令让你将<a href="https://www.atlassian.com/git/tutorials/using-branches/git-branch" target="_blank" rel="noopener">git branch
-</a>创建的独立开发流水线集成合并进一个单一的分支。</p>
-<p>注意下面所有的命令会合并进当前分支，当前分支会拥有合并后的结果，目标分支则完全不受影响。再此强调，<code>git merge</code>总是和用于选择当前分支的<a href="https://www.atlassian.com/git/tutorials/using-branches/git-checkout" target="_blank" rel="noopener">git checkout
-</a>命令结合起来使用，然后使用<code>git branch -d</code>命令用来删除无用的目标分支。</p>
-<h3 id="如何使用-2"><a href="#如何使用-2" class="headerlink" title="如何使用"></a>如何使用</h3><pre><code>git merge &lt;branch&gt;
-</code></pre><p>Merge the specified branch into the current branch. Git will determine the merge algorithm automatically (discussed below).</p>
-<p>合并指定分支到当前分支，git会自动采取合并的算法（后面再讨论这个）。</p>
-<pre><code>git merge --no-ff &lt;branch&gt;
-</code></pre><p>合并指定分支到当前分支，但是总是会产生一个合并提交（甚至是线性向前（fast-forward）合并）。这个对于想归档仓库所有的发生的合并有用。</p>
-<h3 id="讨论-2"><a href="#讨论-2" class="headerlink" title="讨论"></a>讨论</h3><p>单你在一个独立的分支上完成一个功能，你肯定希望合并进主要代码库，git会根据你的仓库的接口，可以采取线性向前方式或者3-way方式完成合并。</p>
-<p> 当当前分支节点到目标分支有一个线性路径时会使用<em>线性向前合并（fast-forward merge）</em>，这样它不用发生真正的合并，git仅仅会通过移动当前分支节点到目标分支节点来集成合并历史。合并非常高效，因为目标分支的所有的提交现在可以在当前分支查得到。举例来说，一个线性向前的合并<code>some-feature</code>到<code>master</code>像下图所示：</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/07.svg" alt="Git Tutorial: Fast-forward merge"></p>
-<p>However, a fast-forward merge is not possible if the branches have diverged. When there is not a linear path to the target branch, Git has no choice but to combine them via a <strong>3-way merge</strong>. 3-way merges use a dedicated commit to tie together the two histories. The nomenclature comes from the fact that Git uses <em>three</em> commits to generate the merge commit: the two branch tips and their common ancestor.<br>但是，当分支之间都有分叉时线性向前和冰就不可能了。当没有线性路径到目标分支时，git别无选择只能采取<strong>3-way合并</strong>。3-way合并使用一个专门的提交来将两个分支历史捆绑在一起。这个明明源自git使用了三个提交来生成合并提交：两个分支节点和他们共同的祖先提交。</p>
-<p><img src="https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/08.svg" alt="Git Tutorial: Three way merge"></p>
-<p>你可以使用这些合并策略，然后很多开发者喜欢为小功能开发或者bug修复使用线性向前合并（通过使用<a href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase" target="_blank" rel="noopener">rebasing</a>命令可以很容易实现），同时在较大较长耗时的功能开发时使用3-way合并，在前面的例子中，产生的合并提交用来作为合并两个分支的象征性连接点。</p>
-<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><p>如果你尝试合并两个分支时，者两个分支对同一个文件的同一部分作了修改，git这时候不清楚你要运用哪个版本的修改。当这种情况发生时，它会停止合并提交，以便让你去手动解决冲突。</p>
-<p>git牛逼的地方就是合并过程中解决合并冲突就类似之前提到的编辑／暂存／提交的工作流程。当你遇到合并冲突时，执行<a href="https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-status" target="_blank" rel="noopener">git status
-</a>命令，它会告诉你哪个文件冲突需要解决，例如，如果两个分支都修改了<code>hello.py</code>文件的同一部分，你将看到类似如下内容：</p>
-<pre><code># On branch master
-# Unmerged paths:
-# (use &quot;git add/rm ...&quot; as appropriate to mark resolution)## both modified: hello.py#
-</code></pre><p>然后，你就可以找到这个文件根据你的需要修复这个合并冲突，当你准备完成合并时，你只需要执行在冲突的文件上<code>git add</code>命令，告诉git冲突已经解决，然后，你可以执行<code>git commit</code>命令来生成一个合并提交。这和生成一个普通快照完全相同，因此对一般开发者来说管理他们的合并非常容易。</p>
-<p>记住，合并冲突只会发生在<code>3-way合并</code>中，不太可能在线性向前合并中发生有冲突的修改。</p>
-<h3 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h3><h4 id="线性向前合并"><a href="#线性向前合并" class="headerlink" title="线性向前合并"></a>线性向前合并</h4><p>我们的第一个例子展示一个<code>线性向前合并</code>。下面的代码先创建一个新的分支，添加了两个提交，然后将这个分支合并集成到主干线上，这是一个线性向前合并过程。</p>
-<pre><code># Start a new feature
-git checkout -b new-feature master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Start a feature&quot;# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Finish a feature&quot;
-# Merge in the new-feature branch
-git checkout master
-git merge new-feature
-git branch -d new-feature
-</code></pre><p>在短小分支上经常使用这个工作流，比大功能开发用的多。</p>
-<p>注意这个时候可以使用<code>git branch -d</code>删除该新分支，因为新功能开发 的提交已经可以在master分支上访问得到了。</p>
-<h4 id="3-Way合并"><a href="#3-Way合并" class="headerlink" title="3-Way合并"></a>3-Way合并</h4><p>下一个例子非常类似，但是在<code>master</code>已经有修改进展，功能开发也有修改进展，所以这个时候git会使用<code>3-Way合并</code>，这个在大型功能开发时很常见，在多个开发者同时在项目上开发时也很常见。</p>
-<pre><code># Start a new feature
-git checkout -b new-feature master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Start a feature&quot;
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Finish a feature&quot;
-# Develop the master branch
-git checkout master
-# Edit some files
-git add &lt;file&gt;
-git commit -m &quot;Make some super-stable changes to master&quot;
-# Merge in the new-feature branch
-git merge new-feature
-git branch -d new-feature
-</code></pre><p>注意对于这个例子git不可能执行<code>线性向前合并</code>，因为如果不原路返回（backtracking）master没法直接移动到新功能上去。在实际工作中，<code>new feature</code>很可能是一个大型耗时的项目开发，在开发它的过程中很可能已经有别的修改加到<code>master</code>上去了，但是如果是一个小的功能开发，你可以在<code>master</code>上使用<code>rebase</code>命令来执行线性向前合并，这样可以减少多余的合并提交，从而防止项目版本历史变得混乱。</p>
-<h2 id="原文出处"><a href="#原文出处" class="headerlink" title="原文出处"></a>原文出处</h2><p><a href="https://www.atlassian.com/git/tutorials/using-branches" target="_blank" rel="noopener">Using Branches</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">代码版本管理规范</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Git 分支</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Git Branch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/03/2016-12-03-Using-Branches/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -2328,6 +2163,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">XCode snippets</a>
               </li>
              
@@ -2337,14 +2180,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">代码片段</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">内存管理方案</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">memory management in iOS System</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2392,6 +2227,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">skating</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">年度总结</a>
               </li>
              
@@ -2401,14 +2244,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">2017</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滑雪</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">skating</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2576,6 +2411,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Git 撤销</a>
               </li>
              
@@ -2592,14 +2439,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
@@ -2612,15 +2451,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+                <a href="javascript:void(0)" class="js-tag color3">Git log</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git 日志打印</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2644,6 +2479,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网络架构</a>
               </li>
              
@@ -2661,14 +2504,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">reveal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">编码规范</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">coding guideline</a>
               </li>
              
               <li class="article-tag-list-item">
