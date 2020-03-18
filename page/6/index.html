@@ -160,141 +160,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2016-09-24-automatic-memory-leak-detection-on-ios" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/24/2016-09-24-automatic-memory-leak-detection-on-ios/">【译文】在iOS上自动检测内存泄漏</a>
-    </h1>
-  
-
-        
-        <a href="/2016/09/24/2016-09-24-automatic-memory-leak-detection-on-ios/" class="archive-article-date">
-  	<time datetime="2016-09-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-09-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>移动设备的内存是一块共享资源。内存管理不恰当的APP会内存使用暴增，严重的性能损耗，甚至崩溃。</p>
-<p>Facebook的iOS版APP功能庞大繁多，但在iOS只有相同的内存使用空间。如果任何一个功能消耗了过多的内存，则会影响整个APP的性能。而这个当一个功能出现内存泄漏时是有极大可能性发生的。</p>
-<p>当我们给对象分配一块内存后，当使用完对象但忘了释放对象占用的内存，这就会造成内存泄漏，这意味着操作系统没法回收内存来给其他功能使用，最终可能导致APP超过允许使用的内存极限。</p>
-<p>Facebook的工程师们在代码库不同的模块下进行开发工作，造成内存泄漏情况出现很难避免，如果发现内存泄漏，我们需要快速地找到内存泄漏的地方，然后快速修复他们。</p>
-<p>已经有不少工具可以用来查找内存泄漏了。但是他们通常都需要太多的手动操作：</p>
-<p>1.打开Xcode，然后 build for profiling.</p>
-<p>2.启动Instruments</p>
-<p>3.开始测试APP，尽可能测试每个APP使用场景。</p>
-<p>4.观察内存是否泄漏或者内存暴增</p>
-<p>5.在代码中找出问题所在</p>
-<p>6.修复内存泄漏元凶</p>
-<p>这意味着需要大量的重复手工操作，因此我们很难抽出时间在开发阶段定位和修复内存泄漏问题。</p>
-<p>如果能自动化这个流程那就太棒了，这样我们就不需要太多的工程师参与就能更快速的定位内存泄漏问题。为了搞定这个目标，我们开发了一套工具，并且已经帮我们修复了代码库的大量问题。现在我们非常开心地宣布我们将开放这些工具：<a href="https://github.com/facebook/FBRetainCycleDetector" target="_blank" rel="noopener">FBRetainCycleDetector</a>, <a href="FBAllocationTracker">FBAllocationTracker</a>和<a href="https://github.com/facebook/FBMemoryProfiler" target="_blank" rel="noopener">FBMemoryProfiler</a>.</p>
-<h4 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h4><p>Objective-C使用引用计数的方式来管理内存和决定是否释放对象。内存里的任何一个对象都可以持有其他对象，如果前者依然持有后者，那后者就一直在在内存中，我们可以理解为前者“拥有”后者。<br>大部分时候不会出现内存问题。但是某些情况就不是这么回事了，会出现某种所谓的”僵局“，比如两个对象通过直接互相“拥有”彼此，或者间接通过其他对象互相持有。这种循环拥有就是所谓的循环引用了。</p>
-<p><img src="/img/in-post/automatic-memory-leak-detection-on-ios/DraggedImage.jpg" alt=""></p>
-<p>循环引用会带来许多问题。幸运的话，这些循环引用的对象可能只是小对象，一直只是浪费一丁点内存。如果这些对象做了一些重要的操作并消耗大量内存的话，那可能意味着其他功能就只能使用剩下的内存了。倒霉的话，程序会因为的内存使用超出限制导致APP崩溃。<br>在手工使用profile时，我们发现了大量的循环引用问题，这些问题非常容易产生，但却非常难以发现。使用循环引用发现器的话这些困难都不算事了。</p>
-<h4 id="在运行时（runtime）发现循环引用"><a href="#在运行时（runtime）发现循环引用" class="headerlink" title="在运行时（runtime）发现循环引用"></a>在运行时（runtime）发现循环引用</h4><p>查找循环引用有点像在有向非循环图(directed acyclic graph)查找循环问题，对象就是节点，边线就是对象之间的引用（因此如果对象A持有对象B，就存在A到B的引用）。我们的OC对象已经在图表中了，我们需要做的就是使用深度优先查找（depth-first）遍历图表。</p>
-<video id="video" controls preload="none" poster=""><br>      <source id="mp4" src="http://7i7i81.com1.z0.glb.clouddn.com/blogvideo_memoryleak_1.mp4"><br>      <p>Your user agent does not support the HTML5 Video element.</p><br>    </video>
-
-<p>这个抽象比喻非常好的解释查找内存的工作。我们需要确定是否想节点一样使用对象，并且每个对象，我们能获取到它引用的所有其他对象，这种引用要么是抢引用要么是若引用。循环引用只在强引用之间产生，因此每个对象我只需要找出它的强引用。</p>
-<p>非常幸运，OC提供了强大的、内省（译者注：仔细观察的意思）的（introspective）运行时（runtime）库，来帮助我们发觉这张图表。</p>
-<p>图表的节点可能是对象也是可能是block，让我们分别介绍如何来遍历他们。</p>
-<h5 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h5><p>运行时有很多工具帮助我们内观（introspect）对象，并从中学习。</p>
-<p>我们要做的第一件事是获取对象的实例变量的布局（ivar layout）。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const char *class_getIvarLayout(Class cls);</span><br><span class="line">const char `*class_getWeakIvarLayout(Class cls);</span><br></pre></td></tr></table></figure></p>
-<p>对于对象，实例变量的布局描述了我们在哪儿可以找到其他对象的引用。它会提供给我们一个索引（index），这代表我们需要在对象地址上添加一个偏移量(offset)，就可以得到它所引用的对象的地址。运行时也允许我们获取“弱引用实例变量布局(weak ivar layout)”。<br>这也部分支持Objective-C中，我们可以在结构体中定义对象，但是这不会在实例变量布局中获取到。运行时提供了“类型编码(type encoding)”来处理这个问题。对于每一个实例变量来说，类型编码描述了变量是如何结构化的。如果这是一个结构体，它会描述它包含了哪些字段和类型。我们计算出它们的偏移量，在图中，找出它们所指向的对象。<br>也有一些边缘条件我们不会深入。大部分是一些不同的集合，我们不得不列举它们去获得它们持有的对象，这可能会导致一些副作用。</p>
-<h5 id="Block"><a href="#Block" class="headerlink" title="Block"></a>Block</h5><p>Block和对象有一点不一样。运行时不会让我们很轻易的看到它们的布局，但是我们仍然可以猜个大概。<br>在处理Block的时候，我们使用了Mike Ash在他的项目Circle中提出的思路：Circle最早启发了FBRetainCycleDetector的项目。<br>我们可以使用的是Block应用程序二进制接口(ABI,application binary interface for blocks)。它描述了Block在内存中的样子。如果我们知道我们在处理的引用是一个Block,我们可以把它投射成一个模仿该Block特征的虚构的结构体中。在放到一个C语言的结构体之后，我们就可以知道该Block所持有的对象了。可是，我们不知道这些引用是强引用还是弱引用。<br>我们使用了一个黑盒技术来搞定这个问题。我们创建一个对象来假扮我们想要查找的Block。因为我们知道Block的接口，我们知道在哪可以找到Block持有的引用。我们伪造的对象用“释放检测器(release detectors)”来代替这些引用。释放检测器是一些很小的对象，它们会观察发送给它们的释放消息，当持有者放弃持有时，释放消息会发送给强引用对象。当我们释放伪造对象时，我们可以检测哪些检测器接收到了这些消息。只要知道哪些索引在伪造的对象的检测器中，我们就可以找到原来Block中实际持有的对象了。</p>
-<p><img src="/img/in-post/automatic-memory-leak-detection-on-ios/DraggedImage-1.jpg" alt=""></p>
-<h4 id="自动化"><a href="#自动化" class="headerlink" title="自动化"></a>自动化</h4><p>这个工具牛逼之处，就实在在程序员写代码的时候它会自动运行并持续检查内内存问题。</p>
-<p>客户端的自动化方式很简单。我们在定时器上安装了一个循环引用检查器，并定期扫描内存来发现循环引用问题。当然有出现过一些小问题。当我们第一次运行检测器时，发现它不能足够快地检查所有内存空间，因此我们需要给它一组候选对象来进行检测。</p>
-<p>为了更有效地解决这个问题，我们开发了FBAllocationTracker。这个工具会主动跟踪所有NSObject子类的创建和释放。它可以随时获取任何类的任何实例，并且性能消耗微不足道。</p>
-<p>客户端的自动化内存检查只要在NSTimer上使用FBRetainCycleDetector，再用FBAllocationTracker来抓取实例来配合跟踪就行了。现在，让我们来仔细看看内部具体会发生什么。</p>
-<p>循环引用可以包含任何数量的对象。一个坏的连接会导致很多环的时候，这就复杂了。</p>
-<p><img src="/img/in-post/automatic-memory-leak-detection-on-ios/DraggedImage-2.jpg" alt=""></p>
-<p>A->B是一个糟糕的连接，因为由于它导致了两个循环引用A-B-C-D and A-B-C-E。<br>这就导致了两个问题产生：<br>1.我们不想因为同一个坏引用把这个两个循环引用进行独立开来标记。<br>2.我们不想把两个循环引用放在一起处理，尽管他们有相同的连接，但他们事实上不同的循环引用。</p>
-<p>因此我们需要为循环引用定义簇（clusters）。我们根据一下规则写了一个算法来查找这些问题：<br>1.汇总指定日期查找到的所有循环引用<br>2.为每个环，命名一个Facebook格式的类名<br>3.为每个环，找到该环内被汇报的最小的环<br>4.将上面的原则将环添加到一个组<br>5.只汇报最小的环</p>
-<p>有了这些工具之后，最后一步就是找到导致循环引用的工程师。我们在造成环的代码部分使用‘git/hd指责’（’git/hg blame’），推测最新修改这部分代码的工程师导致了这个问题。因此这个工程师收到任务去修复这个问题。这个系统工作原理可以如图所示：</p>
-<p><img src="/img/in-post/automatic-memory-leak-detection-on-ios/DraggedImage-3.jpg" alt=""></p>
-<h4 id="手动性能分析"><a href="#手动性能分析" class="headerlink" title="手动性能分析"></a>手动性能分析</h4><p>虽然自动化有助于简化发现循环引用的过程，降低人员的消耗，手动性能分析依然有它的用武之地。我们创建的另一个工具允许任何人查看内存使用，甚至不需要把他的手机插到电脑上。<br>FBMemoryProfiler可以很容易的添加到任何应用程序，可以让你手动配置构建文件，可以让你在应用程序内运行循环应用检测。它会借用FBAllocationTracker和FBRetainCycleDetector来实现此功能。</p>
-<video id="video" controls preload="none" poster=""><br>      <source id="mp4" src="http://7i7i81.com1.z0.glb.clouddn.com/blogvideo_memoryleak_2.mp4"><br>      <p>Your user agent does not support the HTML5 Video element.</p><br>    </video>
-
-<h4 id="代-Generations"><a href="#代-Generations" class="headerlink" title="代(Generations)"></a>代(Generations)</h4><p>FBMemoryProfiler最屌的特性在于它提供了“代跟踪”，类似苹果Instruments的代跟踪。代用来快照两次事件标记之间的所有存活对象。</p>
-<p>使用FBMemoryProfiler的UI进行操作，比如分配三个对象后我们可以标记一个代，然后继续分配更多对象再标记一个代，第一个代包含开始的三个对象，如果任何一个对象释放了，它就从第二个代里移除了。</p>
-<p>:<img src="/img/in-post/automatic-memory-leak-detection-on-ios/DraggedImage-4.jpg" alt=""></p>
-<p>当我们有一个重复的任务，它可能会内存泄露的时候，生成代追踪是很有用的，例如，导航View Controller的进出。在每次开始我们的任务的时候，我们标记一个代，然后，对之后的每个生成代进行调查。如果一个对象不应该活这么长时间，我们可以在FBMemoryProfiler界面清楚地看到。</p>
-<h5 id="欢迎检出-checkout-来用"><a href="#欢迎检出-checkout-来用" class="headerlink" title="欢迎检出(checkout)来用"></a>欢迎检出(checkout)来用</h5><p>不管你的APP大小，功能多还是少，好的内存管理意味着好的工程质量标配。有了这些工具，我们能更容易发现内存泄漏的问题，我们可以花更少的时间去手动处理这些问题，然后就有时间写更好的代码啦。希望喜欢这些工具，去github上检出这些工具试试看吧<a href="https://github.com/facebook/FBRetainCycleDetector" target="_blank" rel="noopener">FBRetainCycleDetector</a>, <a href="FBAllocationTracker">FBAllocationTracker</a>和<a href="https://github.com/facebook/FBMemoryProfiler" target="_blank" rel="noopener">FBMemoryProfiler</a>。</p>
-<h5 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h5><p><a href="https://code.facebook.com/posts/583946315094347/automatic-memory-leak-detection-on-ios/" target="_blank" rel="noopener">《Automatic memory leak detection on iOS》</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">iOS内存管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">译文</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">FBRetainCycleDetector</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">FBAllocationTracker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">FBMemoryProfiler</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/09/24/2016-09-24-automatic-memory-leak-detection-on-ios/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-2016-09-17-iOS-archtect-on-load-ios-app-memory-management-plan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1419,6 +1284,124 @@
 
 
   
+    <article id="post-2016-06-18-loving-unit-test-series-one-rumen" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/">爱上iOS单元测试系列之爱上她就要先了解她：单元测试入门</a>
+    </h1>
+  
+
+        
+        <a href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/" class="archive-article-date">
+  	<time datetime="2016-06-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>对于单元测试一开始我是拒绝的。单元测试是一个什么东东，因为我喜欢做iOS开发是因为喜欢写APP的啊，一切和这一目标不相干的东西我没兴趣啊，所以从事iOS开发几年都没去深入学习过单元测试（主要是之前单位没这要求）。看到我的优点木有：目标性很强，嗯，记住我的优点，请忽略我拒绝学习边缘知识的缺点。但是最近被总监要求负责单元测试的探索和落地，我义（勉）不（为）容（其）辞（难）地扛起了夺取桥头堡的重任。我愿意把单元测试比作一位好姑娘，随着对这个姑娘的不断的了解和接触，我发现自己逐渐爱上了她，她有着独立知性的气质，有着完美丰满的身材，有着自我成长过程中不断丰富而且深刻的阅历。她是如此地完美的，让我神魂颠倒，夜不能寐，我想为她写诗（可惜没有文学细胞），我想为她写歌（可惜没有艺术细胞），我想为她写书立传（可惜没有写作天赋）。讲真：有木有有眼无珠的出版社愿意邀约？我真的想写一本单元测试的书，我先写几篇关于的她的文章，您看看我有没有出这本书的潜力。</p>
+<p> 我先来给你介绍下这位姑娘。</p>
+<h3 id="单元测试的魅力"><a href="#单元测试的魅力" class="headerlink" title="单元测试的魅力"></a>单元测试的魅力</h3><p> 每个男人都有过自己喜欢的女孩，可能还有多个，他们可能有你喜欢的共同特质，比如有人喜欢个子高的，有人喜欢小巧的，也有喜欢丰满的，有人喜欢可爱的，有人喜欢野蛮的，也有喜欢……此处省略各种奇葩极端偏好，毕竟人各有所好嘛。但身为一名合格的程序员，你理想的中的女神，如果她有如下优点，一定会让你爱的无法自拔：</p>
+<p> <strong>1.她能让你更自信。帮助你编写高质量代码、减少bug。</strong></p>
+<p> 如果大家分析一下我们bug原因的构成，我想有会有一部分bug的原因是开发人员在编写工作代码的时候没有考虑到某些case或者边际条件。造成这种问题的原因很多，其中很重要的一个原因是我们对工作代码所要完成的功能思考不足，而编写单元测试，特别是先写单元测试再写工作代码就可以帮助开发人员思考编写的代码到底要实现哪些功能。例如实现一个简单的用户注册功能的业务类方法，用单元测试再写工作代码的方式来工作的话开发人员就会先考虑各种场景相关，例如正常注册、用户名重复、没有满足必要的填写内容……等等，之后就会编写相关的测试用例。编写单元测试代码的过程就是促使开发人员思考工作代码实现内容和逻辑的过程，之后实现工作代码的时候，开发人员思路会更清晰，实现代码的质量也会有相应的提升。</p>
+<p> <strong>2.她能提提升你的战斗力。帮助你提升代码的反馈速度，减少重复工作，提高开发效率。</strong></p>
+<p> 开发人员实现某个功能或者修补了某个bug，如果有相应的单元测试支持的话，开发人员可以马上通过运行单元测试来验证之前完成的代码是否正确，而不需要反复通过编译运行simulator、等待应用启动、通过输入数据等繁琐的步骤来验证所完成的功能。用单元测试代码来验证代码和通过发布应用以人工的方式来验证代码这两者的效率差很多，所以单元测试其实还能节约人力成本。</p>
+<p>  <strong>3.她的存在让你轻松愉快。保证你最后的代码修改不会破坏之前代码的功能。</strong></p>
+<p> 项目越做越大，代码越来越多，特别涉及到一些公用接口之类的代码或是底层的基础库，谁也不敢保证这次修改的代码不会破坏之前的功能，所以与此相关的需求会被搁置或推迟，由于不敢改进代码，代码也变得越来越难以维护，质量也越来越差。而单元测试就是解决这种问题的很好方法（不敢说最好的）。由于代码的历史功能都有相应的单元测试保证，修改了某些代码以后，通过运行相关的单元测试就可以验证出新调整的功能是否有影响到之前的功能。当然要实现到这种程度需要很大的付出，不但要能够达到比较高的测试覆盖率，而且单元测试代码的编写质量也要有保证。 </p>
+<p>  <strong>4.她能为你排忧解难，永远做你的依靠。让你的代码维护更容易。</strong></p>
+<p> 由于给代码写很多单元测试，相当于给代码加上了规格说明书，开发人员通过读单元测试代码也能够帮助开发人员理解现有代码。很有Open Source的项目(如，AFNetworking, FMDB,喵神的VVDoucment等)都有相当量的单元测试代码，通过读这些测试代码会有助于理解生产源代码。</p>
+<p>  <strong>5.她甘心做你坚强的后盾，在你卖命打拼时无后顾之忧。她有助于改进代码质量和设计。</strong></p>
+<p> 除了那些大拿们编写的代码，我相信很多易于维护、设计良好的代码都是通过不断的重构才得到的。虽然说单元测试本身不能直接改进生产代码的质量，但它为生产代码提供了“安全网”，让开发人员可以勇敢地改进代码，从而让代码的clean和beautiful不再是梦想。</p>
+<p> 我这么辛苦把它吹的这么有魅力，要是你作为程序员还不想见见她，wakao,我猜你不正常，有必要做个自身能力检查。如果你跟我一样是一个正常人，下面我就暂不收费，带你远远的瞧上一瞧这位美女，看看她到底长什么样子。</p>
+<h3 id="iOS单元测试初探"><a href="#iOS单元测试初探" class="headerlink" title="iOS单元测试初探"></a>iOS单元测试初探</h3><p> 维基百科上的对她解释：“在计算机编程中，单元测试（又称为模块测试, Unit Testing）是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。程序单元是应用的最小可测试部件。在过程化编程中，一个单元就是单个程序、函数、过程等；对于面向对象编程，最小单元就是方法，包括基类（超类）、抽象类、或者派生类（子类）中的方法。”。</p>
+<p> 通常来说，程序员每修改一次代码就会修改某个单元，那我们就可以对这个单元做修改的验证（单元测试），在编写程序的过程中前后很可能要进行多次单元测试，以证实程序达到软件规格书（产品需求）要求的工作目标，而且没有程序错误。虽然单元测试不是什么必须的，但也不坏，这牵涉到项目管理的政策决定（说白了，你没有她也能活，但是只能自己左手写代码，右手……当然也是写代码，作为程序员怎么可以一只手敲代码呢）。</p>
+<p>  <strong>1.了解XCode中的单元测试</strong></p>
+<p>在XCode7中新建一个工程的时候，会默认带一个用于单元测试的target，其名字为工程名加Test后缀，并且文件名也以Test结尾。你会发现已经有了一个默认的测试用例。<br><img src="/img/in-post/unit-test/unit_test_05.png" alt=""></p>
+<p><img src="/img/in-post/unit-test/unit_test_01.png" alt=""></p>
+<p> 创建项目后，默认会给我们创建一个和bundle名称+Tests.m的测试类，它包含的默认代码含义如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">  - (void)setUp &#123;</span><br><span class="line">       [super setUp];</span><br><span class="line">       // Put setup code here. This method <span class="keyword">is</span> called before the  invo cation of each test method <span class="keyword">in</span> the <span class="class"><span class="keyword">class</span>.</span></span><br><span class="line"><span class="class">      //初始化的代码，在测试方法调用之前调用</span></span><br><span class="line"><span class="class">&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line">- (void)tearDown &#123;</span><br><span class="line">        // Put teardown code here. This method <span class="keyword">is</span> called after the invocation of each test method <span class="keyword">in</span> the <span class="class"><span class="keyword">class</span>.</span></span><br><span class="line"><span class="class">       // 释放测试用例的资源代码，这个方法会每个测试用例执行后调用</span></span><br><span class="line">       [super tearDown];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testExample &#123;</span><br><span class="line">           // This <span class="keyword">is</span> an example of a functional test case.</span><br><span class="line">           // Use XCTAssert <span class="keyword">and</span> related functions to verify your tests produce the correct results.</span><br><span class="line">           // 测试用例的例子，注意测试用例一定要test开头</span><br><span class="line">       </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testPerformanceExample &#123;</span><br><span class="line">         // This <span class="keyword">is</span> an example of a performance test case.</span><br><span class="line">         // 测试性能例子，有Instrument调试工具之后，其实这个没毛用。</span><br><span class="line">         [self measureBlock:^&#123;</span><br><span class="line">         // Put the code you want to measure the time of here.</span><br><span class="line">         // 需要测试性能的代码</span><br><span class="line">          &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2.写一个简单的测试用例</strong></p>
+<p>在testExample方法中输入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (void)testExample &#123;</span><br><span class="line">    // This <span class="keyword">is</span> an example of a functional test case.</span><br><span class="line">    // Use XCTAssert <span class="keyword">and</span> related functions to verify your tests produce the correct results.</span><br><span class="line">    NSLog(@<span class="string">"开始爱上单元测试的第一个单元测试测试"</span>);</span><br><span class="line">    NSString *test = @<span class="string">"这是我的第一个单元测试"</span>;</span><br><span class="line">    XCTAssertTrue([test isEqualToString:@<span class="string">"初来乍到，就想测试成功，没门"</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后按快捷键Command + U进行单元测试，这个快捷键是全部测试。可以看到如下结果界面： </p>
+<p><img src="/img/in-post/unit-test/unit_test_04.png" alt=""></p>
+<p> 由于我们使用了断言XCTAssetTrue,它用来比较一个表达式是否为真，显然这个表达式是返回false的，所以这个测试用例肯定通过不了嘛。</p>
+<p> 我们也可以点击播放按钮，测试某个测试用例。</p>
+<p><img src="/img/in-post/unit-test/unit_test_03.png" alt=""></p>
+<p> <img src="/img/in-post/unit-test/unit_test_02.png" alt=""></p>
+<p><strong>3.XCTest常见的断言</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">XCTFail(format…) 生成一个失败的测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNil(a1, format...)为空判断，a1为空时通过，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotNil(a1, format…)不为空判断，a1不为空时通过，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssert(expression, format...)当expression求值为TRUE时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertTrue(expression, format...)当expression求值为TRUE时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertFalse(expression, format...)当expression求值为<span class="keyword">False</span>时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqualObjects(a1, a2, format...)判断相等，[a1 isEqual:a2]值为TRUE时通过，其中一个不为空时，不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqualObjects(a1, a2, format...)判断不等，[a1 isEqual:a2]值为<span class="keyword">False</span>时通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqual(a1, a2, format...)判断相等（当a1和a2是 C语言标量、结构体或联合体时使用,实际测试发现NSString也可以）；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqual(a1, a2, format...)判断不等（当a1和a2是 C语言标量、结构体或联合体时使用）；</span><br><span class="line"> </span><br><span class="line">XCTAssertEqualWithAccuracy(a1, a2, accuracy, format...)判断相等，（double或float类型）提供一个误差范围，当在误差范围（+/-accuracy）以内相等时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNotEqualWithAccuracy(a1, a2, accuracy, format...) 判断不等，（double或float类型）提供一个误差范围，当在误差范围以内不等时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertThrows(expression, format...)异常测试，当expression发生异常时通过；反之不通过；（很变态） XCTAssertThrowsSpecific(expression, specificException, format...) 异常测试，当expression发生specificException异常时通过；反之发生其他异常或不发生异常均不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertThrowsSpecificNamed(expression, specificException, exception_name, format...)异常测试，当expression发生具体异常、具体异常名称的异常时通过测试，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrow(expression, format…)异常测试，当expression没有发生异常时通过测试；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrowSpecific(expression, specificException, format...)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过；</span><br><span class="line"> </span><br><span class="line">XCTAssertNoThrowSpecificNamed(expression, specificException, exception_name, format...)异常测试，当expression没有发生具体异常、具体异常名称的异常时通过测试，反之不通过</span><br></pre></td></tr></table></figure>
+<p>特别注意下XCTAssertEqualObjects和XCTAssertEqual。<br>XCTAssertEqualObjects(a1, a2, format…)的判断条件是[a1 isEqual:a2]是否返回一个YES。XCTAssertEqual(a1, a2, format…)的判断条件是a1 == a2是否返回一个YES。对于后者，如果a1和a2都是基本数据类型变量，那么只有a1 == a2才会返回YES。</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p> 点到为止，入门就是入门，让你稍微有个了解。就像给你介绍一个美女，我会给她带朦胧的面纱，等你开个好价钱（点个赞）之后我才会一步一步揭开它的面纱，(bie四声)着急，好东西就要一点点的看看才有味道嘛。后面我会陆续推出单元测试进阶，单元测试实战，单元测试中的各种技巧等系列的文章。</p>
+<p>参考文章：</p>
+<p><a href="https://developer.apple.com/library/ios/documentation/ToolsLanguages/Conceptual/Xcode_Overview/UnitTesting.html" target="_blank" rel="noopener">《Using Unit Tests》</a></p>
+<p><a href="http://www.cnblogs.com/ziyi--caolu/p/4893847.html" target="_blank" rel="noopener">《iOS开发：XCTest单元测试（附上一个单例的测试代码》</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">iOS开发</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单元测试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">unit test</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/06/18/2016-06-18-loving-unit-test-series-one-rumen/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
@@ -1696,19 +1679,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">人生感悟</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">view层架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
+                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">light controller</a>
+                <a href="javascript:void(0)" class="js-tag color2">subclassing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1720,19 +1699,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">ios架构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS思考</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">iOS入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1768,6 +1747,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
@@ -1781,14 +1768,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Pull Request</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 同步</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Syncing</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1808,15 +1787,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
+                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
+                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1828,15 +1807,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Git 合并</a>
+                <a href="javascript:void(0)" class="js-tag color5">Refs and the Reflog</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Git merge</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 引用和引用日志</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Git rebase</a>
+                <a href="javascript:void(0)" class="js-tag color2">Git 高级</a>
               </li>
              
               <li class="article-tag-list-item">
